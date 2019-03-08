@@ -1,0 +1,68 @@
+{
+  "name": "preaction-cms",
+  "description": "preaction-cms is a CMS intended to be super cool and user friendly.",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8999",
+  "dependencies": {
+    "animate.css": "^3.7.0",
+    "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
+    "connect-session-sequelize": "^6.0.0",
+    "cookie-parser": "^1.4.4",
+    "es5-shim": "^4.5.12",
+    "es6-shim": "^0.35.4",
+    "excerpt-html": "^1.2.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "ionicons": "^4.5.5",
+    "jpeg-autorotate": "^5.0.0",
+    "mobile-detect": "^1.4.3",
+    "multer": "^1.4.1",
+    "password-prompt": "^1.1.2",
+    "preaction-validation": "^1.0.14",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-scripts": "2.1.8",
+    "react-ssr": "^2.0.0-alpha.15",
+    "sequelize": "^4.43.0",
+    "sitemap": "^2.1.0",
+    "sqlite3": "^4.0.6"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "bootstrap": "^4.3.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-standard": "^4.0.0",
+    "hex-rgb": "^4.0.0",
+    "nodemon": "^1.18.10",
+    "preaction-bootstrap-clips": "^1.0.28",
+    "preaction-inputs": "^1.0.36",
+    "prettier": "^1.16.4",
+    "prettier-eslint": "^8.8.2",
+    "react-router-dom": "^4.3.1"
+  },
+  "scripts": {
+    "dev-client": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev-server": "nodemon -i src server.js",
+    "start": "node server.js"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

@@ -1,0 +1,13 @@
+.page .page-controls {
+  margin-bottom: 1em;
+}
+
+.page .page-controls button {
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+.page .pageblock-buttons {
+  position: relative;
+  top: -1em;
+}

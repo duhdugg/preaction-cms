@@ -1,0 +1,61 @@
+html {
+  background-color: black;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 1s linear, color 1s linear;
+  background-color: transparent;
+  color: transparent;
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  padding-top: 4rem;
+  opacity: 0;
+  transition: opacity 1s linear;
+}
+
+footer {
+  padding-bottom: 1em;
+  margin-top: 1em;
+}
+
+a {
+  transition: color 1s linear;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.ql-editor a {
+  text-decoration: none !important;
+}
+
+.ql-editor img {
+  max-width: 50%;
+  max-height: 50vh;
+}
+
+.wysiwyg label {
+  display: none;
+}
+
+.wysiwyg .ql-container {
+  font-size: 1rem;
+}
+
+.wysiwyg .ql-tooltip {
+  z-index: 99999;
+}
