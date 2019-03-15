@@ -74,7 +74,14 @@ app.route('/settings/').get((req, res) => {
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.route('*').get((req, res) => {
-  renderClient(req, res.status(404))
+  let pageKey = req.path.split('/')[1]
+  pages.model.Page.findOne({ where: { key: pageKey } }).then(page => {
+    let status = 200
+    if (!page) {
+      status = 404
+    }
+    renderClient(req, res.status(status))
+  })
 })
 
 app.listen(8999, () => {
