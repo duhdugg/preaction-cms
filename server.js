@@ -44,6 +44,16 @@ app.route('/settings/').get((req, res) => {
   })
 })
 
+app.route('/icon').get((req, res) => {
+  db.model.Settings.findOne({ where: { key: 'icon' } }).then(setting => {
+    if (!setting) {
+      res.status(404).send('')
+      return
+    }
+    res.redirect(setting.value)
+  })
+})
+
 // app.route('/sitemap.xml').get((req, res) => {
 //   let hostname = 'http://example.com'
 //   let changefreq = 'always'
