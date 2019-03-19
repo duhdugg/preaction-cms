@@ -19,12 +19,10 @@
     "jpeg-autorotate": "^5.0.0",
     "mobile-detect": "^1.4.3",
     "multer": "^1.4.1",
-    "password-prompt": "^1.1.2",
     "preaction-validation": "^1.0.14",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-scripts": "2.1.8",
-    "react-ssr": "^2.0.0-alpha.15",
     "sequelize": "^4.43.0",
     "sitemap": "^2.1.0",
     "sqlite3": "^4.0.6"
