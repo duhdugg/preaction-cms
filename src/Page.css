@@ -7,7 +7,14 @@
   margin-top: 1em;
 }
 
-.page .pageblock-buttons {
-  position: relative;
-  top: -1em;
+.page .page-block .preaction.wysiwyg {
+  margin-bottom: 0 !important;
+}
+
+.page .page-block.wysiwyg {
+  margin-bottom: 1rem;
+}
+
+.page .page-block .page-block-buttons {
+  margin-top: 0.25rem;
 }

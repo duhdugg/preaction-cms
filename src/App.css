@@ -59,3 +59,16 @@ a:hover {
 .wysiwyg .ql-tooltip {
   z-index: 99999;
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+i.spinner:before {
+  animation: spin 1s infinite ease-in-out;
+}

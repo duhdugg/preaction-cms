@@ -28,7 +28,7 @@ class App extends React.Component {
     this.state = {
       authenticated: false,
       csrf: '',
-      editable: false,
+      editable: true,
       pages: [],
       redirect: null,
       siteSettings: {

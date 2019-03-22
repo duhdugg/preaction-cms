@@ -13,9 +13,9 @@ class Page extends React.Component {
     }
   }
 
-  addWysiwygBlock () {
+  addPageBlock (blockType) {
     axios
-      .post(`/api/page/${this.state.page.id}/blocks`, { blockType: 'wysiwyg' })
+      .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
       .then(response => {
         this.setState(state => {
           if (!state.page.pageblocks) {
@@ -41,7 +41,7 @@ class Page extends React.Component {
     }
   }
 
-  deletePageBlock (pageBlock) {
+  deleteBlock (pageBlock) {
     axios.delete(`/api/page/blocks/${pageBlock.id}`).then(response => {
       if (response.status === 200) {
         this.setState(state => {
@@ -56,6 +56,64 @@ class Page extends React.Component {
           return state
         })
       }
+    })
+  }
+
+  getImages (pageblockimages) {
+    return pageblockimages.concat().sort((a, b) => {
+      let retval = 0
+      if (a.ordering < b.ordering) {
+        retval = -1
+      } else if (a.ordering > b.ordering) {
+        retval = 1
+      }
+      return retval
+    })
+  }
+
+  galleryControl (pageBlock, index, action) {
+    // actions: previous, next, delete
+    this.setState(state => {
+      let images = this.getImages(pageBlock.pageblockimages)
+      let image = images[index]
+      if (action === 'previous') {
+        image.ordering--
+        let prevUpload = images[index - 1]
+        prevUpload.ordering++
+        axios.put(`/api/page/blocks/image/${image.id}`, image)
+        axios.put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
+        images[index] = image
+        images[index - 1] = prevUpload
+      } else if (action === 'next') {
+        image.ordering++
+        let nextUpload = images[index + 1]
+        nextUpload.ordering--
+        axios.put(`/api/page/blocks/image/${image.id}`, image)
+        axios.put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
+        images[index] = image
+        images[index + 1] = nextUpload
+      } else if (action === 'delete') {
+        axios.delete(`/api/page/blocks/image/${image.id}`)
+        let x = pageBlock.pageblockimages.indexOf(image)
+        let ordering = image.ordering
+        pageBlock.pageblockimages.splice(x, 1)
+        for (let image of images) {
+          if (image.ordering > ordering) {
+            image.ordering--
+          }
+        }
+      }
+      for (let pb of state.page.pageblocks) {
+        if (pb.id === pageBlock.id) {
+          for (let x = 0; x < pb.pageblockimages.length; x++) {
+            if (pb.pageblockimages[x].id === image.id) {
+              pb.pageblockimages[x] = image
+              break
+            }
+          }
+        }
+      }
+      return state
     })
   }
 
@@ -97,6 +155,25 @@ class Page extends React.Component {
     )
   }
 
+  refreshBlock (pageblockId) {
+    for (let pageblock of this.state.page.pageblocks) {
+      if (pageblock.id === pageblockId) {
+        axios.get(`/api/page/blocks/${pageblockId}`).then(response => {
+          this.setState(state => {
+            for (let x = 0; x < state.page.pageblocks.length; x++) {
+              if (state.page.pageblocks[x].id === pageblockId) {
+                state.page.pageblocks[x] = response.data
+                break
+              }
+            }
+            return state
+          })
+        })
+        break
+      }
+    }
+  }
+
   render () {
     return (
       <div className="page">
@@ -110,7 +187,10 @@ class Page extends React.Component {
                     key={block.id}
                     editable={this.props.editable}
                     siteSettings={this.props.siteSettings}
-                    deletePageBlock={this.deletePageBlock.bind(this)}
+                    deleteBlock={this.deleteBlock.bind(this)}
+                    refreshBlock={this.refreshBlock.bind(this)}
+                    getImages={this.getImages.bind(this)}
+                    galleryControl={this.galleryControl.bind(this)}
                   />
                 )
               })
@@ -120,9 +200,20 @@ class Page extends React.Component {
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
-                  onClick={this.addWysiwygBlock.bind(this)}
+                  onClick={() => {
+                    this.addPageBlock('wysiwyg')
+                  }}
                 >
-                  <i className="ion ion-logo-html5" /> Add Content
+                  <i className="ion ion-logo-html5" />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => {
+                    this.addPageBlock('image')
+                  }}
+                >
+                  <i className="ion ion-md-image" />
                 </button>
                 {this.state.page.userCreated ? (
                   <button
@@ -130,7 +221,7 @@ class Page extends React.Component {
                     className="btn btn-danger btn-sm"
                     onClick={this.deletePage.bind(this)}
                   >
-                    <i className="ion ion-md-trash" /> Delete Page
+                    <i className="ion ion-md-trash" />
                   </button>
                 ) : (
                   ''
