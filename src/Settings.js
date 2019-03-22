@@ -88,6 +88,7 @@ class Settings extends React.Component {
 
               <div className="row">
                 <div className="col">
+                  <label className="d-block">Site Icon</label>
                   <button
                     type="button"
                     className="btn btn-primary"
