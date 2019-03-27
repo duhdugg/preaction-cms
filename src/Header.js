@@ -5,6 +5,7 @@ class Header extends React.Component {
   render () {
     return (
       <div>
+        {this.props.editable ? <h3>Header</h3> : ''}
         <Page
           pageKey="header"
           editable={this.props.editable}

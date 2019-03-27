@@ -5,6 +5,7 @@ class Footer extends React.Component {
   render () {
     return (
       <div>
+        {this.props.editable ? <h3>Footer</h3> : ''}
         <Page
           editable={this.props.editable}
           pageKey="footer"

@@ -263,6 +263,8 @@ class App extends React.Component {
                 />
               }
             >
+              {this.state.editable ? <hr /> : ''}
+              {this.state.editable ? <h3>Page</h3> : ''}
               <Switch>
                 <Route exact path="/">
                   <Page
@@ -302,6 +304,7 @@ class App extends React.Component {
                   }}
                 />
               </Switch>
+              {this.state.editable ? <hr /> : ''}
             </Boilerplate>
           </div>
         </Router>
