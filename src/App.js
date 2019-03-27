@@ -121,6 +121,16 @@ class App extends React.Component {
         name: 'Admin',
         subMenu: adminSubmenu
       })
+
+      menu.sort((a, b) => {
+        let retval = 0
+        if (a.name < b.name) {
+          retval = -1
+        } else if (a.name > b.name) {
+          retval = 1
+        }
+        return retval
+      })
     }
     return menu
   }
