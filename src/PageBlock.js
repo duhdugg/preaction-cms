@@ -22,7 +22,7 @@ class PageBlock extends React.Component {
                 data={this.props.data}
                 editable={this.props.editable}
                 siteSettings={this.props.siteSettings}
-                refreshBlock={this.props.refreshBlock}
+                blockControl={this.props.blockControl}
                 galleryControl={this.props.galleryControl}
                 getImages={this.props.getImages}
               />
@@ -33,12 +33,26 @@ class PageBlock extends React.Component {
               <div className="page-block-buttons">
                 <button
                   type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => {}}
+                >
+                  <i className="ion ion-md-arrow-up" />
+                </button>
+                <button
+                  type="button"
                   className="btn btn-danger btn-sm"
                   onClick={() => {
-                    this.props.deleteBlock(this.props.data)
+                    this.props.blockControl(this.props.data.id, 'delete')
                   }}
                 >
                   <i className="ion ion-md-trash" />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => {}}
+                >
+                  <i className="ion ion-md-arrow-down" />
                 </button>
               </div>
             ) : (

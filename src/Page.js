@@ -27,6 +27,58 @@ class Page extends React.Component {
       })
   }
 
+  blockControl (blockId, action) {
+    // actions: previous, next, delete, refresh
+    this.setState(state => {
+      let blocks = this.getBlocks(this.state.page.pageblocks)
+      let block
+      let index = 0
+      while (index < blocks.length) {
+        block = blocks[index]
+        if (block.id === blockId) {
+          break
+        }
+        index++
+      }
+      if (action === 'previous') {
+        block.ordering--
+        let prevBlock = blocks[index - 1]
+        prevBlock.ordering++
+        axios.put(`/api/page/blocks/${block.id}`, block)
+        axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock)
+        blocks[index] = block
+        blocks[index - 1] = prevBlock
+      } else if (action === 'next') {
+        block.ordering++
+        let nextBlock = blocks[index + 1]
+        nextBlock.ordering--
+        axios.put(`/api/page/blocks/${block.id}`, block)
+        axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock)
+        blocks[index] = block
+        blocks[index + 1] = nextBlock
+      } else if (action === 'delete') {
+        if (window.confirm('Delete this block?')) {
+          axios.delete(`/api/page/blocks/${block.id}`)
+          let ordering = block.ordering
+          state.page.pageblocks.splice(index, 1)
+          for (let blk of blocks) {
+            if (blk.ordering > ordering) {
+              blk.ordering--
+            }
+          }
+        }
+      } else if (action === 'refresh') {
+        axios.get(`/api/page/blocks/${blockId}`).then(response => {
+          this.setState(state => {
+            state.page.pageblocks[index] = response.data
+            return state
+          })
+        })
+      }
+      return state
+    })
+  }
+
   deletePage () {
     if (this.props.deletePage) {
       if (
@@ -41,21 +93,15 @@ class Page extends React.Component {
     }
   }
 
-  deleteBlock (pageBlock) {
-    axios.delete(`/api/page/blocks/${pageBlock.id}`).then(response => {
-      if (response.status === 200) {
-        this.setState(state => {
-          let x = 0
-          for (let pb of state.page.pageblocks) {
-            if (pb.id === pageBlock.id) {
-              break
-            }
-            x++
-          }
-          state.page.pageblocks.splice(x, 1)
-          return state
-        })
+  getBlocks (blocks) {
+    return blocks.concat().sort((a, b) => {
+      let retval = 0
+      if (a.ordering < b.ordering) {
+        retval = -1
+      } else if (a.ordering > b.ordering) {
+        retval = 1
       }
+      return retval
     })
   }
 
@@ -93,13 +139,15 @@ class Page extends React.Component {
         images[index] = image
         images[index + 1] = nextUpload
       } else if (action === 'delete') {
-        axios.delete(`/api/page/blocks/image/${image.id}`)
-        let x = pageBlock.pageblockimages.indexOf(image)
-        let ordering = image.ordering
-        pageBlock.pageblockimages.splice(x, 1)
-        for (let image of images) {
-          if (image.ordering > ordering) {
-            image.ordering--
+        if (window.confirm('Delete this image?')) {
+          axios.delete(`/api/page/blocks/image/${image.id}`)
+          let x = pageBlock.pageblockimages.indexOf(image)
+          let ordering = image.ordering
+          pageBlock.pageblockimages.splice(x, 1)
+          for (let image of images) {
+            if (image.ordering > ordering) {
+              image.ordering--
+            }
           }
         }
       }
@@ -155,40 +203,20 @@ class Page extends React.Component {
     )
   }
 
-  refreshBlock (pageblockId) {
-    for (let pageblock of this.state.page.pageblocks) {
-      if (pageblock.id === pageblockId) {
-        axios.get(`/api/page/blocks/${pageblockId}`).then(response => {
-          this.setState(state => {
-            for (let x = 0; x < state.page.pageblocks.length; x++) {
-              if (state.page.pageblocks[x].id === pageblockId) {
-                state.page.pageblocks[x] = response.data
-                break
-              }
-            }
-            return state
-          })
-        })
-        break
-      }
-    }
-  }
-
   render () {
     return (
       <div className="page">
         {this.state.page ? (
           <div>
             {this.state.page.pageblocks
-              ? this.state.page.pageblocks.map(block => {
+              ? this.getBlocks(this.state.page.pageblocks).map(block => {
                 return (
                   <PageBlock
                     data={block}
                     key={block.id}
                     editable={this.props.editable}
                     siteSettings={this.props.siteSettings}
-                    deleteBlock={this.deleteBlock.bind(this)}
-                    refreshBlock={this.refreshBlock.bind(this)}
+                    blockControl={this.blockControl.bind(this)}
                     getImages={this.getImages.bind(this)}
                     galleryControl={this.galleryControl.bind(this)}
                   />
@@ -208,7 +236,7 @@ class Page extends React.Component {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-primary btn-sm"
+                  className="btn btn-info btn-sm"
                   onClick={() => {
                     this.addPageBlock('image')
                   }}

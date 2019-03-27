@@ -1,10 +1,17 @@
 import React from 'react'
 import { Card } from 'preaction-bootstrap-clips'
+import { Checkbox, Select } from 'preaction-inputs'
 
 class PageBlockImages extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      autoCollapseColumns: true,
+      center: false,
+      clickToZoom: true,
+      showContainer: true,
+      showSettings: false,
+      maxWidth: '25%',
       uploading: false,
       viewImage: undefined
     }
@@ -31,24 +38,93 @@ class PageBlockImages extends React.Component {
     }
   }
 
-  refreshBlock () {
-    this.props.refreshBlock(this.props.data.id)
+  get cardWidth () {
+    let width
+    if (this.state.autoCollapseColumns) {
+      switch (this.state.maxWidth) {
+        case '50%':
+          width = {
+            xs: 1,
+            sm: 1 / 2
+          }
+          break
+        case '33%':
+          width = {
+            xs: 1,
+            sm: 1 / 2,
+            lg: 1 / 3
+          }
+          break
+        case '25%':
+          width = {
+            xs: 1,
+            sm: 1 / 2,
+            lg: 1 / 3,
+            xl: 1 / 4
+          }
+          break
+        default:
+          width = { xs: 1 }
+          break
+      }
+    } else {
+      switch (this.state.maxWidth) {
+        case '50%':
+          width = 1 / 2
+          break
+        case '33%':
+          width = 1 / 3
+          break
+        case '25%':
+          width = 1 / 4
+          break
+        default:
+          width = 1
+          break
+      }
+    }
+    return width
   }
 
-  viewImage (image) {
-    return event => {
-      event.preventDefault()
+  getValueHandler (key) {
+    return value => {
       this.setState(state => {
-        state.modalAnimationDirection = 'In'
-        state.viewImage = image
+        state[key] = value
         return state
       })
     }
   }
 
+  refreshBlock () {
+    this.props.blockControl(this.props.data.id, 'refresh')
+  }
+
+  toggleSettings () {
+    this.setState(state => {
+      state.showSettings = !state.showSettings
+      return state
+    })
+  }
+
+  viewImage (image) {
+    return event => {
+      event.preventDefault()
+      if (this.state.clickToZoom) {
+        this.setState(state => {
+          state.modalAnimationDirection = 'In'
+          state.viewImage = image
+          return state
+        })
+      }
+    }
+  }
+
   render () {
     return (
-      <div className="page-block-images">
+      <div
+        className="page-block-images"
+        id={`page-block-${this.props.data.id}`}
+      >
         {this.props.editable ? (
           <div>
             <form
@@ -104,15 +180,12 @@ class PageBlockImages extends React.Component {
             .getImages(this.props.data.pageblockimages || [])
             .map((image, index) => (
               <Card
-                className="ml-auto mr-auto"
-                column
-                contain
-                width={{
-                  xs: 1,
-                  sm: 1 / 2,
-                  lg: 1 / 3,
-                  xl: 1 / 4
+                className={{
+                  card: `image ${this.state.showContainer ? '' : 'nocontainer'}`
                 }}
+                column
+                contain={this.state.center}
+                width={this.cardWidth}
                 style={{
                   card: {
                     backgroundColor: this.props.siteSettings.containerRgba
@@ -125,7 +198,7 @@ class PageBlockImages extends React.Component {
                     <div className="btn-group d-flex">
                       <button
                         type="button"
-                        className="btn btn btn-info d-block mr-auto"
+                        className="btn btn-sm btn-info d-block mr-auto"
                         onClick={this.galleryControl(index, 'previous')}
                         disabled={index === 0}
                       >
@@ -133,14 +206,14 @@ class PageBlockImages extends React.Component {
                       </button>
                       <button
                         type="button"
-                        className="btn btn btn-danger d-block ml-auto mr-auto"
+                        className="btn btn-sm btn-danger d-block ml-auto mr-auto"
                         onClick={this.galleryControl(index, 'delete')}
                       >
                         <i className="icon ion-md-trash" />
                       </button>
                       <button
                         type="button"
-                        className="btn btn btn-info d-block ml-auto"
+                        className="btn btn-sm btn-info d-block ml-auto"
                         onClick={this.galleryControl(index, 'next')}
                         disabled={
                           index >= this.props.data.pageblockimages.length - 1
@@ -167,25 +240,72 @@ class PageBlockImages extends React.Component {
             ))}
         </div>
         {this.props.editable ? (
-          <div className="btn-group pt-1">
+          <div>
             <button
               type="button"
-              className="btn btn-success d-block"
-              onClick={() => {
-                this.photosInput.current.click()
-              }}
-              disabled={this.state.uploading}
+              className="btn btn-info"
+              onClick={this.toggleSettings.bind(this)}
             >
-              Add Images
-              {this.state.uploading ? (
-                <span>
-                  <span> </span>
-                  <i className="icon ion-md-hourglass spinner" />
-                </span>
-              ) : (
-                ''
-              )}
+              <i className="ion ion-md-cog" />
             </button>
+            {this.state.showSettings ? (
+              <div className="mt-2">
+                <div className="col-sm-6 pl-0">
+                  <Select
+                    label="Max Width"
+                    value={this.state.maxWidth}
+                    valueHandler={this.getValueHandler('maxWidth')}
+                  >
+                    <option>100%</option>
+                    <option>50%</option>
+                    <option>33%</option>
+                    <option>25%</option>
+                  </Select>
+                </div>
+                <Checkbox
+                  label="Automatically collapse columns"
+                  checked={this.state.autoCollapseColumns}
+                  valueHandler={this.getValueHandler('autoCollapseColumns')}
+                />
+                <Checkbox
+                  label="Center/Justify"
+                  checked={this.state.center}
+                  valueHandler={this.getValueHandler('center')}
+                />
+                <Checkbox
+                  label="Show Container"
+                  checked={this.state.showContainer}
+                  valueHandler={this.getValueHandler('showContainer')}
+                />
+                <Checkbox
+                  label="Click to Zoom"
+                  checked={this.state.clickToZoom}
+                  valueHandler={this.getValueHandler('clickToZoom')}
+                />
+              </div>
+            ) : (
+              <div />
+            )}
+            <div className="btn-group pt-1">
+              <button
+                type="button"
+                className="btn btn-info d-block"
+                onClick={() => {
+                  this.photosInput.current.click()
+                }}
+                disabled={this.state.uploading}
+              >
+                Add Images
+                {this.state.uploading ? (
+                  <span>
+                    <span> </span>
+                    <i className="icon ion-md-hourglass spinner" />
+                  </span>
+                ) : (
+                  ''
+                )}
+              </button>
+            </div>
           </div>
         ) : (
           ''
@@ -204,7 +324,7 @@ class PageBlockImages extends React.Component {
             top: 0,
             right: 0,
             bottom: 0,
-            zIndex: 10
+            zIndex: 2000
           }}
           onClick={this.clearImageViewer.bind(this)}
         >
