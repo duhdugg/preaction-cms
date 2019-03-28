@@ -13,6 +13,10 @@ body {
   background-color: transparent;
   color: transparent;
   min-height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 code {
@@ -21,7 +25,6 @@ code {
 }
 
 .App {
-  padding-top: 4rem;
   opacity: 0;
   transition: opacity 1s linear;
 }
