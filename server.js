@@ -4,8 +4,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const path = require('path')
-// const excerptHtml = require('excerpt-html')
-// const sm = require('sitemap')
+const excerptHtml = require('excerpt-html')
+const sm = require('sitemap')
 
 const app = express()
 const db = require('./lib/db.js')
@@ -54,43 +54,70 @@ app.route('/icon').get((req, res) => {
   })
 })
 
-// app.route('/sitemap.xml').get((req, res) => {
-//   let hostname = 'http://example.com'
-//   let changefreq = 'always'
-//   let sitemap = sm.createSitemap({
-//     hostname,
-//     urls: [
-//       {
-//         url: '/',
-//         changefreq
-//       }
-//     ]
-//   })
-//   db.model.Blog.findAll({ where: { published: true } }).then(articles => {
-//     for (let article of articles) {
-//       let title = article.title.toLowerCase().replace(/[^A-z0-9]/g, '-')
-//       sitemap.add({ url: `/blog/${article.id}/${title}`, changefreq })
-//     }
-//     sitemap.toXML((err, xml) => {
-//       if (err) {
-//         res.status(500).end()
-//       }
-//       res.header('Content-Type', 'application/xml')
-//       res.send(xml)
-//     })
-//   })
-// })
+app.route('/bg').get((req, res) => {
+  db.model.Settings.findOne({ where: { key: 'bg' } }).then(setting => {
+    if (!setting) {
+      res.status(404).send('')
+      return
+    }
+    res.redirect(setting.value)
+  })
+})
+
+app.route('/sitemap.xml').get((req, res) => {
+  let hostname = 'http://example.com'
+  let changefreq = 'always'
+  let sitemap = sm.createSitemap({
+    hostname,
+    urls: [
+      {
+        url: '/',
+        changefreq
+      }
+    ]
+  })
+  pages.model.Page.findAll().then(pages => {
+    for (let page of pages) {
+      if (page.userCreated) {
+        let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+        sitemap.add({ url: `/${title}/`, changefreq })
+      }
+    }
+    sitemap.toXML((err, xml) => {
+      if (err) {
+        res.status(500).end()
+      }
+      res.header('Content-Type', 'application/xml')
+      res.send(xml)
+    })
+  })
+})
 
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.route('*').get((req, res) => {
   let pageKey = req.path.split('/')[1]
-  pages.model.Page.findOne({ where: { key: pageKey } }).then(page => {
+  pages.model.Page.findOne({
+    where: { key: pageKey },
+    include: [
+      {
+        model: pages.model.PageBlock,
+        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
+      }
+    ]
+  }).then(page => {
     let status = 200
     if (!page) {
       status = 404
     }
-    renderClient(req, res.status(status))
+    let content = ''
+    for (let pageblock of page.pageblocks) {
+      if (pageblock.pageblockwysiwyg) {
+        content += pageblock.pageblockwysiwyg.content
+      }
+    }
+    content = excerptHtml(content, { pruneLength: 300 })
+    renderClient(req, res.status(status), { description: content })
   })
 })
 
