@@ -6,9 +6,10 @@ import {
   Route,
   Switch,
   NavLink,
+  Link,
   Redirect
 } from 'react-router-dom'
-import { Boilerplate, NavBar } from 'preaction-bootstrap-clips'
+import { Boilerplate, NavBar, Nav } from 'preaction-bootstrap-clips'
 
 // styles
 import 'animate.css/animate.min.css'
@@ -26,9 +27,10 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      activePathname: '',
       authenticated: false,
       csrf: '',
-      editable: true,
+      editable: false,
       pages: [],
       redirect: null,
       siteSettings: {
@@ -39,7 +41,8 @@ class App extends React.Component {
         containerOpacity: 0,
         siteTitle: '',
         siteDescription: '',
-        navTheme: 'dark'
+        navTheme: 'dark',
+        navPosition: 'fixed-top'
       }
     }
     this.settingsUpdateTimer = null
@@ -77,12 +80,27 @@ class App extends React.Component {
 
   get menu () {
     let menu = []
+    if (this.state.siteSettings.navPosition !== 'fixed-top') {
+      menu.push({
+        name: <i className="ion ion-md-home" />,
+        href: '/',
+        component: Link,
+        order: -1,
+        active: this.state.activePathname === '/',
+        onClick: e => {
+          this.setActivePathname('/')
+        }
+      })
+    }
     for (let page of this.state.pages) {
       if (page.userCreated) {
         menu.push({
           name: page.title,
           href: `/${page.key}/`,
-          component: NavLink
+          component: NavLink,
+          onClick: e => {
+            this.setActivePathname(`/${page.key}/`)
+          }
         })
       }
     }
@@ -107,7 +125,10 @@ class App extends React.Component {
       adminSubmenu.push({
         name: 'Site Settings',
         href: '/settings/',
-        component: NavLink
+        component: NavLink,
+        onClick: e => {
+          this.setActivePathname('/settings/')
+        }
       })
       adminSubmenu.push({
         name: 'Logout',
@@ -119,7 +140,8 @@ class App extends React.Component {
 
       menu.push({
         name: 'Admin',
-        subMenu: adminSubmenu
+        subMenu: adminSubmenu,
+        order: 1
       })
 
       menu.sort((a, b) => {
@@ -127,6 +149,19 @@ class App extends React.Component {
         if (a.name < b.name) {
           retval = -1
         } else if (a.name > b.name) {
+          retval = 1
+        }
+        let aOrder = a.order
+        let bOrder = b.order
+        if (aOrder === undefined) {
+          aOrder = 0
+        }
+        if (bOrder === undefined) {
+          bOrder = 0
+        }
+        if (aOrder < bOrder) {
+          retval = -1
+        } else if (aOrder > bOrder) {
           retval = 1
         }
         return retval
@@ -232,6 +267,13 @@ class App extends React.Component {
     )
   }
 
+  setActivePathname (pathname) {
+    this.setState(state => {
+      state.activePathname = pathname
+      return state
+    })
+  }
+
   render () {
     return (
       <div
@@ -240,29 +282,61 @@ class App extends React.Component {
         <Router>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
-            <NavBar
-              fixedTo="top"
-              theme={this.siteSettings.navTheme}
-              brand={{
-                name: this.siteSettings.siteTitle,
-                href: '/',
-                onClick: e => {
-                  e.preventDefault()
-                  this.redirect('/')
-                }
-              }}
-              menu={this.menu}
-            />
+            {this.state.siteSettings.navPosition === 'fixed-top' ? (
+              <NavBar
+                fixedTo="top"
+                theme={this.siteSettings.navTheme}
+                brand={{
+                  name: this.siteSettings.siteTitle,
+                  href: '/',
+                  onClick: e => {
+                    e.preventDefault()
+                    this.redirect('/')
+                  }
+                }}
+                menu={this.menu}
+              />
+            ) : (
+              ''
+            )}
             <Boilerplate
               header={
-                <Header
-                  authenticated={this.state.authenticated}
-                  editable={this.state.editable}
-                  toggleEdit={this.toggleEdit.bind(this)}
-                  siteSettings={this.siteSettings}
-                  pages={this.state.pages}
-                  logout={this.logout.bind(this)}
-                />
+                <div>
+                  {this.state.siteSettings.navPosition === 'above-header' ? (
+                    <Nav
+                      menu={this.menu}
+                      type={this.state.siteSettings.navType}
+                      align={this.state.siteSettings.navAlignment}
+                      justify={this.state.siteSettings.navSpacing === 'justify'}
+                      fill={this.state.siteSettings.navSpacing === 'fill'}
+                      collapsible={this.state.siteSettings.navCollapsible}
+                      className="mb-3"
+                    />
+                  ) : (
+                    ''
+                  )}
+                  <Header
+                    authenticated={this.state.authenticated}
+                    editable={this.state.editable}
+                    toggleEdit={this.toggleEdit.bind(this)}
+                    siteSettings={this.siteSettings}
+                    pages={this.state.pages}
+                    logout={this.logout.bind(this)}
+                  />
+                  {this.state.siteSettings.navPosition === 'below-header' ? (
+                    <Nav
+                      menu={this.menu}
+                      type={this.state.siteSettings.navType}
+                      align={this.state.siteSettings.navAlignment}
+                      justify={this.state.siteSettings.navSpacing === 'justify'}
+                      fill={this.state.siteSettings.navSpacing === 'fill'}
+                      collapsible={this.state.siteSettings.navCollapsible}
+                      className="mb-3"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
               }
               footer={
                 <Footer
@@ -326,8 +400,26 @@ class App extends React.Component {
             img {
               border: 3px solid ${this.siteSettings.fontColor};
             }
+            body {
+              ${
+      this.state.siteSettings.useBgImage
+        ? 'background-image: url("/bg");'
+        : ''
+      }
+            }
             .App {
-              opacity: ${this.siteSettings.init ? 1 : 0}
+              opacity: ${this.siteSettings.init ? 1 : 0};
+              padding-top: ${
+      this.state.siteSettings.navPosition === 'fixed-top'
+        ? '4rem'
+        : '0'
+      };
+            }
+            .dropdown-item.active, .dropdown-item:active {
+              background-color: ${this.siteSettings.linkColor};
+            }
+            .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+              background-color: ${this.siteSettings.linkColor};
             }
           `}
         </style>
@@ -339,6 +431,7 @@ class App extends React.Component {
     this.loadSettings()
     this.loadPages()
     this.loadSession()
+    this.setActivePathname(window.location.pathname)
   }
 
   componentDidUpdate () {

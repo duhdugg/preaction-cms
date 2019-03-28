@@ -117,6 +117,20 @@ class Page extends React.Component {
     })
   }
 
+  getPageBlockSettingsValueHandler (pageblockId, key) {
+    return value => {
+      this.setState(state => {
+        for (let pageblock of this.state.page.pageblocks) {
+          if (pageblock.id === pageblockId) {
+            pageblock.settings[key] = value
+            axios.put(`/api/page/blocks/${pageblockId}`, pageblock)
+          }
+        }
+        return state
+      })
+    }
+  }
+
   galleryControl (pageBlock, index, action) {
     // actions: previous, next, delete
     this.setState(state => {
@@ -209,19 +223,26 @@ class Page extends React.Component {
         {this.state.page ? (
           <div>
             {this.state.page.pageblocks
-              ? this.getBlocks(this.state.page.pageblocks).map(block => {
-                return (
-                  <PageBlock
-                    data={block}
-                    key={block.id}
-                    editable={this.props.editable}
-                    siteSettings={this.props.siteSettings}
-                    blockControl={this.blockControl.bind(this)}
-                    getImages={this.getImages.bind(this)}
-                    galleryControl={this.galleryControl.bind(this)}
-                  />
-                )
-              })
+              ? this.getBlocks(this.state.page.pageblocks).map(
+                (block, index) => {
+                  return (
+                    <PageBlock
+                      data={block}
+                      key={block.id}
+                      first={index === 0}
+                      last={index === this.state.page.pageblocks.length - 1}
+                      editable={this.props.editable}
+                      siteSettings={this.props.siteSettings}
+                      blockControl={this.blockControl.bind(this)}
+                      getImages={this.getImages.bind(this)}
+                      galleryControl={this.galleryControl.bind(this)}
+                      getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
+                        this
+                      )}
+                    />
+                  )
+                }
+              )
               : ''}
             {this.props.editable ? (
               <div className="page-controls">

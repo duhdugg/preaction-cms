@@ -6,12 +6,7 @@ class PageBlockImages extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      autoCollapseColumns: true,
-      center: false,
-      clickToZoom: true,
-      showContainer: true,
       showSettings: false,
-      maxWidth: '25%',
       uploading: false,
       viewImage: undefined
     }
@@ -38,10 +33,14 @@ class PageBlockImages extends React.Component {
     }
   }
 
+  getPageBlockSettingsValueHandler (key) {
+    return this.props.getPageBlockSettingsValueHandler(this.props.data.id, key)
+  }
+
   get cardWidth () {
     let width
-    if (this.state.autoCollapseColumns) {
-      switch (this.state.maxWidth) {
+    if (this.props.data.settings.autoCollapseColumns) {
+      switch (this.props.data.settings.maxWidth) {
         case '50%':
           width = {
             xs: 1,
@@ -68,7 +67,7 @@ class PageBlockImages extends React.Component {
           break
       }
     } else {
-      switch (this.state.maxWidth) {
+      switch (this.props.data.settings.maxWidth) {
         case '50%':
           width = 1 / 2
           break
@@ -86,15 +85,6 @@ class PageBlockImages extends React.Component {
     return width
   }
 
-  getValueHandler (key) {
-    return value => {
-      this.setState(state => {
-        state[key] = value
-        return state
-      })
-    }
-  }
-
   refreshBlock () {
     this.props.blockControl(this.props.data.id, 'refresh')
   }
@@ -109,7 +99,7 @@ class PageBlockImages extends React.Component {
   viewImage (image) {
     return event => {
       event.preventDefault()
-      if (this.state.clickToZoom) {
+      if (this.props.data.settings.pushToZoom) {
         this.setState(state => {
           state.modalAnimationDirection = 'In'
           state.viewImage = image
@@ -175,16 +165,18 @@ class PageBlockImages extends React.Component {
         ) : (
           ''
         )}
-        <div className="row ml-0 mr-0">
+        <div className="row">
           {this.props
             .getImages(this.props.data.pageblockimages || [])
             .map((image, index) => (
               <Card
                 className={{
-                  card: `image ${this.state.showContainer ? '' : 'nocontainer'}`
+                  card: `image ${
+                    this.props.data.settings.showContainer ? '' : 'nocontainer'
+                  }`
                 }}
                 column
-                contain={this.state.center}
+                contain={this.props.data.settings.center}
                 width={this.cardWidth}
                 style={{
                   card: {
@@ -253,8 +245,10 @@ class PageBlockImages extends React.Component {
                 <div className="col-sm-6 pl-0">
                   <Select
                     label="Max Width"
-                    value={this.state.maxWidth}
-                    valueHandler={this.getValueHandler('maxWidth')}
+                    value={this.props.data.settings.maxWidth}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'maxWidth'
+                    )}
                   >
                     <option>100%</option>
                     <option>50%</option>
@@ -263,24 +257,30 @@ class PageBlockImages extends React.Component {
                   </Select>
                 </div>
                 <Checkbox
-                  label="Automatically collapse columns"
-                  checked={this.state.autoCollapseColumns}
-                  valueHandler={this.getValueHandler('autoCollapseColumns')}
+                  label="Automatically collapse columns for smaller screens"
+                  checked={this.props.data.settings.autoCollapseColumns}
+                  valueHandler={this.getPageBlockSettingsValueHandler(
+                    'autoCollapseColumns'
+                  )}
                 />
                 <Checkbox
                   label="Center/Justify"
-                  checked={this.state.center}
-                  valueHandler={this.getValueHandler('center')}
+                  checked={this.props.data.settings.center}
+                  valueHandler={this.getPageBlockSettingsValueHandler('center')}
                 />
                 <Checkbox
                   label="Show Container"
-                  checked={this.state.showContainer}
-                  valueHandler={this.getValueHandler('showContainer')}
+                  checked={this.props.data.settings.showContainer}
+                  valueHandler={this.getPageBlockSettingsValueHandler(
+                    'showContainer'
+                  )}
                 />
                 <Checkbox
-                  label="Click to Zoom"
-                  checked={this.state.clickToZoom}
-                  valueHandler={this.getValueHandler('clickToZoom')}
+                  label="Push to Zoom"
+                  checked={this.props.data.settings.pushToZoom}
+                  valueHandler={this.getPageBlockSettingsValueHandler(
+                    'pushToZoom'
+                  )}
                 />
               </div>
             ) : (

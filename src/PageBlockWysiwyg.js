@@ -7,6 +7,7 @@ class PageBlockWysiwyg extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      loading: true,
       wysiwyg: '',
       savingWysiwyg: false
     }
@@ -15,32 +16,34 @@ class PageBlockWysiwyg extends React.Component {
   }
 
   handleWysiwyg (value) {
-    this.setState(
-      state => {
-        state.wysiwyg = value
-        if (this.props.editable) {
-          state.savingWysiwyg = true
-        }
-        return state
-      },
-      () => {
-        clearTimeout(this.wysiwygUpdateTimer)
-        this.wysiwygUpdateTimer = setTimeout(() => {
+    if (!this.state.loading) {
+      this.setState(
+        state => {
+          state.wysiwyg = value
           if (this.props.editable) {
-            axios
-              .put(`/api/page/blocks/wysiwyg/${this.props.data.id}`, {
-                content: this.state.wysiwyg
-              })
-              .then(() => {
-                this.setState(state => {
-                  state.savingWysiwyg = false
-                  return state
-                })
-              })
+            state.savingWysiwyg = true
           }
-        }, 1000)
-      }
-    )
+          return state
+        },
+        () => {
+          clearTimeout(this.wysiwygUpdateTimer)
+          this.wysiwygUpdateTimer = setTimeout(() => {
+            if (this.props.editable) {
+              axios
+                .put(`/api/page/blocks/wysiwyg/${this.props.data.id}`, {
+                  content: this.state.wysiwyg
+                })
+                .then(() => {
+                  this.setState(state => {
+                    state.savingWysiwyg = false
+                    return state
+                  })
+                })
+            }
+          }, 1000)
+        }
+      )
+    }
   }
 
   render () {
@@ -101,6 +104,12 @@ class PageBlockWysiwyg extends React.Component {
         this.wysiwyg.current.value = this.props.data.content
       }
     )
+    window.setTimeout(() => {
+      this.setState(state => {
+        state.loading = false
+        return state
+      })
+    }, 0)
   }
 }
 

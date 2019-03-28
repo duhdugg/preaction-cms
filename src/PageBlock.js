@@ -25,6 +25,9 @@ class PageBlock extends React.Component {
                 blockControl={this.props.blockControl}
                 galleryControl={this.props.galleryControl}
                 getImages={this.props.getImages}
+                getPageBlockSettingsValueHandler={
+                  this.props.getPageBlockSettingsValueHandler
+                }
               />
             ) : (
               ''
@@ -34,7 +37,10 @@ class PageBlock extends React.Component {
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
-                  onClick={() => {}}
+                  disabled={this.props.first}
+                  onClick={() => {
+                    this.props.blockControl(this.props.data.id, 'previous')
+                  }}
                 >
                   <i className="ion ion-md-arrow-up" />
                 </button>
@@ -50,7 +56,10 @@ class PageBlock extends React.Component {
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
-                  onClick={() => {}}
+                  disabled={this.props.last}
+                  onClick={() => {
+                    this.props.blockControl(this.props.data.id, 'next')
+                  }}
                 >
                   <i className="ion ion-md-arrow-down" />
                 </button>
