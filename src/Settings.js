@@ -1,15 +1,18 @@
 import React from 'react'
-import { Input, Textarea, Select } from 'preaction-inputs'
+import { Input, Checkbox, Select } from 'preaction-inputs'
 
 class Settings extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       newPageTitle: '',
-      uploadingFile: false
+      uploadingBg: false,
+      uploadingIcon: false
     }
-    this.uploadForm = React.createRef()
-    this.fileInput = React.createRef()
+    this.uploadIconForm = React.createRef()
+    this.iconFileInput = React.createRef()
+    this.uploadBgForm = React.createRef()
+    this.bgFileInput = React.createRef()
   }
 
   addPage () {
@@ -65,24 +68,111 @@ class Settings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <Textarea
-                    label="Site Description"
-                    value={this.props.siteSettings.siteDescription}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'siteDescription'
-                    )}
-                  />
                   <Select
-                    label="Nav Theme"
-                    value={this.props.siteSettings.navTheme}
+                    label="Nav Position"
+                    value={this.props.siteSettings.navPosition}
                     valueHandler={this.props.getSettingsValueHandler(
-                      'navTheme'
+                      'navPosition'
                     )}
                   >
-                    <option />
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
+                    <option value="fixed-top">Fixed to Top</option>
+                    <option value="above-header">Above Header</option>
+                    <option value="below-header">Below Header</option>
                   </Select>
+                  {this.props.siteSettings.navPosition === 'fixed-top' ? (
+                    <Select
+                      label="Nav Theme"
+                      value={this.props.siteSettings.navTheme}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'navTheme'
+                      )}
+                    >
+                      <option />
+                      <option value="light">Light</option>
+                      <option value="dark">Dark</option>
+                    </Select>
+                  ) : (
+                    ''
+                  )}
+                  {['above-header', 'below-header'].indexOf(
+                    this.props.siteSettings.navPosition
+                  ) > -1 ? (
+                      <div>
+                        <Select
+                          label="Nav Type"
+                          value={this.props.siteSettings.navType}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navType'
+                          )}
+                        >
+                          <option>basic</option>
+                          <option>tabs</option>
+                          <option>pills</option>
+                        </Select>
+                        <Select
+                          label="Nav Alignment"
+                          value={this.props.siteSettings.navAlignment}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navAlignment'
+                          )}
+                        >
+                          <option>left</option>
+                          <option>center</option>
+                          <option>right</option>
+                        </Select>
+                        <Select
+                          label="Nav Spacing"
+                          value={this.props.siteSettings.navSpacing}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navSpacing'
+                          )}
+                        >
+                          <option>normal</option>
+                          <option>fill</option>
+                          <option>justify</option>
+                        </Select>
+                        <Checkbox
+                          label="Collapse nav for smaller screens"
+                          checked={this.props.siteSettings.navCollapsible}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navCollapsible'
+                          )}
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col">
+                  <label className="d-block">Site Background</label>
+                  <Checkbox
+                    label="Use Background Image"
+                    checked={this.props.siteSettings.useBgImage}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'useBgImage'
+                    )}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      this.bgFileInput.current.click()
+                    }}
+                    disabled={this.state.uploadingBg}
+                  >
+                    Upload Background
+                    {this.state.uploadingBg ? (
+                      <span>
+                        <span> </span>
+                        <i className="icon ion-md-hourglass spinner" />
+                      </span>
+                    ) : (
+                      ''
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -93,12 +183,12 @@ class Settings extends React.Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
-                      this.fileInput.current.click()
+                      this.iconFileInput.current.click()
                     }}
-                    disabled={this.state.uploadingFile}
+                    disabled={this.state.uploadingIcon}
                   >
                     Upload Icon
-                    {this.state.uploadingFile ? (
+                    {this.state.uploadingIcon ? (
                       <span>
                         <span> </span>
                         <i className="icon ion-md-hourglass spinner" />
@@ -219,20 +309,59 @@ class Settings extends React.Component {
             <form
               method="POST"
               action={'/api/upload'}
-              target="upload-frame"
+              target="upload-bg-frame"
               encType="multipart/form-data"
-              ref={this.uploadForm}
+              ref={this.uploadBgForm}
               className="d-none"
             >
               <input
                 name="file"
                 type="file"
                 accept="image/*"
-                ref={this.fileInput}
+                ref={this.bgFileInput}
                 onChange={event => {
-                  this.uploadForm.current.submit()
+                  this.uploadBgForm.current.submit()
                   this.setState(state => {
-                    state.uploadingFile = true
+                    state.uploadingBg = true
+                    return state
+                  })
+                }}
+              />
+              <input type="hidden" name="target" value="bg" />
+            </form>
+            <iframe
+              name="upload-bg-frame"
+              title="upload"
+              onLoad={() => {
+                this.setState(
+                  state => {
+                    state.uploadingBg = false
+                    return state
+                  },
+                  () => {
+                    window.location.reload()
+                  }
+                )
+              }}
+              className="d-none"
+            />
+            <form
+              method="POST"
+              action={'/api/upload'}
+              target="upload-icon-frame"
+              encType="multipart/form-data"
+              ref={this.uploadIconForm}
+              className="d-none"
+            >
+              <input
+                name="file"
+                type="file"
+                accept="image/*"
+                ref={this.iconFileInput}
+                onChange={event => {
+                  this.uploadIconForm.current.submit()
+                  this.setState(state => {
+                    state.uploadingIcon = true
                     return state
                   })
                 }}
@@ -240,12 +369,12 @@ class Settings extends React.Component {
               <input type="hidden" name="target" value="icon" />
             </form>
             <iframe
-              name="upload-frame"
+              name="upload-icon-frame"
               title="upload"
               onLoad={() => {
                 this.setState(
                   state => {
-                    state.uploadingFile = false
+                    state.uploadingIcon = false
                     return state
                   },
                   () => {
