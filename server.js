@@ -133,7 +133,7 @@ io.on('connection', socket => {
   })
 })
 
-const port = process.env.PORT || 8999
+const port = process.env.PREACTION_PORT || 8999
 
 http.listen(port, () => {
   console.log(`preaction-cms app listening on port ${port}`)
