@@ -1,14 +1,16 @@
 import React from 'react'
 import axios from 'axios'
 import hexRgb from 'hex-rgb'
+import io from 'socket.io-client'
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   NavLink,
+  Link,
   Redirect
 } from 'react-router-dom'
-import { Boilerplate, NavBar } from 'preaction-bootstrap-clips'
+import { Boilerplate, NavBar, Nav } from 'preaction-bootstrap-clips'
 
 // styles
 import 'animate.css/animate.min.css'
@@ -26,6 +28,7 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      activePathname: '',
       authenticated: false,
       csrf: '',
       editable: false,
@@ -34,24 +37,35 @@ class App extends React.Component {
       siteSettings: {
         bgColor: '#000000',
         fontColor: '#ffffff',
+        hostname: '',
         linkColor: '#ffffff',
         containerColor: '#ffffff',
         containerOpacity: 0,
         siteTitle: '',
         siteDescription: '',
-        navTheme: 'dark'
+        navTheme: 'dark',
+        navPosition: 'fixed-top'
       }
     }
     this.settingsUpdateTimer = null
+    this.socket = null
+    this.activePage = React.createRef()
+    this.header = React.createRef()
+    this.footer = React.createRef()
   }
 
   addPage (page) {
     if (page.key) {
-      axios.post('/api/page', page).then(response => {
-        if (response.data) {
-          this.loadPages()
-        }
-      })
+      axios
+        .post('/api/page', page)
+        .then(response => {
+          if (response.data) {
+            this.loadPages()
+          }
+        })
+        .then(() => {
+          this.socket.emit('save')
+        })
     }
   }
 
@@ -63,6 +77,7 @@ class App extends React.Component {
           if (response.status === 200) {
             this.loadPages()
           }
+          this.socket.emit('save')
         })
         .then(() => {
           this.loadPages()
@@ -77,12 +92,27 @@ class App extends React.Component {
 
   get menu () {
     let menu = []
+    if (this.state.siteSettings.navPosition !== 'fixed-top') {
+      menu.push({
+        name: <i className="ion ion-md-home" />,
+        href: '/',
+        component: Link,
+        order: -1,
+        active: this.state.activePathname === '/',
+        onClick: e => {
+          this.setActivePathname('/')
+        }
+      })
+    }
     for (let page of this.state.pages) {
       if (page.userCreated) {
         menu.push({
           name: page.title,
           href: `/${page.key}/`,
-          component: NavLink
+          component: NavLink,
+          onClick: e => {
+            this.setActivePathname(`/${page.key}/`)
+          }
         })
       }
     }
@@ -107,7 +137,10 @@ class App extends React.Component {
       adminSubmenu.push({
         name: 'Site Settings',
         href: '/settings/',
-        component: NavLink
+        component: NavLink,
+        onClick: e => {
+          this.setActivePathname('/settings/')
+        }
       })
       adminSubmenu.push({
         name: 'Logout',
@@ -119,7 +152,31 @@ class App extends React.Component {
 
       menu.push({
         name: 'Admin',
-        subMenu: adminSubmenu
+        subMenu: adminSubmenu,
+        order: 1
+      })
+
+      menu.sort((a, b) => {
+        let retval = 0
+        if (a.name < b.name) {
+          retval = -1
+        } else if (a.name > b.name) {
+          retval = 1
+        }
+        let aOrder = a.order
+        let bOrder = b.order
+        if (aOrder === undefined) {
+          aOrder = 0
+        }
+        if (bOrder === undefined) {
+          bOrder = 0
+        }
+        if (aOrder < bOrder) {
+          retval = -1
+        } else if (aOrder > bOrder) {
+          retval = 1
+        }
+        return retval
       })
     }
     return menu
@@ -144,7 +201,9 @@ class App extends React.Component {
         () => {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
-            axios.post('/api/settings', this.state.siteSettings)
+            axios.post('/api/settings', this.state.siteSettings).then(() => {
+              this.socket.emit('save')
+            })
           }, 1000)
         }
       )
@@ -173,6 +232,7 @@ class App extends React.Component {
       if (response.data) {
         this.setState(state => {
           state.siteSettings = response.data
+          state.siteSettings.hostname = window.location.origin || ''
           return state
         })
       }
@@ -222,6 +282,23 @@ class App extends React.Component {
     )
   }
 
+  reload () {
+    this.loadPages()
+    this.loadSettings()
+    if (this.activePage.current) {
+      this.header.current.reload()
+      this.activePage.current.reload()
+      this.footer.current.reload()
+    }
+  }
+
+  setActivePathname (pathname) {
+    this.setState(state => {
+      state.activePathname = pathname
+      return state
+    })
+  }
+
   render () {
     return (
       <div
@@ -230,29 +307,63 @@ class App extends React.Component {
         <Router>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
-            <NavBar
-              fixedTo="top"
-              theme={this.siteSettings.navTheme}
-              brand={{
-                name: this.siteSettings.siteTitle,
-                href: '/',
-                onClick: e => {
-                  e.preventDefault()
-                  this.redirect('/')
-                }
-              }}
-              menu={this.menu}
-            />
+            {this.state.siteSettings.navPosition === 'fixed-top' ? (
+              <NavBar
+                fixedTo="top"
+                theme={this.siteSettings.navTheme}
+                brand={{
+                  name: this.siteSettings.siteTitle,
+                  href: '/',
+                  onClick: e => {
+                    e.preventDefault()
+                    this.redirect('/')
+                  }
+                }}
+                menu={this.menu}
+              />
+            ) : (
+              ''
+            )}
             <Boilerplate
               header={
-                <Header
-                  authenticated={this.state.authenticated}
-                  editable={this.state.editable}
-                  toggleEdit={this.toggleEdit.bind(this)}
-                  siteSettings={this.siteSettings}
-                  pages={this.state.pages}
-                  logout={this.logout.bind(this)}
-                />
+                <div>
+                  {this.state.siteSettings.navPosition === 'above-header' ? (
+                    <Nav
+                      menu={this.menu}
+                      type={this.state.siteSettings.navType}
+                      align={this.state.siteSettings.navAlignment}
+                      justify={this.state.siteSettings.navSpacing === 'justify'}
+                      fill={this.state.siteSettings.navSpacing === 'fill'}
+                      collapsible={this.state.siteSettings.navCollapsible}
+                      className="mb-3"
+                    />
+                  ) : (
+                    ''
+                  )}
+                  <Header
+                    authenticated={this.state.authenticated}
+                    editable={this.state.editable}
+                    toggleEdit={this.toggleEdit.bind(this)}
+                    siteSettings={this.siteSettings}
+                    pages={this.state.pages}
+                    logout={this.logout.bind(this)}
+                    ref={this.header}
+                    socket={this.socket}
+                  />
+                  {this.state.siteSettings.navPosition === 'below-header' ? (
+                    <Nav
+                      menu={this.menu}
+                      type={this.state.siteSettings.navType}
+                      align={this.state.siteSettings.navAlignment}
+                      justify={this.state.siteSettings.navSpacing === 'justify'}
+                      fill={this.state.siteSettings.navSpacing === 'fill'}
+                      collapsible={this.state.siteSettings.navCollapsible}
+                      className="mb-3"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
               }
               footer={
                 <Footer
@@ -260,15 +371,21 @@ class App extends React.Component {
                   editable={this.state.editable}
                   siteSettings={this.siteSettings}
                   logout={this.logout.bind(this)}
+                  ref={this.footer}
+                  socket={this.socket}
                 />
               }
             >
+              {this.state.editable ? <hr /> : ''}
+              {this.state.editable ? <h3>Page</h3> : ''}
               <Switch>
                 <Route exact path="/">
                   <Page
                     editable={this.state.editable}
                     pageKey="home"
                     siteSettings={this.siteSettings}
+                    socket={this.socket}
+                    ref={this.activePage}
                   />
                 </Route>
                 <Route exact path="/login">
@@ -286,6 +403,7 @@ class App extends React.Component {
                       this
                     )}
                     pages={this.state.pages}
+                    socket={this.socket}
                   />
                 </Route>
                 <Route
@@ -297,11 +415,14 @@ class App extends React.Component {
                         siteSettings={this.siteSettings}
                         pageKey={pageKey}
                         deletePage={this.deletePage.bind(this)}
+                        socket={this.socket}
+                        ref={this.activePage}
                       />
                     )
                   }}
                 />
               </Switch>
+              {this.state.editable ? <hr /> : ''}
             </Boilerplate>
           </div>
         </Router>
@@ -313,8 +434,26 @@ class App extends React.Component {
             img {
               border: 3px solid ${this.siteSettings.fontColor};
             }
+            body {
+              ${
+      this.state.siteSettings.useBgImage
+        ? 'background-image: url("/bg");'
+        : ''
+      }
+            }
             .App {
-              opacity: ${this.siteSettings.init ? 1 : 0}
+              opacity: ${this.siteSettings.init ? 1 : 0};
+              padding-top: ${
+      this.state.siteSettings.navPosition === 'fixed-top'
+        ? '4rem'
+        : '0'
+      };
+            }
+            .dropdown-item.active, .dropdown-item:active {
+              background-color: ${this.siteSettings.linkColor};
+            }
+            .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+              background-color: ${this.siteSettings.linkColor};
             }
           `}
         </style>
@@ -326,6 +465,22 @@ class App extends React.Component {
     this.loadSettings()
     this.loadPages()
     this.loadSession()
+    this.setActivePathname(window.location.pathname)
+    this.socket = io()
+    this.socket.on('load', () => {
+      if (!this.state.editable) {
+        if (this.state.activePathname !== '/settings/') {
+          this.reload()
+        }
+      }
+    })
+    this.socket.on('reload-page', () => {
+      if (!this.state.editable) {
+        if (this.state.activePathname !== '/settings/') {
+          window.location.reload()
+        }
+      }
+    })
   }
 
   componentDidUpdate () {

@@ -4,8 +4,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const path = require('path')
-// const excerptHtml = require('excerpt-html')
-// const sm = require('sitemap')
+const excerptHtml = require('excerpt-html')
+const sm = require('sitemap')
 
 const app = express()
 const db = require('./lib/db.js')
@@ -14,6 +14,9 @@ const pages = require('./lib/modules/pages.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
 const uploads = require('./lib/modules/uploads.js')
+
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 app.use(settings.expressModule)
 
@@ -54,46 +57,84 @@ app.route('/icon').get((req, res) => {
   })
 })
 
-// app.route('/sitemap.xml').get((req, res) => {
-//   let hostname = 'http://example.com'
-//   let changefreq = 'always'
-//   let sitemap = sm.createSitemap({
-//     hostname,
-//     urls: [
-//       {
-//         url: '/',
-//         changefreq
-//       }
-//     ]
-//   })
-//   db.model.Blog.findAll({ where: { published: true } }).then(articles => {
-//     for (let article of articles) {
-//       let title = article.title.toLowerCase().replace(/[^A-z0-9]/g, '-')
-//       sitemap.add({ url: `/blog/${article.id}/${title}`, changefreq })
-//     }
-//     sitemap.toXML((err, xml) => {
-//       if (err) {
-//         res.status(500).end()
-//       }
-//       res.header('Content-Type', 'application/xml')
-//       res.send(xml)
-//     })
-//   })
-// })
+app.route('/bg').get((req, res) => {
+  db.model.Settings.findOne({ where: { key: 'bg' } }).then(setting => {
+    if (!setting) {
+      res.status(404).send('')
+      return
+    }
+    res.redirect(setting.value)
+  })
+})
+
+app.route('/sitemap.xml').get((req, res) => {
+  db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
+    let hostname = setting && setting.value ? setting.value : ''
+    let changefreq = 'always'
+    let sitemap = sm.createSitemap({
+      hostname,
+      urls: [
+        {
+          url: '/',
+          changefreq
+        }
+      ]
+    })
+    pages.model.Page.findAll().then(pages => {
+      for (let page of pages) {
+        if (page.userCreated) {
+          let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+          sitemap.add({ url: `/${title}/`, changefreq })
+        }
+      }
+      sitemap.toXML((err, xml) => {
+        if (err) {
+          res.status(500).end()
+        }
+        res.header('Content-Type', 'application/xml')
+        res.send(xml)
+      })
+    })
+  })
+})
 
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.route('*').get((req, res) => {
   let pageKey = req.path.split('/')[1]
-  pages.model.Page.findOne({ where: { key: pageKey } }).then(page => {
-    let status = 200
-    if (!page) {
-      status = 404
+  pages.model.Page.findOne({
+    where: { key: pageKey },
+    include: [
+      {
+        model: pages.model.PageBlock,
+        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
+      }
+    ]
+  }).then(page => {
+    let status = page ? 200 : 404
+    let content = ''
+    let pageblocks = page ? page.pageblocks : []
+    for (let pageblock of pageblocks) {
+      if (pageblock.pageblockwysiwyg) {
+        content += pageblock.pageblockwysiwyg.content
+      }
     }
-    renderClient(req, res.status(status))
+    content = excerptHtml(content, { pruneLength: 300 })
+    renderClient(req, res.status(status), { description: content })
   })
 })
 
-app.listen(8999, () => {
-  console.log(`preaction-cms app listening on port 8999`)
+io.on('connection', socket => {
+  socket.on('save', data => {
+    io.emit('load', data)
+  })
+  socket.on('force-reload', data => {
+    io.emit('reload-page')
+  })
+})
+
+const port = process.env.PREACTION_PORT || 8999
+
+http.listen(port, () => {
+  console.log(`preaction-cms app listening on port ${port}`)
 })

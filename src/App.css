@@ -13,6 +13,10 @@ body {
   background-color: transparent;
   color: transparent;
   min-height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 code {
@@ -21,7 +25,6 @@ code {
 }
 
 .App {
-  padding-top: 4rem;
   opacity: 0;
   transition: opacity 1s linear;
 }
@@ -58,4 +61,17 @@ a:hover {
 
 .wysiwyg .ql-tooltip {
   z-index: 99999;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+i.spinner:before {
+  animation: spin 1s infinite ease-in-out;
 }
