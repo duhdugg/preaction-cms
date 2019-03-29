@@ -330,18 +330,22 @@ class Settings extends React.Component {
               <input type="hidden" name="target" value="bg" />
             </form>
             <iframe
+              id="upload-bg-frame"
               name="upload-bg-frame"
               title="upload"
               onLoad={() => {
-                this.setState(
-                  state => {
+                let iframe = document.getElementById('upload-bg-frame')
+                if (iframe.contentWindow.location.href.indexOf('http') > -1) {
+                  this.props.socket.emit('force-reload')
+                  // FIXME: this should be fired after the emit is successfully sent
+                  window.setTimeout(() => {
+                    window.location.reload()
+                  }, 500)
+                  this.setState(state => {
                     state.uploadingBg = false
                     return state
-                  },
-                  () => {
-                    window.location.reload()
-                  }
-                )
+                  })
+                }
               }}
               className="d-none"
             />
@@ -369,18 +373,23 @@ class Settings extends React.Component {
               <input type="hidden" name="target" value="icon" />
             </form>
             <iframe
+              id="upload-icon-frame"
               name="upload-icon-frame"
               title="upload"
               onLoad={() => {
-                this.setState(
-                  state => {
-                    state.uploadingIcon = false
-                    return state
-                  },
-                  () => {
-                    this.refreshIcon()
-                  }
-                )
+                let iframe = document.getElementById('upload-icon-frame')
+                if (iframe.contentWindow.location.href.indexOf('http') > -1) {
+                  this.props.socket.emit('force-reload')
+                  this.setState(
+                    state => {
+                      state.uploadingIcon = false
+                      return state
+                    },
+                    () => {
+                      this.refreshIcon()
+                    }
+                  )
+                }
               }}
               className="d-none"
             />

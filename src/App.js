@@ -403,6 +403,7 @@ class App extends React.Component {
                       this
                     )}
                     pages={this.state.pages}
+                    socket={this.socket}
                   />
                 </Route>
                 <Route
@@ -470,6 +471,13 @@ class App extends React.Component {
       if (!this.state.editable) {
         if (this.state.activePathname !== '/settings/') {
           this.reload()
+        }
+      }
+    })
+    this.socket.on('reload-page', () => {
+      if (!this.state.editable) {
+        if (this.state.activePathname !== '/settings/') {
+          window.location.reload()
         }
       }
     })

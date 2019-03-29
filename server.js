@@ -128,6 +128,9 @@ io.on('connection', socket => {
   socket.on('save', data => {
     io.emit('load', data)
   })
+  socket.on('force-reload', data => {
+    io.emit('reload-page')
+  })
 })
 
 http.listen(8999, () => {
