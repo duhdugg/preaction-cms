@@ -36,6 +36,7 @@ class App extends React.Component {
       siteSettings: {
         bgColor: '#000000',
         fontColor: '#ffffff',
+        hostname: '',
         linkColor: '#ffffff',
         containerColor: '#ffffff',
         containerOpacity: 0,
@@ -218,6 +219,7 @@ class App extends React.Component {
       if (response.data) {
         this.setState(state => {
           state.siteSettings = response.data
+          state.siteSettings.hostname = window.location.origin || ''
           return state
         })
       }

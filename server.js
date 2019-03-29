@@ -65,30 +65,32 @@ app.route('/bg').get((req, res) => {
 })
 
 app.route('/sitemap.xml').get((req, res) => {
-  let hostname = 'http://example.com'
-  let changefreq = 'always'
-  let sitemap = sm.createSitemap({
-    hostname,
-    urls: [
-      {
-        url: '/',
-        changefreq
+  db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
+    let hostname = setting && setting.value ? setting.value : ''
+    let changefreq = 'always'
+    let sitemap = sm.createSitemap({
+      hostname,
+      urls: [
+        {
+          url: '/',
+          changefreq
+        }
+      ]
+    })
+    pages.model.Page.findAll().then(pages => {
+      for (let page of pages) {
+        if (page.userCreated) {
+          let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+          sitemap.add({ url: `/${title}/`, changefreq })
+        }
       }
-    ]
-  })
-  pages.model.Page.findAll().then(pages => {
-    for (let page of pages) {
-      if (page.userCreated) {
-        let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-        sitemap.add({ url: `/${title}/`, changefreq })
-      }
-    }
-    sitemap.toXML((err, xml) => {
-      if (err) {
-        res.status(500).end()
-      }
-      res.header('Content-Type', 'application/xml')
-      res.send(xml)
+      sitemap.toXML((err, xml) => {
+        if (err) {
+          res.status(500).end()
+        }
+        res.header('Content-Type', 'application/xml')
+        res.send(xml)
+      })
     })
   })
 })
