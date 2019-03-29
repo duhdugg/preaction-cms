@@ -15,6 +15,9 @@ const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
 const uploads = require('./lib/modules/uploads.js')
 
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+
 app.use(settings.expressModule)
 
 app.use(cookieParser())
@@ -121,6 +124,12 @@ app.route('*').get((req, res) => {
   })
 })
 
-app.listen(8999, () => {
+io.on('connection', socket => {
+  socket.on('save', data => {
+    io.emit('load', data)
+  })
+})
+
+http.listen(8999, () => {
   console.log(`preaction-cms app listening on port 8999`)
 })

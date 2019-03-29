@@ -87,6 +87,7 @@ class PageBlockImages extends React.Component {
 
   refreshBlock () {
     this.props.blockControl(this.props.data.id, 'refresh')
+    this.props.socket.emit('save')
   }
 
   toggleSettings () {

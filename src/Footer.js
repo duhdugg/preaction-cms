@@ -2,6 +2,15 @@ import React from 'react'
 import Page from './Page.js'
 
 class Footer extends React.Component {
+  constructor (props) {
+    super(props)
+    this.page = React.createRef()
+  }
+
+  reload () {
+    this.page.current.reload()
+  }
+
   render () {
     return (
       <div>
@@ -10,6 +19,8 @@ class Footer extends React.Component {
           editable={this.props.editable}
           pageKey="footer"
           siteSettings={this.props.siteSettings}
+          socket={this.props.socket}
+          ref={this.page}
         />
       </div>
     )

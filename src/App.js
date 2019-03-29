@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import hexRgb from 'hex-rgb'
+import io from 'socket.io-client'
 import {
   BrowserRouter as Router,
   Route,
@@ -47,15 +48,24 @@ class App extends React.Component {
       }
     }
     this.settingsUpdateTimer = null
+    this.socket = null
+    this.activePage = React.createRef()
+    this.header = React.createRef()
+    this.footer = React.createRef()
   }
 
   addPage (page) {
     if (page.key) {
-      axios.post('/api/page', page).then(response => {
-        if (response.data) {
-          this.loadPages()
-        }
-      })
+      axios
+        .post('/api/page', page)
+        .then(response => {
+          if (response.data) {
+            this.loadPages()
+          }
+        })
+        .then(() => {
+          this.socket.emit('save')
+        })
     }
   }
 
@@ -67,6 +77,7 @@ class App extends React.Component {
           if (response.status === 200) {
             this.loadPages()
           }
+          this.socket.emit('save')
         })
         .then(() => {
           this.loadPages()
@@ -190,7 +201,9 @@ class App extends React.Component {
         () => {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
-            axios.post('/api/settings', this.state.siteSettings)
+            axios.post('/api/settings', this.state.siteSettings).then(() => {
+              this.socket.emit('save')
+            })
           }, 1000)
         }
       )
@@ -269,6 +282,16 @@ class App extends React.Component {
     )
   }
 
+  reload () {
+    this.loadPages()
+    this.loadSettings()
+    if (this.activePage.current) {
+      this.header.current.reload()
+      this.activePage.current.reload()
+      this.footer.current.reload()
+    }
+  }
+
   setActivePathname (pathname) {
     this.setState(state => {
       state.activePathname = pathname
@@ -324,6 +347,8 @@ class App extends React.Component {
                     siteSettings={this.siteSettings}
                     pages={this.state.pages}
                     logout={this.logout.bind(this)}
+                    ref={this.header}
+                    socket={this.socket}
                   />
                   {this.state.siteSettings.navPosition === 'below-header' ? (
                     <Nav
@@ -346,6 +371,8 @@ class App extends React.Component {
                   editable={this.state.editable}
                   siteSettings={this.siteSettings}
                   logout={this.logout.bind(this)}
+                  ref={this.footer}
+                  socket={this.socket}
                 />
               }
             >
@@ -357,6 +384,8 @@ class App extends React.Component {
                     editable={this.state.editable}
                     pageKey="home"
                     siteSettings={this.siteSettings}
+                    socket={this.socket}
+                    ref={this.activePage}
                   />
                 </Route>
                 <Route exact path="/login">
@@ -385,6 +414,8 @@ class App extends React.Component {
                         siteSettings={this.siteSettings}
                         pageKey={pageKey}
                         deletePage={this.deletePage.bind(this)}
+                        socket={this.socket}
+                        ref={this.activePage}
                       />
                     )
                   }}
@@ -434,6 +465,14 @@ class App extends React.Component {
     this.loadPages()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
+    this.socket = io()
+    this.socket.on('load', () => {
+      if (!this.state.editable) {
+        if (this.state.activePathname !== '/settings/') {
+          this.reload()
+        }
+      }
+    })
   }
 
   componentDidUpdate () {

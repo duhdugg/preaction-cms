@@ -24,6 +24,7 @@ class Page extends React.Component {
           state.page.pageblocks.push(response.data)
           return state
         })
+        this.props.socket.emit('save')
       })
   }
 
@@ -44,21 +45,31 @@ class Page extends React.Component {
         block.ordering--
         let prevBlock = blocks[index - 1]
         prevBlock.ordering++
-        axios.put(`/api/page/blocks/${block.id}`, block)
-        axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock)
+        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
+          this.props.socket.emit('save')
+        })
+        axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock).then(() => {
+          this.props.socket.emit('save')
+        })
         blocks[index] = block
         blocks[index - 1] = prevBlock
       } else if (action === 'next') {
         block.ordering++
         let nextBlock = blocks[index + 1]
         nextBlock.ordering--
-        axios.put(`/api/page/blocks/${block.id}`, block)
-        axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock)
+        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
+          this.props.socket.emit('save')
+        })
+        axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock).then(() => {
+          this.props.socket.emit('save')
+        })
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
-          axios.delete(`/api/page/blocks/${block.id}`)
+          axios.delete(`/api/page/blocks/${block.id}`).then(() => {
+            this.props.socket.emit('save')
+          })
           let ordering = block.ordering
           state.page.pageblocks.splice(index, 1)
           for (let blk of blocks) {
@@ -123,7 +134,9 @@ class Page extends React.Component {
         for (let pageblock of this.state.page.pageblocks) {
           if (pageblock.id === pageblockId) {
             pageblock.settings[key] = value
-            axios.put(`/api/page/blocks/${pageblockId}`, pageblock)
+            axios.put(`/api/page/blocks/${pageblockId}`, pageblock).then(() => {
+              this.props.socket.emit('save')
+            })
           }
         }
         return state
@@ -140,21 +153,35 @@ class Page extends React.Component {
         image.ordering--
         let prevUpload = images[index - 1]
         prevUpload.ordering++
-        axios.put(`/api/page/blocks/image/${image.id}`, image)
-        axios.put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
+        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
+          this.props.socket.emit('save')
+        })
+        axios
+          .put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
+          .then(() => {
+            this.props.socket.emit('save')
+          })
         images[index] = image
         images[index - 1] = prevUpload
       } else if (action === 'next') {
         image.ordering++
         let nextUpload = images[index + 1]
         nextUpload.ordering--
-        axios.put(`/api/page/blocks/image/${image.id}`, image)
-        axios.put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
+        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
+          this.props.socket.emit('save')
+        })
+        axios
+          .put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
+          .then(() => {
+            this.props.socket.emit('save')
+          })
         images[index] = image
         images[index + 1] = nextUpload
       } else if (action === 'delete') {
         if (window.confirm('Delete this image?')) {
-          axios.delete(`/api/page/blocks/image/${image.id}`)
+          axios.delete(`/api/page/blocks/image/${image.id}`).then(() => {
+            this.props.socket.emit('save')
+          })
           let x = pageBlock.pageblockimages.indexOf(image)
           let ordering = image.ordering
           pageBlock.pageblockimages.splice(x, 1)
@@ -217,6 +244,10 @@ class Page extends React.Component {
     )
   }
 
+  reload () {
+    this.loadPage(this.props.pageKey)
+  }
+
   render () {
     return (
       <div className="page">
@@ -239,6 +270,7 @@ class Page extends React.Component {
                       getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                         this
                       )}
+                      socket={this.props.socket}
                     />
                   )
                 }

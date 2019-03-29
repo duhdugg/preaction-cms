@@ -25,6 +25,7 @@
     "react-scripts": "2.1.8",
     "sequelize": "^4.43.0",
     "sitemap": "^2.1.0",
+    "socket.io": "^2.2.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {

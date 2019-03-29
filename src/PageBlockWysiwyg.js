@@ -38,6 +38,7 @@ class PageBlockWysiwyg extends React.Component {
                     state.savingWysiwyg = false
                     return state
                   })
+                  this.props.socket.emit('save')
                 })
             }
           }, 1000)
@@ -110,6 +111,22 @@ class PageBlockWysiwyg extends React.Component {
         return state
       })
     }, 0)
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.data.content !== prevProps.data.content) {
+      if (!this.props.editable) {
+        this.setState(
+          state => {
+            state.wysiwyg = this.props.data.content
+            return state
+          },
+          () => {
+            this.wysiwyg.current.value = this.props.data.content
+          }
+        )
+      }
+    }
   }
 }
 

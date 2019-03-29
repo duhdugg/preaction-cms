@@ -13,6 +13,7 @@ class PageBlock extends React.Component {
                 data={this.props.data.pageblockwysiwyg}
                 editable={this.props.editable}
                 siteSettings={this.props.siteSettings}
+                socket={this.props.socket}
               />
             ) : (
               ''
@@ -28,6 +29,7 @@ class PageBlock extends React.Component {
                 getPageBlockSettingsValueHandler={
                   this.props.getPageBlockSettingsValueHandler
                 }
+                socket={this.props.socket}
               />
             ) : (
               ''
