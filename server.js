@@ -108,12 +108,10 @@ app.route('*').get((req, res) => {
       }
     ]
   }).then(page => {
-    let status = 200
-    if (!page) {
-      status = 404
-    }
+    let status = page ? 200 : 404
     let content = ''
-    for (let pageblock of page.pageblocks) {
+    let pageblocks = page ? page.pageblocks : []
+    for (let pageblock of pageblocks) {
       if (pageblock.pageblockwysiwyg) {
         content += pageblock.pageblockwysiwyg.content
       }
