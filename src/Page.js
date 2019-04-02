@@ -31,7 +31,7 @@ class Page extends React.Component {
   blockControl (blockId, action) {
     // actions: previous, next, delete, refresh
     this.setState(state => {
-      let blocks = this.getBlocks(this.state.page.pageblocks)
+      let blocks = this.getBlocks(state.page.pageblocks)
       let block
       let index = 0
       while (index < blocks.length) {
@@ -67,21 +67,29 @@ class Page extends React.Component {
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
-          axios.delete(`/api/page/blocks/${block.id}`).then(() => {
+          axios.delete(`/api/page/blocks/${blockId}`).then(() => {
             this.props.socket.emit('save')
           })
           let ordering = block.ordering
-          state.page.pageblocks.splice(index, 1)
+          blocks.splice(index, 1)
           for (let blk of blocks) {
             if (blk.ordering > ordering) {
               blk.ordering--
             }
           }
+          state.page.pageblocks = blocks
         }
       } else if (action === 'refresh') {
         axios.get(`/api/page/blocks/${blockId}`).then(response => {
           this.setState(state => {
-            state.page.pageblocks[index] = response.data
+            let x = 0
+            for (let block of state.page.pageblocks) {
+              if (block.id === blockId) {
+                break
+              }
+              x++
+            }
+            state.page.pageblocks[x] = response.data
             return state
           })
         })
