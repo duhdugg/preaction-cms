@@ -8,6 +8,7 @@ class Page extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      loading: false,
       notFound: false,
       page: null
     }
@@ -217,7 +218,9 @@ class Page extends React.Component {
   loadPage (pageKey) {
     this.setState(
       state => {
+        state.loading = true
         state.notFound = false
+        state.page = null
         return state
       },
       () => {
@@ -225,6 +228,8 @@ class Page extends React.Component {
           .get(`/api/page/by-key/${pageKey}`)
           .then(response => {
             this.setState(state => {
+              state.loading = false
+              state.notFound = false
               state.page = response.data
               return state
             })
@@ -243,6 +248,7 @@ class Page extends React.Component {
           .catch(e => {
             if (e.response.status === 404) {
               this.setState(state => {
+                state.loading = false
                 state.notFound = true
                 return state
               })
@@ -319,6 +325,15 @@ class Page extends React.Component {
             ) : (
               ''
             )}
+          </div>
+        ) : (
+          ''
+        )}
+        {this.state.loading ? (
+          <div>
+            <span style={{ fontSize: '4rem' }}>
+              <i className="ion ion-md-hourglass spinner" />
+            </span>
           </div>
         ) : (
           ''
