@@ -27,11 +27,6 @@ app.use(session.expressModule)
 app.use(pages.expressModule)
 app.use(uploads.expressModule)
 
-app.route('/').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'siteTitle' } }).then(setting => {
-    renderClient(req, res.status(200), { title: setting.value })
-  })
-})
 app.route('/login/').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'siteTitle' } }).then(setting => {
     renderClient(req, res.status(200), {
@@ -98,6 +93,38 @@ app.route('/sitemap.xml').get((req, res) => {
   })
 })
 
+app.route('/').get((req, res) => {
+  pages.model.Page.findOne({
+    where: { key: 'home' },
+    include: [
+      {
+        model: pages.model.PageBlock,
+        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
+      }
+    ]
+  }).then(page => {
+    let status = page ? 200 : 404
+    let content = ''
+    let pageblocks = page ? page.pageblocks : []
+    pageblocks.sort((a, b) => {
+      let retval = 0
+      if (a.ordering < b.ordering) {
+        retval = -1
+      } else if (a.ordering > b.ordering) {
+        retval = 1
+      }
+      return retval
+    })
+    for (let pageblock of pageblocks) {
+      if (pageblock.pageblockwysiwyg) {
+        content += pageblock.pageblockwysiwyg.content || ''
+      }
+    }
+    content = excerptHtml(content, { pruneLength: 300 })
+    renderClient(req, res.status(status), { description: content })
+  })
+})
+
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.route('*').get((req, res) => {
@@ -114,6 +141,15 @@ app.route('*').get((req, res) => {
     let status = page ? 200 : 404
     let content = ''
     let pageblocks = page ? page.pageblocks : []
+    pageblocks.sort((a, b) => {
+      let retval = 0
+      if (a.ordering < b.ordering) {
+        retval = -1
+      } else if (a.ordering > b.ordering) {
+        retval = 1
+      }
+      return retval
+    })
     for (let pageblock of pageblocks) {
       if (pageblock.pageblockwysiwyg) {
         content += pageblock.pageblockwysiwyg.content
