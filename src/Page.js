@@ -330,7 +330,7 @@ class Page extends React.Component {
           ''
         )}
         {this.state.loading ? (
-          <div>
+          <div className="container">
             <span style={{ fontSize: '4rem' }}>
               <i className="ion ion-md-hourglass spinner" />
             </span>
