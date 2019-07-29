@@ -12,8 +12,8 @@ class PageBlock extends React.Component {
               <PageBlockWysiwyg
                 data={this.props.data.pageblockwysiwyg}
                 editable={this.props.editable}
+                emitSave={this.props.emitSave}
                 siteSettings={this.props.siteSettings}
-                socket={this.props.socket}
               />
             ) : (
               ''
@@ -22,6 +22,7 @@ class PageBlock extends React.Component {
               <PageBlockImages
                 data={this.props.data}
                 editable={this.props.editable}
+                emitSave={this.props.emitSave}
                 siteSettings={this.props.siteSettings}
                 blockControl={this.props.blockControl}
                 galleryControl={this.props.galleryControl}
@@ -29,7 +30,6 @@ class PageBlock extends React.Component {
                 getPageBlockSettingsValueHandler={
                   this.props.getPageBlockSettingsValueHandler
                 }
-                socket={this.props.socket}
               />
             ) : (
               ''

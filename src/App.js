@@ -30,7 +30,6 @@ class App extends React.Component {
     this.state = {
       activePathname: '',
       authenticated: false,
-      csrf: '',
       editable: false,
       pages: [],
       redirect: null,
@@ -45,7 +44,8 @@ class App extends React.Component {
         siteDescription: '',
         navTheme: 'dark',
         navPosition: 'fixed-top'
-      }
+      },
+      token: ''
     }
     this.settingsUpdateTimer = null
     this.socket = null
@@ -64,7 +64,7 @@ class App extends React.Component {
           }
         })
         .then(() => {
-          this.socket.emit('save')
+          this.emitSave()
         })
     }
   }
@@ -77,7 +77,7 @@ class App extends React.Component {
           if (response.status === 200) {
             this.loadPages()
           }
-          this.socket.emit('save')
+          this.emitSave()
         })
         .then(() => {
           this.loadPages()
@@ -88,6 +88,14 @@ class App extends React.Component {
 
   get editable () {
     return this.state.authenticated && this.state.editable
+  }
+
+  emitSave () {
+    this.socket.emit('save')
+  }
+
+  emitReload () {
+    this.socket.emit('force-reload')
   }
 
   get menu () {
@@ -202,7 +210,7 @@ class App extends React.Component {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
             axios.post('/api/settings', this.state.siteSettings).then(() => {
-              this.socket.emit('save')
+              this.emitSave()
             })
           }, 1000)
         }
@@ -218,9 +226,9 @@ class App extends React.Component {
           return state
         })
       }
-      if (response.data && response.data.csrf) {
+      if (response.data && response.data.token) {
         this.setState(state => {
-          state.csrf = response.data.csrf
+          state.token = response.data.token
           return state
         })
       }
@@ -341,14 +349,12 @@ class App extends React.Component {
                     ''
                   )}
                   <Header
-                    authenticated={this.state.authenticated}
                     editable={this.state.editable}
-                    toggleEdit={this.toggleEdit.bind(this)}
+                    emitSave={this.emitSave.bind(this)}
                     siteSettings={this.siteSettings}
                     pages={this.state.pages}
                     logout={this.logout.bind(this)}
                     ref={this.header}
-                    socket={this.socket}
                   />
                   {this.state.siteSettings.navPosition === 'below-header' ? (
                     <Nav
@@ -367,12 +373,11 @@ class App extends React.Component {
               }
               footer={
                 <Footer
-                  authenticated={this.state.authenticated}
                   editable={this.state.editable}
+                  emitSave={this.emitSave.bind(this)}
                   siteSettings={this.siteSettings}
                   logout={this.logout.bind(this)}
                   ref={this.footer}
-                  socket={this.socket}
                 />
               }
             >
@@ -382,9 +387,9 @@ class App extends React.Component {
                 <Route exact path="/">
                   <Page
                     editable={this.state.editable}
+                    emitSave={this.emitSave.bind(this)}
                     pageKey="home"
                     siteSettings={this.siteSettings}
-                    socket={this.socket}
                     ref={this.activePage}
                   />
                 </Route>
@@ -396,14 +401,15 @@ class App extends React.Component {
                 <Route exact path="/settings">
                   <Settings
                     addPage={this.addPage.bind(this)}
-                    deletePage={this.deletePage.bind(this)}
-                    siteSettings={this.siteSettings}
                     authenticated={this.state.authenticated}
+                    deletePage={this.deletePage.bind(this)}
+                    emitSave={this.emitSave.bind(this)}
+                    emitReload={this.emitReload.bind(this)}
+                    siteSettings={this.siteSettings}
                     getSettingsValueHandler={this.getSettingsValueHandler.bind(
                       this
                     )}
                     pages={this.state.pages}
-                    socket={this.socket}
                   />
                 </Route>
                 <Route
@@ -415,7 +421,7 @@ class App extends React.Component {
                         siteSettings={this.siteSettings}
                         pageKey={pageKey}
                         deletePage={this.deletePage.bind(this)}
-                        socket={this.socket}
+                        emitSave={this.emitSave.bind(this)}
                         ref={this.activePage}
                       />
                     )

@@ -25,7 +25,7 @@ class Page extends React.Component {
           state.page.pageblocks.push(response.data)
           return state
         })
-        this.props.socket.emit('save')
+        this.props.emitSave()
       })
   }
 
@@ -47,10 +47,10 @@ class Page extends React.Component {
         let prevBlock = blocks[index - 1]
         prevBlock.ordering++
         axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         blocks[index] = block
         blocks[index - 1] = prevBlock
@@ -59,17 +59,17 @@ class Page extends React.Component {
         let nextBlock = blocks[index + 1]
         nextBlock.ordering--
         axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
           axios.delete(`/api/page/blocks/${blockId}`).then(() => {
-            this.props.socket.emit('save')
+            this.props.emitSave()
           })
           let ordering = block.ordering
           blocks.splice(index, 1)
@@ -144,7 +144,7 @@ class Page extends React.Component {
           if (pageblock.id === pageblockId) {
             pageblock.settings[key] = value
             axios.put(`/api/page/blocks/${pageblockId}`, pageblock).then(() => {
-              this.props.socket.emit('save')
+              this.props.emitSave()
             })
           }
         }
@@ -163,12 +163,12 @@ class Page extends React.Component {
         let prevUpload = images[index - 1]
         prevUpload.ordering++
         axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         axios
           .put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
           .then(() => {
-            this.props.socket.emit('save')
+            this.props.emitSave()
           })
         images[index] = image
         images[index - 1] = prevUpload
@@ -177,19 +177,19 @@ class Page extends React.Component {
         let nextUpload = images[index + 1]
         nextUpload.ordering--
         axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.socket.emit('save')
+          this.props.emitSave()
         })
         axios
           .put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
           .then(() => {
-            this.props.socket.emit('save')
+            this.props.emitSave()
           })
         images[index] = image
         images[index + 1] = nextUpload
       } else if (action === 'delete') {
         if (window.confirm('Delete this image?')) {
           axios.delete(`/api/page/blocks/image/${image.id}`).then(() => {
-            this.props.socket.emit('save')
+            this.props.emitSave()
           })
           let x = pageBlock.pageblockimages.indexOf(image)
           let ordering = image.ordering
@@ -277,6 +277,7 @@ class Page extends React.Component {
                       first={index === 0}
                       last={index === this.state.page.pageblocks.length - 1}
                       editable={this.props.editable}
+                      emitSave={this.props.emitSave}
                       siteSettings={this.props.siteSettings}
                       blockControl={this.blockControl.bind(this)}
                       getImages={this.getImages.bind(this)}
@@ -284,7 +285,6 @@ class Page extends React.Component {
                       getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                         this
                       )}
-                      socket={this.props.socket}
                     />
                   )
                 }

@@ -336,7 +336,7 @@ class Settings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.socket.emit('force-reload')
+                  this.props.emitReload()
                   // FIXME: this should be fired after the emit is successfully sent
                   window.setTimeout(() => {
                     window.location.reload()
@@ -379,7 +379,7 @@ class Settings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.socket.emit('force-reload')
+                  this.props.emitReload()
                   this.setState(
                     state => {
                       state.uploadingIcon = false

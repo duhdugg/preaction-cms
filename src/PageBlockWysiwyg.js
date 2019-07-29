@@ -38,7 +38,7 @@ class PageBlockWysiwyg extends React.Component {
                     state.savingWysiwyg = false
                     return state
                   })
-                  this.props.socket.emit('save')
+                  this.props.emitSave()
                 })
             }
           }, 1000)

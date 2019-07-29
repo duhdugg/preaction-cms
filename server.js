@@ -22,6 +22,9 @@ app.use(settings.expressModule)
 
 app.use(cookieParser())
 app.use(session.session)
+io.use((socket, next) => {
+  session.session(socket.request, socket.request.res, next)
+})
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(session.expressModule)
 app.use(pages.expressModule)
@@ -161,11 +164,16 @@ app.route('*').get((req, res) => {
 })
 
 io.on('connection', socket => {
+  console.debug(Object.keys(socket.conn.request.session))
   socket.on('save', data => {
-    io.emit('load', data)
+    if (socket.conn.request.session.authenticated) {
+      io.emit('load', data)
+    }
   })
   socket.on('force-reload', data => {
-    io.emit('reload-page')
+    if (socket.conn.request.session.authenticated) {
+      io.emit('reload-page')
+    }
   })
 })
 

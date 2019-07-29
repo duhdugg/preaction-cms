@@ -17,9 +17,9 @@ class Header extends React.Component {
         {this.props.editable ? <h3>Header</h3> : ''}
         <Page
           editable={this.props.editable}
+          emitSave={this.props.emitSave}
           pageKey="header"
           siteSettings={this.props.siteSettings}
-          socket={this.props.socket}
           ref={this.page}
         />
       </div>
