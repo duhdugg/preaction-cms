@@ -30,21 +30,6 @@ app.use(session.expressModule)
 app.use(pages.expressModule)
 app.use(uploads.expressModule)
 
-app.route('/login/').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'siteTitle' } }).then(setting => {
-    renderClient(req, res.status(200), {
-      title: `Login | ${setting.value}`
-    })
-  })
-})
-app.route('/settings/').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'siteTitle' } }).then(setting => {
-    renderClient(req, res.status(200), {
-      title: `Site Settings | ${setting.value}`
-    })
-  })
-})
-
 app.route('/icon').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'icon' } }).then(setting => {
     if (!setting) {
