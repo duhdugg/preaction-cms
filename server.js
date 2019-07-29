@@ -172,7 +172,6 @@ app.route('*').get((req, res) => {
 })
 
 io.on('connection', socket => {
-  console.debug(Object.keys(socket.conn.request.session))
   socket.on('save', data => {
     if (socket.conn.request.session.authenticated) {
       io.emit('load', data)
