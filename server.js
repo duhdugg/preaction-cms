@@ -132,6 +132,14 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.route('*').get((req, res) => {
   let pageKey = req.path.split('/')[1]
+  switch (pageKey) {
+    case 'home':
+    case 'header':
+    case 'footer':
+      renderClient(req, res.status(404, ''))
+      return
+    default:
+  }
   pages.model.Page.findOne({
     where: { key: pageKey },
     include: [

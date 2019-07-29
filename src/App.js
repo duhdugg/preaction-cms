@@ -21,6 +21,7 @@ import './App.css'
 import Footer from './Footer.js'
 import Header from './Header.js'
 import Login from './Login.js'
+import NotFound from './NotFound.js'
 import Page from './Page.js'
 import Settings from './Settings.js'
 
@@ -415,16 +416,23 @@ class App extends React.Component {
                 <Route
                   render={({ location }) => {
                     let pageKey = location.pathname.split('/')[1]
-                    return (
-                      <Page
-                        editable={this.state.editable}
-                        siteSettings={this.siteSettings}
-                        pageKey={pageKey}
-                        deletePage={this.deletePage.bind(this)}
-                        emitSave={this.emitSave.bind(this)}
-                        ref={this.activePage}
-                      />
-                    )
+                    switch (pageKey) {
+                      case 'home':
+                      case 'header':
+                      case 'footer':
+                        return <NotFound />
+                      default:
+                        return (
+                          <Page
+                            editable={this.state.editable}
+                            siteSettings={this.siteSettings}
+                            pageKey={pageKey}
+                            deletePage={this.deletePage.bind(this)}
+                            emitSave={this.emitSave.bind(this)}
+                            ref={this.activePage}
+                          />
+                        )
+                    }
                   }}
                 />
               </Switch>
