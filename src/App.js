@@ -91,12 +91,12 @@ class App extends React.Component {
     return this.state.authenticated && this.state.editable
   }
 
-  emitSave () {
-    this.socket.emit('save')
+  emitSave (callback = () => {}) {
+    this.socket.emit('save', callback)
   }
 
-  emitReload () {
-    this.socket.emit('force-reload')
+  emitReload (callback = () => {}) {
+    this.socket.emit('force-reload', callback)
   }
 
   get menu () {

@@ -336,11 +336,9 @@ class Settings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload()
-                  // FIXME: this should be fired after the emit is successfully sent
-                  window.setTimeout(() => {
+                  this.props.emitReload(() => {
                     window.location.reload()
-                  }, 500)
+                  })
                   this.setState(state => {
                     state.uploadingBg = false
                     return state

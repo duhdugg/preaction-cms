@@ -157,12 +157,14 @@ app.route('*').get((req, res) => {
 })
 
 io.on('connection', socket => {
-  socket.on('save', data => {
+  socket.on('save', fn => {
+    fn()
     if (socket.conn.request.session.authenticated) {
-      io.emit('load', data)
+      io.emit('load')
     }
   })
-  socket.on('force-reload', data => {
+  socket.on('force-reload', fn => {
+    fn()
     if (socket.conn.request.session.authenticated) {
       io.emit('reload-page')
     }
