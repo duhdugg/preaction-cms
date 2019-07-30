@@ -3,7 +3,7 @@ import { Card } from 'preaction-bootstrap-clips'
 import { Checkbox, Select } from 'preaction-inputs'
 
 class PageBlockImages extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showSettings: false,
@@ -14,7 +14,7 @@ class PageBlockImages extends React.Component {
     this.photosInput = React.createRef()
   }
 
-  clearImageViewer () {
+  clearImageViewer() {
     this.setState(state => {
       state.modalAnimationDirection = 'Out'
       return state
@@ -27,17 +27,17 @@ class PageBlockImages extends React.Component {
     }, 500)
   }
 
-  galleryControl (index, action) {
+  galleryControl(index, action) {
     return () => {
       this.props.galleryControl(this.props.data, index, action)
     }
   }
 
-  getPageBlockSettingsValueHandler (key) {
+  getPageBlockSettingsValueHandler(key) {
     return this.props.getPageBlockSettingsValueHandler(this.props.data.id, key)
   }
 
-  get cardWidth () {
+  get cardWidth() {
     let width
     if (this.props.data.settings.autoCollapseColumns) {
       switch (this.props.data.settings.maxWidth) {
@@ -85,19 +85,19 @@ class PageBlockImages extends React.Component {
     return width
   }
 
-  refreshBlock () {
+  refreshBlock() {
     this.props.blockControl(this.props.data.id, 'refresh')
     this.props.emitSave()
   }
 
-  toggleSettings () {
+  toggleSettings() {
     this.setState(state => {
       state.showSettings = !state.showSettings
       return state
     })
   }
 
-  viewImage (image) {
+  viewImage(image) {
     return event => {
       event.preventDefault()
       if (this.props.data.settings.pushToZoom) {
@@ -110,27 +110,27 @@ class PageBlockImages extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div
-        className="page-block-images"
+        className='page-block-images'
         id={`page-block-${this.props.data.id}`}
       >
         {this.props.editable ? (
           <div>
             <form
-              method="POST"
-              action="/api/upload"
-              encType="multipart/form-data"
+              method='POST'
+              action='/api/upload'
+              encType='multipart/form-data'
               ref={this.uploadForm}
               target={`upload-frame-${this.props.data.id}`}
-              className="d-none"
+              className='d-none'
             >
               <input
-                name="photos"
-                type="file"
+                name='photos'
+                type='file'
                 multiple
-                accept="image/*"
+                accept='image/*'
                 ref={this.photosInput}
                 onChange={() => {
                   this.uploadForm.current.submit()
@@ -141,14 +141,14 @@ class PageBlockImages extends React.Component {
                 }}
               />
               <input
-                name="target"
-                type="hidden"
+                name='target'
+                type='hidden'
                 value={`page-block/${this.props.data.id}`}
               />
             </form>
             <iframe
               name={`upload-frame-${this.props.data.id}`}
-              title="upload"
+              title='upload'
               onLoad={() => {
                 this.setState(
                   state => {
@@ -160,13 +160,13 @@ class PageBlockImages extends React.Component {
                   }
                 )
               }}
-              className="d-none"
+              className='d-none'
             />
           </div>
         ) : (
           ''
         )}
-        <div className="row">
+        <div className='row'>
           {this.props
             .getImages(this.props.data.pageblockimages || [])
             .map((image, index) => (
@@ -188,31 +188,31 @@ class PageBlockImages extends React.Component {
                 key={image.id}
                 footer={
                   this.props.editable ? (
-                    <div className="btn-group d-flex">
+                    <div className='btn-group d-flex'>
                       <button
-                        type="button"
-                        className="btn btn-sm btn-info d-block mr-auto"
+                        type='button'
+                        className='btn btn-sm btn-info d-block mr-auto'
                         onClick={this.galleryControl(index, 'previous')}
                         disabled={index === 0}
                       >
-                        <i className="icon ion-md-arrow-dropleft-circle" />
+                        <i className='icon ion-md-arrow-dropleft-circle' />
                       </button>
                       <button
-                        type="button"
-                        className="btn btn-sm btn-danger d-block ml-auto mr-auto"
+                        type='button'
+                        className='btn btn-sm btn-danger d-block ml-auto mr-auto'
                         onClick={this.galleryControl(index, 'delete')}
                       >
-                        <i className="icon ion-md-trash" />
+                        <i className='icon ion-md-trash' />
                       </button>
                       <button
-                        type="button"
-                        className="btn btn-sm btn-info d-block ml-auto"
+                        type='button'
+                        className='btn btn-sm btn-info d-block ml-auto'
                         onClick={this.galleryControl(index, 'next')}
                         disabled={
                           index >= this.props.data.pageblockimages.length - 1
                         }
                       >
-                        <i className="icon ion-md-arrow-dropright-circle" />
+                        <i className='icon ion-md-arrow-dropright-circle' />
                       </button>
                     </div>
                   ) : (
@@ -220,13 +220,13 @@ class PageBlockImages extends React.Component {
                   )
                 }
               >
-                <a href="." onClick={this.viewImage(image).bind(this)}>
+                <a href='.' onClick={this.viewImage(image).bind(this)}>
                   <img
                     src={`/uploads/${image.filename}`}
                     style={{
                       maxWidth: '100%'
                     }}
-                    alt=""
+                    alt=''
                   />
                 </a>
               </Card>
@@ -235,17 +235,17 @@ class PageBlockImages extends React.Component {
         {this.props.editable ? (
           <div>
             <button
-              type="button"
-              className="btn btn-info"
+              type='button'
+              className='btn btn-info'
               onClick={this.toggleSettings.bind(this)}
             >
-              <i className="ion ion-md-cog" />
+              <i className='ion ion-md-cog' />
             </button>
             {this.state.showSettings ? (
-              <div className="mt-2">
-                <div className="col-sm-6 pl-0">
+              <div className='mt-2'>
+                <div className='col-sm-6 pl-0'>
                   <Select
-                    label="Max Width"
+                    label='Max Width'
                     value={this.props.data.settings.maxWidth}
                     valueHandler={this.getPageBlockSettingsValueHandler(
                       'maxWidth'
@@ -258,26 +258,26 @@ class PageBlockImages extends React.Component {
                   </Select>
                 </div>
                 <Checkbox
-                  label="Automatically collapse columns for smaller screens"
+                  label='Automatically collapse columns for smaller screens'
                   checked={this.props.data.settings.autoCollapseColumns}
                   valueHandler={this.getPageBlockSettingsValueHandler(
                     'autoCollapseColumns'
                   )}
                 />
                 <Checkbox
-                  label="Center/Justify"
+                  label='Center/Justify'
                   checked={this.props.data.settings.center}
                   valueHandler={this.getPageBlockSettingsValueHandler('center')}
                 />
                 <Checkbox
-                  label="Show Container"
+                  label='Show Container'
                   checked={this.props.data.settings.showContainer}
                   valueHandler={this.getPageBlockSettingsValueHandler(
                     'showContainer'
                   )}
                 />
                 <Checkbox
-                  label="Push to Zoom"
+                  label='Push to Zoom'
                   checked={this.props.data.settings.pushToZoom}
                   valueHandler={this.getPageBlockSettingsValueHandler(
                     'pushToZoom'
@@ -287,10 +287,10 @@ class PageBlockImages extends React.Component {
             ) : (
               <div />
             )}
-            <div className="btn-group pt-1">
+            <div className='btn-group pt-1'>
               <button
-                type="button"
-                className="btn btn-info d-block"
+                type='button'
+                className='btn btn-info d-block'
                 onClick={() => {
                   this.photosInput.current.click()
                 }}
@@ -300,7 +300,7 @@ class PageBlockImages extends React.Component {
                 {this.state.uploading ? (
                   <span>
                     <span> </span>
-                    <i className="icon ion-md-hourglass spinner" />
+                    <i className='icon ion-md-hourglass spinner' />
                   </span>
                 ) : (
                   ''
@@ -330,9 +330,7 @@ class PageBlockImages extends React.Component {
           onClick={this.clearImageViewer.bind(this)}
         >
           <div
-            className={`animated zoom${
-              this.state.modalAnimationDirection
-            } faster`}
+            className={`animated zoom${this.state.modalAnimationDirection} faster`}
             style={{
               width: '100%',
               height: '100vh',
@@ -351,7 +349,7 @@ class PageBlockImages extends React.Component {
                   marginLeft: 'auto',
                   marginRight: 'auto'
                 }}
-                alt=""
+                alt=''
               />
             ) : (
               ''

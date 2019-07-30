@@ -26,7 +26,7 @@ import Page from './Page.js'
 import Settings from './Settings.js'
 
 class App extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       activePathname: '',
@@ -55,7 +55,7 @@ class App extends React.Component {
     this.footer = React.createRef()
   }
 
-  addPage (page) {
+  addPage(page) {
     if (page.key) {
       axios
         .post('/api/page', page)
@@ -70,7 +70,7 @@ class App extends React.Component {
     }
   }
 
-  deletePage (page) {
+  deletePage(page) {
     if (this.editable) {
       axios
         .delete(`/api/page/${page.id}`)
@@ -87,23 +87,23 @@ class App extends React.Component {
     }
   }
 
-  get editable () {
+  get editable() {
     return this.state.authenticated && this.state.editable
   }
 
-  emitSave (callback = () => {}) {
+  emitSave(callback = () => {}) {
     this.socket.emit('save', callback)
   }
 
-  emitReload (callback = () => {}) {
+  emitReload(callback = () => {}) {
     this.socket.emit('force-reload', callback)
   }
 
-  get menu () {
+  get menu() {
     let menu = []
     if (this.state.siteSettings.navPosition !== 'fixed-top') {
       menu.push({
-        name: <i className="ion ion-md-home" />,
+        name: <i className='ion ion-md-home' />,
         href: '/',
         component: Link,
         order: -1,
@@ -191,7 +191,7 @@ class App extends React.Component {
     return menu
   }
 
-  get siteSettings () {
+  get siteSettings() {
     let settings = JSON.parse(JSON.stringify(this.state.siteSettings))
     settings.containerRgba = hexRgb(settings.containerColor)
     settings.containerRgba.alpha = settings.containerOpacity
@@ -200,7 +200,7 @@ class App extends React.Component {
     return settings
   }
 
-  getSettingsValueHandler (key) {
+  getSettingsValueHandler(key) {
     return value => {
       this.setState(
         state => {
@@ -219,7 +219,7 @@ class App extends React.Component {
     }
   }
 
-  loadSession () {
+  loadSession() {
     axios.get('/api/session').then(response => {
       if (response.data && response.data.authenticated) {
         this.setState(state => {
@@ -236,7 +236,7 @@ class App extends React.Component {
     })
   }
 
-  loadSettings () {
+  loadSettings() {
     axios.get('/api/settings').then(response => {
       if (response.data) {
         this.setState(state => {
@@ -248,7 +248,7 @@ class App extends React.Component {
     })
   }
 
-  loadPages () {
+  loadPages() {
     axios.get('/api/page').then(response => {
       if (response.data) {
         this.setState(state => {
@@ -259,7 +259,7 @@ class App extends React.Component {
     })
   }
 
-  logout () {
+  logout() {
     axios.get('/api/logout').then(() => {
       this.setState(state => {
         state.authenticated = false
@@ -269,14 +269,14 @@ class App extends React.Component {
     })
   }
 
-  toggleEdit () {
+  toggleEdit() {
     this.setState(state => {
       state.editable = !state.editable
       return state
     })
   }
 
-  redirect (path) {
+  redirect(path) {
     this.setState(
       state => {
         state.redirect = path
@@ -291,7 +291,7 @@ class App extends React.Component {
     )
   }
 
-  reload () {
+  reload() {
     this.loadPages()
     this.loadSettings()
     if (this.activePage.current) {
@@ -301,14 +301,14 @@ class App extends React.Component {
     }
   }
 
-  setActivePathname (pathname) {
+  setActivePathname(pathname) {
     this.setState(state => {
       state.activePathname = pathname
       return state
     })
   }
 
-  render () {
+  render() {
     return (
       <div
         className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
@@ -318,7 +318,7 @@ class App extends React.Component {
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.siteSettings.navPosition === 'fixed-top' ? (
               <NavBar
-                fixedTo="top"
+                fixedTo='top'
                 theme={this.siteSettings.navTheme}
                 brand={{
                   name: this.siteSettings.siteTitle,
@@ -344,7 +344,7 @@ class App extends React.Component {
                       justify={this.state.siteSettings.navSpacing === 'justify'}
                       fill={this.state.siteSettings.navSpacing === 'fill'}
                       collapsible={this.state.siteSettings.navCollapsible}
-                      className="mb-3"
+                      className='mb-3'
                     />
                   ) : (
                     ''
@@ -365,7 +365,7 @@ class App extends React.Component {
                       justify={this.state.siteSettings.navSpacing === 'justify'}
                       fill={this.state.siteSettings.navSpacing === 'fill'}
                       collapsible={this.state.siteSettings.navCollapsible}
-                      className="mb-3"
+                      className='mb-3'
                     />
                   ) : (
                     ''
@@ -385,21 +385,21 @@ class App extends React.Component {
               {this.state.editable ? <hr /> : ''}
               {this.state.editable ? <h3>Page</h3> : ''}
               <Switch>
-                <Route exact path="/">
+                <Route exact path='/'>
                   <Page
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    pageKey="home"
+                    pageKey='home'
                     siteSettings={this.siteSettings}
                     ref={this.activePage}
                   />
                 </Route>
-                <Route exact path="/login">
-                  <div className="container">
+                <Route exact path='/login'>
+                  <div className='container'>
                     <Login siteSettings={this.siteSettings} />
                   </div>
                 </Route>
-                <Route exact path="/settings">
+                <Route exact path='/settings'>
                   <Settings
                     addPage={this.addPage.bind(this)}
                     authenticated={this.state.authenticated}
@@ -450,18 +450,18 @@ class App extends React.Component {
             }
             body {
               ${
-      this.state.siteSettings.useBgImage
-        ? 'background-image: url("/bg");'
-        : ''
-      }
+                this.state.siteSettings.useBgImage
+                  ? 'background-image: url("/bg");'
+                  : ''
+              }
             }
             .App {
               opacity: ${this.siteSettings.init ? 1 : 0};
               padding-top: ${
-      this.state.siteSettings.navPosition === 'fixed-top'
-        ? '4rem'
-        : '0'
-      };
+                this.state.siteSettings.navPosition === 'fixed-top'
+                  ? '4rem'
+                  : '0'
+              };
             }
             .dropdown-item.active, .dropdown-item:active {
               background-color: ${this.siteSettings.linkColor};
@@ -475,7 +475,7 @@ class App extends React.Component {
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadSettings()
     this.loadPages()
     this.loadSession()
@@ -497,7 +497,7 @@ class App extends React.Component {
     })
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     window.document.body.style.backgroundColor = this.siteSettings.bgColor
     window.document.body.style.color = this.siteSettings.fontColor
   }

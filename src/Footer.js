@@ -2,23 +2,23 @@ import React from 'react'
 import Page from './Page.js'
 
 class Footer extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.page = React.createRef()
   }
 
-  reload () {
+  reload() {
     this.page.current.reload()
   }
 
-  render () {
+  render() {
     return (
       <div>
         {this.props.editable ? <h3>Footer</h3> : ''}
         <Page
           editable={this.props.editable}
           emitSave={this.props.emitSave}
-          pageKey="footer"
+          pageKey='footer'
           siteSettings={this.props.siteSettings}
           ref={this.page}
         />

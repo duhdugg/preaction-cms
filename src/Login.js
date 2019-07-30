@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Form, Input } from 'preaction-inputs'
 
 class Login extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       username: '',
@@ -11,7 +11,7 @@ class Login extends React.Component {
     }
   }
 
-  loginSubmit (event) {
+  loginSubmit(event) {
     event.preventDefault()
     const { username, password } = this.state
     if (event.target.checkValidity()) {
@@ -26,7 +26,7 @@ class Login extends React.Component {
     }
   }
 
-  getLoginValueHandler (key) {
+  getLoginValueHandler(key) {
     return value => {
       if (key === 'username') {
         value = value.toLowerCase()
@@ -38,34 +38,34 @@ class Login extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <Form onSubmit={this.loginSubmit.bind(this)} noValidate>
         <Input
-          label="Username"
-          autoComplete="username"
+          label='Username'
+          autoComplete='username'
           required
           valueHandler={this.getLoginValueHandler('username')}
         />
         <Input
-          type="password"
-          autoComplete="current-password"
-          label="Password"
+          type='password'
+          autoComplete='current-password'
+          label='Password'
           required
           valueHandler={this.getLoginValueHandler('password')}
         />
-        <button type="submit" className="btn btn-success">
+        <button type='submit' className='btn btn-success'>
           Log In
         </button>
       </Form>
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     document.title = `Login | ${this.props.siteSettings.siteTitle}`
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (
       nextProps.siteSettings.siteTitle !== this.props.siteSettings.siteTitle
     ) {

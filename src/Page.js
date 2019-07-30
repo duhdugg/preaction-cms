@@ -5,7 +5,7 @@ import PageBlock from './PageBlock.js'
 import './Page.css'
 
 class Page extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       loading: false,
@@ -14,7 +14,7 @@ class Page extends React.Component {
     }
   }
 
-  addPageBlock (blockType) {
+  addPageBlock(blockType) {
     axios
       .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
       .then(response => {
@@ -29,7 +29,7 @@ class Page extends React.Component {
       })
   }
 
-  blockControl (blockId, action) {
+  blockControl(blockId, action) {
     // actions: previous, next, delete, refresh
     this.setState(state => {
       let blocks = this.getBlocks(state.page.pageblocks)
@@ -99,13 +99,11 @@ class Page extends React.Component {
     })
   }
 
-  deletePage () {
+  deletePage() {
     if (this.props.deletePage) {
       if (
         window.confirm(
-          `Are you sure you wish to delete the page, "${
-            this.state.page.title
-          }"?`
+          `Are you sure you wish to delete the page, "${this.state.page.title}"?`
         )
       ) {
         this.props.deletePage(this.state.page)
@@ -113,7 +111,7 @@ class Page extends React.Component {
     }
   }
 
-  getBlocks (blocks) {
+  getBlocks(blocks) {
     return blocks.concat().sort((a, b) => {
       let retval = 0
       if (a.ordering < b.ordering) {
@@ -125,7 +123,7 @@ class Page extends React.Component {
     })
   }
 
-  getImages (pageblockimages) {
+  getImages(pageblockimages) {
     return pageblockimages.concat().sort((a, b) => {
       let retval = 0
       if (a.ordering < b.ordering) {
@@ -137,7 +135,7 @@ class Page extends React.Component {
     })
   }
 
-  getPageBlockSettingsValueHandler (pageblockId, key) {
+  getPageBlockSettingsValueHandler(pageblockId, key) {
     return value => {
       this.setState(state => {
         for (let pageblock of this.state.page.pageblocks) {
@@ -153,7 +151,7 @@ class Page extends React.Component {
     }
   }
 
-  galleryControl (pageBlock, index, action) {
+  galleryControl(pageBlock, index, action) {
     // actions: previous, next, delete
     this.setState(state => {
       let images = this.getImages(pageBlock.pageblockimages)
@@ -215,7 +213,7 @@ class Page extends React.Component {
     })
   }
 
-  loadPage (pageKey) {
+  loadPage(pageKey) {
     this.setState(
       state => {
         state.loading = true
@@ -238,9 +236,7 @@ class Page extends React.Component {
               if (pageKey === 'home') {
                 title = this.props.siteSettings.siteTitle
               } else {
-                title = `${response.data.title} | ${
-                  this.props.siteSettings.siteTitle
-                }`
+                title = `${response.data.title} | ${this.props.siteSettings.siteTitle}`
               }
               document.title = title
             }
@@ -258,65 +254,65 @@ class Page extends React.Component {
     )
   }
 
-  reload () {
+  reload() {
     this.loadPage(this.props.pageKey)
   }
 
-  render () {
+  render() {
     return (
-      <div className="page">
+      <div className='page'>
         {this.state.page ? (
           <div>
             {this.state.page.pageblocks
               ? this.getBlocks(this.state.page.pageblocks).map(
-                (block, index) => {
-                  return (
-                    <PageBlock
-                      data={block}
-                      key={block.id}
-                      first={index === 0}
-                      last={index === this.state.page.pageblocks.length - 1}
-                      editable={this.props.editable}
-                      emitSave={this.props.emitSave}
-                      siteSettings={this.props.siteSettings}
-                      blockControl={this.blockControl.bind(this)}
-                      getImages={this.getImages.bind(this)}
-                      galleryControl={this.galleryControl.bind(this)}
-                      getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
-                        this
-                      )}
-                    />
-                  )
-                }
-              )
+                  (block, index) => {
+                    return (
+                      <PageBlock
+                        data={block}
+                        key={block.id}
+                        first={index === 0}
+                        last={index === this.state.page.pageblocks.length - 1}
+                        editable={this.props.editable}
+                        emitSave={this.props.emitSave}
+                        siteSettings={this.props.siteSettings}
+                        blockControl={this.blockControl.bind(this)}
+                        getImages={this.getImages.bind(this)}
+                        galleryControl={this.galleryControl.bind(this)}
+                        getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
+                          this
+                        )}
+                      />
+                    )
+                  }
+                )
               : ''}
             {this.props.editable ? (
-              <div className="page-controls">
+              <div className='page-controls'>
                 <button
-                  type="button"
-                  className="btn btn-primary btn-sm"
+                  type='button'
+                  className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.addPageBlock('wysiwyg')
                   }}
                 >
-                  <i className="ion ion-logo-html5" />
+                  <i className='ion ion-logo-html5' />
                 </button>
                 <button
-                  type="button"
-                  className="btn btn-info btn-sm"
+                  type='button'
+                  className='btn btn-info btn-sm'
                   onClick={() => {
                     this.addPageBlock('image')
                   }}
                 >
-                  <i className="ion ion-md-image" />
+                  <i className='ion ion-md-image' />
                 </button>
                 {this.state.page.userCreated ? (
                   <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
+                    type='button'
+                    className='btn btn-danger btn-sm'
                     onClick={this.deletePage.bind(this)}
                   >
-                    <i className="ion ion-md-trash" />
+                    <i className='ion ion-md-trash' />
                   </button>
                 ) : (
                   ''
@@ -330,9 +326,9 @@ class Page extends React.Component {
           ''
         )}
         {this.state.loading ? (
-          <div className="container">
+          <div className='container'>
             <span style={{ fontSize: '4rem' }}>
-              <i className="ion ion-md-hourglass spinner" />
+              <i className='ion ion-md-hourglass spinner' />
             </span>
           </div>
         ) : (
@@ -343,11 +339,11 @@ class Page extends React.Component {
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadPage(this.props.pageKey)
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     let retval = true
     if (nextProps.pageKey !== this.props.pageKey) {
       this.loadPage(nextProps.pageKey)

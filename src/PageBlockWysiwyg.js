@@ -4,7 +4,7 @@ import { Form, Wysiwyg } from 'preaction-inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 
 class PageBlockWysiwyg extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       loading: true,
@@ -15,7 +15,7 @@ class PageBlockWysiwyg extends React.Component {
     this.wysiwygUpdateTimer = null
   }
 
-  handleWysiwyg (value) {
+  handleWysiwyg(value) {
     if (!this.state.loading) {
       this.setState(
         state => {
@@ -47,9 +47,9 @@ class PageBlockWysiwyg extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
-      <div className="page-block-wysiwyg">
+      <div className='page-block-wysiwyg'>
         <Form
           onSubmit={e => {
             e.preventDefault()
@@ -66,7 +66,7 @@ class PageBlockWysiwyg extends React.Component {
           }}
         >
           <Wysiwyg
-            theme="bubble"
+            theme='bubble'
             toolbar={wysiwygToolbar}
             value={this.state.wysiwyg}
             valueHandler={this.handleWysiwyg.bind(this)}
@@ -95,7 +95,7 @@ class PageBlockWysiwyg extends React.Component {
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState(
       state => {
         state.wysiwyg = this.props.data.content
@@ -113,7 +113,7 @@ class PageBlockWysiwyg extends React.Component {
     }, 0)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.data.content !== prevProps.data.content) {
       if (!this.props.editable) {
         this.setState(
