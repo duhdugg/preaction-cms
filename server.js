@@ -64,12 +64,12 @@ app.route('/sitemap.xml').get((req, res) => {
       ]
     })
     pages.model.Page.findAll().then(pages => {
-      for (let page of pages) {
+      pages.forEach(page => {
         if (page.userCreated) {
           let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
           sitemap.add({ url: `/${title}/`, changefreq })
         }
-      }
+      })
       sitemap.toXML((err, xml) => {
         if (err) {
           res.status(500).end()
@@ -103,11 +103,11 @@ app.route('/').get((req, res) => {
       }
       return retval
     })
-    for (let pageblock of pageblocks) {
+    pageblocks.forEach(pageblock => {
       if (pageblock.pageblockwysiwyg) {
         content += pageblock.pageblockwysiwyg.content || ''
       }
-    }
+    })
     content = excerptHtml(content, { pruneLength: 300 })
     renderClient(req, res.status(status), { description: content })
   })
@@ -146,11 +146,11 @@ app.route('*').get((req, res) => {
       }
       return retval
     })
-    for (let pageblock of pageblocks) {
+    pageblocks.forEach(pageblock => {
       if (pageblock.pageblockwysiwyg) {
         content += pageblock.pageblockwysiwyg.content
       }
-    }
+    })
     content = excerptHtml(content, { pruneLength: 300 })
     renderClient(req, res.status(status), { description: content })
   })
@@ -174,5 +174,5 @@ io.on('connection', socket => {
 const port = process.env.PREACTION_PORT || 8999
 
 http.listen(port, () => {
-  console.log(`preaction-cms app listening on port ${port}`)
+  console.log(`@preaction/cms app listening on port ${port}`)
 })

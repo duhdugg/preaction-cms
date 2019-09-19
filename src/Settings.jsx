@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Checkbox, Select } from 'preaction-inputs'
+import { Input, Checkbox, Select } from '@preaction/inputs'
 
 class Settings extends React.Component {
   constructor(props) {

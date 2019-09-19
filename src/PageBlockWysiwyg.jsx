@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React from 'react'
-import { Form, Wysiwyg } from 'preaction-inputs'
+import { Form, Wysiwyg } from '@preaction/inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 
 class PageBlockWysiwyg extends React.Component {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Card } from 'preaction-bootstrap-clips'
-import { Checkbox, Select } from 'preaction-inputs'
+import { Card } from '@preaction/bootstrap-clips'
+import { Checkbox, Select } from '@preaction/inputs'
 
 class PageBlockImages extends React.Component {
   constructor(props) {

@@ -1,10 +1,10 @@
 {
-  "name": "preaction-cms",
-  "description": "preaction-cms is a CMS intended to be super cool and user friendly.",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@preaction/cms",
+  "description": "Preaction CMS is a CMS intended to be super cool and user friendly.",
+  "version": "0.2.0",
   "proxy": "http://localhost:8999",
   "dependencies": {
+    "@preaction/validation": "^1.3.3",
     "animate.css": "^3.7.2",
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
@@ -19,35 +19,42 @@
     "jpeg-autorotate": "^5.0.0",
     "mobile-detect": "^1.4.3",
     "multer": "^1.4.1",
-    "preaction-validation": "^1.0.14",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.1",
     "sequelize": "^5.12.0",
-    "sitemap": "^3.2.2",
+    "sitemap": "^4.1.1",
     "socket.io": "^2.2.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {
+    "@preaction/bootstrap-clips": "^1.3.3",
+    "@preaction/inputs": "^1.3.2",
     "bootstrap": "^4.3.1",
-    "healthier": "^2.0.0",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "hex-rgb": "^4.0.0",
     "nodemon": "^1.18.10",
-    "preaction-bootstrap-clips": "^1.0.28",
-    "preaction-inputs": "^1.0.36",
     "prettier": "^1.18.2",
     "react-router-dom": "^5.0.1"
   },
   "scripts": {
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && react-scripts test --coverage",
     "eject": "react-scripts eject",
     "dev-server": "nodemon -i src server.js",
     "start": "node server.js"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2019
+    }
   },
   "browserslist": {
     "production": [
@@ -60,5 +67,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "author": "Doug Elkin <doug@dougelkin.com> (https://dougelkin.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/dougelkin/preaction-cms.git"
   }
 }

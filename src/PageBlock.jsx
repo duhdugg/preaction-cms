@@ -1,6 +1,6 @@
 import React from 'react'
-import PageBlockImages from './PageBlockImages.js'
-import PageBlockWysiwyg from './PageBlockWysiwyg.js'
+import PageBlockImages from './PageBlockImages.jsx'
+import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
 
 class PageBlock extends React.Component {
   render() {

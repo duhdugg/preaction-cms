@@ -10,7 +10,7 @@ import {
   Link,
   Redirect
 } from 'react-router-dom'
-import { Boilerplate, NavBar, Nav } from 'preaction-bootstrap-clips'
+import { Boilerplate, NavBar, Nav } from '@preaction/bootstrap-clips'
 
 // styles
 import 'animate.css/animate.min.css'
@@ -18,12 +18,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'ionicons/dist/css/ionicons.min.css'
 import './App.css'
 
-import Footer from './Footer.js'
-import Header from './Header.js'
-import Login from './Login.js'
-import NotFound from './NotFound.js'
-import Page from './Page.js'
-import Settings from './Settings.js'
+import Footer from './Footer.jsx'
+import Header from './Header.jsx'
+import Login from './Login.jsx'
+import NotFound from './NotFound.jsx'
+import Page from './Page.jsx'
+import Settings from './Settings.jsx'
 
 class App extends React.Component {
   constructor(props) {
@@ -34,6 +34,10 @@ class App extends React.Component {
       editable: false,
       pages: [],
       redirect: null,
+      show: {
+        header: true,
+        footer: true
+      },
       siteSettings: {
         bgColor: '#000000',
         fontColor: '#ffffff',
@@ -113,7 +117,7 @@ class App extends React.Component {
         }
       })
     }
-    for (let page of this.state.pages) {
+    this.state.pages.forEach(page => {
       if (page.userCreated) {
         menu.push({
           name: page.title,
@@ -124,7 +128,7 @@ class App extends React.Component {
           }
         })
       }
-    }
+    })
     if (this.state.authenticated) {
       let adminSubmenu = []
       adminSubmenu.push({
@@ -216,6 +220,15 @@ class App extends React.Component {
           }, 1000)
         }
       )
+    }
+  }
+
+  getShowPropertyValueHandler(key) {
+    return value => {
+      this.setState(state => {
+        state.show[key] = value
+        return state
+      })
     }
   }
 
@@ -355,6 +368,7 @@ class App extends React.Component {
                     siteSettings={this.siteSettings}
                     pages={this.state.pages}
                     logout={this.logout.bind(this)}
+                    show={this.state.show.header}
                     ref={this.header}
                   />
                   {this.state.siteSettings.navPosition === 'below-header' ? (
@@ -379,6 +393,7 @@ class App extends React.Component {
                   siteSettings={this.siteSettings}
                   logout={this.logout.bind(this)}
                   ref={this.footer}
+                  show={this.state.show.footer}
                 />
               }
             >
@@ -392,6 +407,8 @@ class App extends React.Component {
                     pageKey='home'
                     siteSettings={this.siteSettings}
                     ref={this.activePage}
+                    headerControl={this.getShowPropertyValueHandler('header')}
+                    footerControl={this.getShowPropertyValueHandler('footer')}
                   />
                 </Route>
                 <Route exact path='/login'>
@@ -430,6 +447,12 @@ class App extends React.Component {
                             deletePage={this.deletePage.bind(this)}
                             emitSave={this.emitSave.bind(this)}
                             ref={this.activePage}
+                            headerControl={this.getShowPropertyValueHandler(
+                              'header'
+                            )}
+                            footerControl={this.getShowPropertyValueHandler(
+                              'footer'
+                            )}
                           />
                         )
                     }

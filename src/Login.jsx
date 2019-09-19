@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Form, Input } from 'preaction-inputs'
+import { Form, Input } from '@preaction/inputs'
 
 class Login extends React.Component {
   constructor(props) {
