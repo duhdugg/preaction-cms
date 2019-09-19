@@ -25,6 +25,8 @@ import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 import Settings from './Settings.jsx'
 
+import { registerSmartLinkFormat } from '@preaction/inputs'
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -57,6 +59,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
+    registerSmartLinkFormat(this.redirect.bind(this))
   }
 
   addPage(page) {
