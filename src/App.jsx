@@ -34,6 +34,7 @@ class App extends React.Component {
       activePathname: '',
       authenticated: false,
       editable: false,
+      navigate: null,
       pages: [],
       redirect: null,
       show: {
@@ -59,7 +60,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    registerSmartLinkFormat(this.redirect.bind(this))
+    registerSmartLinkFormat(this.navigate.bind(this))
   }
 
   addPage(page) {
@@ -285,6 +286,21 @@ class App extends React.Component {
     })
   }
 
+  navigate(path) {
+    this.setState(
+      state => {
+        state.navigate = path
+        return state
+      },
+      () => {
+        this.setState(state => {
+          state.navigate = null
+          return state
+        })
+      }
+    )
+  }
+
   toggleEdit() {
     this.setState(state => {
       state.editable = !state.editable
@@ -332,6 +348,11 @@ class App extends React.Component {
         <Router>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
+            {this.state.navigate ? (
+              <Redirect to={this.state.navigate} push={true} />
+            ) : (
+              ''
+            )}
             {this.state.siteSettings.navPosition === 'fixed-top' ? (
               <NavBar
                 fixedTo='top'
