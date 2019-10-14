@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
-import { Checkbox } from '@preaction/inputs'
+import { Nav } from '@preaction/bootstrap-clips'
 import './Page.css'
 
 class Page extends React.Component {
@@ -11,8 +11,7 @@ class Page extends React.Component {
     this.state = {
       loading: false,
       notFound: false,
-      page: null,
-      showSettings: false
+      page: null
     }
   }
 
@@ -171,6 +170,92 @@ class Page extends React.Component {
     }
   }
 
+  get pageControlsMenu() {
+    let menu = [
+      {
+        name: 'add block',
+        icon: 'arrow-dropdown',
+        subMenu: [
+          {
+            name: (
+              <span>
+                <i className='ion ion-md-image' /> image
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.addPageBlock('image')
+            }
+          },
+          {
+            name: (
+              <span>
+                <i className='ion ion-logo-html5' /> wysiwyg
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.addPageBlock('wysiwyg')
+            }
+          }
+        ],
+        onClick: e => {
+          e.preventDefault()
+        }
+      }
+    ]
+    if (['header', 'footer'].indexOf(this.props.pageKey) < 0) {
+      menu.push({
+        name: 'page settings',
+        subMenu: [
+          {
+            name: (
+              <span>
+                <i
+                  className={`ion ion-md-${
+                    this.state.page.settings.showHeader
+                      ? 'checkbox-outline'
+                      : 'square-outline'
+                  }`}
+                />{' '}
+                show header
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.getPageSettingsValueHandler('showHeader')(
+                !this.state.page.settings.showHeader
+              )
+            },
+            toggleParent: false
+          },
+          {
+            name: (
+              <span>
+                <i
+                  className={`ion ion-md-${
+                    this.state.page.settings.showFooter
+                      ? 'checkbox-outline'
+                      : 'square-outline'
+                  }`}
+                />{' '}
+                show footer
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.getPageSettingsValueHandler('showFooter')(
+                !this.state.page.settings.showFooter
+              )
+            },
+            toggleParent: false
+          }
+        ]
+      })
+    }
+    return menu
+  }
+
   galleryControl(pageBlock, index, action) {
     // actions: previous, next, delete
     this.setState(state => {
@@ -318,63 +403,7 @@ class Page extends React.Component {
               : ''}
             {this.props.editable ? (
               <div className='page-controls'>
-                <button
-                  type='button'
-                  className='btn btn-primary btn-sm'
-                  onClick={() => {
-                    this.addPageBlock('wysiwyg')
-                  }}
-                >
-                  <i className='ion ion-logo-html5' />
-                </button>
-                <button
-                  type='button'
-                  className='btn btn-info btn-sm'
-                  onClick={() => {
-                    this.addPageBlock('image')
-                  }}
-                >
-                  <i className='ion ion-md-image' />
-                </button>
-                <div>
-                  {['header', 'footer'].includes(this.state.page.key) ? (
-                    ''
-                  ) : (
-                    <button
-                      type='button'
-                      className='btn btn-info'
-                      onClick={this.toggleSettings.bind(this)}
-                    >
-                      <i className='ion ion-md-cog' />
-                    </button>
-                  )}
-                  {this.state.showSettings ? (
-                    <div className='mt-2'>
-                      <div className='col-sm-6 pl-0'>
-                        <Checkbox
-                          label='Show Header'
-                          checked={
-                            this.state.page.settings.showHeader !== false
-                          }
-                          valueHandler={this.getPageSettingsValueHandler(
-                            'showHeader'
-                          )}
-                        />
-                        <Checkbox
-                          label='Show Footer'
-                          checked={
-                            this.state.page.settings.showFooter !== false
-                          }
-                          valueHandler={this.getPageSettingsValueHandler(
-                            'showFooter'
-                          )}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div />
-                  )}
-                </div>
+                <Nav type='tabs' menu={this.pageControlsMenu} />
                 {this.state.page.userCreated ? (
                   <button
                     type='button'
@@ -418,13 +447,6 @@ class Page extends React.Component {
       this.loadPage(nextProps.pageKey)
     }
     return retval
-  }
-
-  toggleSettings() {
-    this.setState(state => {
-      state.showSettings = !state.showSettings
-      return state
-    })
   }
 }
 

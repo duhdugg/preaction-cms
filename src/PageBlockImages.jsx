@@ -236,10 +236,10 @@ class PageBlockImages extends React.Component {
           <div>
             <button
               type='button'
-              className='btn btn-info'
+              className='btn btn-light btn-sm'
               onClick={this.toggleSettings.bind(this)}
             >
-              <i className='ion ion-md-cog' />
+              <i className='ion ion-md-cog' /> Image Block Settings
             </button>
             {this.state.showSettings ? (
               <div className='mt-2'>

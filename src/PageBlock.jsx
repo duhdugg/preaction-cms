@@ -44,7 +44,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'previous')
                   }}
                 >
-                  <i className='ion ion-md-arrow-up' />
+                  <i className='ion ion-md-arrow-up' /> move block up
                 </button>
                 <button
                   type='button'
@@ -53,7 +53,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'delete')
                   }}
                 >
-                  <i className='ion ion-md-trash' />
+                  <i className='ion ion-md-trash' /> delete block
                 </button>
                 <button
                   type='button'
@@ -63,7 +63,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'next')
                   }}
                 >
-                  <i className='ion ion-md-arrow-down' />
+                  <i className='ion ion-md-arrow-down' /> move block down
                 </button>
               </div>
             ) : (
