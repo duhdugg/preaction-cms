@@ -410,7 +410,7 @@ class Page extends React.Component {
                     className='btn btn-danger btn-sm'
                     onClick={this.deletePage.bind(this)}
                   >
-                    <i className='ion ion-md-trash' />
+                    <i className='ion ion-md-trash' /> Delete Page
                   </button>
                 ) : (
                   ''
