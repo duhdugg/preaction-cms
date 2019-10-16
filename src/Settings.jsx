@@ -1,4 +1,5 @@
 import React from 'react'
+import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select } from '@preaction/inputs'
 
 class Settings extends React.Component {
@@ -68,86 +69,92 @@ class Settings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <Select
-                    label='Nav Position'
-                    value={this.props.siteSettings.navPosition}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'navPosition'
-                    )}
-                  >
-                    <option value='fixed-top'>Fixed to Top</option>
-                    <option value='above-header'>Above Header</option>
-                    <option value='below-header'>Below Header</option>
-                  </Select>
-                  {this.props.siteSettings.navPosition === 'fixed-top' ? (
+                  <Card header='Navigation' headerTheme='dark'>
                     <Select
-                      label='Nav Theme'
-                      value={this.props.siteSettings.navTheme}
+                      label='Nav Position'
+                      value={this.props.siteSettings.navPosition}
                       valueHandler={this.props.getSettingsValueHandler(
-                        'navTheme'
+                        'navPosition'
                       )}
                     >
-                      <option />
-                      <option value='light'>Light</option>
-                      <option value='dark'>Dark</option>
+                      <option value='fixed-top'>Fixed to Top</option>
+                      <option value='above-header'>Above Header</option>
+                      <option value='below-header'>Below Header</option>
                     </Select>
-                  ) : (
-                    ''
-                  )}
-                  {['above-header', 'below-header'].indexOf(
-                    this.props.siteSettings.navPosition
-                  ) > -1 ? (
-                    <div>
+                    {this.props.siteSettings.navPosition === 'fixed-top' ? (
                       <Select
-                        label='Nav Type'
-                        value={this.props.siteSettings.navType}
+                        label='Nav Theme'
+                        value={this.props.siteSettings.navTheme}
                         valueHandler={this.props.getSettingsValueHandler(
-                          'navType'
+                          'navTheme'
                         )}
                       >
-                        <option>basic</option>
-                        <option>tabs</option>
-                        <option>pills</option>
+                        <option />
+                        <option value='light'>Light</option>
+                        <option value='dark'>Dark</option>
                       </Select>
-                      <Select
-                        label='Nav Alignment'
-                        value={this.props.siteSettings.navAlignment}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navAlignment'
-                        )}
-                      >
-                        <option>left</option>
-                        <option>center</option>
-                        <option>right</option>
-                      </Select>
-                      <Select
-                        label='Nav Spacing'
-                        value={this.props.siteSettings.navSpacing}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navSpacing'
-                        )}
-                      >
-                        <option>normal</option>
-                        <option>fill</option>
-                        <option>justify</option>
-                      </Select>
-                      <Checkbox
-                        label='Collapse nav for smaller screens'
-                        checked={this.props.siteSettings.navCollapsible}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navCollapsible'
-                        )}
-                      />
-                    </div>
-                  ) : (
-                    ''
-                  )}
+                    ) : (
+                      ''
+                    )}
+                    {['above-header', 'below-header'].indexOf(
+                      this.props.siteSettings.navPosition
+                    ) > -1 ? (
+                      <div>
+                        <Select
+                          label='Nav Type'
+                          value={this.props.siteSettings.navType}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navType'
+                          )}
+                        >
+                          <option>basic</option>
+                          <option>tabs</option>
+                          <option>pills</option>
+                        </Select>
+                        <Select
+                          label='Nav Alignment'
+                          value={this.props.siteSettings.navAlignment}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navAlignment'
+                          )}
+                        >
+                          <option>left</option>
+                          <option>center</option>
+                          <option>right</option>
+                        </Select>
+                        <Select
+                          label='Nav Spacing'
+                          value={this.props.siteSettings.navSpacing}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navSpacing'
+                          )}
+                        >
+                          <option>normal</option>
+                          <option>fill</option>
+                          <option>justify</option>
+                        </Select>
+                        <Checkbox
+                          label='Collapse nav for smaller screens'
+                          checked={this.props.siteSettings.navCollapsible}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navCollapsible'
+                          )}
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </Card>
                 </div>
               </div>
 
               <div className='row'>
-                <div className='col'>
-                  <label className='d-block'>Site Background</label>
+                <Card
+                  header='Background'
+                  column
+                  width={1 / 2}
+                  headerTheme='green'
+                >
                   <Checkbox
                     label='Use Background Image'
                     checked={this.props.siteSettings.useBgImage}
@@ -173,12 +180,8 @@ class Settings extends React.Component {
                       ''
                     )}
                   </button>
-                </div>
-              </div>
-
-              <div className='row'>
-                <div className='col'>
-                  <label className='d-block'>Site Icon</label>
+                </Card>
+                <Card header='Icon' column width={1 / 2} headerTheme='yellow'>
                   <button
                     type='button'
                     className='btn btn-primary'
@@ -197,7 +200,11 @@ class Settings extends React.Component {
                       ''
                     )}
                   </button>
-                </div>
+                </Card>
+              </div>
+
+              <div className='row'>
+                <div className='col'></div>
               </div>
 
               <h3>Add Page</h3>
@@ -222,89 +229,92 @@ class Settings extends React.Component {
                 </div>
               </div>
 
-              <h3>Colors</h3>
-              <div className='row'>
-                <div className='col'>
-                  <Input
-                    label='Background Color'
-                    type='color'
-                    value={this.props.siteSettings.bgColor}
-                    valueHandler={this.props.getSettingsValueHandler('bgColor')}
-                  />
+              <Card header='Colors' headerTheme='dark'>
+                <div className='row'>
+                  <div className='col'>
+                    <Input
+                      label='Background Color'
+                      type='color'
+                      value={this.props.siteSettings.bgColor}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'bgColor'
+                      )}
+                    />
+                  </div>
+                  <div className='col'>
+                    <Input
+                      label='Text Color'
+                      type='color'
+                      value={this.props.siteSettings.fontColor}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'fontColor'
+                      )}
+                    />
+                  </div>
                 </div>
-                <div className='col'>
-                  <Input
-                    label='Text Color'
-                    type='color'
-                    value={this.props.siteSettings.fontColor}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'fontColor'
-                    )}
-                  />
+                <div className='row'>
+                  <div className='col'>
+                    <Input
+                      label='Link Color'
+                      type='color'
+                      value={this.props.siteSettings.linkColor}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'linkColor'
+                      )}
+                    />
+                  </div>
+                  <div className='col'>
+                    <Input
+                      label='Container Color'
+                      type='color'
+                      value={this.props.siteSettings.containerColor}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerColor'
+                      )}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className='row'>
-                <div className='col'>
-                  <Input
-                    label='Link Color'
-                    type='color'
-                    value={this.props.siteSettings.linkColor}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'linkColor'
-                    )}
-                  />
-                </div>
-                <div className='col'>
-                  <Input
-                    label='Container Color'
-                    type='color'
-                    value={this.props.siteSettings.containerColor}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'containerColor'
-                    )}
-                  />
-                </div>
-              </div>
-              <Input
-                label='Container Opacity'
-                type='number'
-                info='Enter a number between 0.00-1.00'
-                min='0'
-                max='1'
-                step='0.01'
-                value={this.props.siteSettings.containerOpacity}
-                valueHandler={this.props.getSettingsValueHandler(
-                  'containerOpacity'
-                )}
-              />
+                <Input
+                  label='Container Opacity'
+                  type='number'
+                  info='Enter a number between 0.00-1.00'
+                  min='0'
+                  max='1'
+                  step='0.01'
+                  value={this.props.siteSettings.containerOpacity}
+                  valueHandler={this.props.getSettingsValueHandler(
+                    'containerOpacity'
+                  )}
+                />
 
-              <div>
-                <h3>Samples</h3>
                 <div>
-                  <p>Text</p>
-                  <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
-                      Test Link
-                    </a>
-                  </p>
+                  <h3>Samples</h3>
+                  <div>
+                    <p>Text</p>
+                    <p>
+                      <a href='.' onClick={e => e.preventDefault()}>
+                        Test Link
+                      </a>
+                    </p>
+                  </div>
+                  <div
+                    className='p-3'
+                    style={{
+                      backgroundColor: this.props.siteSettings.containerRgba
+                        .string,
+                      borderRadius: '0.25rem',
+                      transition: 'background-color 1s linear'
+                    }}
+                  >
+                    <p>Text</p>
+                    <p>
+                      <a href='.' onClick={e => e.preventDefault()}>
+                        Link
+                      </a>
+                    </p>
+                  </div>
                 </div>
-                <div
-                  className='p-3'
-                  style={{
-                    backgroundColor: this.props.siteSettings.containerRgba
-                      .string,
-                    borderRadius: '0.25rem',
-                    transition: 'background-color 1s linear'
-                  }}
-                >
-                  <p>Text</p>
-                  <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
-                      Link
-                    </a>
-                  </p>
-                </div>
-              </div>
+              </Card>
             </form>
             <form
               method='POST'
