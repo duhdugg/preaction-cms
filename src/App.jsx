@@ -293,6 +293,7 @@ class App extends React.Component {
         return state
       },
       () => {
+        this.setActivePathname(path)
         this.setState(state => {
           state.navigate = null
           return state
@@ -542,6 +543,9 @@ class App extends React.Component {
         }
       }
     })
+    window.onpopstate = event => {
+      this.setActivePathname(window.location.pathname)
+    }
   }
 
   componentDidUpdate() {
