@@ -21,6 +21,7 @@ const app = express()
 const db = require('./lib/db.js')
 const settings = require('./lib/modules/settings.js')
 const pages = require('./lib/modules/pages.js')
+const redirects = require('./lib/modules/redirects.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
 const uploads = require('./lib/modules/uploads.js')
@@ -40,8 +41,9 @@ io.use((socket, next) => {
 // enable JSON requests and limit them to 50 megabytes in size
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(session.expressModule)
-app.use(pages.expressModule)
 app.use(uploads.expressModule)
+app.use(redirects.expressModule)
+app.use(pages.expressModule)
 
 // <== ROUTES ==>
 
@@ -135,6 +137,18 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
 app.route('*').get((req, res) => {
+  let matchRedirect = false
+  console.debug(req.path)
+  redirects.model.Redirect.findAll().then(redirects => {
+    redirects.forEach(redirect => {
+      let re = new RegExp(`^/?${redirect.match}/?$`)
+      if (re.test(req.path)) {
+        matchRedirect = true
+        res.redirect(redirect.location)
+      }
+    })
+  })
+
   let pageKey = req.path.split('/')[1]
   switch (pageKey) {
     case 'home':
@@ -153,6 +167,9 @@ app.route('*').get((req, res) => {
       }
     ]
   }).then(page => {
+    if (matchRedirect) {
+      return
+    }
     let status = page ? 200 : 404
     let content = ''
     let pageblocks = page ? page.pageblocks : []

@@ -22,7 +22,7 @@ class Footer extends React.Component {
             <Page
               editable={this.props.editable}
               emitSave={this.props.emitSave}
-              pageKey='footer'
+              path='/footer/'
               siteSettings={this.props.siteSettings}
               ref={this.page}
             />

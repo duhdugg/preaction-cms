@@ -22,7 +22,7 @@ class Header extends React.Component {
             <Page
               editable={this.props.editable}
               emitSave={this.props.emitSave}
-              pageKey='header'
+              path='/header/'
               siteSettings={this.props.siteSettings}
               ref={this.page}
             />

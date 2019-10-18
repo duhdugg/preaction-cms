@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select } from '@preaction/inputs'
 
@@ -7,6 +8,8 @@ class Settings extends React.Component {
     super(props)
     this.state = {
       newPageTitle: '',
+      redirect: null,
+      redirects: [],
       uploadingBg: false,
       uploadingIcon: false
     }
@@ -24,6 +27,37 @@ class Settings extends React.Component {
       state.newPageTitle = ''
       return state
     })
+  }
+
+  deleteRedirect(redirect) {
+    axios.delete(`/api/redirect/${redirect.id}`).then(response => {
+      this.getRedirects()
+    })
+  }
+
+  editRedirect(redirect) {
+    this.setState(state => {
+      state.redirect = JSON.parse(JSON.stringify(redirect))
+      return state
+    })
+  }
+
+  getRedirects() {
+    axios.get('/api/redirect').then(response => {
+      this.setState(state => {
+        state.redirects = response.data
+        return state
+      })
+    })
+  }
+
+  getRedirectValueHandler(key) {
+    return value => {
+      this.setState(state => {
+        state.redirect[key] = value
+        return state
+      })
+    }
   }
 
   getValueHandler(key) {
@@ -52,11 +86,45 @@ class Settings extends React.Component {
     icon.href = `/icon?v=${timestamp}`
   }
 
+  saveRedirect() {
+    if (!this.state.redirect.match.trim()) {
+      return
+    }
+    if (!this.state.redirect.location.trim()) {
+      return
+    }
+    if (this.state.redirect.id) {
+      axios
+        .put(`/api/redirect/${this.state.redirect.id}`, this.state.redirect)
+        .then(response => {
+          this.getRedirects()
+        })
+    } else {
+      axios.post('/api/redirect/', this.state.redirect).then(response => {
+        this.getRedirects()
+      })
+    }
+    this.setState(state => {
+      state.redirect = null
+      return state
+    })
+  }
+
   render() {
     return (
       <div>
         {this.props.authenticated ? (
           <div>
+            <style type='text/css'>{`
+              table.redirects td {
+                border-left: 1px solid black;
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+              }
+              table.redirects td:first-child {
+                border-left: 0;
+              }
+            `}</style>
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
               <h3>Site Settings</h3>
               <div className='row'>
@@ -315,6 +383,106 @@ class Settings extends React.Component {
                   </div>
                 </div>
               </Card>
+              <Card header='Redirects' headerTheme='red'>
+                <div className='row'>
+                  <table className='redirects'>
+                    <thead>
+                      <tr>
+                        <th />
+                        <th>Match</th>
+                        <th>Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.redirects.map(redirect => {
+                        return (
+                          <tr key={redirect.id}>
+                            <td>
+                              <button
+                                type='button'
+                                className='btn btn-sm btn-light'
+                                onClick={e => {
+                                  this.editRedirect(redirect)
+                                }}
+                              >
+                                <i className='ion ion-md-create' /> edit
+                              </button>
+                              <button
+                                type='button'
+                                className='btn btn-sm btn-danger'
+                                onClick={e => {
+                                  this.deleteRedirect(redirect)
+                                }}
+                              >
+                                <i className='ion ion-md-trash' /> delete
+                              </button>
+                            </td>
+                            <td>{redirect.match}</td>
+                            <td>{redirect.location}</td>
+                          </tr>
+                        )
+                      })}
+                      <tr>
+                        <td>
+                          <button
+                            type='button'
+                            className='btn btn-sm btn-light'
+                            onClick={e => {
+                              this.editRedirect({
+                                id: null,
+                                match: '',
+                                location: ''
+                              })
+                            }}
+                          >
+                            <i className='ion ion-md-create' /> new
+                          </button>
+                        </td>
+                        <td />
+                        <td />
+                      </tr>
+                    </tbody>
+                    {this.state.redirect ? (
+                      <tfoot>
+                        <tr>
+                          <td
+                            style={{
+                              top: '-0.5rem',
+                              position: 'relative'
+                            }}
+                          >
+                            <button
+                              type='button'
+                              className='btn btn-primary btn-sm'
+                              onClick={this.saveRedirect.bind(this)}
+                            >
+                              <i className='ion ion-md-save' /> Save
+                            </button>
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.match}
+                              valueHandler={this.getRedirectValueHandler(
+                                'match'
+                              )}
+                            />
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.location}
+                              valueHandler={this.getRedirectValueHandler(
+                                'location'
+                              )}
+                            />
+                          </td>
+                        </tr>
+                      </tfoot>
+                    ) : (
+                      <tfoot />
+                    )}
+                  </table>
+                </div>
+              </Card>
             </form>
             <form
               method='POST'
@@ -411,6 +579,7 @@ class Settings extends React.Component {
 
   componentDidMount() {
     document.title = `Site Settings | ${this.props.siteSettings.siteTitle}`
+    this.getRedirects()
   }
 
   shouldComponentUpdate(nextProps, nextState) {

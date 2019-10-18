@@ -49,17 +49,17 @@ Development is active. Documentation needs improvement. There is no backwards-co
 - [ ] module types
   - [ ] feed
   - [x] page
-  - [ ] topics
+  - [x] subpage
   - [ ] wiki
 - [x] page settings
   - [x] show footer
   - [x] show header
 - [ ] publishing controls
-- [ ] redirects
-  - [ ] create redirect
-  - [ ] update redirect
-  - [ ] delete redirect
-  - [ ] handle redirect
+- [x] redirects
+  - [x] create redirect
+  - [x] update redirect
+  - [x] delete redirect
+  - [x] handle redirect
 - [x] site settings management
   - [x] site name setting
   - [ ] enable/disable authentication methods

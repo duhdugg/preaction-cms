@@ -123,14 +123,45 @@ class App extends React.Component {
     }
     this.state.pages.forEach(page => {
       if (page.userCreated) {
-        menu.push({
-          name: page.title,
-          href: `/${page.key}/`,
-          component: NavLink,
-          onClick: e => {
-            this.setActivePathname(`/${page.key}/`)
-          }
-        })
+        let path = `/${page.key}/`
+        if (page.parentId) {
+          let parentPage = this.getPageById(page.parentId)
+          path = `/${parentPage.key}/${page.key}/`
+          menu.forEach(menuItem => {
+            if (menuItem.href === `/${parentPage.key}/`) {
+              if (menuItem.subMenu === undefined) {
+                menuItem.subMenu = []
+              }
+              menuItem.subMenu.push({
+                name: page.title,
+                href: path,
+                component: NavLink,
+                onClick: e => {
+                  this.setActivePathname(path)
+                }
+              })
+              menuItem.subMenu.sort((a, b) => {
+                let retval = 0
+                if (a.name < b.name) {
+                  retval--
+                } else if (a.name > b.name) {
+                  retval++
+                }
+                return retval
+              })
+            }
+          })
+        } else {
+          menu.push({
+            name: page.title,
+            href: path,
+            component: NavLink,
+            onClick: e => {
+              e.preventDefault()
+              this.navigate(path)
+            }
+          })
+        }
       }
     })
     if (this.state.authenticated) {
@@ -206,6 +237,16 @@ class App extends React.Component {
     let { red, green, blue, alpha } = settings.containerRgba
     settings.containerRgba.string = `rgba(${red}, ${green}, ${blue}, ${alpha})`
     return settings
+  }
+
+  getPageById(id) {
+    let retval = null
+    this.state.pages.forEach(page => {
+      if (page.id === id) {
+        retval = page
+      }
+    })
+    return retval
   }
 
   getSettingsValueHandler(key) {
@@ -423,13 +464,17 @@ class App extends React.Component {
               }
             >
               {this.state.editable ? <hr /> : ''}
-              {this.state.editable ? <h3>Page</h3> : ''}
+              {this.state.editable ? (
+                <h3>Page: {window.location.pathname}</h3>
+              ) : (
+                ''
+              )}
               <Switch>
                 <Route exact path='/'>
                   <Page
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    pageKey='home'
+                    path='/home/'
                     siteSettings={this.siteSettings}
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
@@ -457,18 +502,18 @@ class App extends React.Component {
                 </Route>
                 <Route
                   render={({ location }) => {
-                    let pageKey = location.pathname.split('/')[1]
-                    switch (pageKey) {
-                      case 'home':
-                      case 'header':
-                      case 'footer':
+                    switch (location.pathname) {
+                      case '/home/':
+                      case '/header/':
+                      case '/footer/':
                         return <NotFound />
                       default:
                         return (
                           <Page
                             editable={this.state.editable}
                             siteSettings={this.siteSettings}
-                            pageKey={pageKey}
+                            path={location.pathname}
+                            addPage={this.addPage.bind(this)}
                             deletePage={this.deletePage.bind(this)}
                             emitSave={this.emitSave.bind(this)}
                             ref={this.activePage}

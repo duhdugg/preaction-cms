@@ -15,6 +15,21 @@ class Page extends React.Component {
     }
   }
 
+  addPage() {
+    let title = window.prompt('New Page Title')
+    if (title) {
+      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+      let pageType = 'content'
+      let page = {
+        title,
+        key,
+        pageType,
+        parentId: this.state.page.id
+      }
+      this.props.addPage(page)
+    }
+  }
+
   addPageBlock(blockType) {
     axios
       .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
@@ -111,6 +126,31 @@ class Page extends React.Component {
     }
   }
 
+  get newPage() {
+    let title = this.state.newPageTitle
+    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+    let pageType = 'content'
+    return {
+      key,
+      title,
+      pageType
+    }
+  }
+
+  get splitPath() {
+    let path = []
+    this.props.path.split('/').forEach(dir => {
+      if (dir) {
+        path.push(dir)
+      }
+    })
+    return path
+  }
+
+  get topLevelPageKey() {
+    return this.splitPath[0]
+  }
+
   getBlocks(blocks) {
     return blocks.concat().sort((a, b) => {
       let retval = 0
@@ -204,53 +244,71 @@ class Page extends React.Component {
         }
       }
     ]
-    if (['header', 'footer'].indexOf(this.props.pageKey) < 0) {
+    if (['header', 'footer'].indexOf(this.topLevelPageKey) < 0) {
+      let subMenu = []
+      if (this.topLevelPageKey !== 'home' && !this.state.page.parentId) {
+        subMenu.push({
+          name: 'Add SubPage',
+          onClick: e => {
+            e.preventDefault()
+            this.addPage()
+          }
+        })
+      }
+      if (this.topLevelPageKey !== 'home') {
+        subMenu.push({
+          name: 'Reset Page Title',
+          onClick: e => {
+            e.preventDefault()
+            this.renamePage()
+          }
+        })
+      }
+      subMenu.push({
+        name: (
+          <span>
+            <i
+              className={`ion ion-md-${
+                this.state.page.settings.showHeader
+                  ? 'checkbox-outline'
+                  : 'square-outline'
+              }`}
+            />{' '}
+            show header
+          </span>
+        ),
+        onClick: e => {
+          e.preventDefault()
+          this.getPageSettingsValueHandler('showHeader')(
+            !this.state.page.settings.showHeader
+          )
+        },
+        toggleParent: false
+      })
+      subMenu.push({
+        name: (
+          <span>
+            <i
+              className={`ion ion-md-${
+                this.state.page.settings.showFooter
+                  ? 'checkbox-outline'
+                  : 'square-outline'
+              }`}
+            />{' '}
+            show footer
+          </span>
+        ),
+        onClick: e => {
+          e.preventDefault()
+          this.getPageSettingsValueHandler('showFooter')(
+            !this.state.page.settings.showFooter
+          )
+        },
+        toggleParent: false
+      })
       menu.push({
         name: 'page settings',
-        subMenu: [
-          {
-            name: (
-              <span>
-                <i
-                  className={`ion ion-md-${
-                    this.state.page.settings.showHeader
-                      ? 'checkbox-outline'
-                      : 'square-outline'
-                  }`}
-                />{' '}
-                show header
-              </span>
-            ),
-            onClick: e => {
-              e.preventDefault()
-              this.getPageSettingsValueHandler('showHeader')(
-                !this.state.page.settings.showHeader
-              )
-            },
-            toggleParent: false
-          },
-          {
-            name: (
-              <span>
-                <i
-                  className={`ion ion-md-${
-                    this.state.page.settings.showFooter
-                      ? 'checkbox-outline'
-                      : 'square-outline'
-                  }`}
-                />{' '}
-                show footer
-              </span>
-            ),
-            onClick: e => {
-              e.preventDefault()
-              this.getPageSettingsValueHandler('showFooter')(
-                !this.state.page.settings.showFooter
-              )
-            },
-            toggleParent: false
-          }
-        ]
+        subMenu
       })
     }
     return menu
@@ -318,7 +376,7 @@ class Page extends React.Component {
     })
   }
 
-  loadPage(pageKey) {
+  loadPage(path) {
     this.setState(
       state => {
         state.loading = true
@@ -328,7 +386,7 @@ class Page extends React.Component {
       },
       () => {
         axios
-          .get(`/api/page/by-key/${pageKey}`)
+          .get(`/api/page/by-key/${path}`)
           .then(response => {
             this.setState(
               state => {
@@ -338,7 +396,7 @@ class Page extends React.Component {
                 return state
               },
               () => {
-                if (!['header', 'footer'].includes(pageKey)) {
+                if (!['header', 'footer'].includes(this.topLevelPageKey)) {
                   let showHeader = this.state.page.settings.showHeader !== false
                   let showFooter = this.state.page.settings.showFooter !== false
                   this.props.headerControl(showHeader)
@@ -346,9 +404,12 @@ class Page extends React.Component {
                 }
               }
             )
-            if (pageKey !== 'header' && pageKey !== 'footer') {
+            if (
+              this.topLevelPageKey !== 'header' &&
+              this.topLevelPageKey !== 'footer'
+            ) {
               let title = ''
-              if (pageKey === 'home') {
+              if (this.topLevelPageKey === 'home') {
                 title = this.props.siteSettings.siteTitle
               } else {
                 title = `${response.data.title} | ${this.props.siteSettings.siteTitle}`
@@ -370,7 +431,35 @@ class Page extends React.Component {
   }
 
   reload() {
-    this.loadPage(this.props.pageKey)
+    this.loadPage(this.props.path)
+  }
+
+  renamePage() {
+    let oldTitle = this.state.page.title
+    let title = window.prompt(`New Page Title for ${this.state.page.title}`)
+    if (title) {
+      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+      this.setState(
+        state => {
+          state.page.title = title
+          state.page.key = key
+        },
+        () => {
+          axios
+            .put(`/api/page/${this.state.page.id}`, this.state.page)
+            .then(() => {
+              if (title !== oldTitle) {
+                this.props.emitSave()
+                if (this.state.page.parentId) {
+                  window.location.href = `/${this.topLevelPageKey}/${key}/`
+                } else {
+                  window.location.href = `/${key}/`
+                }
+              }
+            })
+        }
+      )
+    }
   }
 
   render() {
@@ -438,13 +527,13 @@ class Page extends React.Component {
   }
 
   componentDidMount() {
-    this.loadPage(this.props.pageKey)
+    this.loadPage(this.props.path)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     let retval = true
-    if (nextProps.pageKey !== this.props.pageKey) {
-      this.loadPage(nextProps.pageKey)
+    if (nextProps.path !== this.props.path) {
+      this.loadPage(nextProps.path)
     }
     return retval
   }
