@@ -44,7 +44,7 @@ Development is active. Documentation needs improvement. There is no backwards-co
   - [x] delete blocks
   - [x] delete page
   - [x] rearrange blocks
-  - [ ] rename page
+  - [x] rename page
   - [x] view page
 - [ ] module types
   - [ ] feed
