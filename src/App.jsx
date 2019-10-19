@@ -126,31 +126,33 @@ class App extends React.Component {
         let path = `/${page.key}/`
         if (page.parentId) {
           let parentPage = this.getPageById(page.parentId)
-          path = `/${parentPage.key}/${page.key}/`
-          menu.forEach(menuItem => {
-            if (menuItem.href === `/${parentPage.key}/`) {
-              if (menuItem.subMenu === undefined) {
-                menuItem.subMenu = []
+          if (parentPage) {
+            path = `/${parentPage.key}/${page.key}/`
+            menu.forEach(menuItem => {
+              if (menuItem.href === `/${parentPage.key}/`) {
+                if (menuItem.subMenu === undefined) {
+                  menuItem.subMenu = []
+                }
+                menuItem.subMenu.push({
+                  name: page.title,
+                  href: path,
+                  component: NavLink,
+                  onClick: e => {
+                    this.setActivePathname(path)
+                  }
+                })
+                menuItem.subMenu.sort((a, b) => {
+                  let retval = 0
+                  if (a.name < b.name) {
+                    retval--
+                  } else if (a.name > b.name) {
+                    retval++
+                  }
+                  return retval
+                })
               }
-              menuItem.subMenu.push({
-                name: page.title,
-                href: path,
-                component: NavLink,
-                onClick: e => {
-                  this.setActivePathname(path)
-                }
-              })
-              menuItem.subMenu.sort((a, b) => {
-                let retval = 0
-                if (a.name < b.name) {
-                  retval--
-                } else if (a.name > b.name) {
-                  retval++
-                }
-                return retval
-              })
-            }
-          })
+            })
+          }
         } else {
           menu.push({
             name: page.title,
