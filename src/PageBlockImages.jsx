@@ -182,7 +182,13 @@ class PageBlockImages extends React.Component {
                 style={{
                   card: {
                     backgroundColor: this.props.siteSettings.containerRgba
-                      .string
+                      .string,
+                    border: this.props.siteSettings
+                      ? `1px solid ${this.props.siteSettings.borderRgba.string}`
+                      : '0px solid transparent',
+                    borderRadius: '0.25rem',
+                    transition:
+                      'background-color 1s linear, border-color 1s linear'
                   }
                 }}
                 key={image.id}

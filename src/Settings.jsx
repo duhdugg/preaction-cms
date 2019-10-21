@@ -137,7 +137,15 @@ class Settings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <Card header='Navigation' headerTheme='dark'>
+                  <Card
+                    header='Navigation'
+                    headerTheme='dark'
+                    style={{
+                      card: {
+                        backgroundColor: 'transparent'
+                      }
+                    }}
+                  >
                     <Select
                       label='Nav Position'
                       value={this.props.siteSettings.navPosition}
@@ -222,6 +230,11 @@ class Settings extends React.Component {
                   column
                   width={1 / 2}
                   headerTheme='green'
+                  style={{
+                    card: {
+                      backgroundColor: 'transparent'
+                    }
+                  }}
                 >
                   <Checkbox
                     label='Use Background Image'
@@ -230,26 +243,49 @@ class Settings extends React.Component {
                       'useBgImage'
                     )}
                   />
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => {
-                      this.bgFileInput.current.click()
-                    }}
-                    disabled={this.state.uploadingBg}
-                  >
-                    Upload Background
-                    {this.state.uploadingBg ? (
-                      <span>
-                        <span> </span>
-                        <i className='icon ion-md-hourglass spinner' />
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                  </button>
+                  {this.props.siteSettings.useBgImage ? (
+                    <div>
+                      <Checkbox
+                        label='Tile Background Image'
+                        checked={this.props.siteSettings.tileBgImage}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'tileBgImage'
+                        )}
+                      />
+                      <button
+                        type='button'
+                        className='btn btn-primary'
+                        onClick={() => {
+                          this.bgFileInput.current.click()
+                        }}
+                        disabled={this.state.uploadingBg}
+                      >
+                        Upload Background
+                        {this.state.uploadingBg ? (
+                          <span>
+                            <span> </span>
+                            <i className='icon ion-md-hourglass spinner' />
+                          </span>
+                        ) : (
+                          ''
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </Card>
-                <Card header='Icon' column width={1 / 2} headerTheme='yellow'>
+                <Card
+                  header='Icon'
+                  column
+                  width={1 / 2}
+                  headerTheme='yellow'
+                  style={{
+                    card: {
+                      backgroundColor: 'transparent'
+                    }
+                  }}
+                >
                   <button
                     type='button'
                     className='btn btn-primary'
@@ -297,9 +333,17 @@ class Settings extends React.Component {
                 </div>
               </div>
 
-              <Card header='Colors' headerTheme='dark'>
+              <Card
+                header='Colors'
+                headerTheme='dark'
+                style={{
+                  card: {
+                    backgroundColor: 'transparent'
+                  }
+                }}
+              >
                 <div className='row'>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Background Color'
                       type='color'
@@ -309,7 +353,7 @@ class Settings extends React.Component {
                       )}
                     />
                   </div>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Text Color'
                       type='color'
@@ -331,7 +375,7 @@ class Settings extends React.Component {
                       )}
                     />
                   </div>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Container Color'
                       type='color'
@@ -341,19 +385,47 @@ class Settings extends React.Component {
                       )}
                     />
                   </div>
+                  <div className='col-sm'>
+                    <Input
+                      label='Border Color'
+                      type='color'
+                      value={this.props.siteSettings.borderColor}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'borderColor'
+                      )}
+                    />
+                  </div>
                 </div>
-                <Input
-                  label='Container Opacity'
-                  type='number'
-                  info='Enter a number between 0.00-1.00'
-                  min='0'
-                  max='1'
-                  step='0.01'
-                  value={this.props.siteSettings.containerOpacity}
-                  valueHandler={this.props.getSettingsValueHandler(
-                    'containerOpacity'
-                  )}
-                />
+                <div className='row'>
+                  <div className='col-sm'>
+                    <Input
+                      label='Container Opacity'
+                      type='number'
+                      info='Enter a number between 0.00-1.00'
+                      min='0'
+                      max='1'
+                      step='0.01'
+                      value={this.props.siteSettings.containerOpacity}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerOpacity'
+                      )}
+                    />
+                  </div>
+                  <div className='col-sm'>
+                    <Input
+                      label='Border Opacity'
+                      type='number'
+                      info='Enter a number between 0.00-1.00'
+                      min='0'
+                      max='1'
+                      step='0.01'
+                      value={this.props.siteSettings.borderOpacity}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'borderOpacity'
+                      )}
+                    />
+                  </div>
+                </div>
 
                 <div>
                   <h3>Samples</h3>
@@ -370,8 +442,10 @@ class Settings extends React.Component {
                     style={{
                       backgroundColor: this.props.siteSettings.containerRgba
                         .string,
+                      border: `1px solid ${this.props.siteSettings.borderRgba.string}`,
                       borderRadius: '0.25rem',
-                      transition: 'background-color 1s linear'
+                      transition:
+                        'background-color 1s linear, border-color 1s linear'
                     }}
                   >
                     <p>Text</p>
@@ -383,7 +457,13 @@ class Settings extends React.Component {
                   </div>
                 </div>
               </Card>
-              <Card header='Redirects' headerTheme='red'>
+              <Card
+                header='Redirects'
+                headerTheme='red'
+                style={{
+                  card: { backgroundColor: 'transparent' }
+                }}
+              >
                 <div className='row'>
                   <table className='redirects'>
                     <thead>
@@ -426,7 +506,7 @@ class Settings extends React.Component {
                         <td>
                           <button
                             type='button'
-                            className='btn btn-sm btn-light'
+                            className='btn btn-sm btn-primary'
                             onClick={e => {
                               this.editRedirect({
                                 id: null,
@@ -453,7 +533,7 @@ class Settings extends React.Component {
                           >
                             <button
                               type='button'
-                              className='btn btn-primary btn-sm'
+                              className='btn btn-success btn-sm'
                               onClick={this.saveRedirect.bind(this)}
                             >
                               <i className='ion ion-md-save' /> Save

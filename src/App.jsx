@@ -43,6 +43,8 @@ class App extends React.Component {
       },
       siteSettings: {
         bgColor: '#000000',
+        borderColor: '#000000',
+        borderOpacity: 0,
         fontColor: '#ffffff',
         hostname: '',
         linkColor: '#ffffff',
@@ -51,7 +53,9 @@ class App extends React.Component {
         siteTitle: '',
         siteDescription: '',
         navTheme: 'dark',
-        navPosition: 'fixed-top'
+        navPosition: 'fixed-top',
+        tileBgImage: false,
+        useBgImage: false
       },
       token: ''
     }
@@ -233,11 +237,17 @@ class App extends React.Component {
   }
 
   get siteSettings() {
+    function getRgbaString(hexRgbObject) {
+      let { red, green, blue, alpha } = hexRgbObject
+      return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+    }
     let settings = JSON.parse(JSON.stringify(this.state.siteSettings))
     settings.containerRgba = hexRgb(settings.containerColor)
     settings.containerRgba.alpha = settings.containerOpacity
-    let { red, green, blue, alpha } = settings.containerRgba
-    settings.containerRgba.string = `rgba(${red}, ${green}, ${blue}, ${alpha})`
+    settings.containerRgba.string = getRgbaString(settings.containerRgba)
+    settings.borderRgba = hexRgb(settings.borderColor)
+    settings.borderRgba.alpha = settings.borderOpacity
+    settings.borderRgba.string = getRgbaString(settings.borderRgba)
     return settings
   }
 
@@ -541,12 +551,22 @@ class App extends React.Component {
             a.active { color: ${this.siteSettings.fontColor}; }
             a:hover { color: ${this.siteSettings.fontColor}; }
             img {
-              border: 3px solid ${this.siteSettings.fontColor};
+              border: 1px solid ${this.siteSettings.borderRgba.string};
             }
             body {
               ${
                 this.state.siteSettings.useBgImage
                   ? 'background-image: url("/bg");'
+                  : ''
+              }
+              ${
+                this.state.siteSettings.tileBgImage
+                  ? 'background-size: auto;'
+                  : ''
+              }
+              ${
+                this.state.siteSettings.tileBgImage
+                  ? 'background-repeat: repeat;'
                   : ''
               }
             }

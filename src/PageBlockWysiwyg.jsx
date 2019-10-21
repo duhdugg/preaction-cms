@@ -60,8 +60,11 @@ class PageBlockWysiwyg extends React.Component {
             backgroundColor: this.props.siteSettings
               ? this.props.siteSettings.containerRgba.string
               : 'transparent',
-            transition: 'background-color 1s linear',
+            transition: 'background-color 1s linear, border-color 1s linear',
             fontSize: '1em',
+            border: this.props.siteSettings
+              ? `1px solid ${this.props.siteSettings.borderRgba.string}`
+              : '0px solid transparent',
             borderRadius: '0.25rem'
           }}
         >
