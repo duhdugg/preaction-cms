@@ -553,22 +553,9 @@ class App extends React.Component {
             img {
               border: 1px solid ${this.siteSettings.borderRgba.string};
             }
-            body {
-              ${
-                this.state.siteSettings.useBgImage
-                  ? 'background-image: url("/bg");'
-                  : ''
-              }
-              ${
-                this.state.siteSettings.tileBgImage
-                  ? 'background-size: auto;'
-                  : ''
-              }
-              ${
-                this.state.siteSettings.tileBgImage
-                  ? 'background-repeat: repeat;'
-                  : ''
-              }
+            #root::before {
+              background-color: ${this.state.siteSettings.bgColor};
+              color: ${this.state.siteSettings.fontColor};
             }
             .App {
               opacity: ${this.siteSettings.init ? 1 : 0};
@@ -585,6 +572,38 @@ class App extends React.Component {
               background-color: ${this.siteSettings.linkColor};
             }
           `}
+          {this.state.siteSettings.useBgImage
+            ? `\
+              .App {
+                overflow: hidden;
+                position: relative;
+              }
+              .App::before {
+                content: ' ';
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-image: url("/bg");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                will-change: transform;
+                z-index: -1;
+                opacity: 1;
+                pointer-events: none;
+              }
+          `
+            : ''}
+          {this.state.siteSettings.tileBgImage
+            ? `\
+              .App::before {
+                background-size: auto;
+                background-repeat: repeat;
+              }
+          `
+            : ''}
         </style>
       </div>
     )
@@ -613,11 +632,6 @@ class App extends React.Component {
     window.onpopstate = event => {
       this.setActivePathname(window.location.pathname)
     }
-  }
-
-  componentDidUpdate() {
-    window.document.body.style.backgroundColor = this.siteSettings.bgColor
-    window.document.body.style.color = this.siteSettings.fontColor
   }
 }
 
