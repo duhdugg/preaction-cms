@@ -4,7 +4,7 @@ Preaction CMS is a CMS intended to be super cool and user friendly.
 
 ### Current State
 
-Development is active. Documentation needs improvement. There is no backwards-compatibility guarantee. There are certainly bugs. The UI needs some serious triage.
+Development is active. Documentation needs improvement. There is no backwards-compatibility guarantee. There are certainly bugs. The UI needs some serious triage. Pull requests welcome!
 
 ### Features
 
@@ -21,10 +21,13 @@ Development is active. Documentation needs improvement. There is no backwards-co
   - [ ] reload only specific block with updates
 - [x] automatic saving of updates
 - [x] block types
+  - [ ] bio (photo, name, subtitle, description)
   - [x] contained wysiwyg
   - [ ] embedded frame
   - [x] images
   - [ ] panel
+  - [ ] social links
+  - [ ] storefront info (address, phone, hours)
   - [ ] uncontained wysiwyg
   - [ ] youtube
 - [x] editable page footers
@@ -39,6 +42,9 @@ Development is active. Documentation needs improvement. There is no backwards-co
   - [x] push to zoom
   - [x] show container
   - [x] width percentage
+- [ ] wysiwyg block settings
+  - [ ] show container
+  - [ ] show timestamp
 - [x] page management
   - [x] create page
   - [x] delete blocks
@@ -54,6 +60,7 @@ Development is active. Documentation needs improvement. There is no backwards-co
 - [x] page settings
   - [x] show footer
   - [x] show header
+  - [ ] show timestamps (published/edited)
 - [ ] publishing controls
 - [x] redirects
   - [x] create redirect
@@ -68,8 +75,7 @@ Development is active. Documentation needs improvement. There is no backwards-co
 - [x] style settings
   - [x] background color
   - [x] background image
-  - [ ] background image repeat
-  - [ ] background size
+  - [x] background image tile
   - [x] container color
   - [x] container opacity
   - [x] favicon image
@@ -78,3 +84,10 @@ Development is active. Documentation needs improvement. There is no backwards-co
   - [x] text color
   - [ ] uncontained link color
   - [ ] uncontained text color
+  - [ ] submenu item background color
+  - [ ] font families
+  - [ ] font scaling
+  - [ ] CSS overrides upload
+- [ ] extension API
+- [ ] user documentation
+- [ ] developer documentation
