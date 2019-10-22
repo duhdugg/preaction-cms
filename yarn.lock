@@ -1097,10 +1097,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@preaction/bootstrap-clips@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-1.3.6.tgz#545c668f54fe0265f9332e8674c1df54a3dccc83"
-  integrity sha512-mLi1KfSCnUrV/rS5qJ1uzGNxnSKCMVJ18Wc66FLw95GQ1qBCfCjCR1C1ivkWLtc8XeZJlqHCyeCiupp8eruEBw==
+"@preaction/bootstrap-clips@^1.3.7":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-1.3.7.tgz#bc4b99cc48e5744a20012a4aedfce535b4e8e06a"
+  integrity sha512-bruxnai0uOhKXS9Gdwbld1dCxiCL4YzJuS+vmomuuDPrg58I3/J/V4uy7cYd9Yu0ZED+QN5yh0kduPNq1GTHQw==
 
 "@preaction/inputs@^1.3.8":
   version "1.3.8"
