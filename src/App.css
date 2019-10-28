@@ -26,8 +26,7 @@ code {
   top: 0;
   left: 0;
   background-color: transparent;
-  color: transparent;
-  transition: background-color 1s linear, color 1s linear;
+  transition: background-color 1s linear;
   will-change: transform;
   z-index: -2;
   pointer-events: none;
@@ -40,7 +39,8 @@ code {
 
 .App {
   opacity: 0;
-  transition: opacity 1s linear;
+  color: transparent;
+  transition: opacity 1s linear, color 1s linear;
 }
 
 footer {

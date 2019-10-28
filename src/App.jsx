@@ -555,9 +555,9 @@ class App extends React.Component {
             }
             #root::before {
               background-color: ${this.state.siteSettings.bgColor};
-              color: ${this.state.siteSettings.fontColor};
             }
             .App {
+              color: ${this.state.siteSettings.fontColor};
               opacity: ${this.siteSettings.init ? 1 : 0};
               padding-top: ${
                 this.state.siteSettings.navPosition === 'fixed-top'
