@@ -210,30 +210,29 @@ class App extends React.Component {
         subMenu: adminSubmenu,
         order: 1
       })
-
-      menu.sort((a, b) => {
-        let retval = 0
-        if (a.name < b.name) {
-          retval = -1
-        } else if (a.name > b.name) {
-          retval = 1
-        }
-        let aOrder = a.order
-        let bOrder = b.order
-        if (aOrder === undefined) {
-          aOrder = 0
-        }
-        if (bOrder === undefined) {
-          bOrder = 0
-        }
-        if (aOrder < bOrder) {
-          retval = -1
-        } else if (aOrder > bOrder) {
-          retval = 1
-        }
-        return retval
-      })
     }
+    menu.sort((a, b) => {
+      let retval = 0
+      if (a.name < b.name) {
+        retval = -1
+      } else if (a.name > b.name) {
+        retval = 1
+      }
+      let aOrder = a.order
+      let bOrder = b.order
+      if (aOrder === undefined) {
+        aOrder = 0
+      }
+      if (bOrder === undefined) {
+        bOrder = 0
+      }
+      if (aOrder < bOrder) {
+        retval = -1
+      } else if (aOrder > bOrder) {
+        retval = 1
+      }
+      return retval
+    })
     return menu
   }
 
