@@ -87,7 +87,7 @@ Development is active. Documentation needs improvement. There is no backwards-co
   - [ ] submenu item background color
   - [ ] font families
   - [ ] font scaling
-  - [ ] CSS overrides upload
+  - [x] CSS overrides
 - [ ] extension API
 - [ ] user documentation
 - [ ] developer documentation

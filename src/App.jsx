@@ -45,6 +45,7 @@ class App extends React.Component {
         bgColor: '#000000',
         borderColor: '#000000',
         borderOpacity: 0,
+        cssOverrides: '',
         fontColor: '#ffffff',
         hostname: '',
         linkColor: '#ffffff',
@@ -605,6 +606,7 @@ class App extends React.Component {
           `
             : ''}
         </style>
+        <style>{this.state.siteSettings.cssOverrides || ''}</style>
       </div>
     )
   }

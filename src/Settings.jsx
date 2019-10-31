@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Card } from '@preaction/bootstrap-clips'
-import { Input, Checkbox, Select } from '@preaction/inputs'
+import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 
 class Settings extends React.Component {
   constructor(props) {
@@ -457,6 +457,13 @@ class Settings extends React.Component {
                   </div>
                 </div>
               </Card>
+              <Textarea
+                label='CSS Overrides'
+                value={this.props.siteSettings.cssOverrides}
+                valueHandler={this.props.getSettingsValueHandler(
+                  'cssOverrides'
+                )}
+              />
               <Card
                 header='Redirects'
                 headerTheme='red'
