@@ -28,8 +28,10 @@ change the admin password:
 
 `node`
 
-`> const updateAdminPassword = require('./lib/session').updateAdminPassword`
-`> updateAdminPassword('newpass')`
+```
+const updateAdminPassword = require('./lib/session').updateAdminPassword
+updateAdminPassword('newpass')
+```
 
 ### Features
 
