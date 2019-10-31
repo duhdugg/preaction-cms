@@ -6,6 +6,31 @@ Preaction CMS is a CMS intended to be super cool and user friendly.
 
 Development is active. Documentation needs improvement. There is no backwards-compatibility guarantee. There are certainly bugs. The UI needs some serious triage. Pull requests welcome!
 
+### Running
+
+clone the repo:
+
+`git clone https://gitlab.com/dougelkin/preaction-cms.git`
+
+install dependencies:
+
+`yarn`
+
+build the client:
+
+`yarn build`
+
+run the server:
+
+`yarn start`
+
+change the admin password:
+
+`node`
+
+`> const updateAdminPassword = require('./lib/session').updateAdminPassword`
+`> updateAdminPassword('newpass')`
+
 ### Features
 
 - [x] authentication
