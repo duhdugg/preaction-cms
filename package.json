@@ -23,7 +23,7 @@
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.1",
     "sequelize": "^5.12.0",
-    "sitemap": "^4.1.1",
+    "sitemap": "3.2.2",
     "socket.io": "^2.2.0",
     "sqlite3": "^4.0.6"
   },
