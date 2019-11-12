@@ -377,6 +377,7 @@ class Page extends React.Component {
   }
 
   loadPage(path) {
+    path = path.replace(/^\//, '')
     this.setState(
       state => {
         state.loading = true
