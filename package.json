@@ -4,7 +4,7 @@
   "version": "0.3.10",
   "proxy": "http://localhost:8999",
   "dependencies": {
-    "@preaction/validation": "^1.3.3",
+    "@preaction/validation": "^1.3.4",
     "animate.css": "^3.7.2",
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
@@ -14,30 +14,30 @@
     "es6-shim": "^0.35.5",
     "excerpt-html": "^1.2.1",
     "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "ionicons": "^4.6.2",
-    "jpeg-autorotate": "^5.0.0",
-    "mobile-detect": "^1.4.3",
-    "multer": "^1.4.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "^3.0.1",
-    "sequelize": "^5.12.0",
-    "sitemap": "3.2.2",
-    "socket.io": "^2.2.0",
-    "sqlite3": "^4.0.6"
+    "express-session": "^1.17.0",
+    "ionicons": "^4.6.3",
+    "jpeg-autorotate": "^5.0.2",
+    "mobile-detect": "^1.4.4",
+    "multer": "^1.4.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "^3.3.0",
+    "sequelize": "^5.21.3",
+    "sitemap": "^5.1.0",
+    "socket.io": "^2.3.0",
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
-    "@preaction/bootstrap-clips": "^1.3.7",
-    "@preaction/inputs": "^1.3.8",
-    "bootstrap": "^4.3.1",
-    "eslint": "^6.4.0",
-    "eslint-config-prettier": "^6.3.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "hex-rgb": "^4.0.0",
-    "nodemon": "^1.18.10",
-    "prettier": "^1.18.2",
-    "react-router-dom": "^5.0.1"
+    "@preaction/bootstrap-clips": "^1.3.8",
+    "@preaction/inputs": "^1.3.9",
+    "bootstrap": "^4.4.1",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "hex-rgb": "^4.1.0",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "react-router-dom": "^5.1.2"
   },
   "scripts": {
     "dev-client": "react-scripts start",
@@ -53,7 +53,7 @@
       "plugin:prettier/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 2019
+      "ecmaVersion": 2020
     }
   },
   "browserslist": {
