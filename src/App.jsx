@@ -84,7 +84,13 @@ class App extends React.Component {
   }
 
   createPage(title) {
+    if (!title) {
+      return
+    }
     let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+    if (!key.replace(/-/gi, '')) {
+      return
+    }
     let pageType = 'content'
     let newPage = {
       key,
