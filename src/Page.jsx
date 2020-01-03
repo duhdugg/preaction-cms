@@ -1,4 +1,5 @@
 import axios from 'axios'
+import PropTypes from 'prop-types'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
@@ -538,6 +539,17 @@ class Page extends React.Component {
     }
     return retval
   }
+}
+
+Page.propTypes = {
+  addPage: PropTypes.func.isRequired,
+  deletePage: PropTypes.func,
+  editable: PropTypes.bool,
+  emitSave: PropTypes.func.isRequired,
+  footerControl: PropTypes.func.isRequired,
+  headerControl: PropTypes.func.isRequired,
+  path: PropTypes.string.isRequired,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default Page

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Card } from '@preaction/bootstrap-clips'
 import { Checkbox, Select } from '@preaction/inputs'
@@ -365,6 +366,17 @@ class PageBlockImages extends React.Component {
       </div>
     )
   }
+}
+
+PageBlockImages.propTypes = {
+  blockControl: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
+  editable: PropTypes.bool,
+  emitSave: PropTypes.func.isRequired,
+  galleryControl: PropTypes.func.isRequired,
+  getImages: PropTypes.func.isRequired,
+  getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default PageBlockImages

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import { Card } from '@preaction/bootstrap-clips'
@@ -677,6 +678,14 @@ class Settings extends React.Component {
     }
     return true
   }
+}
+
+Settings.propTypes = {
+  addPage: PropTypes.func.isRequired,
+  authenticated: PropTypes.bool,
+  emitReload: PropTypes.func.isRequired,
+  getSettingsValueHandler: PropTypes.func.isRequired,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default Settings

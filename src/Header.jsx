@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import Page from './Page.jsx'
 
@@ -31,6 +32,13 @@ class Header extends React.Component {
       </div>
     )
   }
+}
+
+Header.propTypes = {
+  editable: PropTypes.bool,
+  emitSave: PropTypes.func.isRequired,
+  show: PropTypes.bool,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default Header

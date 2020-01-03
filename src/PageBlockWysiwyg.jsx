@@ -1,4 +1,5 @@
 import axios from 'axios'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Form, Wysiwyg } from '@preaction/inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
@@ -131,6 +132,13 @@ class PageBlockWysiwyg extends React.Component {
       }
     }
   }
+}
+
+PageBlockWysiwyg.propTypes = {
+  data: PropTypes.object.isRequired,
+  emitSave: PropTypes.func.isRequired,
+  editable: PropTypes.bool,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default PageBlockWysiwyg

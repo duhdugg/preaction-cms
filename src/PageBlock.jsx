@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import PageBlockImages from './PageBlockImages.jsx'
 import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
@@ -76,6 +77,19 @@ class PageBlock extends React.Component {
       </div>
     )
   }
+}
+
+PageBlock.propTypes = {
+  blockControl: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
+  editable: PropTypes.bool,
+  emitSave: PropTypes.func.isRequired,
+  first: PropTypes.bool,
+  galleryControl: PropTypes.func.isRequired,
+  getImages: PropTypes.func.isRequired,
+  getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
+  last: PropTypes.bool,
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default PageBlock

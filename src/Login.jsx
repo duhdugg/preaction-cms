@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import { Form, Input } from '@preaction/inputs'
@@ -73,6 +74,10 @@ class Login extends React.Component {
     }
     return true
   }
+}
+
+Login.propTypes = {
+  siteSettings: PropTypes.object.isRequired
 }
 
 export default Login

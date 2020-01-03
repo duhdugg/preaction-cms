@@ -19,6 +19,7 @@
     "jpeg-autorotate": "^5.0.2",
     "mobile-detect": "^1.4.4",
     "multer": "^1.4.2",
+    "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "^3.3.0",
@@ -50,7 +51,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "plugin:prettier/recommended"
+      "plugin:prettier/recommended",
+      "plugin:react/recommended"
     ],
     "parserOptions": {
       "ecmaVersion": 2020
