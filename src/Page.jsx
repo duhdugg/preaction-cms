@@ -542,12 +542,12 @@ class Page extends React.Component {
 }
 
 Page.propTypes = {
-  addPage: PropTypes.func.isRequired,
+  addPage: PropTypes.func,
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
-  footerControl: PropTypes.func.isRequired,
-  headerControl: PropTypes.func.isRequired,
+  footerControl: PropTypes.func,
+  headerControl: PropTypes.func,
   path: PropTypes.string.isRequired,
   siteSettings: PropTypes.object.isRequired
 }
