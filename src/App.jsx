@@ -525,7 +525,6 @@ class App extends React.Component {
                 </Route>
                 <Route exact path='/settings'>
                   <Settings
-                    addPage={this.addPage.bind(this)}
                     authenticated={this.state.authenticated}
                     deletePage={this.deletePage.bind(this)}
                     emitSave={this.emitSave.bind(this)}

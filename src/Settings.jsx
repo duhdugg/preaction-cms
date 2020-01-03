@@ -20,16 +20,6 @@ class Settings extends React.Component {
     this.bgFileInput = React.createRef()
   }
 
-  addPage() {
-    if (this.newPage.key) {
-      this.props.addPage(this.newPage)
-    }
-    this.setState(state => {
-      state.newPageTitle = ''
-      return state
-    })
-  }
-
   deleteRedirect(redirect) {
     axios.delete(`/api/redirect/${redirect.id}`).then(response => {
       this.getRedirects()
@@ -310,28 +300,6 @@ class Settings extends React.Component {
 
               <div className='row'>
                 <div className='col'></div>
-              </div>
-
-              <h3>Add Page</h3>
-
-              <div className='row'>
-                <div className='col'>
-                  <Input
-                    label='New Page Title'
-                    type='text'
-                    value={this.state.newPageTitle}
-                    valueHandler={this.getValueHandler('newPageTitle')}
-                  />
-                  <div>
-                    <button
-                      type='button'
-                      className='btn btn-primary'
-                      onClick={this.addPage.bind(this)}
-                    >
-                      Create New Page
-                    </button>
-                  </div>
-                </div>
               </div>
 
               <Card
@@ -681,7 +649,6 @@ class Settings extends React.Component {
 }
 
 Settings.propTypes = {
-  addPage: PropTypes.func.isRequired,
   authenticated: PropTypes.bool,
   emitReload: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
