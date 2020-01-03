@@ -38,11 +38,6 @@ updateAdminPassword('newpass')
 - [x] authentication
   - [x] user+pw login, bcrypted
   - [ ] email+pw login, bcrypted, registered, verified, self-service, reset
-  - [ ] Apple
-  - [ ] Facebook
-  - [ ] Google
-  - [ ] Microsoft
-  - [ ] Twitter
 - [x] automatic reload on updates
   - [x] reload page data with updates
   - [ ] reload only specific block with updates
@@ -79,16 +74,12 @@ updateAdminPassword('newpass')
   - [x] rearrange blocks
   - [x] rename page
   - [x] view page
-- [ ] module types
-  - [ ] feed
+- [x] module types
   - [x] page
   - [x] subpage
-  - [ ] wiki
 - [x] page settings
   - [x] show footer
   - [x] show header
-  - [ ] show timestamps (published/edited)
-- [ ] publishing controls
 - [x] redirects
   - [x] create redirect
   - [x] update redirect
@@ -96,9 +87,7 @@ updateAdminPassword('newpass')
   - [x] handle redirect
 - [x] site settings management
   - [x] site name setting
-  - [ ] enable/disable authentication methods
-  - [ ] enable/disable extensions and modules
-  - [ ] Google Analytics
+  - [ ] analytics
 - [x] style settings
   - [x] background color
   - [x] background image
