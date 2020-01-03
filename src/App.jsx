@@ -83,6 +83,17 @@ class App extends React.Component {
     }
   }
 
+  createPage(title) {
+    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+    let pageType = 'content'
+    let newPage = {
+      key,
+      title,
+      pageType
+    }
+    this.addPage(newPage)
+  }
+
   deletePage(page) {
     if (this.editable) {
       axios
@@ -181,12 +192,20 @@ class App extends React.Component {
                 this.state.editable ? 'on' : 'off'
               }`}
             />{' '}
-            Edit
+            Edit Mode
           </span>
         ),
         onClick: e => {
           e.preventDefault()
-          this.toggleEdit()
+          this.toggleEditMode()
+        }
+      })
+      adminSubmenu.push({
+        name: 'New Page',
+        onClick: e => {
+          e.preventDefault()
+          let title = prompt('New Page Title')
+          this.createPage(title)
         }
       })
       adminSubmenu.push({
@@ -355,7 +374,7 @@ class App extends React.Component {
     )
   }
 
-  toggleEdit() {
+  toggleEditMode() {
     this.setState(state => {
       state.editable = !state.editable
       return state
