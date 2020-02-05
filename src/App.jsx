@@ -139,7 +139,7 @@ class App extends React.Component {
         order: -1,
         active: this.state.activePathname === '/',
         onClick: e => {
-          this.setActivePathname('/')
+          this.navigate('/')
         }
       })
     }
@@ -160,7 +160,7 @@ class App extends React.Component {
                   href: path,
                   component: NavLink,
                   onClick: e => {
-                    this.setActivePathname(path)
+                    this.navigate(path)
                   }
                 })
                 menuItem.subMenu.sort((a, b) => {
@@ -219,7 +219,7 @@ class App extends React.Component {
         href: '/settings/',
         component: NavLink,
         onClick: e => {
-          this.setActivePathname('/settings/')
+          this.navigate('/settings/')
         }
       })
       adminSubmenu.push({
@@ -378,6 +378,7 @@ class App extends React.Component {
         })
       }
     )
+    this.trackPageView(path)
   }
 
   toggleEditMode() {
@@ -400,6 +401,7 @@ class App extends React.Component {
         })
       }
     )
+    this.trackPageView(path)
   }
 
   reload() {
@@ -417,6 +419,18 @@ class App extends React.Component {
       state.activePathname = pathname
       return state
     })
+  }
+
+  trackPageView(path) {
+    if (
+      this.state.siteSettings.useGoogleAnalytics &&
+      this.state.siteSettings.googleAnalyticsTrackingId &&
+      window.gtag
+    ) {
+      window.gtag('config', this.state.siteSettings.googleAnalyticsTrackingId, {
+        page_path: path
+      })
+    }
   }
 
   render() {
