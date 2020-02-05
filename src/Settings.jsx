@@ -539,6 +539,26 @@ class Settings extends React.Component {
                   </table>
                 </div>
               </Card>
+              <Card header='Analytics' headerTheme='blue'>
+                <Checkbox
+                  label='Use Google Analytics'
+                  checked={this.props.siteSettings.useGoogleAnalytics}
+                  valueHandler={this.props.getSettingsValueHandler(
+                    'useGoogleAnalytics'
+                  )}
+                />
+                {this.props.siteSettings.useGoogleAnalytics ? (
+                  <Input
+                    label='Google Analytics Tracking ID'
+                    value={this.props.siteSettings.googleAnalyticsTrackingId}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'googleAnalyticsTrackingId'
+                    )}
+                  />
+                ) : (
+                  ''
+                )}
+              </Card>
             </form>
             <form
               method='POST'
