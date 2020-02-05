@@ -539,7 +539,13 @@ class Settings extends React.Component {
                   </table>
                 </div>
               </Card>
-              <Card header='Analytics' headerTheme='blue'>
+              <Card
+                header='Analytics'
+                headerTheme='blue'
+                style={{
+                  card: { backgroundColor: 'transparent' }
+                }}
+              >
                 <Checkbox
                   label='Use Google Analytics'
                   checked={this.props.siteSettings.useGoogleAnalytics}
