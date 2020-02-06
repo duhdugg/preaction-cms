@@ -87,7 +87,7 @@ updateAdminPassword('newpass')
   - [x] handle redirect
 - [x] site settings management
   - [x] site name setting
-  - [ ] analytics
+  - [x] analytics
 - [x] style settings
   - [x] background color
   - [x] background image
