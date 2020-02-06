@@ -213,6 +213,11 @@ io.on('connection', socket => {
 
 const port = process.env.PREACTION_PORT || 8999
 
+db.sync()
+  .then(session.sync)
+  .then(pages.sync)
+  .then(redirects.sync)
+
 http.listen(port, () => {
   console.log(`@preaction/cms app listening on port ${port}`)
 })
