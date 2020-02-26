@@ -381,6 +381,7 @@ class App extends React.Component {
                   ancestry.forEach(p => {
                     Object.assign(s, p.settings)
                   })
+                  s.site = page.settings.site
                   return s
                 }
               })
@@ -469,7 +470,6 @@ class App extends React.Component {
       this.settings.googleAnalyticsTrackingId &&
       window.gtag
     ) {
-      console.debug(true)
       window.gtag('config', this.settings.googleAnalyticsTrackingId, {
         page_path: path
       })
@@ -693,7 +693,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.loadSettings()
     this.loadSettings()
     this.loadPages()
     this.loadSession()

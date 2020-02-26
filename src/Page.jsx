@@ -159,6 +159,7 @@ class Page extends React.Component {
     if (this.state.page) {
       Object.assign(s, this.state.page.settings)
     }
+    s.site = this.state.page.settings.site
     return s
   }
 

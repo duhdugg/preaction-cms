@@ -173,6 +173,11 @@ class PageSettings extends React.Component {
                       }
                     }}
                   >
+                    <Checkbox
+                      label='Parent Site'
+                      checked={this.props.settings.site === true}
+                      valueHandler={this.props.getSettingsValueHandler('site')}
+                    />
                     <Select
                       label='Nav Position'
                       value={this.props.settings.navPosition}
@@ -702,7 +707,6 @@ class PageSettings extends React.Component {
                   </table>
                 </div>
               </Card>
-              )
               <Card
                 header='Analytics'
                 headerTheme='blue'
@@ -716,15 +720,31 @@ class PageSettings extends React.Component {
                   valueHandler={this.props.getSettingsValueHandler(
                     'useGoogleAnalytics'
                   )}
+                  readOnly={this.props.getPageSettingIsUndefined(
+                    'useGoogleAnalytics'
+                  )}
+                  onClick={() => {
+                    this.overrideSetting('useGoogleAnalytics')
+                  }}
                 />
+                <ResetButton settingsKey='useGoogleAnalytics' />
                 {this.props.settings.useGoogleAnalytics ? (
-                  <Input
-                    label='Google Analytics Tracking ID'
-                    value={this.props.settings.googleAnalyticsTrackingId}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'googleAnalyticsTrackingId'
-                    )}
-                  />
+                  <div>
+                    <Input
+                      label='Google Analytics Tracking ID'
+                      value={this.props.settings.googleAnalyticsTrackingId}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'googleAnalyticsTrackingId'
+                      )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'googleAnalyticsTrackingId'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('googleAnalyticsTrackingId')
+                      }}
+                    />
+                    <ResetButton settingsKey='googleAnalyticsTrackingId' />
+                  </div>
                 ) : (
                   ''
                 )}
