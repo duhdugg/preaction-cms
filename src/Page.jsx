@@ -448,32 +448,30 @@ class Page extends React.Component {
           .get(`/api/page/by-key/${path}`)
           .then(response => {
             let page = response.data
-            axios.get(`/api/page/${page.id}/settings`).then(settings => {
-              this.setState(
-                state => {
-                  state.loading = false
-                  state.notFound = false
-                  state.page = page
-                  this.pageId = page.id
-                  return state
-                },
-                () => {
-                  this.loadSettings(this.state.page)
-                }
-              )
-              if (
-                this.topLevelPageKey !== 'header' &&
-                this.topLevelPageKey !== 'footer'
-              ) {
-                let title = ''
-                if (this.topLevelPageKey === 'home') {
-                  title = this.settings.siteTitle
-                } else {
-                  title = `${response.data.title} | ${this.settings.siteTitle}`
-                }
-                document.title = title
+            this.setState(
+              state => {
+                state.loading = false
+                state.notFound = false
+                state.page = page
+                this.pageId = page.id
+                return state
+              },
+              () => {
+                this.loadSettings(this.state.page)
               }
-            })
+            )
+            if (
+              this.topLevelPageKey !== 'header' &&
+              this.topLevelPageKey !== 'footer'
+            ) {
+              let title = ''
+              if (this.topLevelPageKey === 'home') {
+                title = this.settings.siteTitle
+              } else {
+                title = `${response.data.title} | ${this.settings.siteTitle}`
+              }
+              document.title = title
+            }
           })
           .catch(e => {
             console.error(e)
