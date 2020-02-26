@@ -63,21 +63,19 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Login | ${this.props.siteSettings.siteTitle}`
+    document.title = `Login | ${this.props.settings.siteTitle}`
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.siteSettings.siteTitle !== this.props.siteSettings.siteTitle
-    ) {
-      document.title = `Login | ${nextProps.siteSettings.siteTitle}`
+    if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
+      document.title = `Login | ${nextProps.settings.siteTitle}`
     }
     return true
   }
 }
 
 Login.propTypes = {
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired
 }
 
 export default Login

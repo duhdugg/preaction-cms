@@ -2,6 +2,7 @@ import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Form, Wysiwyg } from '@preaction/inputs'
+import { getRgbaFromSettings } from './lib/getRgba.js'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 
 class PageBlockWysiwyg extends React.Component {
@@ -58,13 +59,15 @@ class PageBlockWysiwyg extends React.Component {
         />
         <div
           style={{
-            backgroundColor: this.props.siteSettings
-              ? this.props.siteSettings.containerRgba.string
+            backgroundColor: this.props.settings
+              ? getRgbaFromSettings(this.props.settings, 'container').string
               : 'transparent',
             transition: 'background-color 1s linear, border-color 1s linear',
             fontSize: '1em',
-            border: this.props.siteSettings
-              ? `1px solid ${this.props.siteSettings.borderRgba.string}`
+            border: this.props.settings
+              ? `1px solid ${
+                  getRgbaFromSettings(this.props.settings, 'border').string
+                }`
               : '0px solid transparent',
             borderRadius: '0.25rem'
           }}
@@ -138,7 +141,7 @@ PageBlockWysiwyg.propTypes = {
   data: PropTypes.object.isRequired,
   emitSave: PropTypes.func.isRequired,
   editable: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired
 }
 
 export default PageBlockWysiwyg

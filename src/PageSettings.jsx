@@ -5,7 +5,7 @@ import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 
-class Settings extends React.Component {
+class PageSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -72,6 +72,12 @@ class Settings extends React.Component {
     }
   }
 
+  overrideSetting(key) {
+    if (this.props.getPageSettingIsUndefined(key)) {
+      this.props.getSettingsValueHandler(key)(this.props.settings[key])
+    }
+  }
+
   refreshIcon() {
     let icon = document.querySelector('link[rel="shortcut icon"]')
     let timestamp = +new Date()
@@ -102,14 +108,25 @@ class Settings extends React.Component {
     })
   }
 
+  resetSetting(key) {
+    let isUndefined = this.props.getPageSettingIsUndefined(key)
+    if (!isUndefined) {
+      this.props.getResetter(key)()
+    }
+  }
+
   render() {
-    let ResetButton = key => {
-      return (
+    let ResetButton = props => {
+      let isUndefined = this.props.getPageSettingIsUndefined(props.settingsKey)
+      return isUndefined ? (
+        ''
+      ) : (
         <button
           type='button'
           className='btn btn-sm btn-success'
-          onClick={e => {
-            this.props.getResetter(key)
+          style={{ margin: 0, top: '-0.8em', position: 'relative' }}
+          onClick={() => {
+            this.resetSetting(props.settingsKey)
           }}
         >
           Reset
@@ -118,7 +135,7 @@ class Settings extends React.Component {
     }
 
     return (
-      <div>
+      <div className='settings-component'>
         {this.props.authenticated ? (
           <div>
             <style type='text/css'>{`
@@ -132,7 +149,6 @@ class Settings extends React.Component {
               }
             `}</style>
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
-              <h3>Site Settings</h3>
               <div className='row'>
                 <div className='col'>
                   <Input
@@ -142,8 +158,12 @@ class Settings extends React.Component {
                     valueHandler={this.props.getSettingsValueHandler(
                       'siteTitle'
                     )}
+                    readOnly={this.props.getPageSettingIsUndefined('siteTitle')}
+                    onClick={() => {
+                      this.overrideSetting('siteTitle')
+                    }}
                   />
-                  <ResetButton key='siteTitle' />
+                  <ResetButton settingsKey='siteTitle' />
                   <Card
                     header='Navigation'
                     headerTheme='dark'
@@ -159,24 +179,36 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'navPosition'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'navPosition'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('navPosition')
+                      }}
                     >
                       <option value='fixed-top'>Fixed to Top</option>
                       <option value='above-header'>Above Header</option>
                       <option value='below-header'>Below Header</option>
                     </Select>
-                    <ResetButton key='siteTitle' />
+                    <ResetButton settingsKey='navPosition' />
                     {this.props.settings.navPosition === 'fixed-top' ? (
-                      <Select
-                        label='Nav Theme'
-                        value={this.props.settings.navTheme}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navTheme'
-                        )}
-                      >
-                        <option />
-                        <option value='light'>Light</option>
-                        <option value='dark'>Dark</option>
-                      </Select>
+                      <div>
+                        <Select
+                          label='Nav Theme'
+                          value={this.props.settings.navTheme}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navTheme'
+                          )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navTheme'
+                          )}
+                        >
+                          <option />
+                          <option value='light'>Light</option>
+                          <option value='dark'>Dark</option>
+                        </Select>
+                        <ResetButton settingsKey='navTheme' />
+                      </div>
                     ) : (
                       ''
                     )}
@@ -190,40 +222,68 @@ class Settings extends React.Component {
                           valueHandler={this.props.getSettingsValueHandler(
                             'navType'
                           )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navType'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('navType')
+                          }}
                         >
                           <option>basic</option>
                           <option>tabs</option>
                           <option>pills</option>
                         </Select>
+                        <ResetButton settingsKey='navType' />
                         <Select
                           label='Nav Alignment'
                           value={this.props.settings.navAlignment}
                           valueHandler={this.props.getSettingsValueHandler(
                             'navAlignment'
                           )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navAlignment'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('navAlignment')
+                          }}
                         >
                           <option>left</option>
                           <option>center</option>
                           <option>right</option>
                         </Select>
+                        <ResetButton settingsKey='navAlignment' />
                         <Select
                           label='Nav Spacing'
                           value={this.props.settings.navSpacing}
                           valueHandler={this.props.getSettingsValueHandler(
                             'navSpacing'
                           )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navSpacing'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('navSpacing')
+                          }}
                         >
                           <option>normal</option>
                           <option>fill</option>
                           <option>justify</option>
                         </Select>
+                        <ResetButton settingsKey='navSpacing' />
                         <Checkbox
                           label='Collapse nav for smaller screens'
                           checked={this.props.settings.navCollapsible}
                           valueHandler={this.props.getSettingsValueHandler(
                             'navCollapsible'
                           )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navCollapsible'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('navCollapsible')
+                          }}
                         />
+                        <ResetButton settingsKey='navCollapsible' />
                       </div>
                     ) : (
                       ''
@@ -231,7 +291,6 @@ class Settings extends React.Component {
                   </Card>
                 </div>
               </div>
-
               <div className='row'>
                 <Card
                   header='Background'
@@ -314,11 +373,9 @@ class Settings extends React.Component {
                   </button>
                 </Card>
               </div>
-
               <div className='row'>
                 <div className='col'></div>
               </div>
-
               <Card
                 header='Colors'
                 headerTheme='dark'
@@ -337,7 +394,12 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'bgColor'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined('bgColor')}
+                      onClick={() => {
+                        this.overrideSetting('bgColor')
+                      }}
                     />
+                    <ResetButton settingsKey='bgColor' />
                   </div>
                   <div className='col-sm'>
                     <Input
@@ -347,7 +409,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'fontColor'
                       )}
+                      readonly={this.props.getPageSettingIsUndefined(
+                        'fontColor'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('fontColor')
+                      }}
                     />
+                    <ResetButton settingsKey='fontColor' />
                   </div>
                 </div>
                 <div className='row'>
@@ -359,7 +428,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'linkColor'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'linkColor'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('linkColor')
+                      }}
                     />
+                    <ResetButton settingsKey='linkColor' />
                   </div>
                   <div className='col-sm'>
                     <Input
@@ -369,7 +445,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'containerColor'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'containerColor'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('containerColor')
+                      }}
                     />
+                    <ResetButton settingsKey='containerColor' />
                   </div>
                   <div className='col-sm'>
                     <Input
@@ -379,7 +462,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'borderColor'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'borderColor'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('borderColor')
+                      }}
                     />
+                    <ResetButton settingsKey='borderColor' />
                   </div>
                 </div>
                 <div className='row'>
@@ -395,6 +485,12 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'containerOpacity'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'containerOpacity'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('containerOpacity')
+                      }}
                     />
                     <Input
                       type='range'
@@ -405,7 +501,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'containerOpacity'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'containerOpacity'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('containerOpacity')
+                      }}
                     />
+                    <ResetButton settingsKey='containerOpacity' />
                   </div>
                   <div className='col-sm'>
                     <Input
@@ -419,6 +522,12 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'borderOpacity'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'borderOpacity'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('borderOpacity')
+                      }}
                     />
                     <Input
                       type='range'
@@ -429,7 +538,14 @@ class Settings extends React.Component {
                       valueHandler={this.props.getSettingsValueHandler(
                         'borderOpacity'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'borderOpacity'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('borderOpacity')
+                      }}
                     />
+                    <ResetButton settingsKey='borderOpacity' />
                   </div>
                 </div>
 
@@ -474,117 +590,119 @@ class Settings extends React.Component {
                 valueHandler={this.props.getSettingsValueHandler(
                   'cssOverrides'
                 )}
+                readOnly={this.props.getPageSettingIsUndefined('cssOverrides')}
+                onClick={() => {
+                  this.overrideSetting('cssOverrides')
+                }}
               />
-              {this.props.site ? (
-                <Card
-                  header='Redirects'
-                  headerTheme='red'
-                  style={{
-                    card: { backgroundColor: 'transparent' }
-                  }}
-                >
-                  <div className='row'>
-                    <table className='redirects'>
-                      <thead>
-                        <tr>
-                          <th />
-                          <th>Match</th>
-                          <th>Location</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.redirects.map(redirect => {
-                          return (
-                            <tr key={redirect.id}>
-                              <td>
-                                <button
-                                  type='button'
-                                  className='btn btn-sm btn-light'
-                                  onClick={e => {
-                                    this.editRedirect(redirect)
-                                  }}
-                                >
-                                  <i className='ion ion-md-create' /> edit
-                                </button>
-                                <button
-                                  type='button'
-                                  className='btn btn-sm btn-danger'
-                                  onClick={e => {
-                                    this.deleteRedirect(redirect)
-                                  }}
-                                >
-                                  <i className='ion ion-md-trash' /> delete
-                                </button>
-                              </td>
-                              <td>{redirect.match}</td>
-                              <td>{redirect.location}</td>
-                            </tr>
-                          )
-                        })}
-                        <tr>
-                          <td>
-                            <button
-                              type='button'
-                              className='btn btn-sm btn-primary'
-                              onClick={e => {
-                                this.editRedirect({
-                                  id: null,
-                                  match: '',
-                                  location: ''
-                                })
-                              }}
-                            >
-                              <i className='ion ion-md-create' /> new
-                            </button>
-                          </td>
-                          <td />
-                          <td />
-                        </tr>
-                      </tbody>
-                      {this.state.redirect ? (
-                        <tfoot>
-                          <tr>
-                            <td
-                              style={{
-                                top: '-0.5rem',
-                                position: 'relative'
-                              }}
-                            >
+              <ResetButton settingsKey='cssOverrides' />
+              <Card
+                header='Redirects'
+                headerTheme='red'
+                style={{
+                  card: { backgroundColor: 'transparent' }
+                }}
+              >
+                <div className='row'>
+                  <table className='redirects'>
+                    <thead>
+                      <tr>
+                        <th />
+                        <th>Match</th>
+                        <th>Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.redirects.map(redirect => {
+                        return (
+                          <tr key={redirect.id}>
+                            <td>
                               <button
                                 type='button'
-                                className='btn btn-success btn-sm'
-                                onClick={this.saveRedirect.bind(this)}
+                                className='btn btn-sm btn-dark'
+                                onClick={e => {
+                                  this.editRedirect(redirect)
+                                }}
                               >
-                                <i className='ion ion-md-save' /> Save
+                                <i className='ion ion-md-create' /> edit
+                              </button>
+                              <button
+                                type='button'
+                                className='btn btn-sm btn-danger'
+                                onClick={e => {
+                                  this.deleteRedirect(redirect)
+                                }}
+                              >
+                                <i className='ion ion-md-trash' /> delete
                               </button>
                             </td>
-                            <td>
-                              <Input
-                                value={this.state.redirect.match}
-                                valueHandler={this.getRedirectValueHandler(
-                                  'match'
-                                )}
-                              />
-                            </td>
-                            <td>
-                              <Input
-                                value={this.state.redirect.location}
-                                valueHandler={this.getRedirectValueHandler(
-                                  'location'
-                                )}
-                              />
-                            </td>
+                            <td>{redirect.match}</td>
+                            <td>{redirect.location}</td>
                           </tr>
-                        </tfoot>
-                      ) : (
-                        <tfoot />
-                      )}
-                    </table>
-                  </div>
-                </Card>
-              ) : (
-                ''
-              )}
+                        )
+                      })}
+                      <tr>
+                        <td>
+                          <button
+                            type='button'
+                            className='btn btn-sm btn-primary'
+                            onClick={e => {
+                              this.editRedirect({
+                                id: null,
+                                match: '',
+                                location: ''
+                              })
+                            }}
+                          >
+                            <i className='ion ion-md-create' /> new
+                          </button>
+                        </td>
+                        <td />
+                        <td />
+                      </tr>
+                    </tbody>
+                    {this.state.redirect ? (
+                      <tfoot>
+                        <tr>
+                          <td
+                            style={{
+                              top: '-0.5rem',
+                              position: 'relative'
+                            }}
+                          >
+                            <button
+                              type='button'
+                              className='btn btn-success btn-sm'
+                              onClick={this.saveRedirect.bind(this)}
+                            >
+                              <i className='ion ion-md-save' /> Save
+                            </button>
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.match}
+                              valueHandler={this.getRedirectValueHandler(
+                                'match'
+                              )}
+                            />
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.location}
+                              valueHandler={this.getRedirectValueHandler(
+                                'location'
+                              )}
+                            />
+                          </td>
+                        </tr>
+                      </tfoot>
+                    ) : (
+                      <tfoot />
+                    )}
+                  </table>
+                </div>
+              </Card>
+              )
               <Card
                 header='Analytics'
                 headerTheme='blue'
@@ -706,26 +824,27 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Site Settings | ${this.props.settings.siteTitle}`
+    document.title = `Page Settings | ${this.props.settings.siteTitle}`
     this.getRedirects()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
-      document.title = `Site Settings | ${nextProps.settings.siteTitle}`
+      document.title = `Page Settings | ${nextProps.settings.siteTitle}`
     }
     return true
   }
 }
 
-Settings.propTypes = {
+PageSettings.propTypes = {
   authenticated: PropTypes.bool,
   emitReload: PropTypes.func.isRequired,
-  getResetter: PropTypes.func,
+  getPageSettingIsUndefined: PropTypes.func.isRequired,
+  getResetter: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   hide: PropTypes.array,
   settings: PropTypes.object.isRequired,
   site: PropTypes.bool
 }
 
-export default Settings
+export default PageSettings

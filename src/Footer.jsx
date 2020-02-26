@@ -24,7 +24,7 @@ class Footer extends React.Component {
               editable={this.props.editable}
               emitSave={this.props.emitSave}
               path='/footer/'
-              siteSettings={this.props.siteSettings}
+              settings={this.props.settings}
               ref={this.page}
             />
           </div>
@@ -37,8 +37,8 @@ class Footer extends React.Component {
 Footer.propTypes = {
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
-  show: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
+  show: PropTypes.bool
 }
 
 export default Footer

@@ -14,7 +14,7 @@ class PageBlock extends React.Component {
                 data={this.props.data.pageblockwysiwyg}
                 editable={this.props.editable}
                 emitSave={this.props.emitSave}
-                siteSettings={this.props.siteSettings}
+                settings={this.props.settings}
               />
             ) : (
               ''
@@ -24,7 +24,7 @@ class PageBlock extends React.Component {
                 data={this.props.data}
                 editable={this.props.editable}
                 emitSave={this.props.emitSave}
-                siteSettings={this.props.siteSettings}
+                settings={this.props.settings}
                 blockControl={this.props.blockControl}
                 galleryControl={this.props.galleryControl}
                 getImages={this.props.getImages}
@@ -89,7 +89,7 @@ PageBlock.propTypes = {
   getImages: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired
 }
 
 export default PageBlock

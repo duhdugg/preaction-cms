@@ -65,6 +65,18 @@ a:hover {
   max-height: 50vh;
 }
 
+.settings-component h3,
+.settings-component table,
+.settings-component label {
+  text-shadow: 1px 1px #ccc;
+}
+
+.modal-content .card-body {
+  color: transparent;
+  background-color: transparent;
+  transition: color 1s linear, background-color 1s linear;
+}
+
 .wysiwyg label {
   display: none;
 }

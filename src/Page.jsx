@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
-import { Nav } from '@preaction/bootstrap-clips'
+import { Card, Modal, Nav } from '@preaction/bootstrap-clips'
 import './Page.css'
+import PageSettings from './PageSettings.jsx'
 
 class Page extends React.Component {
   constructor(props) {
@@ -12,8 +13,12 @@ class Page extends React.Component {
     this.state = {
       loading: false,
       notFound: false,
-      page: null
+      page: null,
+      settings: {},
+      showSettings: false
     }
+    this.pageId = null
+    this.settingsUpdateTimer = null
   }
 
   addPage() {
@@ -148,6 +153,15 @@ class Page extends React.Component {
     return path
   }
 
+  get settings() {
+    let s = {}
+    Object.assign(s, this.props.settings)
+    if (this.state.page) {
+      Object.assign(s, this.state.page.settings)
+    }
+    return s
+  }
+
   get topLevelPageKey() {
     return this.splitPath[0]
   }
@@ -176,6 +190,10 @@ class Page extends React.Component {
     })
   }
 
+  getPageSettingIsUndefined(key) {
+    return this.state.page.settings[key] === undefined
+  }
+
   getPageBlockSettingsValueHandler(pageblockId, key) {
     return value => {
       this.setState(state => {
@@ -192,22 +210,51 @@ class Page extends React.Component {
     }
   }
 
+  getPageSettingsResetter(key) {
+    return () => {
+      this.setState(
+        state => {
+          delete state.page.settings[key]
+          return state
+        },
+        () => {
+          clearTimeout(this.settingsUpdateTimer)
+          this.settingsUpdateTimer = setTimeout(() => {
+            axios
+              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .then(() => {
+                this.loadSettings(this.state.page)
+                this.props.emitSave()
+              })
+          }, 1000)
+        }
+      )
+    }
+  }
+
   getPageSettingsValueHandler(key) {
     return value => {
-      this.setState(state => {
-        state.page.settings[key] = value
-        if (key === 'showHeader') {
-          this.props.headerControl(value)
-        } else if (key === 'showFooter') {
-          this.props.footerControl(value)
+      this.setState(
+        state => {
+          state.page.settings[key] = value
+          if (key === 'showHeader') {
+            this.props.headerControl(value)
+          } else if (key === 'showFooter') {
+            this.props.footerControl(value)
+          }
+          return state
+        },
+        () => {
+          clearTimeout(this.settingsUpdateTimer)
+          this.settingsUpdateTimer = setTimeout(() => {
+            axios
+              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .then(() => {
+                this.props.emitSave()
+              })
+          }, 1000)
         }
-        axios
-          .put(`/api/page/${this.state.page.id}`, this.state.page)
-          .then(() => {
-            this.props.emitSave()
-          })
-        return state
-      })
+      )
     }
   }
 
@@ -245,6 +292,15 @@ class Page extends React.Component {
         }
       }
     ]
+    if (this.state.page.userCreated) {
+      menu.push({
+        name: 'add subpage',
+        onClick: e => {
+          e.preventDefault()
+          this.addPage()
+        }
+      })
+    }
     if (['header', 'footer'].indexOf(this.topLevelPageKey) < 0) {
       let subMenu = []
       if (this.topLevelPageKey !== 'home' && !this.state.page.parentId) {
@@ -309,7 +365,7 @@ class Page extends React.Component {
       })
       menu.push({
         name: 'page settings',
-        subMenu
+        onClick: this.toggleSettings.bind(this)
       })
     }
     return menu
@@ -390,36 +446,36 @@ class Page extends React.Component {
         axios
           .get(`/api/page/by-key/${path}`)
           .then(response => {
-            this.setState(
-              state => {
-                state.loading = false
-                state.notFound = false
-                state.page = response.data
-                return state
-              },
-              () => {
-                if (!['header', 'footer'].includes(this.topLevelPageKey)) {
-                  let showHeader = this.state.page.settings.showHeader !== false
-                  let showFooter = this.state.page.settings.showFooter !== false
-                  this.props.headerControl(showHeader)
-                  this.props.footerControl(showFooter)
+            let page = response.data
+            axios.get(`/api/page/${page.id}/settings`).then(settings => {
+              this.setState(
+                state => {
+                  state.loading = false
+                  state.notFound = false
+                  state.page = page
+                  this.pageId = page.id
+                  return state
+                },
+                () => {
+                  this.loadSettings(this.state.page)
                 }
+              )
+              if (
+                this.topLevelPageKey !== 'header' &&
+                this.topLevelPageKey !== 'footer'
+              ) {
+                let title = ''
+                if (this.topLevelPageKey === 'home') {
+                  title = this.settings.siteTitle
+                } else {
+                  title = `${response.data.title} | ${this.settings.siteTitle}`
+                }
+                document.title = title
               }
-            )
-            if (
-              this.topLevelPageKey !== 'header' &&
-              this.topLevelPageKey !== 'footer'
-            ) {
-              let title = ''
-              if (this.topLevelPageKey === 'home') {
-                title = this.props.siteSettings.siteTitle
-              } else {
-                title = `${response.data.title} | ${this.props.siteSettings.siteTitle}`
-              }
-              document.title = title
-            }
+            })
           })
           .catch(e => {
+            console.error(e)
             if (e.response.status === 404) {
               this.setState(state => {
                 state.loading = false
@@ -430,6 +486,15 @@ class Page extends React.Component {
           })
       }
     )
+  }
+
+  loadSettings(page) {
+    if (!['header', 'footer'].includes(this.topLevelPageKey)) {
+      let showHeader = this.settings.showHeader !== false
+      let showFooter = this.settings.showFooter !== false
+      this.props.headerControl(showHeader)
+      this.props.footerControl(showFooter)
+    }
   }
 
   reload() {
@@ -464,6 +529,14 @@ class Page extends React.Component {
     }
   }
 
+  toggleSettings(e) {
+    e.preventDefault()
+    this.setState(state => {
+      state.showSettings = !state.showSettings
+      return state
+    })
+  }
+
   render() {
     return (
       <div className='page'>
@@ -480,7 +553,7 @@ class Page extends React.Component {
                         last={index === this.state.page.pageblocks.length - 1}
                         editable={this.props.editable}
                         emitSave={this.props.emitSave}
-                        siteSettings={this.props.siteSettings}
+                        settings={this.settings}
                         blockControl={this.blockControl.bind(this)}
                         getImages={this.getImages.bind(this)}
                         galleryControl={this.galleryControl.bind(this)}
@@ -503,6 +576,39 @@ class Page extends React.Component {
                   >
                     <i className='ion ion-md-trash' /> Delete Page
                   </button>
+                ) : (
+                  ''
+                )}
+                {this.state.showSettings ? (
+                  <Modal>
+                    <Card
+                      header='Page Settings'
+                      footer={
+                        <div className='btn-group'>
+                          <button
+                            className='btn btn-dark'
+                            onClick={this.toggleSettings.bind(this)}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      }
+                      noMargin={true}
+                    >
+                      <PageSettings
+                        authenticated={this.props.editable}
+                        emitReload={() => {}}
+                        settings={this.settings}
+                        getResetter={this.getPageSettingsResetter.bind(this)}
+                        getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                          this
+                        )}
+                        getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                          this
+                        )}
+                      />
+                    </Card>
+                  </Modal>
                 ) : (
                   ''
                 )}
@@ -549,7 +655,7 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   path: PropTypes.string.isRequired,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired
 }
 
 export default Page

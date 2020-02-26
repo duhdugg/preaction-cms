@@ -5,7 +5,7 @@ import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 
-class Settings extends React.Component {
+class SiteSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -103,22 +103,8 @@ class Settings extends React.Component {
   }
 
   render() {
-    let ResetButton = key => {
-      return (
-        <button
-          type='button'
-          className='btn btn-sm btn-success'
-          onClick={e => {
-            this.props.getResetter(key)
-          }}
-        >
-          Reset
-        </button>
-      )
-    }
-
     return (
-      <div>
+      <div className='settings-component'>
         {this.props.authenticated ? (
           <div>
             <style type='text/css'>{`
@@ -143,7 +129,6 @@ class Settings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <ResetButton key='siteTitle' />
                   <Card
                     header='Navigation'
                     headerTheme='dark'
@@ -164,7 +149,6 @@ class Settings extends React.Component {
                       <option value='above-header'>Above Header</option>
                       <option value='below-header'>Below Header</option>
                     </Select>
-                    <ResetButton key='siteTitle' />
                     {this.props.settings.navPosition === 'fixed-top' ? (
                       <Select
                         label='Nav Theme'
@@ -231,7 +215,6 @@ class Settings extends React.Component {
                   </Card>
                 </div>
               </div>
-
               <div className='row'>
                 <Card
                   header='Background'
@@ -314,11 +297,9 @@ class Settings extends React.Component {
                   </button>
                 </Card>
               </div>
-
               <div className='row'>
                 <div className='col'></div>
               </div>
-
               <Card
                 header='Colors'
                 headerTheme='dark'
@@ -475,116 +456,113 @@ class Settings extends React.Component {
                   'cssOverrides'
                 )}
               />
-              {this.props.site ? (
-                <Card
-                  header='Redirects'
-                  headerTheme='red'
-                  style={{
-                    card: { backgroundColor: 'transparent' }
-                  }}
-                >
-                  <div className='row'>
-                    <table className='redirects'>
-                      <thead>
-                        <tr>
-                          <th />
-                          <th>Match</th>
-                          <th>Location</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.redirects.map(redirect => {
-                          return (
-                            <tr key={redirect.id}>
-                              <td>
-                                <button
-                                  type='button'
-                                  className='btn btn-sm btn-light'
-                                  onClick={e => {
-                                    this.editRedirect(redirect)
-                                  }}
-                                >
-                                  <i className='ion ion-md-create' /> edit
-                                </button>
-                                <button
-                                  type='button'
-                                  className='btn btn-sm btn-danger'
-                                  onClick={e => {
-                                    this.deleteRedirect(redirect)
-                                  }}
-                                >
-                                  <i className='ion ion-md-trash' /> delete
-                                </button>
-                              </td>
-                              <td>{redirect.match}</td>
-                              <td>{redirect.location}</td>
-                            </tr>
-                          )
-                        })}
-                        <tr>
-                          <td>
-                            <button
-                              type='button'
-                              className='btn btn-sm btn-primary'
-                              onClick={e => {
-                                this.editRedirect({
-                                  id: null,
-                                  match: '',
-                                  location: ''
-                                })
-                              }}
-                            >
-                              <i className='ion ion-md-create' /> new
-                            </button>
-                          </td>
-                          <td />
-                          <td />
-                        </tr>
-                      </tbody>
-                      {this.state.redirect ? (
-                        <tfoot>
-                          <tr>
-                            <td
-                              style={{
-                                top: '-0.5rem',
-                                position: 'relative'
-                              }}
-                            >
+              <Card
+                header='Redirects'
+                headerTheme='red'
+                style={{
+                  card: { backgroundColor: 'transparent' }
+                }}
+              >
+                <div className='row'>
+                  <table className='redirects'>
+                    <thead>
+                      <tr>
+                        <th />
+                        <th>Match</th>
+                        <th>Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.redirects.map(redirect => {
+                        return (
+                          <tr key={redirect.id}>
+                            <td>
                               <button
                                 type='button'
-                                className='btn btn-success btn-sm'
-                                onClick={this.saveRedirect.bind(this)}
+                                className='btn btn-sm btn-light'
+                                onClick={e => {
+                                  this.editRedirect(redirect)
+                                }}
                               >
-                                <i className='ion ion-md-save' /> Save
+                                <i className='ion ion-md-create' /> edit
+                              </button>
+                              <button
+                                type='button'
+                                className='btn btn-sm btn-danger'
+                                onClick={e => {
+                                  this.deleteRedirect(redirect)
+                                }}
+                              >
+                                <i className='ion ion-md-trash' /> delete
                               </button>
                             </td>
-                            <td>
-                              <Input
-                                value={this.state.redirect.match}
-                                valueHandler={this.getRedirectValueHandler(
-                                  'match'
-                                )}
-                              />
-                            </td>
-                            <td>
-                              <Input
-                                value={this.state.redirect.location}
-                                valueHandler={this.getRedirectValueHandler(
-                                  'location'
-                                )}
-                              />
-                            </td>
+                            <td>{redirect.match}</td>
+                            <td>{redirect.location}</td>
                           </tr>
-                        </tfoot>
-                      ) : (
-                        <tfoot />
-                      )}
-                    </table>
-                  </div>
-                </Card>
-              ) : (
-                ''
-              )}
+                        )
+                      })}
+                      <tr>
+                        <td>
+                          <button
+                            type='button'
+                            className='btn btn-sm btn-primary'
+                            onClick={e => {
+                              this.editRedirect({
+                                id: null,
+                                match: '',
+                                location: ''
+                              })
+                            }}
+                          >
+                            <i className='ion ion-md-create' /> new
+                          </button>
+                        </td>
+                        <td />
+                        <td />
+                      </tr>
+                    </tbody>
+                    {this.state.redirect ? (
+                      <tfoot>
+                        <tr>
+                          <td
+                            style={{
+                              top: '-0.5rem',
+                              position: 'relative'
+                            }}
+                          >
+                            <button
+                              type='button'
+                              className='btn btn-success btn-sm'
+                              onClick={this.saveRedirect.bind(this)}
+                            >
+                              <i className='ion ion-md-save' /> Save
+                            </button>
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.match}
+                              valueHandler={this.getRedirectValueHandler(
+                                'match'
+                              )}
+                            />
+                          </td>
+                          <td>
+                            <Input
+                              value={this.state.redirect.location}
+                              valueHandler={this.getRedirectValueHandler(
+                                'location'
+                              )}
+                            />
+                          </td>
+                        </tr>
+                      </tfoot>
+                    ) : (
+                      <tfoot />
+                    )}
+                  </table>
+                </div>
+              </Card>
+              )
               <Card
                 header='Analytics'
                 headerTheme='blue'
@@ -718,14 +696,11 @@ class Settings extends React.Component {
   }
 }
 
-Settings.propTypes = {
+SiteSettings.propTypes = {
   authenticated: PropTypes.bool,
   emitReload: PropTypes.func.isRequired,
-  getResetter: PropTypes.func,
   getSettingsValueHandler: PropTypes.func.isRequired,
-  hide: PropTypes.array,
-  settings: PropTypes.object.isRequired,
-  site: PropTypes.bool
+  settings: PropTypes.object.isRequired
 }
 
-export default Settings
+export default SiteSettings

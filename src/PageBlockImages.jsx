@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Card } from '@preaction/bootstrap-clips'
 import { Checkbox, Select } from '@preaction/inputs'
+import { getRgbaFromSettings } from './lib/getRgba.js'
 
 class PageBlockImages extends React.Component {
   constructor(props) {
@@ -182,10 +183,15 @@ class PageBlockImages extends React.Component {
                 width={this.cardWidth}
                 style={{
                   card: {
-                    backgroundColor: this.props.siteSettings.containerRgba
-                      .string,
-                    border: this.props.siteSettings
-                      ? `1px solid ${this.props.siteSettings.borderRgba.string}`
+                    backgroundColor: getRgbaFromSettings(
+                      this.props.settings,
+                      'container'
+                    ).string,
+                    border: this.props.settings
+                      ? `1px solid ${
+                          getRgbaFromSettings(this.props.settings, 'border')
+                            .string
+                        }`
                       : '0px solid transparent',
                     borderRadius: '0.25rem',
                     transition:
@@ -376,7 +382,7 @@ PageBlockImages.propTypes = {
   galleryControl: PropTypes.func.isRequired,
   getImages: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired
 }
 
 export default PageBlockImages

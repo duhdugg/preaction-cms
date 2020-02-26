@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import hexRgb from 'hex-rgb'
 import io from 'socket.io-client'
 import {
   BrowserRouter as Router,
@@ -23,7 +22,9 @@ import Header from './Header.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
-import Settings from './Settings.jsx'
+import SiteSettings from './SiteSettings.jsx'
+
+import { getRgbaFromSettings } from './lib/getRgba.js'
 
 import { registerSmartLinkFormat } from '@preaction/inputs'
 
@@ -32,6 +33,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       activePathname: '',
+      activeSettings: {},
       authenticated: false,
       editable: false,
       navigate: null,
@@ -122,7 +124,10 @@ class App extends React.Component {
   }
 
   emitSave(callback = () => {}) {
-    this.socket.emit('save', callback)
+    this.socket.emit('save', () => {
+      this.loadPages()
+      callback()
+    })
   }
 
   emitReload(callback = () => {}) {
@@ -131,7 +136,7 @@ class App extends React.Component {
 
   get menu() {
     let menu = []
-    if (this.state.siteSettings.navPosition !== 'fixed-top') {
+    if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
         name: <i className='ion ion-md-home' />,
         href: '/',
@@ -261,19 +266,15 @@ class App extends React.Component {
     return menu
   }
 
-  get siteSettings() {
-    function getRgbaString(hexRgbObject) {
-      let { red, green, blue, alpha } = hexRgbObject
-      return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+  get settings() {
+    let s = Object.assign({}, this.state.siteSettings)
+    if (this.activePage.current && this.activePage.current.pageId !== null) {
+      let page = this.getPageById(this.activePage.current.pageId)
+      if (page) {
+        s = page.getSettings()
+      }
     }
-    let settings = JSON.parse(JSON.stringify(this.state.siteSettings))
-    settings.containerRgba = hexRgb(settings.containerColor)
-    settings.containerRgba.alpha = settings.containerOpacity
-    settings.containerRgba.string = getRgbaString(settings.containerRgba)
-    settings.borderRgba = hexRgb(settings.borderColor)
-    settings.borderRgba.alpha = settings.borderOpacity
-    settings.borderRgba.string = getRgbaString(settings.borderRgba)
-    return settings
+    return s
   }
 
   getPageById(id) {
@@ -315,42 +316,83 @@ class App extends React.Component {
   }
 
   loadSession() {
-    axios.get('/api/session').then(response => {
-      if (response.data && response.data.authenticated) {
-        this.setState(state => {
-          state.authenticated = true
-          return state
-        })
+    return new Promise((resolve, reject) => {
+      let conditionallyResolve = () => {
+        if (this.state.authenticated && this.state.token) {
+          resolve()
+        }
       }
-      if (response.data && response.data.token) {
-        this.setState(state => {
-          state.token = response.data.token
-          return state
-        })
-      }
+      axios.get('/api/session').then(response => {
+        if (response.data && response.data.authenticated) {
+          this.setState(state => {
+            state.authenticated = true
+            return state
+          }, conditionallyResolve)
+        }
+        if (response.data && response.data.token) {
+          this.setState(state => {
+            state.token = response.data.token
+            return state
+          }, conditionallyResolve)
+        }
+      })
     })
   }
 
   loadSettings() {
-    axios.get('/api/settings').then(response => {
-      if (response.data) {
-        this.setState(state => {
-          state.siteSettings = response.data
-          state.siteSettings.hostname = window.location.origin || ''
-          return state
-        })
-      }
+    return new Promise((resolve, reject) => {
+      axios.get('/api/settings').then(response => {
+        if (response.data) {
+          this.setState(
+            state => {
+              state.siteSettings = response.data
+              state.siteSettings.hostname = window.location.origin || ''
+              return state
+            },
+            () => {
+              resolve(this.state.siteSettings)
+            }
+          )
+        }
+      })
     })
   }
 
   loadPages() {
-    axios.get('/api/page').then(response => {
-      if (response.data) {
-        this.setState(state => {
-          state.pages = response.data
-          return state
-        })
-      }
+    return new Promise((resolve, reject) => {
+      axios.get('/api/page').then(response => {
+        if (response.data) {
+          this.setState(
+            state => {
+              let pages = response.data
+              pages.forEach(page => {
+                page.getParent = () =>
+                  page.parentId ? this.getPageById(page.parentId) : null
+                page.getSettings = () => {
+                  let s = {}
+                  Object.assign(s, this.state.siteSettings)
+                  let ancestry = []
+                  let p = page
+                  while (p !== null) {
+                    ancestry.push(p)
+                    p = p.getParent()
+                  }
+                  ancestry.reverse()
+                  ancestry.forEach(p => {
+                    Object.assign(s, p.settings)
+                  })
+                  return s
+                }
+              })
+              state.pages = pages
+              return state
+            },
+            () => {
+              resolve(this.state.pages)
+            }
+          )
+        }
+      })
     })
   }
 
@@ -423,11 +465,12 @@ class App extends React.Component {
 
   trackPageView(path) {
     if (
-      this.state.siteSettings.useGoogleAnalytics &&
-      this.state.siteSettings.googleAnalyticsTrackingId &&
+      this.settings.useGoogleAnalytics &&
+      this.settings.googleAnalyticsTrackingId &&
       window.gtag
     ) {
-      window.gtag('config', this.state.siteSettings.googleAnalyticsTrackingId, {
+      console.debug(true)
+      window.gtag('config', this.settings.googleAnalyticsTrackingId, {
         page_path: path
       })
     }
@@ -446,12 +489,12 @@ class App extends React.Component {
             ) : (
               ''
             )}
-            {this.state.siteSettings.navPosition === 'fixed-top' ? (
+            {this.settings.navPosition === 'fixed-top' ? (
               <NavBar
                 fixedTo='top'
-                theme={this.siteSettings.navTheme}
+                theme={this.settings.navTheme}
                 brand={{
-                  name: this.siteSettings.siteTitle,
+                  name: this.settings.siteTitle,
                   href: '/',
                   onClick: e => {
                     e.preventDefault()
@@ -466,14 +509,14 @@ class App extends React.Component {
             <Boilerplate
               header={
                 <div>
-                  {this.state.siteSettings.navPosition === 'above-header' ? (
+                  {this.settings.navPosition === 'above-header' ? (
                     <Nav
                       menu={this.menu}
-                      type={this.state.siteSettings.navType}
-                      align={this.state.siteSettings.navAlignment}
-                      justify={this.state.siteSettings.navSpacing === 'justify'}
-                      fill={this.state.siteSettings.navSpacing === 'fill'}
-                      collapsible={this.state.siteSettings.navCollapsible}
+                      type={this.settings.navType}
+                      align={this.settings.navAlignment}
+                      justify={this.settings.navSpacing === 'justify'}
+                      fill={this.settings.navSpacing === 'fill'}
+                      collapsible={this.settings.navCollapsible}
                       className='mb-3'
                     />
                   ) : (
@@ -482,20 +525,20 @@ class App extends React.Component {
                   <Header
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    siteSettings={this.siteSettings}
+                    settings={this.settings}
                     pages={this.state.pages}
                     logout={this.logout.bind(this)}
                     show={this.state.show.header}
                     ref={this.header}
                   />
-                  {this.state.siteSettings.navPosition === 'below-header' ? (
+                  {this.settings.navPosition === 'below-header' ? (
                     <Nav
                       menu={this.menu}
-                      type={this.state.siteSettings.navType}
-                      align={this.state.siteSettings.navAlignment}
-                      justify={this.state.siteSettings.navSpacing === 'justify'}
-                      fill={this.state.siteSettings.navSpacing === 'fill'}
-                      collapsible={this.state.siteSettings.navCollapsible}
+                      type={this.settings.navType}
+                      align={this.settings.navAlignment}
+                      justify={this.settings.navSpacing === 'justify'}
+                      fill={this.settings.navSpacing === 'fill'}
+                      collapsible={this.settings.navCollapsible}
                       className='mb-3'
                     />
                   ) : (
@@ -507,7 +550,7 @@ class App extends React.Component {
                 <Footer
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
-                  siteSettings={this.siteSettings}
+                  settings={this.settings}
                   logout={this.logout.bind(this)}
                   ref={this.footer}
                   show={this.state.show.footer}
@@ -525,8 +568,8 @@ class App extends React.Component {
                   <Page
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
+                    settings={this.settings}
                     path='/home/'
-                    siteSettings={this.siteSettings}
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
                     footerControl={this.getShowPropertyValueHandler('footer')}
@@ -534,20 +577,17 @@ class App extends React.Component {
                 </Route>
                 <Route exact path='/login'>
                   <div className='container'>
-                    <Login siteSettings={this.siteSettings} />
+                    <Login settings={this.state.siteSettings} />
                   </div>
                 </Route>
                 <Route exact path='/settings'>
-                  <Settings
+                  <SiteSettings
                     authenticated={this.state.authenticated}
-                    deletePage={this.deletePage.bind(this)}
-                    emitSave={this.emitSave.bind(this)}
                     emitReload={this.emitReload.bind(this)}
-                    siteSettings={this.siteSettings}
+                    settings={this.state.siteSettings}
                     getSettingsValueHandler={this.getSettingsValueHandler.bind(
                       this
                     )}
-                    pages={this.state.pages}
                   />
                 </Route>
                 <Route
@@ -561,7 +601,7 @@ class App extends React.Component {
                         return (
                           <Page
                             editable={this.state.editable}
-                            siteSettings={this.siteSettings}
+                            settings={this.settings}
                             path={location.pathname}
                             addPage={this.addPage.bind(this)}
                             deletePage={this.deletePage.bind(this)}
@@ -585,32 +625,36 @@ class App extends React.Component {
         </Router>
         <style>
           {`\
-            a { color: ${this.siteSettings.linkColor}; }
-            a.active { color: ${this.siteSettings.fontColor}; }
-            a:hover { color: ${this.siteSettings.fontColor}; }
+            a { color: ${this.settings.linkColor}; }
+            a.active { color: ${this.settings.fontColor}; }
+            a:hover { color: ${this.settings.fontColor}; }
             img {
-              border: 1px solid ${this.siteSettings.borderRgba.string};
+              border: 1px solid ${
+                getRgbaFromSettings(this.settings, 'border').string
+              };
             }
             #root::before {
-              background-color: ${this.state.siteSettings.bgColor};
+              background-color: ${this.settings.bgColor};
             }
             .App {
-              color: ${this.state.siteSettings.fontColor};
-              opacity: ${this.siteSettings.init ? 1 : 0};
+              color: ${this.settings.fontColor};
+              opacity: ${this.settings.init ? 1 : 0};
               padding-top: ${
-                this.state.siteSettings.navPosition === 'fixed-top'
-                  ? '4rem'
-                  : '0'
+                this.settings.navPosition === 'fixed-top' ? '4rem' : '0'
               };
             }
             .dropdown-item.active, .dropdown-item:active {
-              background-color: ${this.siteSettings.linkColor};
+              background-color: ${this.settings.linkColor};
             }
             .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-              background-color: ${this.siteSettings.linkColor};
+              background-color: ${this.settings.linkColor};
+            }
+            .modal-content .card-body {
+              background-color: ${this.settings.bgColor};
+              color: ${this.settings.fontColor};
             }
           `}
-          {this.state.siteSettings.useBgImage
+          {this.settings.useBgImage
             ? `\
               .App {
                 overflow: hidden;
@@ -634,7 +678,7 @@ class App extends React.Component {
               }
           `
             : ''}
-          {this.state.siteSettings.tileBgImage
+          {this.settings.tileBgImage
             ? `\
               .App::before {
                 background-size: auto;
@@ -643,12 +687,13 @@ class App extends React.Component {
           `
             : ''}
         </style>
-        <style>{this.state.siteSettings.cssOverrides || ''}</style>
+        <style>{this.settings.cssOverrides || ''}</style>
       </div>
     )
   }
 
   componentDidMount() {
+    this.loadSettings()
     this.loadSettings()
     this.loadPages()
     this.loadSession()
