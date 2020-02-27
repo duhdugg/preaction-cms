@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Card, Spinner } from '@preaction/bootstrap-clips'
+import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
 import { Checkbox, Select } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 import {
@@ -256,27 +256,28 @@ class PageBlockImages extends React.Component {
           <div>
             <button
               type='button'
-              className='btn btn-light btn-sm'
+              className='btn btn-secondary btn-sm'
               onClick={this.toggleSettings.bind(this)}
             >
               <MdSettings /> Image Block Settings
             </button>
             {this.state.showSettings ? (
-              <div className='mt-2'>
-                <div className='col-sm-6 pl-0'>
-                  <Select
-                    label='Max Width'
-                    value={this.props.data.settings.maxWidth}
-                    valueHandler={this.getPageBlockSettingsValueHandler(
-                      'maxWidth'
-                    )}
-                  >
-                    <option>100%</option>
-                    <option>50%</option>
-                    <option>33%</option>
-                    <option>25%</option>
-                  </Select>
-                </div>
+              <Modal
+                title='Image Block Settings'
+                closeHandler={this.toggleSettings.bind(this)}
+              >
+                <Select
+                  label='Max Width'
+                  value={this.props.data.settings.maxWidth}
+                  valueHandler={this.getPageBlockSettingsValueHandler(
+                    'maxWidth'
+                  )}
+                >
+                  <option>100%</option>
+                  <option>50%</option>
+                  <option>33%</option>
+                  <option>25%</option>
+                </Select>
                 <Checkbox
                   label='Automatically collapse columns for smaller screens'
                   checked={this.props.data.settings.autoCollapseColumns}
@@ -303,7 +304,7 @@ class PageBlockImages extends React.Component {
                     'pushToZoom'
                   )}
                 />
-              </div>
+              </Modal>
             ) : (
               <div />
             )}
@@ -316,7 +317,7 @@ class PageBlockImages extends React.Component {
                 }}
                 disabled={this.state.uploading}
               >
-                <MdImage /> Add Images
+                <MdImage /> add images
                 {this.state.uploading ? (
                   <span>
                     <span> </span>

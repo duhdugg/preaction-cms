@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
-import { Card, Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
+import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
 import { MdCreate, MdDelete, MdImage } from 'react-icons/md'
@@ -154,7 +154,12 @@ class Page extends React.Component {
   }
 
   get settings() {
-    return this.state.page.appliedSettings
+    let s = Object.assign(
+      {},
+      this.state.page.appliedSettings,
+      this.state.page.settings
+    )
+    return s
   }
 
   get topLevelPageKey() {
@@ -277,7 +282,7 @@ class Page extends React.Component {
           {
             name: (
               <span>
-                <FaHtml5 /> wysiwyg
+                <FaHtml5 /> Content
               </span>
             ),
             onClick: e => {
@@ -315,10 +320,6 @@ class Page extends React.Component {
           }
         })
       }
-      menu.push({
-        name: 'page settings',
-        onClick: this.toggleSettings.bind(this)
-      })
     }
     return menu
   }
@@ -411,6 +412,9 @@ class Page extends React.Component {
                 if (this.props.setActivePage) {
                   this.props.setActivePage(this.state.page)
                 }
+                if (this.props.setActivePathname) {
+                  this.props.setActivePathname(this.props.path)
+                }
               }
             )
             if (
@@ -481,8 +485,7 @@ class Page extends React.Component {
     }
   }
 
-  toggleSettings(e) {
-    e.preventDefault()
+  toggleSettings() {
     this.setState(state => {
       state.showSettings = !state.showSettings
       return state
@@ -531,40 +534,28 @@ class Page extends React.Component {
                 ) : (
                   ''
                 )}
-                {this.state.showSettings ? (
-                  <Modal>
-                    <Card
-                      header='Page Settings'
-                      footer={
-                        <div className='btn-group'>
-                          <button
-                            className='btn btn-dark'
-                            onClick={this.toggleSettings.bind(this)}
-                          >
-                            Close
-                          </button>
-                        </div>
-                      }
-                      noMargin={true}
-                    >
-                      <PageSettings
-                        authenticated={this.props.editable}
-                        emitReload={() => {}}
-                        settings={this.settings}
-                        getResetter={this.getPageSettingsResetter.bind(this)}
-                        getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                          this
-                        )}
-                        getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                          this
-                        )}
-                      />
-                    </Card>
-                  </Modal>
-                ) : (
-                  ''
-                )}
               </div>
+            ) : (
+              ''
+            )}
+            {this.props.editable && this.state.showSettings ? (
+              <Modal
+                title='Page Settings'
+                closeHandler={this.toggleSettings.bind(this)}
+              >
+                <PageSettings
+                  authenticated={this.props.editable}
+                  emitReload={() => {}}
+                  settings={this.settings}
+                  getResetter={this.getPageSettingsResetter.bind(this)}
+                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                    this
+                  )}
+                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                    this
+                  )}
+                />
+              </Modal>
             ) : (
               ''
             )}
@@ -574,7 +565,7 @@ class Page extends React.Component {
         )}
         {this.state.loading ? (
           <div className='container'>
-            <Spinner />
+            <Spinner size='1.75' />
           </div>
         ) : (
           ''
@@ -605,7 +596,8 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   path: PropTypes.string.isRequired,
-  setActivePage: PropTypes.func
+  setActivePage: PropTypes.func,
+  setActivePathname: PropTypes.func
 }
 
 export default Page

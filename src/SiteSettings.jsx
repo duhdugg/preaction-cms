@@ -119,7 +119,6 @@ class SiteSettings extends React.Component {
               }
             `}</style>
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
-              <h3>Site Settings</h3>
               <div className='row'>
                 <div className='col'>
                   <Input

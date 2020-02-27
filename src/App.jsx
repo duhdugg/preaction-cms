@@ -9,7 +9,7 @@ import {
   Link,
   Redirect
 } from 'react-router-dom'
-import { Boilerplate, NavBar, Nav } from '@preaction/bootstrap-clips'
+import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
 import { MdCreate, MdHome, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
@@ -43,7 +43,8 @@ class App extends React.Component {
       redirect: null,
       show: {
         header: true,
-        footer: true
+        footer: true,
+        settings: false
       },
       siteSettings: {
         bgColor: '#000000',
@@ -144,7 +145,7 @@ class App extends React.Component {
         href: '/',
         component: Link,
         order: -1,
-        active: this.state.activePathname === '/',
+        active: this.state.activePathname === '/home/',
         onClick: e => {
           this.navigate('/')
         }
@@ -238,10 +239,9 @@ class App extends React.Component {
               <MdSettings /> Settings
             </span>
           ),
-          href: '/settings/',
           onClick: e => {
             e.preventDefault()
-            this.navigate('/settings/')
+            this.toggleSettings()
           },
           order: 3
         })
@@ -285,7 +285,8 @@ class App extends React.Component {
   get settings() {
     let s = Object.assign({}, this.state.siteSettings)
     if (this.state.activePage) {
-      s = this.state.activePage.appliedSettings
+      Object.assign(s, this.state.activePage.appliedSettings)
+      Object.assign(s, this.state.activePage.settings)
     }
     return s
   }
@@ -444,6 +445,17 @@ class App extends React.Component {
     })
   }
 
+  toggleSettings() {
+    if (this.state.activePathname === '/home/') {
+      this.setState(state => {
+        state.show.settings = !state.show.settings
+        return state
+      })
+    } else if (this.activePage && this.activePage.current) {
+      this.activePage.current.toggleSettings()
+    }
+  }
+
   redirect(path) {
     this.setState(
       state => {
@@ -598,16 +610,6 @@ class App extends React.Component {
                     <Login settings={this.state.siteSettings} />
                   </div>
                 </Route>
-                <Route exact path='/settings'>
-                  <SiteSettings
-                    authenticated={this.state.authenticated}
-                    emitReload={this.emitReload.bind(this)}
-                    settings={this.state.siteSettings}
-                    getSettingsValueHandler={this.getSettingsValueHandler.bind(
-                      this
-                    )}
-                  />
-                </Route>
                 <Route
                   render={({ location }) => {
                     switch (location.pathname) {
@@ -709,6 +711,21 @@ class App extends React.Component {
             : ''}
         </style>
         <style>{this.settings.cssOverrides || ''}</style>
+        {this.state.editable && this.state.show.settings ? (
+          <Modal
+            title='Site Settings'
+            closeHandler={this.toggleSettings.bind(this)}
+          >
+            <SiteSettings
+              authenticated={this.state.authenticated}
+              emitReload={this.emitReload.bind(this)}
+              settings={this.state.siteSettings}
+              getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
+            />
+          </Modal>
+        ) : (
+          ''
+        )}
       </div>
     )
   }
@@ -721,16 +738,12 @@ class App extends React.Component {
     this.socket = io()
     this.socket.on('load', () => {
       if (!this.state.editable) {
-        if (this.state.activePathname !== '/settings/') {
-          this.reload()
-        }
+        this.reload()
       }
     })
     this.socket.on('reload-page', () => {
       if (!this.state.editable) {
-        if (this.state.activePathname !== '/settings/') {
-          window.location.reload()
-        }
+        window.location.reload()
       }
     })
     window.onpopstate = event => {
