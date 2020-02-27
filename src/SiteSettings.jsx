@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
-import { Card } from '@preaction/bootstrap-clips'
+import { Card, Spinner } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
+import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
 
 class SiteSettings extends React.Component {
   constructor(props) {
@@ -255,7 +256,7 @@ class SiteSettings extends React.Component {
                         {this.state.uploadingBg ? (
                           <span>
                             <span> </span>
-                            <i className='icon ion-md-hourglass spinner' />
+                            <Spinner />
                           </span>
                         ) : (
                           ''
@@ -289,7 +290,7 @@ class SiteSettings extends React.Component {
                     {this.state.uploadingIcon ? (
                       <span>
                         <span> </span>
-                        <i className='icon ion-md-hourglass spinner' />
+                        <Spinner />
                       </span>
                     ) : (
                       ''
@@ -484,7 +485,7 @@ class SiteSettings extends React.Component {
                                   this.editRedirect(redirect)
                                 }}
                               >
-                                <i className='ion ion-md-create' /> edit
+                                <MdCreate /> edit
                               </button>
                               <button
                                 type='button'
@@ -493,7 +494,7 @@ class SiteSettings extends React.Component {
                                   this.deleteRedirect(redirect)
                                 }}
                               >
-                                <i className='ion ion-md-trash' /> delete
+                                <MdDelete /> delete
                               </button>
                             </td>
                             <td>{redirect.match}</td>
@@ -514,7 +515,7 @@ class SiteSettings extends React.Component {
                               })
                             }}
                           >
-                            <i className='ion ion-md-create' /> new
+                            <MdCreate /> new
                           </button>
                         </td>
                         <td />
@@ -535,7 +536,7 @@ class SiteSettings extends React.Component {
                               className='btn btn-success btn-sm'
                               onClick={this.saveRedirect.bind(this)}
                             >
-                              <i className='ion ion-md-save' /> Save
+                              <MdSave /> save
                             </button>
                           </td>
                           <td>

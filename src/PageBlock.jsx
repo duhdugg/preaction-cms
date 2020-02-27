@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import PageBlockImages from './PageBlockImages.jsx'
 import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
+import { MdArrowUpward, MdArrowDownward, MdDelete } from 'react-icons/md'
 
 class PageBlock extends React.Component {
   render() {
@@ -45,7 +46,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'previous')
                   }}
                 >
-                  <i className='ion ion-md-arrow-up' /> move block up
+                  <MdArrowUpward /> move block up
                 </button>
                 <button
                   type='button'
@@ -54,7 +55,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'delete')
                   }}
                 >
-                  <i className='ion ion-md-trash' /> delete block
+                  <MdDelete /> delete block
                 </button>
                 <button
                   type='button'
@@ -64,7 +65,7 @@ class PageBlock extends React.Component {
                     this.props.blockControl(this.props.data.id, 'next')
                   }}
                 >
-                  <i className='ion ion-md-arrow-down' /> move block down
+                  <MdArrowDownward /> move block down
                 </button>
               </div>
             ) : (

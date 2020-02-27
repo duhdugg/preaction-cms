@@ -10,11 +10,12 @@ import {
   Redirect
 } from 'react-router-dom'
 import { Boilerplate, NavBar, Nav } from '@preaction/bootstrap-clips'
+import { MdCreate, MdHome, MdPerson, MdSettings } from 'react-icons/md'
+import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 // styles
 import 'animate.css/animate.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'ionicons/dist/css/ionicons.min.css'
 import './App.css'
 
 import Footer from './Footer.jsx'
@@ -139,7 +140,7 @@ class App extends React.Component {
     let menu = []
     if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
-        name: <i className='ion ion-md-home' />,
+        name: <MdHome />,
         href: '/',
         component: Link,
         order: -1,
@@ -197,38 +198,6 @@ class App extends React.Component {
     if (this.state.authenticated) {
       let adminSubmenu = []
       adminSubmenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-radio-button-${
-                this.state.editable ? 'on' : 'off'
-              }`}
-            />{' '}
-            Edit Mode
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.toggleEditMode()
-        }
-      })
-      adminSubmenu.push({
-        name: 'New Page',
-        onClick: e => {
-          e.preventDefault()
-          let title = prompt('New Page Title')
-          this.createPage(title)
-        }
-      })
-      adminSubmenu.push({
-        name: 'Site Settings',
-        href: '/settings/',
-        component: NavLink,
-        onClick: e => {
-          this.navigate('/settings/')
-        }
-      })
-      adminSubmenu.push({
         name: 'Logout',
         onClick: e => {
           e.preventDefault()
@@ -237,9 +206,55 @@ class App extends React.Component {
       })
 
       menu.push({
-        name: 'Admin',
-        subMenu: adminSubmenu,
+        name: (
+          <span>
+            {this.state.editable ? <FaToggleOn /> : <FaToggleOff />} Edit
+          </span>
+        ),
+        onClick: e => {
+          e.preventDefault()
+          this.toggleEditMode()
+        },
         order: 1
+      })
+
+      if (this.state.editable) {
+        menu.push({
+          name: (
+            <span>
+              <MdCreate /> New Page
+            </span>
+          ),
+          onClick: e => {
+            e.preventDefault()
+            let title = prompt('New Page Title')
+            this.createPage(title)
+          },
+          order: 2
+        })
+        menu.push({
+          name: (
+            <span>
+              <MdSettings /> Settings
+            </span>
+          ),
+          href: '/settings/',
+          onClick: e => {
+            e.preventDefault()
+            this.navigate('/settings/')
+          },
+          order: 3
+        })
+      }
+
+      menu.push({
+        name: (
+          <span>
+            <MdPerson /> User
+          </span>
+        ),
+        subMenu: adminSubmenu,
+        order: 4
       })
     }
     menu.sort((a, b) => {
@@ -271,7 +286,6 @@ class App extends React.Component {
     let s = Object.assign({}, this.state.siteSettings)
     if (this.state.activePage) {
       s = this.state.activePage.appliedSettings
-      console.debug(s)
     }
     return s
   }

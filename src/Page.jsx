@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
-import { Card, Modal, Nav } from '@preaction/bootstrap-clips'
+import { Card, Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
+import { MdCreate, MdDelete, MdImage } from 'react-icons/md'
+import { FaHtml5 } from 'react-icons/fa'
 
 class Page extends React.Component {
   constructor(props) {
@@ -254,13 +256,17 @@ class Page extends React.Component {
   get pageControlsMenu() {
     let menu = [
       {
-        name: 'add block',
+        name: (
+          <span>
+            <MdCreate /> add block
+          </span>
+        ),
         icon: 'arrow-dropdown',
         subMenu: [
           {
             name: (
               <span>
-                <i className='ion ion-md-image' /> image
+                <MdImage /> Image(s)
               </span>
             ),
             onClick: e => {
@@ -271,7 +277,7 @@ class Page extends React.Component {
           {
             name: (
               <span>
-                <i className='ion ion-logo-html5' /> wysiwyg
+                <FaHtml5 /> wysiwyg
               </span>
             ),
             onClick: e => {
@@ -287,7 +293,11 @@ class Page extends React.Component {
     ]
     if (this.state.page.userCreated) {
       menu.push({
-        name: 'add subpage',
+        name: (
+          <span>
+            <MdCreate /> new subpage
+          </span>
+        ),
         onClick: e => {
           e.preventDefault()
           this.addPage()
@@ -305,57 +315,6 @@ class Page extends React.Component {
           }
         })
       }
-      if (this.topLevelPageKey !== 'home') {
-        subMenu.push({
-          name: 'Reset Page Title',
-          onClick: e => {
-            e.preventDefault()
-            this.renamePage()
-          }
-        })
-      }
-      subMenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-${
-                this.state.page.settings.showHeader
-                  ? 'checkbox-outline'
-                  : 'square-outline'
-              }`}
-            />{' '}
-            show header
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.getPageSettingsValueHandler('showHeader')(
-            !this.state.page.settings.showHeader
-          )
-        },
-        toggleParent: false
-      })
-      subMenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-${
-                this.state.page.settings.showFooter
-                  ? 'checkbox-outline'
-                  : 'square-outline'
-              }`}
-            />{' '}
-            show footer
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.getPageSettingsValueHandler('showFooter')(
-            !this.state.page.settings.showFooter
-          )
-        },
-        toggleParent: false
-      })
       menu.push({
         name: 'page settings',
         onClick: this.toggleSettings.bind(this)
@@ -567,7 +526,7 @@ class Page extends React.Component {
                     className='btn btn-danger btn-sm'
                     onClick={this.deletePage.bind(this)}
                   >
-                    <i className='ion ion-md-trash' /> Delete Page
+                    <MdDelete /> Delete Page
                   </button>
                 ) : (
                   ''
@@ -615,9 +574,7 @@ class Page extends React.Component {
         )}
         {this.state.loading ? (
           <div className='container'>
-            <span style={{ fontSize: '4rem' }}>
-              <i className='ion ion-md-hourglass spinner' />
-            </span>
+            <Spinner />
           </div>
         ) : (
           ''

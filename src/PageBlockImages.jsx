@@ -1,8 +1,15 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Card } from '@preaction/bootstrap-clips'
+import { Card, Spinner } from '@preaction/bootstrap-clips'
 import { Checkbox, Select } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
+import {
+  MdArrowBack,
+  MdArrowForward,
+  MdDelete,
+  MdImage,
+  MdSettings
+} from 'react-icons/md'
 
 class PageBlockImages extends React.Component {
   constructor(props) {
@@ -208,14 +215,14 @@ class PageBlockImages extends React.Component {
                         onClick={this.galleryControl(index, 'previous')}
                         disabled={index === 0}
                       >
-                        <i className='icon ion-md-arrow-dropleft-circle' />
+                        <MdArrowBack />
                       </button>
                       <button
                         type='button'
                         className='btn btn-sm btn-danger d-block ml-auto mr-auto'
                         onClick={this.galleryControl(index, 'delete')}
                       >
-                        <i className='icon ion-md-trash' />
+                        <MdDelete />
                       </button>
                       <button
                         type='button'
@@ -225,7 +232,7 @@ class PageBlockImages extends React.Component {
                           index >= this.props.data.pageblockimages.length - 1
                         }
                       >
-                        <i className='icon ion-md-arrow-dropright-circle' />
+                        <MdArrowForward />
                       </button>
                     </div>
                   ) : (
@@ -252,7 +259,7 @@ class PageBlockImages extends React.Component {
               className='btn btn-light btn-sm'
               onClick={this.toggleSettings.bind(this)}
             >
-              <i className='ion ion-md-cog' /> Image Block Settings
+              <MdSettings /> Image Block Settings
             </button>
             {this.state.showSettings ? (
               <div className='mt-2'>
@@ -309,11 +316,11 @@ class PageBlockImages extends React.Component {
                 }}
                 disabled={this.state.uploading}
               >
-                Add Images
+                <MdImage /> Add Images
                 {this.state.uploading ? (
                   <span>
                     <span> </span>
-                    <i className='icon ion-md-hourglass spinner' />
+                    <Spinner />
                   </span>
                 ) : (
                   ''
