@@ -6,7 +6,7 @@ import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
-import { MdCreate, MdDelete, MdImage } from 'react-icons/md'
+import { MdCreate, MdImage } from 'react-icons/md'
 import { FaHtml5 } from 'react-icons/fa'
 
 class Page extends React.Component {
@@ -16,24 +16,10 @@ class Page extends React.Component {
       loading: false,
       notFound: false,
       page: null,
+      parentPage: null,
       showSettings: false
     }
     this.settingsUpdateTimer = null
-  }
-
-  addPage() {
-    let title = window.prompt('New Page Title')
-    if (title) {
-      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-      let pageType = 'content'
-      let page = {
-        title,
-        key,
-        pageType,
-        parentId: this.state.page.id
-      }
-      this.props.addPage(page)
-    }
   }
 
   addPageBlock(blockType) {
@@ -128,6 +114,10 @@ class Page extends React.Component {
         )
       ) {
         this.props.deletePage(this.state.page)
+        this.setState(state => {
+          state.showSettings = false
+          return state
+        })
       }
     }
   }
@@ -154,11 +144,11 @@ class Page extends React.Component {
   }
 
   get settings() {
-    let s = Object.assign(
-      {},
-      this.state.page.appliedSettings,
-      this.state.page.settings
-    )
+    let s = Object.assign({}, this.state.page.appliedSettings)
+    if (this.state.page.parentPage) {
+      Object.assign(s, this.state.parentPage.appliedSettings)
+    }
+    Object.assign(s, this.state.page.settings)
     return s
   }
 
@@ -245,6 +235,39 @@ class Page extends React.Component {
           return state
         },
         () => {
+          if (this.props.setActivePage) {
+            this.props.setActivePage(this.state.page)
+          }
+          clearTimeout(this.settingsUpdateTimer)
+          this.settingsUpdateTimer = setTimeout(() => {
+            axios
+              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .then(() => {
+                this.props.emitSave()
+              })
+          }, 1000)
+        }
+      )
+    }
+  }
+
+  getPageValueHandler(key) {
+    return value => {
+      this.setState(
+        state => {
+          state.page[key] = value
+          if (key === 'title') {
+            let k = value.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+            if (k.replace(/-/gi, '')) {
+              state.page.key = k
+            }
+          }
+          return state
+        },
+        () => {
+          if (this.props.setActivePage) {
+            this.props.setActivePage(this.state.page)
+          }
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
             axios
@@ -296,31 +319,6 @@ class Page extends React.Component {
         }
       }
     ]
-    if (this.state.page.userCreated) {
-      menu.push({
-        name: (
-          <span>
-            <MdCreate /> new subpage
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.addPage()
-        }
-      })
-    }
-    if (['header', 'footer'].indexOf(this.topLevelPageKey) < 0) {
-      let subMenu = []
-      if (this.topLevelPageKey !== 'home' && !this.state.page.parentId) {
-        subMenu.push({
-          name: 'Add SubPage',
-          onClick: e => {
-            e.preventDefault()
-            this.addPage()
-          }
-        })
-      }
-    }
     return menu
   }
 
@@ -393,6 +391,7 @@ class Page extends React.Component {
         state.loading = true
         state.notFound = false
         state.page = null
+        state.parentPage = null
         return state
       },
       () => {
@@ -408,12 +407,37 @@ class Page extends React.Component {
                 return state
               },
               () => {
-                this.loadSettings()
-                if (this.props.setActivePage) {
-                  this.props.setActivePage(this.state.page)
+                let callback = () => {
+                  this.loadSettings()
+                  if (this.props.setActivePage) {
+                    this.props.setActivePage(this.state.page)
+                  }
+                  if (this.props.setActivePathname) {
+                    this.props.setActivePathname(this.props.path)
+                  }
                 }
-                if (this.props.setActivePathname) {
-                  this.props.setActivePathname(this.props.path)
+                if (this.state.page.parentId) {
+                  axios
+                    .get(`/api/page/${this.state.page.parentId}`)
+                    .then(response => {
+                      let parent = response.data
+                      if (parent) {
+                        this.setState(state => {
+                          state.parentPage = parent
+                          return state
+                        }, callback)
+                      } else {
+                        this.setState(state => {
+                          state.parentPage = null
+                          return state
+                        }, callback)
+                      }
+                    })
+                } else {
+                  this.setState(state => {
+                    state.parentPage = null
+                    return state
+                  }, callback)
                 }
               }
             )
@@ -523,17 +547,6 @@ class Page extends React.Component {
             {this.props.editable ? (
               <div className='page-controls'>
                 <Nav type='tabs' menu={this.pageControlsMenu} />
-                {this.state.page.userCreated ? (
-                  <button
-                    type='button'
-                    className='btn btn-danger btn-sm'
-                    onClick={this.deletePage.bind(this)}
-                  >
-                    <MdDelete /> Delete Page
-                  </button>
-                ) : (
-                  ''
-                )}
               </div>
             ) : (
               ''
@@ -542,11 +555,24 @@ class Page extends React.Component {
               <Modal
                 title='Page Settings'
                 closeHandler={this.toggleSettings.bind(this)}
+                footer={
+                  <button
+                    type='button'
+                    className='btn btn-secondary'
+                    onClick={this.toggleSettings.bind(this)}
+                  >
+                    Close
+                  </button>
+                }
               >
                 <PageSettings
                   authenticated={this.props.editable}
-                  emitReload={() => {}}
+                  pageId={this.state.page.id}
+                  page={this.state.page}
+                  path={this.props.path}
                   settings={this.settings}
+                  deletePage={this.deletePage.bind(this)}
+                  getPageValueHandler={this.getPageValueHandler.bind(this)}
                   getResetter={this.getPageSettingsResetter.bind(this)}
                   getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
                     this

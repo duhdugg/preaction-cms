@@ -243,6 +243,11 @@ class SiteSettings extends React.Component {
                           'tileBgImage'
                         )}
                       />
+                      <Input
+                        label='Background Image Path'
+                        value={this.props.settings.bg}
+                        valueHandler={this.props.getSettingsValueHandler('bg')}
+                      />
                       <button
                         type='button'
                         className='btn btn-primary'
@@ -592,7 +597,7 @@ class SiteSettings extends React.Component {
             </form>
             <form
               method='POST'
-              action={'/api/upload'}
+              action='/api/upload'
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -620,20 +625,31 @@ class SiteSettings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload(() => {
-                    window.location.reload()
-                  })
-                  this.setState(state => {
-                    state.uploadingBg = false
-                    return state
-                  })
+                  this.setState(
+                    state => {
+                      state.uploadingBg = false
+                      return state
+                    },
+                    () => {
+                      this.bgFileInput.current.value = null
+                      iframe.src = 'about:blank'
+                      axios.get('/api/settings').then(response => {
+                        let settings = response.data
+                        if (settings.bg) {
+                          this.props.getSettingsValueHandler('bg')(settings.bg)
+                        }
+                      })
+                    }
+                  )
+                } else {
+                  console.debug(iframe.contentWindow.location.href)
                 }
               }}
               className='d-none'
             />
             <form
               method='POST'
-              action={'/api/upload'}
+              action='/api/upload'
               target='upload-icon-frame'
               encType='multipart/form-data'
               ref={this.uploadIconForm}
@@ -661,13 +677,14 @@ class SiteSettings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload()
                   this.setState(
                     state => {
                       state.uploadingIcon = false
                       return state
                     },
                     () => {
+                      this.iconFileInput.current.value = null
+                      iframe.src = 'about:blank'
                       this.refreshIcon()
                     }
                   )
@@ -698,7 +715,6 @@ class SiteSettings extends React.Component {
 
 SiteSettings.propTypes = {
   authenticated: PropTypes.bool,
-  emitReload: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired
 }

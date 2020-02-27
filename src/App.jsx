@@ -10,6 +10,7 @@ import {
   Redirect
 } from 'react-router-dom'
 import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
+import { Input } from '@preaction/inputs'
 import { MdCreate, MdHome, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
@@ -34,16 +35,21 @@ class App extends React.Component {
     super(props)
     this.state = {
       activePage: null,
+      activeParentPage: null,
       activePathname: '',
       activeSettings: {},
       authenticated: false,
       editable: false,
       navigate: null,
+      newPage: {
+        title: ''
+      },
       pages: [],
       redirect: null,
       show: {
         header: true,
         footer: true,
+        newPage: false,
         settings: false
       },
       siteSettings: {
@@ -97,10 +103,12 @@ class App extends React.Component {
       return
     }
     let pageType = 'content'
+    let parentId = this.state.activePage ? this.state.activePage.id : null
     let newPage = {
       key,
       title,
-      pageType
+      pageType,
+      parentId
     }
     this.addPage(newPage)
   }
@@ -131,10 +139,6 @@ class App extends React.Component {
       this.loadPages()
       callback()
     })
-  }
-
-  emitReload(callback = () => {}) {
-    this.socket.emit('force-reload', callback)
   }
 
   get menu() {
@@ -228,8 +232,7 @@ class App extends React.Component {
           ),
           onClick: e => {
             e.preventDefault()
-            let title = prompt('New Page Title')
-            this.createPage(title)
+            this.toggleNewPage()
           },
           order: 2
         })
@@ -284,11 +287,22 @@ class App extends React.Component {
 
   get settings() {
     let s = Object.assign({}, this.state.siteSettings)
+    if (this.state.activeParentPage) {
+      Object.assign(s, this.state.activeParentPage.appliedSettings)
+    }
     if (this.state.activePage) {
-      Object.assign(s, this.state.activePage.appliedSettings)
       Object.assign(s, this.state.activePage.settings)
     }
     return s
+  }
+
+  getNewPageValueHandler(key) {
+    return value => {
+      this.setState(state => {
+        state.newPage[key] = value
+        return state
+      })
+    }
   }
 
   getPageById(id) {
@@ -312,7 +326,9 @@ class App extends React.Component {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
             axios.post('/api/settings', this.state.siteSettings).then(() => {
-              this.emitSave()
+              this.emitSave(() => {
+                this.loadSettings()
+              })
             })
           }, 1000)
         }
@@ -378,28 +394,7 @@ class App extends React.Component {
         if (response.data) {
           this.setState(
             state => {
-              let pages = response.data
-              pages.forEach(page => {
-                page.getParent = () =>
-                  page.parentId ? this.getPageById(page.parentId) : null
-                page.getSettings = () => {
-                  let s = {}
-                  Object.assign(s, this.state.siteSettings)
-                  let ancestry = []
-                  let p = page
-                  while (p !== null) {
-                    ancestry.push(p)
-                    p = p.getParent()
-                  }
-                  ancestry.reverse()
-                  ancestry.forEach(p => {
-                    Object.assign(s, p.settings)
-                  })
-                  s.site = page.settings.site ? true : false
-                  return s
-                }
-              })
-              state.pages = pages
+              state.pages = response.data
               return state
             },
             () => {
@@ -456,6 +451,13 @@ class App extends React.Component {
     }
   }
 
+  toggleNewPage() {
+    this.setState(state => {
+      state.show.newPage = !state.show.newPage
+      return state
+    })
+  }
+
   redirect(path) {
     this.setState(
       state => {
@@ -483,10 +485,36 @@ class App extends React.Component {
   }
 
   setActivePage(page) {
-    this.setState(state => {
-      state.activePage = page
-      return state
-    })
+    this.setState(
+      state => {
+        state.activePage = page
+        return state
+      },
+      () => {
+        if (this.state.activePage && this.state.activePage.parentId) {
+          axios
+            .get(`/api/page/${this.state.activePage.parentId}`)
+            .then(parentPage => {
+              if (parentPage) {
+                this.setState(state => {
+                  state.activeParentPage = parentPage
+                  return state
+                })
+              } else {
+                this.setState(state => {
+                  state.activeParentPage = null
+                  return state
+                })
+              }
+            })
+        } else {
+          this.setState(state => {
+            state.activeParentPage = null
+            return state
+          })
+        }
+      }
+    )
   }
 
   setActivePathname(pathname) {
@@ -622,7 +650,6 @@ class App extends React.Component {
                           <Page
                             editable={this.state.editable}
                             path={location.pathname}
-                            addPage={this.addPage.bind(this)}
                             deletePage={this.deletePage.bind(this)}
                             emitSave={this.emitSave.bind(this)}
                             ref={this.activePage}
@@ -690,7 +717,7 @@ class App extends React.Component {
                 height: 100%;
                 top: 0;
                 left: 0;
-                background-image: url("/bg");
+                background-image: url(/${this.settings.bg});
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -715,13 +742,68 @@ class App extends React.Component {
           <Modal
             title='Site Settings'
             closeHandler={this.toggleSettings.bind(this)}
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={this.toggleSettings.bind(this)}
+              >
+                Close
+              </button>
+            }
           >
             <SiteSettings
               authenticated={this.state.authenticated}
-              emitReload={this.emitReload.bind(this)}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
             />
+          </Modal>
+        ) : (
+          ''
+        )}
+        {this.state.editable && this.state.show.newPage ? (
+          <Modal
+            title='New Page'
+            hideCloseButton={true}
+            footer={
+              <div>
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  onClick={() => {
+                    if (this.state.newPage.title) {
+                      this.createPage(this.state.newPage.title)
+                      this.toggleNewPage()
+                      this.setState(state => {
+                        state.newPage.title = ''
+                        return state
+                      })
+                    }
+                  }}
+                >
+                  Save
+                </button>{' '}
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={() => {
+                    this.toggleNewPage()
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            }
+          >
+            <form onSubmit={e => e.preventDefault()}>
+              <Input
+                type='text'
+                label='Page Title'
+                value={this.state.newPage.title}
+                valueHandler={this.getNewPageValueHandler('title')}
+                required
+              />
+            </form>
           </Modal>
         ) : (
           ''
@@ -741,7 +823,7 @@ class App extends React.Component {
         this.reload()
       }
     })
-    this.socket.on('reload-page', () => {
+    this.socket.on('reload-app', () => {
       if (!this.state.editable) {
         window.location.reload()
       }

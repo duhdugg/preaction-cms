@@ -57,16 +57,6 @@ app.route('/icon').get((req, res) => {
   })
 })
 
-app.route('/bg').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'bg' } }).then(setting => {
-    if (!setting) {
-      res.status(404).send('')
-      return
-    }
-    res.redirect(setting.value)
-  })
-})
-
 app.route('/sitemap.xml').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
     let hostname = setting && setting.value ? setting.value : ''
@@ -204,7 +194,7 @@ io.on('connection', socket => {
   socket.on('force-reload', fn => {
     fn()
     if (socket.conn.request.session.authenticated) {
-      io.emit('reload-page')
+      io.emit('reload-app')
     }
   })
 })

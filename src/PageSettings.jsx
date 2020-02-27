@@ -10,6 +10,7 @@ class PageSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      confirmDelete: false,
       newPageTitle: '',
       redirect: null,
       redirects: [],
@@ -20,6 +21,14 @@ class PageSettings extends React.Component {
     this.iconFileInput = React.createRef()
     this.uploadBgForm = React.createRef()
     this.bgFileInput = React.createRef()
+  }
+
+  deletePage() {
+    if (this.state.confirmDelete) {
+      if (this.props.deletePage) {
+        this.props.deletePage()
+      }
+    }
   }
 
   deleteRedirect(redirect) {
@@ -71,6 +80,14 @@ class PageSettings extends React.Component {
       title,
       pageType
     }
+  }
+
+  get path() {
+    let splitPath = Array.from(this.props.path.split('/')).filter(p => {
+      return p ? true : false
+    })
+    splitPath.splice(splitPath.length - 1, 1, this.props.page.key)
+    return '/' + splitPath.join('/') + '/'
   }
 
   overrideSetting(key) {
@@ -152,6 +169,24 @@ class PageSettings extends React.Component {
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
               <div className='row'>
                 <div className='col'>
+                  <Input
+                    label='Page Title'
+                    type='text'
+                    value={this.props.page.title}
+                    valueHandler={this.props.getPageValueHandler('title')}
+                  />
+                  <Input
+                    label='Page URL Key'
+                    type='text'
+                    value={this.props.page.key}
+                    readOnly={true}
+                  />
+                  <Input
+                    label='Full Page URL'
+                    type='text'
+                    value={this.path}
+                    readOnly={true}
+                  />
                   <Input
                     label='Site Name'
                     type='text'
@@ -315,7 +350,14 @@ class PageSettings extends React.Component {
                     valueHandler={this.props.getSettingsValueHandler(
                       'useBgImage'
                     )}
+                    readOnly={this.props.getPageSettingIsUndefined(
+                      'useBgImage'
+                    )}
+                    onClick={e => {
+                      this.overrideSetting('useBgImage')
+                    }}
                   />
+                  <ResetButton settingsKey='useBgImage' />
                   {this.props.settings.useBgImage ? (
                     <div>
                       <Checkbox
@@ -324,25 +366,44 @@ class PageSettings extends React.Component {
                         valueHandler={this.props.getSettingsValueHandler(
                           'tileBgImage'
                         )}
-                      />
-                      <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={() => {
-                          this.bgFileInput.current.click()
-                        }}
-                        disabled={this.state.uploadingBg}
-                      >
-                        Upload Background
-                        {this.state.uploadingBg ? (
-                          <span>
-                            <span> </span>
-                            <Spinner />
-                          </span>
-                        ) : (
-                          ''
+                        readOnly={this.props.getPageSettingIsUndefined(
+                          'tileBgImage'
                         )}
-                      </button>
+                        onClick={e => {
+                          this.overrideSetting('tileBgImage')
+                        }}
+                      />
+                      <ResetButton settingsKey='tileBgImage' />
+                      <Input
+                        label='Background Image Path'
+                        valueHandler={this.props.getSettingsValueHandler('bg')}
+                        value={this.props.settings.bg}
+                        readOnly={this.props.getPageSettingIsUndefined('bg')}
+                        onClick={e => {
+                          this.overrideSetting('bg')
+                        }}
+                      />
+                      <ResetButton settingsKey='bg' />
+                      <div>
+                        <button
+                          type='button'
+                          className='btn btn-primary'
+                          onClick={() => {
+                            this.bgFileInput.current.click()
+                          }}
+                          disabled={this.state.uploadingBg}
+                        >
+                          Upload Background
+                          {this.state.uploadingBg ? (
+                            <span>
+                              <span> </span>
+                              <Spinner />
+                            </span>
+                          ) : (
+                            ''
+                          )}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     ''
@@ -604,7 +665,7 @@ class PageSettings extends React.Component {
               <ResetButton settingsKey='cssOverrides' />
               <Card
                 header='Redirects'
-                headerTheme='red'
+                headerTheme='green'
                 style={{
                   card: { backgroundColor: 'transparent' }
                 }}
@@ -750,10 +811,30 @@ class PageSettings extends React.Component {
                   ''
                 )}
               </Card>
+              <Card
+                header='Delete Page'
+                headerTheme='red'
+                style={{
+                  card: { backgroundColor: 'transparent' }
+                }}
+              >
+                <Checkbox
+                  label='Confirm to delete this page'
+                  checked={this.state.confirmDelete}
+                  valueHandler={this.getValueHandler('confirmDelete')}
+                />
+                <button
+                  type='button'
+                  className='btn btn-danger'
+                  onClick={this.deletePage.bind(this)}
+                >
+                  <MdDelete /> Delete Page
+                </button>
+              </Card>
             </form>
             <form
               method='POST'
-              action={'/api/upload'}
+              action='/api/upload'
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -772,7 +853,11 @@ class PageSettings extends React.Component {
                   })
                 }}
               />
-              <input type='hidden' name='target' value='bg' />
+              <input
+                type='hidden'
+                name='target'
+                value={`page-bg/${this.props.pageId}`}
+              />
             </form>
             <iframe
               id='upload-bg-frame'
@@ -781,20 +866,33 @@ class PageSettings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload(() => {
-                    window.location.reload()
-                  })
-                  this.setState(state => {
-                    state.uploadingBg = false
-                    return state
-                  })
+                  this.setState(
+                    state => {
+                      state.uploadingBg = false
+                      return state
+                    },
+                    () => {
+                      this.bgFileInput.current.value = null
+                      iframe.src = 'about:blank'
+                      axios
+                        .get(`/api/page/${this.props.pageId}/settings`)
+                        .then(response => {
+                          let settings = response.data
+                          if (settings.bg) {
+                            this.props.getSettingsValueHandler('bg')(
+                              settings.bg
+                            )
+                          }
+                        })
+                    }
+                  )
                 }
               }}
               className='d-none'
             />
             <form
               method='POST'
-              action={'/api/upload'}
+              action='/api/upload'
               target='upload-icon-frame'
               encType='multipart/form-data'
               ref={this.uploadIconForm}
@@ -813,7 +911,11 @@ class PageSettings extends React.Component {
                   })
                 }}
               />
-              <input type='hidden' name='target' value='icon' />
+              <input
+                type='hidden'
+                name='target'
+                value={`page-icon/${this.props.pageId}`}
+              />
             </form>
             <iframe
               id='upload-icon-frame'
@@ -822,7 +924,6 @@ class PageSettings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload()
                   this.setState(
                     state => {
                       state.uploadingIcon = false
@@ -859,11 +960,15 @@ class PageSettings extends React.Component {
 
 PageSettings.propTypes = {
   authenticated: PropTypes.bool,
-  emitReload: PropTypes.func.isRequired,
+  deletePage: PropTypes.func,
   getPageSettingIsUndefined: PropTypes.func.isRequired,
+  getPageValueHandler: PropTypes.func.isRequired,
   getResetter: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   hide: PropTypes.array,
+  page: PropTypes.object.isRequired,
+  pageId: PropTypes.number.isRequired,
+  path: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
   site: PropTypes.bool
 }
