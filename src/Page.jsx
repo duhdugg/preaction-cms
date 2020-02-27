@@ -14,10 +14,8 @@ class Page extends React.Component {
       loading: false,
       notFound: false,
       page: null,
-      settings: {},
       showSettings: false
     }
-    this.pageId = null
     this.settingsUpdateTimer = null
   }
 
@@ -154,13 +152,7 @@ class Page extends React.Component {
   }
 
   get settings() {
-    let s = {}
-    Object.assign(s, this.props.settings)
-    if (this.state.page) {
-      Object.assign(s, this.state.page.settings)
-    }
-    s.site = this.state.page.settings.site
-    return s
+    return this.state.page.appliedSettings
   }
 
   get topLevelPageKey() {
@@ -224,7 +216,7 @@ class Page extends React.Component {
             axios
               .put(`/api/page/${this.state.page.id}`, this.state.page)
               .then(() => {
-                this.loadSettings(this.state.page)
+                this.loadSettings()
                 this.props.emitSave()
               })
           }, 1000)
@@ -453,11 +445,13 @@ class Page extends React.Component {
                 state.loading = false
                 state.notFound = false
                 state.page = page
-                this.pageId = page.id
                 return state
               },
               () => {
-                this.loadSettings(this.state.page)
+                this.loadSettings()
+                if (this.props.setActivePage) {
+                  this.props.setActivePage(this.state.page)
+                }
               }
             )
             if (
@@ -487,7 +481,7 @@ class Page extends React.Component {
     )
   }
 
-  loadSettings(page) {
+  loadSettings() {
     if (!['header', 'footer'].includes(this.topLevelPageKey)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
@@ -654,7 +648,7 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   path: PropTypes.string.isRequired,
-  settings: PropTypes.object.isRequired
+  setActivePage: PropTypes.func
 }
 
 export default Page

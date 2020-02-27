@@ -32,6 +32,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      activePage: null,
       activePathname: '',
       activeSettings: {},
       authenticated: false,
@@ -268,11 +269,9 @@ class App extends React.Component {
 
   get settings() {
     let s = Object.assign({}, this.state.siteSettings)
-    if (this.activePage.current && this.activePage.current.pageId !== null) {
-      let page = this.getPageById(this.activePage.current.pageId)
-      if (page) {
-        s = page.getSettings()
-      }
+    if (this.state.activePage) {
+      s = this.state.activePage.appliedSettings
+      console.debug(s)
     }
     return s
   }
@@ -381,7 +380,7 @@ class App extends React.Component {
                   ancestry.forEach(p => {
                     Object.assign(s, p.settings)
                   })
-                  s.site = page.settings.site
+                  s.site = page.settings.site ? true : false
                   return s
                 }
               })
@@ -457,6 +456,13 @@ class App extends React.Component {
     }
   }
 
+  setActivePage(page) {
+    this.setState(state => {
+      state.activePage = page
+      return state
+    })
+  }
+
   setActivePathname(pathname) {
     this.setState(state => {
       state.activePathname = pathname
@@ -523,11 +529,9 @@ class App extends React.Component {
                     ''
                   )}
                   <Header
+                    activePage={this.state.activePage}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    settings={this.settings}
-                    pages={this.state.pages}
-                    logout={this.logout.bind(this)}
                     show={this.state.show.header}
                     ref={this.header}
                   />
@@ -548,10 +552,9 @@ class App extends React.Component {
               }
               footer={
                 <Footer
+                  activePage={this.state.activePage}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
-                  settings={this.settings}
-                  logout={this.logout.bind(this)}
                   ref={this.footer}
                   show={this.state.show.footer}
                 />
@@ -568,11 +571,12 @@ class App extends React.Component {
                   <Page
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    settings={this.settings}
                     path='/home/'
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
                     footerControl={this.getShowPropertyValueHandler('footer')}
+                    setActivePathname={this.setActivePathname.bind(this)}
+                    setActivePage={this.setActivePage.bind(this)}
                   />
                 </Route>
                 <Route exact path='/login'>
@@ -601,7 +605,6 @@ class App extends React.Component {
                         return (
                           <Page
                             editable={this.state.editable}
-                            settings={this.settings}
                             path={location.pathname}
                             addPage={this.addPage.bind(this)}
                             deletePage={this.deletePage.bind(this)}
@@ -613,6 +616,10 @@ class App extends React.Component {
                             footerControl={this.getShowPropertyValueHandler(
                               'footer'
                             )}
+                            setActivePathname={this.setActivePathname.bind(
+                              this
+                            )}
+                            setActivePage={this.setActivePage.bind(this)}
                           />
                         )
                     }
