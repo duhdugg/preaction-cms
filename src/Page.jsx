@@ -6,7 +6,7 @@ import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
-import { MdCreate, MdImage } from 'react-icons/md'
+import { MdCreate } from 'react-icons/md'
 import { FaHtml5 } from 'react-icons/fa'
 
 class Page extends React.Component {
@@ -167,8 +167,8 @@ class Page extends React.Component {
     })
   }
 
-  getImages(pageblockimages) {
-    return pageblockimages.concat().sort((a, b) => {
+  getContents(contents) {
+    return contents.concat().sort((a, b) => {
       let retval = 0
       if (a.ordering < b.ordering) {
         retval = -1
@@ -306,23 +306,12 @@ class Page extends React.Component {
           {
             name: (
               <span>
-                <MdImage /> Image(s)
-              </span>
-            ),
-            onClick: e => {
-              e.preventDefault()
-              this.addPageBlock('image')
-            }
-          },
-          {
-            name: (
-              <span>
                 <FaHtml5 /> Content
               </span>
             ),
             onClick: e => {
               e.preventDefault()
-              this.addPageBlock('wysiwyg')
+              this.addPageBlock('content')
             }
           }
         ],
@@ -334,59 +323,63 @@ class Page extends React.Component {
     return menu
   }
 
-  galleryControl(pageBlock, index, action) {
+  contentControl(pageBlock, index, action) {
     // actions: previous, next, delete
     this.setState(state => {
-      let images = this.getImages(pageBlock.pageblockimages)
-      let image = images[index]
+      let contents = this.getContents(pageBlock.pageblockcontents)
+      let content = contents[index]
       if (action === 'previous') {
-        image.ordering--
-        let prevUpload = images[index - 1]
+        content.ordering--
+        let prevUpload = contents[index - 1]
         prevUpload.ordering++
-        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.emitSave()
-        })
         axios
-          .put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
+          .put(`/api/page/blocks/content/${content.id}`, content)
           .then(() => {
             this.props.emitSave()
           })
-        images[index] = image
-        images[index - 1] = prevUpload
+        axios
+          .put(`/api/page/blocks/content/${prevUpload.id}`, prevUpload)
+          .then(() => {
+            this.props.emitSave()
+          })
+        contents[index] = content
+        contents[index - 1] = prevUpload
       } else if (action === 'next') {
-        image.ordering++
-        let nextUpload = images[index + 1]
-        nextUpload.ordering--
-        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.emitSave()
-        })
+        content.ordering++
+        let nextContent = contents[index + 1]
+        nextContent.ordering--
         axios
-          .put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
+          .put(`/api/page/blocks/content/${content.id}`, content)
           .then(() => {
             this.props.emitSave()
           })
-        images[index] = image
-        images[index + 1] = nextUpload
-      } else if (action === 'delete') {
-        if (window.confirm('Delete this image?')) {
-          axios.delete(`/api/page/blocks/image/${image.id}`).then(() => {
+        axios
+          .put(`/api/page/blocks/content/${nextContent.id}`, nextContent)
+          .then(() => {
             this.props.emitSave()
           })
-          let x = pageBlock.pageblockimages.indexOf(image)
-          let ordering = image.ordering
-          pageBlock.pageblockimages.splice(x, 1)
-          images.forEach(image => {
-            if (image.ordering > ordering) {
-              image.ordering--
+        contents[index] = content
+        contents[index + 1] = nextContent
+      } else if (action === 'delete') {
+        if (window.confirm('Delete this content?')) {
+          axios.delete(`/api/page/blocks/content/${content.id}`).then(() => {
+            this.props.emitSave()
+          })
+          let x = pageBlock.pageblockcontents.indexOf(content)
+          let ordering = content.ordering
+          pageBlock.pageblockcontents.splice(x, 1)
+          contents.forEach(content => {
+            if (content.ordering > ordering) {
+              content.ordering--
             }
           })
         }
       }
       state.page.pageblocks.forEach(pb => {
         if (pb.id === pageBlock.id) {
-          for (let x = 0; x < pb.pageblockimages.length; x++) {
-            if (pb.pageblockimages[x].id === image.id) {
-              pb.pageblockimages[x] = image
+          for (let x = 0; x < pb.pageblockcontents.length; x++) {
+            if (pb.pageblockcontents[x].id === content.id) {
+              pb.pageblockcontents[x] = content
               break
             }
           }
@@ -455,7 +448,7 @@ class Page extends React.Component {
   }
 
   loadSettings() {
-    if (!['header', 'footer'].includes(this.topLevelPageKey)) {
+    if (!['header', 'footer'].includes(this.state.page.key)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
       this.props.headerControl(showHeader)
@@ -520,8 +513,8 @@ class Page extends React.Component {
                         emitSave={this.props.emitSave}
                         settings={this.settings}
                         blockControl={this.blockControl.bind(this)}
-                        getImages={this.getImages.bind(this)}
-                        galleryControl={this.galleryControl.bind(this)}
+                        getContents={this.getContents.bind(this)}
+                        contentControl={this.contentControl.bind(this)}
                         getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                           this
                         )}

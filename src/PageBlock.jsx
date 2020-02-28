@@ -10,11 +10,12 @@ class PageBlock extends React.Component {
       <div className={`page-block ${this.props.data.blockType}`}>
         {this.props.data ? (
           <div>
-            {this.props.data.blockType === 'wysiwyg' ? (
+            {this.props.data.blockType === 'content' ? (
               <PageBlockWysiwyg
                 data={this.props.data}
                 editable={this.props.editable}
                 emitSave={this.props.emitSave}
+                getContents={this.props.getContents}
                 settings={this.props.settings}
                 getPageBlockSettingsValueHandler={
                   this.props.getPageBlockSettingsValueHandler
@@ -31,7 +32,7 @@ class PageBlock extends React.Component {
                 settings={this.props.settings}
                 blockControl={this.props.blockControl}
                 galleryControl={this.props.galleryControl}
-                getImages={this.props.getImages}
+                getContents={this.props.getContents}
                 getPageBlockSettingsValueHandler={
                   this.props.getPageBlockSettingsValueHandler
                 }
@@ -90,7 +91,7 @@ PageBlock.propTypes = {
   emitSave: PropTypes.func.isRequired,
   first: PropTypes.bool,
   galleryControl: PropTypes.func.isRequired,
-  getImages: PropTypes.func.isRequired,
+  getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
   settings: PropTypes.object.isRequired

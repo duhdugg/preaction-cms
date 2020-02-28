@@ -23,7 +23,8 @@ class Header extends React.Component {
             <Page
               editable={this.props.editable}
               emitSave={this.props.emitSave}
-              path='/header/'
+              fallbackSettings={this.props.settings}
+              path='/home/header/'
               ref={this.page}
             />
           </div>
@@ -36,6 +37,7 @@ class Header extends React.Component {
 Header.propTypes = {
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
   show: PropTypes.bool
 }
 

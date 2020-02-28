@@ -274,27 +274,29 @@ class SiteSettings extends React.Component {
                       />
                       <Input
                         label='Background Image Path'
-                        value={this.props.settings.bg}
                         valueHandler={this.props.getSettingsValueHandler('bg')}
+                        value={this.props.settings.bg}
                       />
-                      <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={() => {
-                          this.bgFileInput.current.click()
-                        }}
-                        disabled={this.state.uploadingBg}
-                      >
-                        Upload Background
-                        {this.state.uploadingBg ? (
-                          <span>
-                            <span> </span>
-                            <Spinner />
-                          </span>
-                        ) : (
-                          ''
-                        )}
-                      </button>
+                      <div>
+                        <button
+                          type='button'
+                          className='btn btn-primary'
+                          onClick={() => {
+                            this.bgFileInput.current.click()
+                          }}
+                          disabled={this.state.uploadingBg}
+                        >
+                          Upload Background
+                          {this.state.uploadingBg ? (
+                            <span>
+                              <span> </span>
+                              <Spinner />
+                            </span>
+                          ) : (
+                            ''
+                          )}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     ''
@@ -549,7 +551,7 @@ class SiteSettings extends React.Component {
               />
               <Card
                 header='Redirects'
-                headerTheme='red'
+                headerTheme='green'
                 style={{
                   card: { backgroundColor: 'transparent' }
                 }}
@@ -653,7 +655,6 @@ class SiteSettings extends React.Component {
                   </table>
                 </div>
               </Card>
-              )
               <Card
                 header='Analytics'
                 headerTheme='blue'

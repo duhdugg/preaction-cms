@@ -112,8 +112,11 @@ app.route('/').get((req, res) => {
       return retval
     })
     pageblocks.forEach(pageblock => {
-      if (pageblock.pageblockwysiwyg) {
-        content += pageblock.pageblockwysiwyg.content || ''
+      if (
+        pageblock.pageblockcontent &&
+        pageblock.pageblockcontent.contentType === 'wyswiyg'
+      ) {
+        content += pageblock.pageblockcontent.content || ''
       }
     })
     content = excerptHtml(content, { pruneLength: 300 })

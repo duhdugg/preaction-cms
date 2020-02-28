@@ -164,7 +164,7 @@ class PageBlockImages extends React.Component {
         )}
         <div className='row'>
           {this.props
-            .getImages(this.props.data.pageblockimages || [])
+            .getContents(this.props.data.pageblockimages || [])
             .map((image, index) => (
               <Card
                 className={{
@@ -426,7 +426,7 @@ PageBlockImages.propTypes = {
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   galleryControl: PropTypes.func.isRequired,
-  getImages: PropTypes.func.isRequired,
+  getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired
 }

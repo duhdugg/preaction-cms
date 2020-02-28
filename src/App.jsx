@@ -590,6 +590,7 @@ class App extends React.Component {
                     activePage={this.state.activePage}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
+                    settings={this.settings}
                     show={this.state.show.header}
                     ref={this.header}
                   />
@@ -613,6 +614,7 @@ class App extends React.Component {
                   activePage={this.state.activePage}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
+                  settings={this.settings}
                   ref={this.footer}
                   show={this.state.show.footer}
                 />

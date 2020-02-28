@@ -75,6 +75,17 @@ a:hover {
   text-shadow: 1px 1px #ccc;
 }
 
+.page .card,
+.page .card .card-header,
+.page .card .card-body,
+.page .card .card-footer {
+  transition: border-color 1s linear, background-color 1s linear;
+}
+.page .card .card-header,
+.page .card .card-footer {
+  transition: color 1s linear;
+}
+
 .modal-content {
   color: transparent;
   background-color: transparent;

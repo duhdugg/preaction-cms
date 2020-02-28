@@ -176,13 +176,7 @@ class PageSettings extends React.Component {
                     valueHandler={this.props.getPageValueHandler('title')}
                   />
                   <Input
-                    label='Page URL Key'
-                    type='text'
-                    value={this.props.page.key}
-                    readOnly={true}
-                  />
-                  <Input
-                    label='Full Page URL'
+                    label='Page Path'
                     type='text'
                     value={this.path}
                     readOnly={true}
@@ -214,121 +208,148 @@ class PageSettings extends React.Component {
                       checked={this.props.settings.site === true}
                       valueHandler={this.props.getSettingsValueHandler('site')}
                     />
-                    <Select
-                      label='Nav Position'
-                      value={this.props.settings.navPosition}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'navPosition'
-                      )}
-                      readOnly={this.props.getPageSettingIsUndefined(
-                        'navPosition'
-                      )}
-                      onClick={() => {
-                        this.overrideSetting('navPosition')
-                      }}
-                    >
-                      <option value='fixed-top'>Fixed to Top</option>
-                      <option value='above-header'>Above Header</option>
-                      <option value='below-header'>Below Header</option>
-                    </Select>
-                    <ResetButton settingsKey='navPosition' />
-                    {this.props.settings.navPosition === 'fixed-top' ? (
-                      <div>
+                    <div className='row'>
+                      <div className='col-sm-6'>
                         <Select
-                          label='Nav Theme'
-                          value={this.props.settings.navTheme}
+                          label='Nav Position'
+                          value={this.props.settings.navPosition}
                           valueHandler={this.props.getSettingsValueHandler(
-                            'navTheme'
+                            'navPosition'
                           )}
                           readOnly={this.props.getPageSettingIsUndefined(
-                            'navTheme'
+                            'navPosition'
                           )}
+                          onClick={() => {
+                            this.overrideSetting('navPosition')
+                          }}
                         >
-                          <option />
-                          <option value='light'>Light</option>
-                          <option value='dark'>Dark</option>
+                          <option value='fixed-top'>Fixed to Top</option>
+                          <option value='above-header'>Above Header</option>
+                          <option value='below-header'>Below Header</option>
                         </Select>
-                        <ResetButton settingsKey='navTheme' />
+                        <ResetButton settingsKey='navPosition' />
                       </div>
-                    ) : (
-                      ''
-                    )}
-                    {['above-header', 'below-header'].indexOf(
-                      this.props.settings.navPosition
-                    ) > -1 ? (
-                      <div>
-                        <Select
-                          label='Nav Type'
-                          value={this.props.settings.navType}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navType'
-                          )}
-                          readOnly={this.props.getPageSettingIsUndefined(
-                            'navType'
-                          )}
-                          onClick={e => {
-                            this.overrideSetting('navType')
-                          }}
-                        >
-                          <option>basic</option>
-                          <option>tabs</option>
-                          <option>pills</option>
-                        </Select>
-                        <ResetButton settingsKey='navType' />
-                        <Select
-                          label='Nav Alignment'
-                          value={this.props.settings.navAlignment}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navAlignment'
-                          )}
-                          readOnly={this.props.getPageSettingIsUndefined(
-                            'navAlignment'
-                          )}
-                          onClick={e => {
-                            this.overrideSetting('navAlignment')
-                          }}
-                        >
-                          <option>left</option>
-                          <option>center</option>
-                          <option>right</option>
-                        </Select>
-                        <ResetButton settingsKey='navAlignment' />
-                        <Select
-                          label='Nav Spacing'
-                          value={this.props.settings.navSpacing}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navSpacing'
-                          )}
-                          readOnly={this.props.getPageSettingIsUndefined(
-                            'navSpacing'
-                          )}
-                          onClick={e => {
-                            this.overrideSetting('navSpacing')
-                          }}
-                        >
-                          <option>normal</option>
-                          <option>fill</option>
-                          <option>justify</option>
-                        </Select>
-                        <ResetButton settingsKey='navSpacing' />
-                        <Checkbox
-                          label='Collapse nav for smaller screens'
-                          checked={this.props.settings.navCollapsible}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navCollapsible'
-                          )}
-                          readOnly={this.props.getPageSettingIsUndefined(
-                            'navCollapsible'
-                          )}
-                          onClick={e => {
-                            this.overrideSetting('navCollapsible')
-                          }}
-                        />
-                        <ResetButton settingsKey='navCollapsible' />
-                      </div>
-                    ) : (
-                      ''
-                    )}
+                      {this.props.settings.navPosition === 'fixed-top' ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Theme'
+                            value={this.props.settings.navTheme}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navTheme'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navTheme'
+                            )}
+                          >
+                            <option value='light'>Light</option>
+                            <option value='dark'>Dark</option>
+                          </Select>
+                          <ResetButton settingsKey='navTheme' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Type'
+                            value={this.props.settings.navType}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navType'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navType'
+                            )}
+                            onClick={e => {
+                              this.overrideSetting('navType')
+                            }}
+                          >
+                            <option>basic</option>
+                            <option>tabs</option>
+                            <option>pills</option>
+                          </Select>
+                          <ResetButton settingsKey='navType' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Alignment'
+                            value={this.props.settings.navAlignment}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navAlignment'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navAlignment'
+                            )}
+                            onClick={e => {
+                              this.overrideSetting('navAlignment')
+                            }}
+                          >
+                            <option>left</option>
+                            <option>center</option>
+                            <option>right</option>
+                          </Select>
+                          <ResetButton settingsKey='navAlignment' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Spacing'
+                            value={this.props.settings.navSpacing}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navSpacing'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navSpacing'
+                            )}
+                            onClick={e => {
+                              this.overrideSetting('navSpacing')
+                            }}
+                          >
+                            <option>normal</option>
+                            <option>fill</option>
+                            <option>justify</option>
+                          </Select>
+                          <ResetButton settingsKey='navSpacing' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Checkbox
+                            label='Collapse nav for smaller screens'
+                            checked={this.props.settings.navCollapsible}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navCollapsible'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navCollapsible'
+                            )}
+                            onClick={e => {
+                              this.overrideSetting('navCollapsible')
+                            }}
+                          />
+                          <ResetButton settingsKey='navCollapsible' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
                   </Card>
                 </div>
               </div>
@@ -485,9 +506,7 @@ class PageSettings extends React.Component {
                     />
                     <ResetButton settingsKey='fontColor' />
                   </div>
-                </div>
-                <div className='row'>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Link Color'
                       type='color'
@@ -504,6 +523,8 @@ class PageSettings extends React.Component {
                     />
                     <ResetButton settingsKey='linkColor' />
                   </div>
+                </div>
+                <div className='row'>
                   <div className='col-sm'>
                     <Input
                       label='Container Color'
@@ -614,21 +635,93 @@ class PageSettings extends React.Component {
                     />
                     <ResetButton settingsKey='borderOpacity' />
                   </div>
-                </div>
-
-                <div>
-                  <h3>Samples</h3>
-                  <div>
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Test Link
-                      </a>
-                    </p>
+                  <div className='col-sm'>
+                    <Select
+                      label='Container Header Theme'
+                      value={this.props.settings.containerHeaderTheme}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerHeaderTheme'
+                      )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'containerHeaderTheme'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('containerHeaderTheme')
+                      }}
+                    >
+                      <option>blue</option>
+                      <option>dark</option>
+                      <option>gray</option>
+                      <option>green</option>
+                      <option>light</option>
+                      <option>red</option>
+                      <option>teal</option>
+                      <option>yellow</option>
+                    </Select>
+                    <ResetButton settingsKey='containerHeaderTheme' />
                   </div>
-                  <div
-                    className='p-3'
-                    style={{
+                </div>
+              </Card>
+              <div className='row'>
+                <div className='col-sm-6'>
+                  <Input
+                    type='number'
+                    label='Container Padding'
+                    min='0'
+                    max='3'
+                    step='0.01'
+                    value={this.props.settings.containerPadding}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'containerPadding'
+                    )}
+                    readOnly={this.props.getPageSettingIsUndefined(
+                      'containerPadding'
+                    )}
+                    onClick={() => {
+                      this.overrideSetting('containerPadding')
+                    }}
+                  />
+                  <Input
+                    type='range'
+                    min='0'
+                    max='3'
+                    step='0.01'
+                    value={this.props.settings.containerPadding}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'containerPadding'
+                    )}
+                    readOnly={this.props.getPageSettingIsUndefined(
+                      'containerPadding'
+                    )}
+                    onClick={() => {
+                      this.overrideSetting('containerPadding')
+                    }}
+                  />
+                  <ResetButton settingsKey='containerPadding' />
+                </div>
+              </div>
+              <Card
+                header='Samples'
+                style={{
+                  card: {
+                    backgroundColor: this.props.settings.bgColor
+                  }
+                }}
+                headerTheme='teal'
+              >
+                <div>
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={e => e.preventDefault()}>
+                      Test Link
+                    </a>
+                  </p>
+                </div>
+                <Card
+                  header='Container'
+                  headerTheme={this.props.settings.containerHeaderTheme}
+                  style={{
+                    card: {
                       backgroundColor: getRgbaFromSettings(
                         this.props.settings,
                         'container'
@@ -640,16 +733,21 @@ class PageSettings extends React.Component {
                       borderRadius: '0.25rem',
                       transition:
                         'background-color 1s linear, border-color 1s linear'
-                    }}
-                  >
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Link
-                      </a>
-                    </p>
-                  </div>
-                </div>
+                    },
+                    body: {
+                      padding: this.props.settings.containerPadding
+                        ? `${this.props.settings.containerPadding}em`
+                        : 0
+                    }
+                  }}
+                >
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={e => e.preventDefault()}>
+                      Link
+                    </a>
+                  </p>
+                </Card>
               </Card>
               <Textarea
                 label='CSS Overrides'
@@ -686,7 +784,7 @@ class PageSettings extends React.Component {
                             <td>
                               <button
                                 type='button'
-                                className='btn btn-sm btn-dark'
+                                className='btn btn-sm btn-light'
                                 onClick={e => {
                                   this.editRedirect(redirect)
                                 }}
@@ -742,7 +840,7 @@ class PageSettings extends React.Component {
                               className='btn btn-success btn-sm'
                               onClick={this.saveRedirect.bind(this)}
                             >
-                              <MdSave /> Save
+                              <MdSave /> save
                             </button>
                           </td>
                           <td>

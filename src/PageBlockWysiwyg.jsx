@@ -1,7 +1,7 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Checkbox, Form, Input, Wysiwyg } from '@preaction/inputs'
+import { Form, Input, Wysiwyg } from '@preaction/inputs'
 import { Card, Modal } from '@preaction/bootstrap-clips'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
@@ -12,11 +12,11 @@ class PageBlockWysiwyg extends React.Component {
     super(props)
     this.state = {
       loading: true,
-      wysiwyg: '',
+      content: '',
       showSettings: false,
       savingWysiwyg: false
     }
-    this.wysiwyg = React.createRef()
+    this.content = React.createRef()
     this.wysiwygUpdateTimer = null
   }
 
@@ -28,7 +28,7 @@ class PageBlockWysiwyg extends React.Component {
     if (!this.state.loading) {
       this.setState(
         state => {
-          state.wysiwyg = value
+          state.content = value
           if (this.props.editable) {
             state.savingWysiwyg = true
           }
@@ -40,9 +40,9 @@ class PageBlockWysiwyg extends React.Component {
             if (this.props.editable) {
               axios
                 .put(
-                  `/api/page/blocks/wysiwyg/${this.props.data.pageblockwysiwyg.id}`,
+                  `/api/page/blocks/content/${this.props.data.pageblockcontents.id}`,
                   {
-                    content: this.state.wysiwyg
+                    content: this.state.content
                   }
                 )
                 .then(() => {
@@ -68,7 +68,7 @@ class PageBlockWysiwyg extends React.Component {
 
   render() {
     return (
-      <div className='page-block-wysiwyg'>
+      <div className='page-block-content'>
         <Form
           onSubmit={e => {
             e.preventDefault()
@@ -98,10 +98,10 @@ class PageBlockWysiwyg extends React.Component {
           <Wysiwyg
             theme='bubble'
             toolbar={wysiwygToolbar}
-            value={this.state.wysiwyg}
+            value={this.state.content}
             valueHandler={this.handleWysiwyg.bind(this)}
             readOnly={!this.props.editable}
-            ref={this.wysiwyg}
+            ref={this.content}
           />
         </Card>
         <div
@@ -164,11 +164,11 @@ class PageBlockWysiwyg extends React.Component {
   componentDidMount() {
     this.setState(
       state => {
-        state.wysiwyg = this.props.data.pageblockwysiwyg.content
+        state.content = this.props.data.pageblockcontents.content
         return state
       },
       () => {
-        this.wysiwyg.current.value = this.props.data.pageblockwysiwyg.content
+        this.content.current.value = this.props.data.pageblockcontents.content
       }
     )
     window.setTimeout(() => {
@@ -181,17 +181,17 @@ class PageBlockWysiwyg extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
-      this.props.data.pageblockwysiwyg.content !==
-      prevProps.data.pageblockwysiwyg.content
+      this.props.data.pageblockcontents.content !==
+      prevProps.data.pageblockcontents.content
     ) {
       if (!this.props.editable) {
         this.setState(
           state => {
-            state.wysiwyg = this.props.data.pageblockwysiwyg.content
+            state.content = this.props.data.pageblockcontents.content
             return state
           },
           () => {
-            this.wysiwyg.current.value = this.props.data.pageblockwysiwyg.content
+            this.content.current.value = this.props.data.pageblockcontents.content
           }
         )
       }
