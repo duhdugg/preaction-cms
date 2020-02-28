@@ -12,10 +12,13 @@ class PageBlock extends React.Component {
           <div>
             {this.props.data.blockType === 'wysiwyg' ? (
               <PageBlockWysiwyg
-                data={this.props.data.pageblockwysiwyg}
+                data={this.props.data}
                 editable={this.props.editable}
                 emitSave={this.props.emitSave}
                 settings={this.props.settings}
+                getPageBlockSettingsValueHandler={
+                  this.props.getPageBlockSettingsValueHandler
+                }
               />
             ) : (
               ''

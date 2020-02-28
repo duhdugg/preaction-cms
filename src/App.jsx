@@ -26,8 +26,6 @@ import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 import SiteSettings from './SiteSettings.jsx'
 
-import { getRgbaFromSettings } from './lib/getRgba.js'
-
 import { registerSmartLinkFormat } from '@preaction/inputs'
 
 class App extends React.Component {
@@ -35,7 +33,6 @@ class App extends React.Component {
     super(props)
     this.state = {
       activePage: null,
-      activeParentPage: null,
       activePathname: '',
       activeSettings: {},
       authenticated: false,
@@ -56,12 +53,13 @@ class App extends React.Component {
         bgColor: '#000000',
         borderColor: '#000000',
         borderOpacity: 0,
+        containerColor: '#ffffff',
+        containerHeaderTheme: 'dark',
+        containerOpacity: 0,
         cssOverrides: '',
         fontColor: '#ffffff',
         hostname: '',
         linkColor: '#ffffff',
-        containerColor: '#ffffff',
-        containerOpacity: 0,
         siteTitle: '',
         siteDescription: '',
         navTheme: 'dark',
@@ -103,7 +101,15 @@ class App extends React.Component {
       return
     }
     let pageType = 'content'
-    let parentId = this.state.activePage ? this.state.activePage.id : null
+    let parentId = null
+    if (this.state.activePage) {
+      if (
+        !(this.state.activePage.key === 'home') &&
+        this.state.activePage.parentId === null
+      ) {
+        parentId = this.state.activePage.id
+      }
+    }
     let newPage = {
       key,
       title,
@@ -124,6 +130,10 @@ class App extends React.Component {
           this.emitSave()
         })
         .then(() => {
+          this.setState(state => {
+            state.activePage = null
+            return state
+          })
           this.loadPages()
           this.redirect('/')
         })
@@ -139,6 +149,14 @@ class App extends React.Component {
       this.loadPages()
       callback()
     })
+  }
+
+  get fallbackSettings() {
+    let s = Object.assign({}, this.state.siteSettings)
+    if (this.state.activePage && this.state.activePathname !== '/home/') {
+      Object.assign(s, this.state.activePage.fallbackSettings)
+    }
+    return s
   }
 
   get menu() {
@@ -286,11 +304,12 @@ class App extends React.Component {
   }
 
   get settings() {
-    let s = Object.assign({}, this.state.siteSettings)
-    if (this.state.activeParentPage) {
-      Object.assign(s, this.state.activeParentPage.appliedSettings)
-    }
-    if (this.state.activePage) {
+    let s = Object.assign({}, this.fallbackSettings)
+    if (
+      this.state.activePage &&
+      this.state.activePathname !== '/home' &&
+      this.state.activePathname !== '/'
+    ) {
       Object.assign(s, this.state.activePage.settings)
     }
     return s
@@ -317,6 +336,14 @@ class App extends React.Component {
 
   getSettingsValueHandler(key) {
     return value => {
+      if (key === 'siteTitle') {
+        let splitTitle = document.title.split(' | ')
+        if (splitTitle.length < 2) {
+          document.title = value
+        } else {
+          document.title = `${splitTitle[0]} | ${value}`
+        }
+      }
       this.setState(
         state => {
           state.siteSettings[key] = value
@@ -441,7 +468,10 @@ class App extends React.Component {
   }
 
   toggleSettings() {
-    if (this.state.activePathname === '/home/') {
+    if (
+      this.state.activePathname === '/home/' ||
+      this.state.activePathname === '/'
+    ) {
       this.setState(state => {
         state.show.settings = !state.show.settings
         return state
@@ -485,36 +515,10 @@ class App extends React.Component {
   }
 
   setActivePage(page) {
-    this.setState(
-      state => {
-        state.activePage = page
-        return state
-      },
-      () => {
-        if (this.state.activePage && this.state.activePage.parentId) {
-          axios
-            .get(`/api/page/${this.state.activePage.parentId}`)
-            .then(parentPage => {
-              if (parentPage) {
-                this.setState(state => {
-                  state.activeParentPage = parentPage
-                  return state
-                })
-              } else {
-                this.setState(state => {
-                  state.activeParentPage = null
-                  return state
-                })
-              }
-            })
-        } else {
-          this.setState(state => {
-            state.activeParentPage = null
-            return state
-          })
-        }
-      }
-    )
+    this.setState(state => {
+      state.activePage = page
+      return state
+    })
   }
 
   setActivePathname(pathname) {
@@ -625,6 +629,7 @@ class App extends React.Component {
                   <Page
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
+                    fallbackSettings={this.fallbackSettings}
                     path='/home/'
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
@@ -678,11 +683,6 @@ class App extends React.Component {
             a { color: ${this.settings.linkColor}; }
             a.active { color: ${this.settings.fontColor}; }
             a:hover { color: ${this.settings.fontColor}; }
-            img {
-              border: 1px solid ${
-                getRgbaFromSettings(this.settings, 'border').string
-              };
-            }
             #root::before {
               background-color: ${this.settings.bgColor};
             }
@@ -699,7 +699,7 @@ class App extends React.Component {
             .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
               background-color: ${this.settings.linkColor};
             }
-            .modal-content .card-body {
+            .modal-content {
               background-color: ${this.settings.bgColor};
               color: ${this.settings.fontColor};
             }

@@ -56,6 +56,10 @@ a:hover {
   text-decoration: none;
 }
 
+.ql-editor {
+  padding: 0;
+}
+
 .ql-editor a {
   text-decoration: none !important;
 }
@@ -71,14 +75,28 @@ a:hover {
   text-shadow: 1px 1px #ccc;
 }
 
-.modal-content .card-body {
+.modal-content {
   color: transparent;
   background-color: transparent;
   transition: color 1s linear, background-color 1s linear;
 }
 
+.modal-content .modal-header,
+.modal-content .modal-footer {
+  color: #f8f9fa;
+  background-color: #343a40;
+  border: 0;
+}
+.modal-content .modal-header svg {
+  color: #fff;
+}
+
 .wysiwyg label {
   display: none;
+}
+
+.wysiwyg .modal label {
+  display: inline-block;
 }
 
 .wysiwyg .ql-container {

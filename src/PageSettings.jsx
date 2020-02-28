@@ -946,15 +946,7 @@ class PageSettings extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Page Settings | ${this.props.settings.siteTitle}`
     this.getRedirects()
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
-      document.title = `Page Settings | ${nextProps.settings.siteTitle}`
-    }
-    return true
   }
 }
 

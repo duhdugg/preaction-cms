@@ -47,49 +47,36 @@ class PageBlockImages extends React.Component {
   }
 
   get cardWidth() {
-    let width
-    if (this.props.data.settings.autoCollapseColumns) {
-      switch (this.props.data.settings.maxWidth) {
-        case '50%':
-          width = {
-            xs: 1,
-            sm: 1 / 2
-          }
+    let getWidthRatio = desc => {
+      let width
+      switch (desc) {
+        case 'Full Page':
+          width = 1
           break
-        case '33%':
-          width = {
-            xs: 1,
-            sm: 1 / 2,
-            lg: 1 / 3
-          }
-          break
-        case '25%':
-          width = {
-            xs: 1,
-            sm: 1 / 2,
-            lg: 1 / 3,
-            xl: 1 / 4
-          }
-          break
-        default:
-          width = { xs: 1 }
-          break
-      }
-    } else {
-      switch (this.props.data.settings.maxWidth) {
-        case '50%':
+        case 'Half Page':
           width = 1 / 2
           break
-        case '33%':
+        case 'Third Page':
           width = 1 / 3
           break
-        case '25%':
+        case 'Quarter Page':
           width = 1 / 4
           break
         default:
           width = 1
           break
       }
+      return width
+    }
+    let xsWidth = getWidthRatio(this.props.data.settings.xsWidth)
+    let smWidth = getWidthRatio(this.props.data.settings.smWidth)
+    let mdWidth = getWidthRatio(this.props.data.settings.mdWidth)
+    let lgWidth = getWidthRatio(this.props.data.settings.lgWidth)
+    let width = {
+      xs: xsWidth,
+      sm: smWidth,
+      md: mdWidth,
+      lg: lgWidth
     }
     return width
   }
@@ -188,6 +175,8 @@ class PageBlockImages extends React.Component {
                 column
                 contain={this.props.data.settings.center}
                 width={this.cardWidth}
+                headerTheme={this.props.settings.containerHeaderTheme}
+                footerTheme={this.props.settings.containerHeaderTheme}
                 style={{
                   card: {
                     backgroundColor: getRgbaFromSettings(
@@ -240,11 +229,20 @@ class PageBlockImages extends React.Component {
                   )
                 }
               >
-                <a href='.' onClick={this.viewImage(image).bind(this)}>
+                <a
+                  href='.'
+                  onClick={this.viewImage(image).bind(this)}
+                  tabIndex={this.props.data.settings.pushToZoom ? 0 : -1}
+                  style={{
+                    cursor: this.props.data.settings.pushToZoom
+                      ? 'pointer'
+                      : 'default'
+                  }}
+                >
                   <img
                     src={`/uploads/${image.filename}`}
                     style={{
-                      maxWidth: '100%'
+                      width: '100%'
                     }}
                     alt=''
                   />
@@ -266,18 +264,58 @@ class PageBlockImages extends React.Component {
                 title='Image Block Settings'
                 closeHandler={this.toggleSettings.bind(this)}
               >
-                <Select
-                  label='Max Width'
-                  value={this.props.data.settings.maxWidth}
-                  valueHandler={this.getPageBlockSettingsValueHandler(
-                    'maxWidth'
-                  )}
-                >
-                  <option>100%</option>
-                  <option>50%</option>
-                  <option>33%</option>
-                  <option>25%</option>
-                </Select>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <Select
+                      label='Image Width (phone, portrait mode)'
+                      value={this.props.data.settings.xsWidth}
+                      valueHandler={this.getPageBlockSettingsValueHandler(
+                        'xsWidth'
+                      )}
+                    >
+                      <option>Full Page</option>
+                      <option>Half Page</option>
+                      <option>Third Page</option>
+                      <option>Quarter Page</option>
+                    </Select>
+                    <Select
+                      label='Image Width (phone, landscape mode)'
+                      value={this.props.data.settings.smWidth}
+                      valueHandler={this.getPageBlockSettingsValueHandler(
+                        'smWidth'
+                      )}
+                    >
+                      <option>Full Page</option>
+                      <option>Half Page</option>
+                      <option>Third Page</option>
+                      <option>Quarter Page</option>
+                    </Select>
+                    <Select
+                      label='Image Width (tablet)'
+                      value={this.props.data.settings.mdWidth}
+                      valueHandler={this.getPageBlockSettingsValueHandler(
+                        'mdWidth'
+                      )}
+                    >
+                      <option>Full Page</option>
+                      <option>Half Page</option>
+                      <option>Third Page</option>
+                      <option>Quarter Page</option>
+                    </Select>
+                    <Select
+                      label='Image Width (desktop)'
+                      value={this.props.data.settings.lgWidth}
+                      valueHandler={this.getPageBlockSettingsValueHandler(
+                        'lgWidth'
+                      )}
+                    >
+                      <option>Full Page</option>
+                      <option>Half Page</option>
+                      <option>Third Page</option>
+                      <option>Quarter Page</option>
+                    </Select>
+                  </div>
+                </div>
                 <Checkbox
                   label='Automatically collapse columns for smaller screens'
                   checked={this.props.data.settings.autoCollapseColumns}
@@ -291,7 +329,7 @@ class PageBlockImages extends React.Component {
                   valueHandler={this.getPageBlockSettingsValueHandler('center')}
                 />
                 <Checkbox
-                  label='Show Container'
+                  label='Place each image in a container'
                   checked={this.props.data.settings.showContainer}
                   valueHandler={this.getPageBlockSettingsValueHandler(
                     'showContainer'

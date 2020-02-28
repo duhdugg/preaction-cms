@@ -16,10 +16,9 @@ class Page extends React.Component {
       loading: false,
       notFound: false,
       page: null,
-      parentPage: null,
       showSettings: false
     }
-    this.settingsUpdateTimer = null
+    this.updateTimer = null
   }
 
   addPageBlock(blockType) {
@@ -144,9 +143,9 @@ class Page extends React.Component {
   }
 
   get settings() {
-    let s = Object.assign({}, this.state.page.appliedSettings)
-    if (this.state.page.parentPage) {
-      Object.assign(s, this.state.parentPage.appliedSettings)
+    let s = Object.assign({}, this.state.page.fallbackSettings)
+    if (this.props.fallbackSettings) {
+      Object.assign(s, this.props.fallbackSettings)
     }
     Object.assign(s, this.state.page.settings)
     return s
@@ -186,17 +185,30 @@ class Page extends React.Component {
 
   getPageBlockSettingsValueHandler(pageblockId, key) {
     return value => {
-      this.setState(state => {
-        this.state.page.pageblocks.forEach(pageblock => {
-          if (pageblock.id === pageblockId) {
-            pageblock.settings[key] = value
-            axios.put(`/api/page/blocks/${pageblockId}`, pageblock).then(() => {
-              this.props.emitSave()
-            })
-          }
-        })
-        return state
-      })
+      this.setState(
+        state => {
+          this.state.page.pageblocks.forEach(pageblock => {
+            if (pageblock.id === pageblockId) {
+              pageblock.settings[key] = value
+            }
+          })
+          return state
+        },
+        () => {
+          this.state.page.pageblocks.forEach(pageblock => {
+            if (pageblock.id === pageblockId) {
+              clearTimeout(this.updateTimer)
+              this.updateTimer = setTimeout(() => {
+                axios
+                  .put(`/api/page/blocks/${pageblockId}`, pageblock)
+                  .then(() => {
+                    this.props.emitSave()
+                  })
+              }, 1000)
+            }
+          })
+        }
+      )
     }
   }
 
@@ -208,8 +220,8 @@ class Page extends React.Component {
           return state
         },
         () => {
-          clearTimeout(this.settingsUpdateTimer)
-          this.settingsUpdateTimer = setTimeout(() => {
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
             axios
               .put(`/api/page/${this.state.page.id}`, this.state.page)
               .then(() => {
@@ -238,8 +250,8 @@ class Page extends React.Component {
           if (this.props.setActivePage) {
             this.props.setActivePage(this.state.page)
           }
-          clearTimeout(this.settingsUpdateTimer)
-          this.settingsUpdateTimer = setTimeout(() => {
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
             axios
               .put(`/api/page/${this.state.page.id}`, this.state.page)
               .then(() => {
@@ -268,8 +280,8 @@ class Page extends React.Component {
           if (this.props.setActivePage) {
             this.props.setActivePage(this.state.page)
           }
-          clearTimeout(this.settingsUpdateTimer)
-          this.settingsUpdateTimer = setTimeout(() => {
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
             axios
               .put(`/api/page/${this.state.page.id}`, this.state.page)
               .then(() => {
@@ -391,7 +403,6 @@ class Page extends React.Component {
         state.loading = true
         state.notFound = false
         state.page = null
-        state.parentPage = null
         return state
       },
       () => {
@@ -407,37 +418,12 @@ class Page extends React.Component {
                 return state
               },
               () => {
-                let callback = () => {
-                  this.loadSettings()
-                  if (this.props.setActivePage) {
-                    this.props.setActivePage(this.state.page)
-                  }
-                  if (this.props.setActivePathname) {
-                    this.props.setActivePathname(this.props.path)
-                  }
+                this.loadSettings()
+                if (this.props.setActivePage) {
+                  this.props.setActivePage(this.state.page)
                 }
-                if (this.state.page.parentId) {
-                  axios
-                    .get(`/api/page/${this.state.page.parentId}`)
-                    .then(response => {
-                      let parent = response.data
-                      if (parent) {
-                        this.setState(state => {
-                          state.parentPage = parent
-                          return state
-                        }, callback)
-                      } else {
-                        this.setState(state => {
-                          state.parentPage = null
-                          return state
-                        }, callback)
-                      }
-                    })
-                } else {
-                  this.setState(state => {
-                    state.parentPage = null
-                    return state
-                  }, callback)
+                if (this.props.setActivePathname) {
+                  this.props.setActivePathname(this.props.path)
                 }
               }
             )
@@ -619,6 +605,7 @@ Page.propTypes = {
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   path: PropTypes.string.isRequired,

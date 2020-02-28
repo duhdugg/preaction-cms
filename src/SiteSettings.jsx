@@ -138,80 +138,109 @@ class SiteSettings extends React.Component {
                       }
                     }}
                   >
-                    <Select
-                      label='Nav Position'
-                      value={this.props.settings.navPosition}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'navPosition'
-                      )}
-                    >
-                      <option value='fixed-top'>Fixed to Top</option>
-                      <option value='above-header'>Above Header</option>
-                      <option value='below-header'>Below Header</option>
-                    </Select>
-                    {this.props.settings.navPosition === 'fixed-top' ? (
-                      <Select
-                        label='Nav Theme'
-                        value={this.props.settings.navTheme}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navTheme'
-                        )}
-                      >
-                        <option />
-                        <option value='light'>Light</option>
-                        <option value='dark'>Dark</option>
-                      </Select>
-                    ) : (
-                      ''
-                    )}
-                    {['above-header', 'below-header'].indexOf(
-                      this.props.settings.navPosition
-                    ) > -1 ? (
-                      <div>
+                    <div className='row'>
+                      <div className='col-sm-6'>
                         <Select
-                          label='Nav Type'
-                          value={this.props.settings.navType}
+                          label='Nav Position'
+                          value={this.props.settings.navPosition}
                           valueHandler={this.props.getSettingsValueHandler(
-                            'navType'
+                            'navPosition'
                           )}
                         >
-                          <option>basic</option>
-                          <option>tabs</option>
-                          <option>pills</option>
+                          <option value='fixed-top'>Fixed to Top</option>
+                          <option value='above-header'>Above Header</option>
+                          <option value='below-header'>Below Header</option>
                         </Select>
-                        <Select
-                          label='Nav Alignment'
-                          value={this.props.settings.navAlignment}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navAlignment'
-                          )}
-                        >
-                          <option>left</option>
-                          <option>center</option>
-                          <option>right</option>
-                        </Select>
-                        <Select
-                          label='Nav Spacing'
-                          value={this.props.settings.navSpacing}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navSpacing'
-                          )}
-                        >
-                          <option>normal</option>
-                          <option>fill</option>
-                          <option>justify</option>
-                        </Select>
-                        <Checkbox
-                          label='Collapse nav for smaller screens'
-                          checked={this.props.settings.navCollapsible}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navCollapsible'
-                          )}
-                        />
                       </div>
-                    ) : (
-                      ''
-                    )}
+                      {this.props.settings.navPosition === 'fixed-top' ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Theme'
+                            value={this.props.settings.navTheme}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navTheme'
+                            )}
+                          >
+                            <option value='light'>Light</option>
+                            <option value='dark'>Dark</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Type'
+                            value={this.props.settings.navType}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navType'
+                            )}
+                          >
+                            <option>basic</option>
+                            <option>tabs</option>
+                            <option>pills</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Alignment'
+                            value={this.props.settings.navAlignment}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navAlignment'
+                            )}
+                          >
+                            <option>left</option>
+                            <option>center</option>
+                            <option>right</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Spacing'
+                            value={this.props.settings.navSpacing}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navSpacing'
+                            )}
+                          >
+                            <option>normal</option>
+                            <option>fill</option>
+                            <option>justify</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Checkbox
+                            label='Collapse nav for smaller screens'
+                            checked={this.props.settings.navCollapsible}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navCollapsible'
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
                   </Card>
                 </div>
               </div>
@@ -335,9 +364,7 @@ class SiteSettings extends React.Component {
                       )}
                     />
                   </div>
-                </div>
-                <div className='row'>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Link Color'
                       type='color'
@@ -347,6 +374,8 @@ class SiteSettings extends React.Component {
                       )}
                     />
                   </div>
+                </div>
+                <div className='row'>
                   <div className='col-sm'>
                     <Input
                       label='Container Color'
@@ -417,21 +446,73 @@ class SiteSettings extends React.Component {
                       )}
                     />
                   </div>
-                </div>
-
-                <div>
-                  <h3>Samples</h3>
-                  <div>
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Test Link
-                      </a>
-                    </p>
+                  <div className='col-sm'>
+                    <Select
+                      label='Container Header Theme'
+                      value={this.props.settings.containerHeaderTheme}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerHeaderTheme'
+                      )}
+                    >
+                      <option>blue</option>
+                      <option>dark</option>
+                      <option>gray</option>
+                      <option>green</option>
+                      <option>light</option>
+                      <option>red</option>
+                      <option>teal</option>
+                      <option>yellow</option>
+                    </Select>
                   </div>
-                  <div
-                    className='p-3'
-                    style={{
+                </div>
+              </Card>
+              <div className='row'>
+                <div className='col-sm-6'>
+                  <Input
+                    type='number'
+                    label='Container Padding'
+                    min='0'
+                    max='3'
+                    step='0.01'
+                    value={this.props.settings.containerPadding}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'containerPadding'
+                    )}
+                  />
+                  <Input
+                    type='range'
+                    min='0'
+                    max='3'
+                    step='0.01'
+                    value={this.props.settings.containerPadding}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'containerPadding'
+                    )}
+                  />
+                </div>
+              </div>
+              <Card
+                header='Samples'
+                style={{
+                  card: {
+                    backgroundColor: this.props.settings.bgColor
+                  }
+                }}
+                headerTheme='teal'
+              >
+                <div>
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={e => e.preventDefault()}>
+                      Test Link
+                    </a>
+                  </p>
+                </div>
+                <Card
+                  header='Container'
+                  headerTheme={this.props.settings.containerHeaderTheme}
+                  style={{
+                    card: {
                       backgroundColor: getRgbaFromSettings(
                         this.props.settings,
                         'container'
@@ -443,16 +524,21 @@ class SiteSettings extends React.Component {
                       borderRadius: '0.25rem',
                       transition:
                         'background-color 1s linear, border-color 1s linear'
-                    }}
-                  >
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Link
-                      </a>
-                    </p>
-                  </div>
-                </div>
+                    },
+                    body: {
+                      padding: this.props.settings.containerPadding
+                        ? `${this.props.settings.containerPadding}em`
+                        : 0
+                    }
+                  }}
+                >
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={e => e.preventDefault()}>
+                      Link
+                    </a>
+                  </p>
+                </Card>
               </Card>
               <Textarea
                 label='CSS Overrides'
@@ -701,15 +787,7 @@ class SiteSettings extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Site Settings | ${this.props.settings.siteTitle}`
     this.getRedirects()
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
-      document.title = `Site Settings | ${nextProps.settings.siteTitle}`
-    }
-    return true
   }
 }
 
