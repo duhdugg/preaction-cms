@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import PageBlockImages from './PageBlockImages.jsx'
-import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
+import PageBlockContent from './PageBlockContent.jsx'
 import { MdArrowUpward, MdArrowDownward, MdDelete } from 'react-icons/md'
 
 class PageBlock extends React.Component {
@@ -11,27 +10,13 @@ class PageBlock extends React.Component {
         {this.props.data ? (
           <div>
             {this.props.data.blockType === 'content' ? (
-              <PageBlockWysiwyg
-                data={this.props.data}
-                editable={this.props.editable}
-                emitSave={this.props.emitSave}
-                getContents={this.props.getContents}
-                settings={this.props.settings}
-                getPageBlockSettingsValueHandler={
-                  this.props.getPageBlockSettingsValueHandler
-                }
-              />
-            ) : (
-              ''
-            )}
-            {this.props.data.blockType === 'image' ? (
-              <PageBlockImages
+              <PageBlockContent
                 data={this.props.data}
                 editable={this.props.editable}
                 emitSave={this.props.emitSave}
                 settings={this.props.settings}
                 blockControl={this.props.blockControl}
-                galleryControl={this.props.galleryControl}
+                contentControl={this.props.contentControl}
                 getContents={this.props.getContents}
                 getPageBlockSettingsValueHandler={
                   this.props.getPageBlockSettingsValueHandler
@@ -90,7 +75,7 @@ PageBlock.propTypes = {
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   first: PropTypes.bool,
-  galleryControl: PropTypes.func.isRequired,
+  contentControl: PropTypes.func.isRequired,
   getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
