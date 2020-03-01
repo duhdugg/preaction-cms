@@ -2,14 +2,16 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import PageBlockContent from './PageBlockContent.jsx'
 import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
-import { Form, Input } from '@preaction/inputs'
+import { Form, Input, Checkbox } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
+import { FaHtml5 } from 'react-icons/fa'
 import {
   MdArrowUpward,
   MdArrowDownward,
   MdDelete,
   MdSettings
 } from 'react-icons/md'
+import { getRgbaFromSettings } from './lib/getRgba.js'
 
 class PageBlock extends React.Component {
   constructor(props) {
@@ -31,6 +33,10 @@ class PageBlock extends React.Component {
       )
   }
 
+  getPageBlockSettingsValueHandler(key) {
+    return this.props.getPageBlockSettingsValueHandler(this.props.block.id, key)
+  }
+
   refreshBlock() {
     this.props.blockControl(this.props.block.id, 'refresh')
     this.props.emitSave()
@@ -46,100 +52,160 @@ class PageBlock extends React.Component {
   render() {
     return (
       <div className={`page-block ${this.props.block.blockType}`}>
-        {this.props.block.blockType === 'content' ? (
-          <div className='row'>
-            {this.props
-              .getContents(this.props.block.pageblockcontents)
-              .map((content, key) => (
-                <PageBlockContent
-                  key={content.id}
-                  block={this.props.block}
-                  column
-                  width={content.settings.width / 12}
-                  content={content}
-                  contentControl={this.props.contentControl}
-                  index={key}
-                  getContentSettingsValueHandler={this.getContentSettingsValueHandler(
-                    content.id
-                  )}
-                  editable={this.props.editable}
-                  emitSave={this.props.emitSave}
-                  settings={this.props.settings}
-                />
-              ))}
-          </div>
-        ) : (
-          ''
-        )}
-        {this.props.editable ? (
-          <div className='page-block-buttons' style={{ marginBottom: '1em' }}>
-            <button
-              type='button'
-              className='btn btn-primary btn-sm'
-              disabled={this.props.first}
-              onClick={() => {
-                this.props.blockControl(this.props.block.id, 'previous')
-              }}
-            >
-              <MdArrowUpward /> move block up
-            </button>
-            <button
-              type='button'
-              className='btn btn-danger btn-sm'
-              onClick={() => {
-                this.props.blockControl(this.props.block.id, 'delete')
-              }}
-            >
-              <MdDelete /> delete block
-            </button>
-            <button
-              type='button'
-              className='btn btn-primary btn-sm'
-              disabled={this.props.last}
-              onClick={() => {
-                this.props.blockControl(this.props.block.id, 'next')
-              }}
-            >
-              <MdArrowDownward /> move block down
-            </button>
-            <button
-              type='button'
-              className='btn btn-secondary btn-sm'
-              onClick={() => {
-                this.toggleSettings()
-              }}
-            >
-              <MdSettings /> block settings
-            </button>
-          </div>
-        ) : (
-          ''
-        )}
+        <Card
+          style={{
+            body: {
+              padding: this.props.block.settings.padding
+                ? `${this.props.block.settings.padding}em`
+                : 0,
+              backgroundColor: 'transparent'
+            },
+            card: {
+              border: this.props.block.settings.showBorder
+                ? `1px solid ${
+                    getRgbaFromSettings(this.props.settings, 'border').string
+                  }`
+                : 0,
+              backgroundColor: this.props.block.settings.showContainer
+                ? getRgbaFromSettings(this.props.settings, 'container').string
+                : 'transparent'
+            },
+            footer: { padding: 0 }
+          }}
+          header={this.props.block.settings.header}
+          headerTheme='dark'
+          footerTheme='dark'
+          footer={
+            this.props.editable ? (
+              <div className='btn-group d-block'>
+                <button
+                  type='button'
+                  className='btn btn-primary btn-sm'
+                  disabled={this.props.first}
+                  onClick={() => {
+                    this.props.blockControl(this.props.block.id, 'previous')
+                  }}
+                >
+                  <MdArrowUpward />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-primary btn-sm'
+                  disabled={this.props.last}
+                  onClick={() => {
+                    this.props.blockControl(this.props.block.id, 'next')
+                  }}
+                >
+                  <MdArrowDownward />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-danger btn-sm'
+                  onClick={() => {
+                    this.props.blockControl(this.props.block.id, 'delete')
+                  }}
+                >
+                  <MdDelete />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-secondary btn-sm'
+                  onClick={() => {
+                    this.toggleSettings()
+                  }}
+                >
+                  <MdSettings />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-info btn-sm'
+                  onClick={() => {}}
+                >
+                  <FaHtml5 />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-info btn-sm'
+                  onClick={() => {
+                    this.photosInput.current.click()
+                  }}
+                >
+                  <MdImage />
+                </button>
+              </div>
+            ) : (
+              ''
+            )
+          }
+        >
+          {this.props.block.blockType === 'content' ? (
+            <div className='row'>
+              {this.props
+                .getContents(this.props.block.pageblockcontents)
+                .map((content, key) => (
+                  <PageBlockContent
+                    key={content.id}
+                    block={this.props.block}
+                    column
+                    width={content.settings.width / 12}
+                    content={content}
+                    contentControl={this.props.contentControl}
+                    first={key === 0}
+                    last={key === this.props.block.pageblockcontents.length - 1}
+                    index={key}
+                    getContentSettingsValueHandler={this.getContentSettingsValueHandler(
+                      content.id
+                    )}
+                    editable={this.props.editable}
+                    emitSave={this.props.emitSave}
+                    settings={this.props.settings}
+                  />
+                ))}
+            </div>
+          ) : (
+            ''
+          )}
+        </Card>
         {this.props.editable && this.state.showSettings ? (
           <Modal
             title='Block Settings'
             closeHandler={this.toggleSettings.bind(this)}
           >
-            <div className='pt-1'>
-              <button
-                type='button'
-                className='btn btn-info d-block'
-                onClick={() => {
-                  this.photosInput.current.click()
-                }}
-                disabled={this.state.uploading}
-              >
-                <MdImage /> add images
-                {this.state.uploading ? (
-                  <span>
-                    <span> </span>
-                    <Spinner />
-                  </span>
-                ) : (
-                  ''
+            <Form
+              onSubmit={e => {
+                e.prevenDefault()
+              }}
+            >
+              <Input
+                type='text'
+                label='Header'
+                value={this.props.block.settings.header}
+                valueHandler={this.getPageBlockSettingsValueHandler('header')}
+              />
+              <Input
+                type='range'
+                label='Padding'
+                min='0'
+                max='3'
+                step='0.01'
+                value={this.props.block.settings.padding || 0}
+                valueHandler={this.getPageBlockSettingsValueHandler('padding')}
+              />
+              <Checkbox
+                label='Show Container Background'
+                checked={this.props.block.settings.showContainer}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'showContainer'
                 )}
-              </button>
-            </div>
+              />
+              <Checkbox
+                label='Show Border'
+                checked={this.props.block.settings.showBorder}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'showBorder'
+                )}
+              />
+            </Form>
           </Modal>
         ) : (
           ''

@@ -198,15 +198,16 @@ class Page extends React.Component {
           this.state.page.pageblocks.forEach(pageblock => {
             if (pageblock.id === pageblockId) {
               pageblock.pageblockcontents.forEach(content => {
-                clearTimeout(this.updateTimer)
-                this.updateTimer = setTimeout(() => {
-                  console.debug(content)
-                  axios
-                    .put(`/api/page/blocks/content/${contentId}`, content)
-                    .then(() => {
-                      this.props.emitSave()
-                    })
-                }, 1000)
+                if (content.id === contentId) {
+                  clearTimeout(this.updateTimer)
+                  this.updateTimer = setTimeout(() => {
+                    axios
+                      .put(`/api/page/blocks/content/${contentId}`, content)
+                      .then(() => {
+                        this.props.emitSave()
+                      })
+                  }, 1000)
+                }
               })
             }
           })

@@ -57,27 +57,14 @@ class PageBlockWysiwyg extends React.Component {
             e.preventDefault()
           }}
         />
-        <Card
-          noMargin
-          style={{
-            body: {
-              padding: 0
-            },
-            card: {
-              border: 0,
-              margin: 0
-            }
-          }}
-        >
-          <Wysiwyg
-            theme='bubble'
-            toolbar={wysiwygToolbar}
-            value={this.state.wysiwyg}
-            valueHandler={this.handleWysiwyg.bind(this)}
-            readOnly={!this.props.editable}
-            ref={this.content}
-          />
-        </Card>
+        <Wysiwyg
+          theme='bubble'
+          toolbar={wysiwygToolbar}
+          value={this.state.wysiwyg}
+          valueHandler={this.handleWysiwyg.bind(this)}
+          readOnly={!this.props.editable}
+          ref={this.content}
+        />
         <div
           style={{
             position: 'relative',

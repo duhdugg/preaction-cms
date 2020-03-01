@@ -15,14 +15,6 @@
   margin-bottom: 1rem;
 }
 
-.page .page-block .page-block-buttons {
-  margin-top: 0.25rem;
-}
-
-.page .page-block .page-block-buttons button {
-  margin-right: 0.25rem;
-}
-
 .card.image.nocontainer {
   background-color: transparent !important;
   border: 0 !important;
