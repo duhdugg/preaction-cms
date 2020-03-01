@@ -1,34 +1,27 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Form, Input, Wysiwyg } from '@preaction/inputs'
-import { Card, Modal } from '@preaction/bootstrap-clips'
-import { getRgbaFromSettings } from './lib/getRgba.js'
+import { Form, Wysiwyg } from '@preaction/inputs'
+import { Card } from '@preaction/bootstrap-clips'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
-import { MdSettings } from 'react-icons/md'
 
 class PageBlockWysiwyg extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       loading: true,
-      content: '',
-      showSettings: false,
+      wysiwyg: '',
       savingWysiwyg: false
     }
     this.content = React.createRef()
     this.wysiwygUpdateTimer = null
   }
 
-  getPageBlockSettingsValueHandler(key) {
-    return this.props.getPageBlockSettingsValueHandler(this.props.data.id, key)
-  }
-
   handleWysiwyg(value) {
     if (!this.state.loading) {
       this.setState(
         state => {
-          state.content = value
+          state.wysiwyg = value
           if (this.props.editable) {
             state.savingWysiwyg = true
           }
@@ -39,8 +32,8 @@ class PageBlockWysiwyg extends React.Component {
           this.wysiwygUpdateTimer = setTimeout(() => {
             if (this.props.editable) {
               axios
-                .put(`/api/page/blocks/content/${this.props.data.id}`, {
-                  content: this.state.content
+                .put(`/api/page/blocks/content/${this.props.content.id}`, {
+                  wysiwyg: this.state.wysiwyg
                 })
                 .then(() => {
                   this.setState(state => {
@@ -56,13 +49,6 @@ class PageBlockWysiwyg extends React.Component {
     }
   }
 
-  toggleSettings() {
-    this.setState(state => {
-      state.showSettings = !state.showSettings
-      return state
-    })
-  }
-
   render() {
     return (
       <div className='page-block-content'>
@@ -72,30 +58,21 @@ class PageBlockWysiwyg extends React.Component {
           }}
         />
         <Card
+          noMargin
           style={{
-            card: {
-              backgroundColor: getRgbaFromSettings(
-                this.props.settings,
-                'container'
-              ).string,
-              border: `1px solid ${
-                getRgbaFromSettings(this.props.settings, 'border').string
-              }`
-            },
             body: {
-              padding: this.props.settings.containerPadding
-                ? `${this.props.settings.containerPadding}em`
-                : 0
+              padding: 0
+            },
+            card: {
+              border: 0,
+              margin: 0
             }
           }}
-          header={this.props.data.settings.header}
-          headerTheme={this.props.settings.containerHeaderTheme}
-          footerTheme={this.props.settings.containerHeaderTheme}
         >
           <Wysiwyg
             theme='bubble'
             toolbar={wysiwygToolbar}
-            value={this.state.content}
+            value={this.state.wysiwyg}
             valueHandler={this.handleWysiwyg.bind(this)}
             readOnly={!this.props.editable}
             ref={this.content}
@@ -110,7 +87,7 @@ class PageBlockWysiwyg extends React.Component {
           <div
             style={{
               position: 'absolute',
-              top: '-1.25em',
+              top: '-0.5em',
               width: '100%',
               textAlign: 'right'
             }}
@@ -118,42 +95,6 @@ class PageBlockWysiwyg extends React.Component {
             saving...
           </div>
         </div>
-        {this.props.editable ? (
-          <div>
-            <button
-              type='button'
-              className='btn btn-secondary btn-sm'
-              onClick={this.toggleSettings.bind(this)}
-            >
-              <MdSettings /> Content Block Settings
-            </button>
-            {this.state.showSettings ? (
-              <Modal
-                closeHandler={this.toggleSettings.bind(this)}
-                title='Content Block Settings'
-              >
-                <Form
-                  onSubmit={e => {
-                    e.preventDefault()
-                  }}
-                >
-                  <Input
-                    type='text'
-                    label='Header (optional)'
-                    value={this.props.data.settings.header}
-                    valueHandler={this.getPageBlockSettingsValueHandler(
-                      'header'
-                    )}
-                  />
-                </Form>
-              </Modal>
-            ) : (
-              ''
-            )}
-          </div>
-        ) : (
-          ''
-        )}
       </div>
     )
   }
@@ -161,11 +102,11 @@ class PageBlockWysiwyg extends React.Component {
   componentDidMount() {
     this.setState(
       state => {
-        state.content = this.props.data.content
+        state.wysiwyg = this.props.content.wysiwyg
         return state
       },
       () => {
-        this.content.current.value = this.props.data.content
+        this.content.current.value = this.props.content.wysiwyg
       }
     )
     window.setTimeout(() => {
@@ -177,15 +118,15 @@ class PageBlockWysiwyg extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.data.content !== prevProps.data.content) {
+    if (this.props.content.wysiwyg !== prevProps.content.wysiwyg) {
       if (!this.props.editable) {
         this.setState(
           state => {
-            state.content = this.props.data.content
+            state.wysiwyg = this.props.content.wysiwyg
             return state
           },
           () => {
-            this.content.current.value = this.props.data.content
+            this.content.current.value = this.props.content.wysiwyg
           }
         )
       }
@@ -194,11 +135,10 @@ class PageBlockWysiwyg extends React.Component {
 }
 
 PageBlockWysiwyg.propTypes = {
-  data: PropTypes.object.isRequired,
+  block: PropTypes.object.isRequired,
+  content: PropTypes.object.isRequired,
   emitSave: PropTypes.func.isRequired,
-  editable: PropTypes.bool,
-  getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired
+  editable: PropTypes.bool
 }
 
 export default PageBlockWysiwyg

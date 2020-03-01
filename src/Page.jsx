@@ -179,6 +179,42 @@ class Page extends React.Component {
     })
   }
 
+  getContentSettingsValueHandler(pageblockId, contentId, key) {
+    return value => {
+      this.setState(
+        state => {
+          this.state.page.pageblocks.forEach(pageblock => {
+            if (pageblock.id === pageblockId) {
+              pageblock.pageblockcontents.forEach(content => {
+                if (content.id === contentId) {
+                  content.settings[key] = value
+                }
+              })
+            }
+          })
+          return state
+        },
+        () => {
+          this.state.page.pageblocks.forEach(pageblock => {
+            if (pageblock.id === pageblockId) {
+              pageblock.pageblockcontents.forEach(content => {
+                clearTimeout(this.updateTimer)
+                this.updateTimer = setTimeout(() => {
+                  console.debug(content)
+                  axios
+                    .put(`/api/page/blocks/content/${contentId}`, content)
+                    .then(() => {
+                      this.props.emitSave()
+                    })
+                }, 1000)
+              })
+            }
+          })
+        }
+      )
+    }
+  }
+
   getPageSettingIsUndefined(key) {
     return this.state.page.settings[key] === undefined
   }
@@ -505,7 +541,7 @@ class Page extends React.Component {
                   (block, index) => {
                     return (
                       <PageBlock
-                        data={block}
+                        block={block}
                         key={block.id}
                         first={index === 0}
                         last={index === this.state.page.pageblocks.length - 1}
@@ -514,6 +550,9 @@ class Page extends React.Component {
                         settings={this.settings}
                         blockControl={this.blockControl.bind(this)}
                         getContents={this.getContents.bind(this)}
+                        getContentSettingsValueHandler={this.getContentSettingsValueHandler.bind(
+                          this
+                        )}
                         contentControl={this.contentControl.bind(this)}
                         getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                           this
