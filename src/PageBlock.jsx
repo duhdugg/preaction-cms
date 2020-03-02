@@ -73,8 +73,8 @@ class PageBlock extends React.Component {
             footer: { padding: 0 }
           }}
           header={this.props.block.settings.header}
-          headerTheme='dark'
-          footerTheme='dark'
+          headerTheme={this.props.settings.containerHeaderTheme}
+          footerTheme={this.props.settings.containerHeaderTheme}
           footer={
             this.props.editable ? (
               <div className='btn-group d-block'>
@@ -119,7 +119,9 @@ class PageBlock extends React.Component {
                 <button
                   type='button'
                   className='btn btn-info btn-sm'
-                  onClick={() => {}}
+                  onClick={() => {
+                    this.props.addContent(this.props.block, 'wysiwyg')
+                  }}
                 >
                   <FaHtml5 />
                 </button>
@@ -266,14 +268,15 @@ class PageBlock extends React.Component {
 }
 
 PageBlock.propTypes = {
+  addContent: PropTypes.func.isRequired,
   block: PropTypes.object.isRequired,
   blockControl: PropTypes.func.isRequired,
   contentControl: PropTypes.func.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   first: PropTypes.bool,
-  getContents: PropTypes.func.isRequired,
   getContentSettingsValueHandler: PropTypes.func.isRequired,
+  getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
   settings: PropTypes.object.isRequired

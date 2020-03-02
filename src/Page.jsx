@@ -21,6 +21,25 @@ class Page extends React.Component {
     this.updateTimer = null
   }
 
+  addContent(block, contentType) {
+    axios
+      .post(`/api/page/blocks/${block.id}/content`, { contentType })
+      .then(response => {
+        this.setState(state => {
+          state.page.pageblocks.forEach(pageblock => {
+            if (block.id === pageblock.id) {
+              if (!block.pageblockcontents) {
+                block.pageblockcontents = []
+              }
+              block.pageblockcontents.push(response.data)
+            }
+          })
+          return state
+        })
+        this.props.emitSave()
+      })
+  }
+
   addPageBlock(blockType) {
     axios
       .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
@@ -187,6 +206,11 @@ class Page extends React.Component {
             if (pageblock.id === pageblockId) {
               pageblock.pageblockcontents.forEach(content => {
                 if (content.id === contentId) {
+                  if (key === 'width') {
+                    if (value < 1) {
+                      value = 1
+                    }
+                  }
                   content.settings[key] = value
                 }
               })
@@ -542,22 +566,23 @@ class Page extends React.Component {
                   (block, index) => {
                     return (
                       <PageBlock
+                        addContent={this.addContent.bind(this)}
                         block={block}
-                        key={block.id}
-                        first={index === 0}
-                        last={index === this.state.page.pageblocks.length - 1}
+                        blockControl={this.blockControl.bind(this)}
+                        contentControl={this.contentControl.bind(this)}
                         editable={this.props.editable}
                         emitSave={this.props.emitSave}
-                        settings={this.settings}
-                        blockControl={this.blockControl.bind(this)}
+                        first={index === 0}
                         getContents={this.getContents.bind(this)}
                         getContentSettingsValueHandler={this.getContentSettingsValueHandler.bind(
                           this
                         )}
-                        contentControl={this.contentControl.bind(this)}
                         getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                           this
                         )}
+                        key={block.id}
+                        last={index === this.state.page.pageblocks.length - 1}
+                        settings={this.settings}
                       />
                     )
                   }

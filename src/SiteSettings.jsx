@@ -729,7 +729,6 @@ class SiteSettings extends React.Component {
                     }
                   )
                 } else {
-                  console.debug(iframe.contentWindow.location.href)
                 }
               }}
               className='d-none'

@@ -33,7 +33,8 @@ class PageBlockContent extends React.Component {
         noMargin
         column={this.props.column}
         header={this.props.content.settings.header}
-        footerTheme='dark'
+        headertheme={this.props.settings.containerHeaderTheme}
+        footerTheme={this.props.settings.containerHeaderTheme}
         footer={
           this.props.editable ? (
             <div className='btn-group d-block'>
@@ -144,9 +145,9 @@ class PageBlockContent extends React.Component {
               }}
             >
               <Input
-                label='Width'
+                label={`Width: ${this.props.content.settings.width} / 12`}
                 type='range'
-                min='1'
+                min='0'
                 max='12'
                 step='1'
                 value={this.props.content.settings.width}
@@ -155,11 +156,11 @@ class PageBlockContent extends React.Component {
                 )}
               />
               <Input
-                label='Padding'
+                label={`Padding: ${this.props.content.settings.padding}`}
                 type='range'
                 min='0'
                 max='3'
-                step='0.01'
+                step='0.05'
                 value={this.props.content.settings.padding || 0}
                 valueHandler={this.props.getContentSettingsValueHandler(
                   'padding'
