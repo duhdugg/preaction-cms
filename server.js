@@ -95,7 +95,7 @@ app.route('/').get((req, res) => {
     include: [
       {
         model: pages.model.PageBlock,
-        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
+        include: [pages.model.PageBlockContent]
       }
     ]
   }).then(page => {
