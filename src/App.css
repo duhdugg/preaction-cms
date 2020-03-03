@@ -110,6 +110,15 @@ a:hover {
   font-size: 1rem;
 }
 
+.wysiwyg .ql-toolbar.ql-snow,
+.wysiwyg .ql-container.ql-snow {
+  border: 0;
+}
+
+.wysiwyg .ql-toolbar.ql-snow {
+  background-color: white;
+}
+
 .wysiwyg .ql-tooltip {
   z-index: 99999;
 }
