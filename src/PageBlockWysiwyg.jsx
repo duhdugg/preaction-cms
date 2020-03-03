@@ -57,7 +57,7 @@ class PageBlockWysiwyg extends React.Component {
           }}
         />
         <Wysiwyg
-          theme='bubble'
+          theme={this.props.editable ? 'snow' : 'bubble'}
           toolbar={wysiwygToolbar}
           value={this.state.wysiwyg}
           valueHandler={this.handleWysiwyg.bind(this)}
