@@ -131,7 +131,6 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // description metadata generated from pageblocks
 app.route('*').get((req, res) => {
   let matchRedirect = false
-  console.debug(req.path)
   redirects.model.Redirect.findAll().then(redirects => {
     redirects.forEach(redirect => {
       let re = new RegExp(`^/?${redirect.match}/?$`)
