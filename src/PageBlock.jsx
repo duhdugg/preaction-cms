@@ -80,7 +80,7 @@ class PageBlock extends React.Component {
               <div className='btn-group d-block'>
                 <button
                   type='button'
-                  className='btn btn-primary btn-sm'
+                  className='btn btn-secondary btn-sm'
                   disabled={this.props.first}
                   onClick={() => {
                     this.props.blockControl(this.props.block.id, 'previous')
@@ -90,7 +90,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-primary btn-sm'
+                  className='btn btn-secondary btn-sm'
                   disabled={this.props.last}
                   onClick={() => {
                     this.props.blockControl(this.props.block.id, 'next')
@@ -118,7 +118,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-info btn-sm'
+                  className='btn btn-secondary btn-sm'
                   onClick={() => {
                     this.props.addContent(this.props.block, 'wysiwyg')
                   }}
@@ -127,7 +127,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-info btn-sm'
+                  className='btn btn-secondary btn-sm'
                   onClick={() => {
                     this.photosInput.current.click()
                   }}
