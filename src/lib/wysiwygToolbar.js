@@ -10,5 +10,5 @@ export default [
     { list: 'ordered' }
   ],
   [{ align: [] }],
-  ['link', 'image', 'video']
+  ['link']
 ]
