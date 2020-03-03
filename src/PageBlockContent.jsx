@@ -9,14 +9,18 @@ import {
   MdArrowBack,
   MdArrowForward,
   MdDelete,
+  MdLineStyle,
   MdSettings
 } from 'react-icons/md'
+import { FaHtml5 } from 'react-icons/fa'
 
 class PageBlockContent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showSettings: false
+      showSettings: false,
+      sourceMode: false,
+      theme: 'bubble'
     }
   }
 
@@ -27,13 +31,27 @@ class PageBlockContent extends React.Component {
     })
   }
 
+  toggleSourceMode() {
+    this.setState(state => {
+      state.sourceMode = !state.sourceMode
+      return state
+    })
+  }
+
+  toggleTheme() {
+    this.setState(state => {
+      state.theme = state.theme === 'bubble' ? 'snow' : 'bubble'
+      return state
+    })
+  }
+
   render() {
     return (
       <Card
         noMargin
         column={this.props.column}
         header={this.props.content.settings.header}
-        headertheme={this.props.settings.containerHeaderTheme}
+        headerTheme={this.props.settings.containerHeaderTheme}
         footerTheme={this.props.settings.containerHeaderTheme}
         footer={
           this.props.editable ? (
@@ -87,6 +105,29 @@ class PageBlockContent extends React.Component {
               >
                 <MdSettings />
               </button>
+              {this.props.content.contentType === 'wysiwyg' ? (
+                <button
+                  type='button'
+                  className='btn btn-sm btn-secondary'
+                  onClick={this.toggleSourceMode.bind(this)}
+                >
+                  <FaHtml5 />
+                </button>
+              ) : (
+                ''
+              )}
+              {this.props.content.contentType === 'wysiwyg' &&
+              !this.state.sourceMode ? (
+                <button
+                  type='button'
+                  className='btn btn-sm btn-secondary'
+                  onClick={this.toggleTheme.bind(this)}
+                >
+                  <MdLineStyle />
+                </button>
+              ) : (
+                ''
+              )}
             </div>
           ) : (
             ''
@@ -120,6 +161,8 @@ class PageBlockContent extends React.Component {
             content={this.props.content}
             editable={this.props.editable}
             emitSave={this.props.emitSave}
+            sourceMode={this.state.sourceMode}
+            theme={this.state.theme}
           />
         ) : (
           ''
@@ -145,18 +188,63 @@ class PageBlockContent extends React.Component {
               }}
             >
               <Input
-                label={`Width: ${this.props.content.settings.width} / 12`}
+                type='text'
+                label='Header'
+                value={this.props.content.settings.header}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'header'
+                )}
+              />
+              <Input
+                label={`Desktop Width: ${this.props.content.settings.lgWidth} / 12`}
                 type='range'
                 min='0'
                 max='12'
                 step='1'
-                value={this.props.content.settings.width}
+                value={this.props.content.settings.lgWidth}
                 valueHandler={this.props.getContentSettingsValueHandler(
-                  'width'
+                  'lgWidth'
                 )}
               />
               <Input
-                label={`Padding: ${this.props.content.settings.padding}`}
+                label={`Tablet Width: ${this.props.content.settings.mdWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.content.settings.mdWidth}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'mdWidth'
+                )}
+              />
+              <Input
+                label={`Phone Width (Landscape): ${this.props.content.settings.smWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.content.settings.smWidth}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'smWidth'
+                )}
+              />
+              <Input
+                label={`Phone Width (Portrait): ${this.props.content.settings.xsWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.content.settings.xsWidth}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'xsWidth'
+                )}
+              />
+              <Input
+                label={`Padding: ${
+                  this.props.content.settings.padding
+                    ? Number(this.props.content.settings.padding).toFixed(2)
+                    : '0.00'
+                }`}
                 type='range'
                 min='0'
                 max='3'

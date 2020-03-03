@@ -4,12 +4,12 @@ import PageBlockContent from './PageBlockContent.jsx'
 import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
-import { FaHtml5 } from 'react-icons/fa'
 import {
   MdArrowUpward,
   MdArrowDownward,
   MdDelete,
-  MdSettings
+  MdSettings,
+  MdTextFields
 } from 'react-icons/md'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 
@@ -123,7 +123,7 @@ class PageBlock extends React.Component {
                     this.props.addContent(this.props.block, 'wysiwyg')
                   }}
                 >
-                  <FaHtml5 />
+                  <MdTextFields />
                 </button>
                 <button
                   type='button'
@@ -149,7 +149,12 @@ class PageBlock extends React.Component {
                     key={content.id}
                     block={this.props.block}
                     column
-                    width={content.settings.width / 12}
+                    width={{
+                      lg: content.settings.lgWidth / 12,
+                      md: content.settings.mdWidth / 12,
+                      sm: content.settings.smWith / 12,
+                      xs: content.settings.xsWidth / 12
+                    }}
                     content={content}
                     contentControl={this.props.contentControl}
                     first={key === 0}
@@ -186,10 +191,14 @@ class PageBlock extends React.Component {
               />
               <Input
                 type='range'
-                label='Padding'
+                label={`Padding: ${
+                  this.props.block.settings.padding
+                    ? Number(this.props.block.settings.padding).toFixed(2)
+                    : '0.00'
+                }`}
                 min='0'
                 max='3'
-                step='0.01'
+                step='0.05'
                 value={this.props.block.settings.padding || 0}
                 valueHandler={this.getPageBlockSettingsValueHandler('padding')}
               />

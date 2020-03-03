@@ -1,7 +1,7 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Form, Wysiwyg } from '@preaction/inputs'
+import { Form, Textarea, Wysiwyg } from '@preaction/inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 
 class PageBlockWysiwyg extends React.Component {
@@ -48,6 +48,10 @@ class PageBlockWysiwyg extends React.Component {
     }
   }
 
+  get theme() {
+    return this.props.editable ? this.props.theme : 'bubble'
+  }
+
   render() {
     return (
       <div className='page-block-content'>
@@ -56,14 +60,23 @@ class PageBlockWysiwyg extends React.Component {
             e.preventDefault()
           }}
         />
-        <Wysiwyg
-          theme={this.props.editable ? 'snow' : 'bubble'}
-          toolbar={wysiwygToolbar}
-          value={this.state.wysiwyg}
-          valueHandler={this.handleWysiwyg.bind(this)}
-          readOnly={!this.props.editable}
-          ref={this.content}
-        />
+        {this.props.editable && this.props.sourceMode ? (
+          <Textarea
+            value={this.state.wysiwyg}
+            valueHandler={this.handleWysiwyg.bind(this)}
+            readOnly={!this.props.editable}
+            ref={this.content}
+          />
+        ) : (
+          <Wysiwyg
+            theme={this.theme}
+            toolbar={wysiwygToolbar}
+            value={this.state.wysiwyg}
+            valueHandler={this.handleWysiwyg.bind(this)}
+            readOnly={!this.props.editable}
+            ref={this.content}
+          />
+        )}
         <div
           style={{
             position: 'relative',
@@ -124,7 +137,9 @@ PageBlockWysiwyg.propTypes = {
   block: PropTypes.object.isRequired,
   content: PropTypes.object.isRequired,
   emitSave: PropTypes.func.isRequired,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  sourceMode: PropTypes.bool,
+  theme: PropTypes.string.isRequired
 }
 
 export default PageBlockWysiwyg
