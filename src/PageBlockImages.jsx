@@ -191,7 +191,7 @@ class PageBlockImages extends React.Component {
                       : '0px solid transparent',
                     borderRadius: '0.25rem',
                     transition:
-                      'background-color 1s linear, border-color 1s linear'
+                      'background-color 0.5s linear, border-color 0.5s linear'
                   }
                 }}
                 key={image.id}

@@ -26,7 +26,7 @@ code {
   top: 0;
   left: 0;
   background-color: transparent;
-  transition: background-color 1s linear;
+  transition: background-color 0.5s linear;
   will-change: transform;
   z-index: -2;
   pointer-events: none;
@@ -34,13 +34,13 @@ code {
 
 .App::before {
   opacity: 0;
-  transition: opacity 1s linear;
+  transition: opacity 0.5s linear;
 }
 
 .App {
   opacity: 0;
   color: transparent;
-  transition: opacity 1s linear, color 1s linear;
+  transition: opacity 0.5s linear, color 0.5s linear;
 }
 
 footer {
@@ -49,7 +49,7 @@ footer {
 }
 
 a {
-  transition: color 1s linear;
+  transition: color 0.5s linear;
 }
 
 a:hover {
@@ -79,13 +79,13 @@ a:hover {
 .page .card .card-header,
 .page .card .card-body,
 .page .card .card-footer {
-  transition: border-color 1s linear, color 1s linear,
-    background-color 1s linear;
+  transition: border-color 0.5s linear, color 0.5s linear,
+    background-color 0.5s linear;
 }
 .modal-content {
   color: transparent;
   background-color: transparent;
-  transition: color 1s linear, background-color 1s linear;
+  transition: color 0.5s linear, background-color 0.5s linear;
 }
 
 .modal-content .modal-header,

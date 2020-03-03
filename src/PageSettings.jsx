@@ -732,7 +732,7 @@ class PageSettings extends React.Component {
                       }`,
                       borderRadius: '0.25rem',
                       transition:
-                        'background-color 1s linear, border-color 1s linear'
+                        'background-color 0.5s linear, border-color 0.5s linear'
                     },
                     body: {
                       padding: this.props.settings.containerPadding
