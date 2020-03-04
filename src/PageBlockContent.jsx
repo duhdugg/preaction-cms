@@ -24,6 +24,29 @@ class PageBlockContent extends React.Component {
     }
   }
 
+  get header() {
+    let el
+    let text = this.props.content.settings.header
+    if (!text) {
+      return ''
+    }
+    let headerLevel = this.props.content.settings.headerLevel
+    switch (headerLevel) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+        el = React.createElement(`h${headerLevel}`, {}, text)
+        break
+      default:
+        el = React.createElement('span', {}, text)
+        break
+    }
+    return el
+  }
+
   toggleSettings() {
     this.setState(state => {
       state.showSettings = !state.showSettings
@@ -50,7 +73,7 @@ class PageBlockContent extends React.Component {
       <Card
         noMargin
         column={this.props.column}
-        header={this.props.content.settings.header}
+        header={this.header}
         headerTheme={this.props.settings.containerHeaderTheme}
         footerTheme={this.props.settings.containerHeaderTheme}
         footer={
@@ -193,6 +216,16 @@ class PageBlockContent extends React.Component {
                 value={this.props.content.settings.header}
                 valueHandler={this.props.getContentSettingsValueHandler(
                   'header'
+                )}
+              />
+              <Input
+                type='range'
+                label={`Header Level: ${this.props.content.settings.headerLevel}`}
+                min='0'
+                max='6'
+                value={this.props.content.settings.headerLevel}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'headerLevel'
                 )}
               />
               <Input

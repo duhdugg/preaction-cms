@@ -24,6 +24,29 @@ class PageBlock extends React.Component {
     this.photosInput = React.createRef()
   }
 
+  get header() {
+    let el
+    let text = this.props.block.settings.header
+    if (!text) {
+      return ''
+    }
+    let headerLevel = this.props.block.settings.headerLevel
+    switch (headerLevel) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+        el = React.createElement(`h${headerLevel}`, {}, text)
+        break
+      default:
+        el = React.createElement('span', {}, text)
+        break
+    }
+    return el
+  }
+
   getContentSettingsValueHandler(contentId) {
     return key =>
       this.props.getContentSettingsValueHandler(
@@ -72,7 +95,7 @@ class PageBlock extends React.Component {
             },
             footer: { padding: 0 }
           }}
-          header={this.props.block.settings.header}
+          header={this.header}
           headerTheme={this.props.settings.containerHeaderTheme}
           footerTheme={this.props.settings.containerHeaderTheme}
           footer={
@@ -188,6 +211,16 @@ class PageBlock extends React.Component {
                 label='Header'
                 value={this.props.block.settings.header}
                 valueHandler={this.getPageBlockSettingsValueHandler('header')}
+              />
+              <Input
+                type='range'
+                label={`Header Level: ${this.props.block.settings.headerLevel}`}
+                min='0'
+                max='6'
+                value={this.props.block.settings.headerLevel}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'headerLevel'
+                )}
               />
               <Input
                 type='range'
