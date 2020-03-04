@@ -206,7 +206,10 @@ class Page extends React.Component {
             if (pageblock.id === pageblockId) {
               pageblock.pageblockcontents.forEach(content => {
                 if (content.id === contentId) {
-                  if (key === 'width') {
+                  if (
+                    ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >=
+                    0
+                  ) {
                     if (value < 1) {
                       value = 1
                     }
