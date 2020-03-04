@@ -75,12 +75,21 @@ a:hover {
   text-shadow: 1px 1px #ccc;
 }
 
-.page .card,
 .page .card .card-header,
-.page .card .card-body,
 .page .card .card-footer {
   transition: border-color 0.5s linear, color 0.5s linear,
     background-color 0.5s linear;
+}
+.page .card {
+  transition: border-color 0.5s linear, background-color 0.5s linear;
+}
+.page .card .card-header h6,
+.page .card .card-header h5,
+.page .card .card-header h4,
+.page .card .card-header h3,
+.page .card .card-header h2,
+.page .card .card-header h1 {
+  margin-bottom: 0;
 }
 .page .card .card-header h6,
 .page .card .card-header h5,
