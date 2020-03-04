@@ -82,6 +82,21 @@ a:hover {
   transition: border-color 0.5s linear, color 0.5s linear,
     background-color 0.5s linear;
 }
+.page .card .card-header h6,
+.page .card .card-header h5,
+.page .card .card-header h4 {
+  font-size: 1em;
+}
+.page .card .card-header h3 {
+  font-size: 1.17em;
+}
+.page .card .card-header h2 {
+  font-size: 1.5em;
+}
+.page .card .card-header h1 {
+  font-size: 2em;
+}
+
 .modal-content {
   color: transparent;
   background-color: transparent;

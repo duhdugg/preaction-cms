@@ -354,7 +354,9 @@ class App extends React.Component {
           this.settingsUpdateTimer = setTimeout(() => {
             axios.post('/api/settings', this.state.siteSettings).then(() => {
               this.emitSave(() => {
-                this.loadSettings()
+                if (this.settingsUpdateTimer !== undefined) {
+                  this.loadSettings()
+                }
               })
             })
           }, 1000)
