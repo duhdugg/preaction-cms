@@ -569,7 +569,7 @@ class App extends React.Component {
                 theme={this.settings.navTheme}
                 brand={{
                   name: this.settings.siteTitle,
-                  href: '/',
+                  href: `${this.root}/`,
                   onClick: e => {
                     e.preventDefault()
                     this.redirect('/')
