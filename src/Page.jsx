@@ -23,7 +23,9 @@ class Page extends React.Component {
 
   addContent(block, contentType) {
     axios
-      .post(`/api/page/blocks/${block.id}/content`, { contentType })
+      .post(`${this.props.appRoot}/api/page/blocks/${block.id}/content`, {
+        contentType
+      })
       .then(response => {
         this.setState(state => {
           state.page.pageblocks.forEach(pageblock => {
@@ -42,7 +44,9 @@ class Page extends React.Component {
 
   addPageBlock(blockType) {
     axios
-      .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
+      .post(`${this.props.appRoot}/api/page/${this.state.page.id}/blocks`, {
+        blockType
+      })
       .then(response => {
         this.setState(state => {
           if (!state.page.pageblocks) {
@@ -72,31 +76,47 @@ class Page extends React.Component {
         block.ordering--
         let prevBlock = blocks[index - 1]
         prevBlock.ordering++
-        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.emitSave()
-        })
-        axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock).then(() => {
-          this.props.emitSave()
-        })
+        axios
+          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .then(() => {
+            this.props.emitSave()
+          })
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${prevBlock.id}`,
+            prevBlock
+          )
+          .then(() => {
+            this.props.emitSave()
+          })
         blocks[index] = block
         blocks[index - 1] = prevBlock
       } else if (action === 'next') {
         block.ordering++
         let nextBlock = blocks[index + 1]
         nextBlock.ordering--
-        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.emitSave()
-        })
-        axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock).then(() => {
-          this.props.emitSave()
-        })
+        axios
+          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .then(() => {
+            this.props.emitSave()
+          })
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${nextBlock.id}`,
+            nextBlock
+          )
+          .then(() => {
+            this.props.emitSave()
+          })
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
-          axios.delete(`/api/page/blocks/${blockId}`).then(() => {
-            this.props.emitSave()
-          })
+          axios
+            .delete(`${this.props.appRoot}/api/page/blocks/${blockId}`)
+            .then(() => {
+              this.props.emitSave()
+            })
           let ordering = block.ordering
           blocks.splice(index, 1)
           blocks.forEach(blk => {
@@ -107,18 +127,20 @@ class Page extends React.Component {
           state.page.pageblocks = blocks
         }
       } else if (action === 'refresh') {
-        axios.get(`/api/page/blocks/${blockId}`).then(response => {
-          this.setState(state => {
-            for (let x = 0; x < state.page.pageblocks.length; x++) {
-              let block = state.page.pageblocks[x]
-              if (block.id === blockId) {
-                state.page.pageblocks[x] = response.data
-                break
+        axios
+          .get(`${this.props.appRoot}/api/page/blocks/${blockId}`)
+          .then(response => {
+            this.setState(state => {
+              for (let x = 0; x < state.page.pageblocks.length; x++) {
+                let block = state.page.pageblocks[x]
+                if (block.id === blockId) {
+                  state.page.pageblocks[x] = response.data
+                  break
+                }
               }
-            }
-            return state
+              return state
+            })
           })
-        })
       }
       return state
     })
@@ -229,7 +251,10 @@ class Page extends React.Component {
                   clearTimeout(this.updateTimer)
                   this.updateTimer = setTimeout(() => {
                     axios
-                      .put(`/api/page/blocks/content/${contentId}`, content)
+                      .put(
+                        `${this.props.appRoot}/api/page/blocks/content/${contentId}`,
+                        content
+                      )
                       .then(() => {
                         this.props.emitSave()
                       })
@@ -264,7 +289,10 @@ class Page extends React.Component {
               clearTimeout(this.updateTimer)
               this.updateTimer = setTimeout(() => {
                 axios
-                  .put(`/api/page/blocks/${pageblockId}`, pageblock)
+                  .put(
+                    `${this.props.appRoot}/api/page/blocks/${pageblockId}`,
+                    pageblock
+                  )
                   .then(() => {
                     this.props.emitSave()
                   })
@@ -287,7 +315,10 @@ class Page extends React.Component {
           clearTimeout(this.updateTimer)
           this.updateTimer = setTimeout(() => {
             axios
-              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
               .then(() => {
                 this.loadSettings()
                 this.props.emitSave()
@@ -317,7 +348,10 @@ class Page extends React.Component {
           clearTimeout(this.updateTimer)
           this.updateTimer = setTimeout(() => {
             axios
-              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
               .then(() => {
                 this.props.emitSave()
               })
@@ -347,7 +381,10 @@ class Page extends React.Component {
           clearTimeout(this.updateTimer)
           this.updateTimer = setTimeout(() => {
             axios
-              .put(`/api/page/${this.state.page.id}`, this.state.page)
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
               .then(() => {
                 this.props.emitSave()
               })
@@ -397,12 +434,18 @@ class Page extends React.Component {
         let prevUpload = contents[index - 1]
         prevUpload.ordering++
         axios
-          .put(`/api/page/blocks/content/${content.id}`, content)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            content
+          )
           .then(() => {
             this.props.emitSave()
           })
         axios
-          .put(`/api/page/blocks/content/${prevUpload.id}`, prevUpload)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${prevUpload.id}`,
+            prevUpload
+          )
           .then(() => {
             this.props.emitSave()
           })
@@ -413,12 +456,18 @@ class Page extends React.Component {
         let nextContent = contents[index + 1]
         nextContent.ordering--
         axios
-          .put(`/api/page/blocks/content/${content.id}`, content)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            content
+          )
           .then(() => {
             this.props.emitSave()
           })
         axios
-          .put(`/api/page/blocks/content/${nextContent.id}`, nextContent)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${nextContent.id}`,
+            nextContent
+          )
           .then(() => {
             this.props.emitSave()
           })
@@ -426,9 +475,13 @@ class Page extends React.Component {
         contents[index + 1] = nextContent
       } else if (action === 'delete') {
         if (window.confirm('Delete this content?')) {
-          axios.delete(`/api/page/blocks/content/${content.id}`).then(() => {
-            this.props.emitSave()
-          })
+          axios
+            .delete(
+              `${this.props.appRoot}/api/page/blocks/content/${content.id}`
+            )
+            .then(() => {
+              this.props.emitSave()
+            })
           let x = pageBlock.pageblockcontents.indexOf(content)
           let ordering = content.ordering
           pageBlock.pageblockcontents.splice(x, 1)
@@ -464,7 +517,7 @@ class Page extends React.Component {
       },
       () => {
         axios
-          .get(`/api/page/by-key/${path}`)
+          .get(`${this.props.appRoot}/api/page/by-key/${path}`)
           .then(response => {
             let page = response.data
             this.setState(
@@ -536,7 +589,10 @@ class Page extends React.Component {
         },
         () => {
           axios
-            .put(`/api/page/${this.state.page.id}`, this.state.page)
+            .put(
+              `${this.props.appRoot}/api/page/${this.state.page.id}`,
+              this.state.page
+            )
             .then(() => {
               if (title !== oldTitle) {
                 this.props.emitSave()
@@ -570,6 +626,7 @@ class Page extends React.Component {
                     return (
                       <PageBlock
                         addContent={this.addContent.bind(this)}
+                        appRoot={this.props.appRoot}
                         block={block}
                         blockControl={this.blockControl.bind(this)}
                         contentControl={this.contentControl.bind(this)}
@@ -613,6 +670,7 @@ class Page extends React.Component {
                 }
               >
                 <PageSettings
+                  appRoot={this.props.appRoot}
                   authenticated={this.props.editable}
                   pageId={this.state.page.id}
                   page={this.state.page}
@@ -663,6 +721,7 @@ class Page extends React.Component {
 
 Page.propTypes = {
   addPage: PropTypes.func,
+  appRoot: PropTypes.string.isRequired,
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,

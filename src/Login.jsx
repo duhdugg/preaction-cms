@@ -17,9 +17,9 @@ class Login extends React.Component {
     const { username, password } = this.state
     if (event.target.checkValidity()) {
       axios
-        .post('/api/login', { username, password })
+        .post(`${this.props.appRoot}/api/login`, { username, password })
         .then(response => {
-          window.location.href = '/'
+          window.location.href = `${this.props.appRoot}/`
         })
         .catch(e => {
           window.alert('incorrect login')
@@ -75,6 +75,7 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired
 }
 

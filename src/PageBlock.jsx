@@ -170,6 +170,7 @@ class PageBlock extends React.Component {
                 .map((content, key) => (
                   <PageBlockContent
                     key={content.id}
+                    appRoot={this.props.appRoot}
                     block={this.props.block}
                     column
                     width={{
@@ -258,7 +259,7 @@ class PageBlock extends React.Component {
           <div>
             <form
               method='POST'
-              action='/api/upload'
+              action={`${this.props.appRoot}/api/upload`}
               encType='multipart/form-data'
               ref={this.uploadForm}
               target={`upload-frame-${this.props.block.id}`}
@@ -311,6 +312,7 @@ class PageBlock extends React.Component {
 
 PageBlock.propTypes = {
   addContent: PropTypes.func.isRequired,
+  appRoot: PropTypes.string.isRequired,
   block: PropTypes.object.isRequired,
   blockControl: PropTypes.func.isRequired,
   contentControl: PropTypes.func.isRequired,

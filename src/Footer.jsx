@@ -21,6 +21,7 @@ class Footer extends React.Component {
           <div>
             {this.props.editable ? <h3>Footer</h3> : ''}
             <Page
+              appRoot={this.props.appRoot}
               editable={this.props.editable}
               emitSave={this.props.emitSave}
               fallbackSettings={this.props.settings}
@@ -35,6 +36,7 @@ class Footer extends React.Component {
 }
 
 Footer.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,

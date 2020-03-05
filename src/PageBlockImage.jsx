@@ -6,7 +6,7 @@ class PageBlockImage extends React.Component {
     return (
       <div className='page-block-image'>
         <img
-          src={`/uploads/${this.props.content.filename}`}
+          src={`${this.props.appRoot}/uploads/${this.props.content.filename}`}
           style={{ width: '100%' }}
           alt=''
         />
@@ -16,6 +16,7 @@ class PageBlockImage extends React.Component {
 }
 
 PageBlockImage.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   content: PropTypes.object.isRequired
 }
 

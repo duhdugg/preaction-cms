@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -80,7 +81,7 @@ class App extends React.Component {
   addPage(page) {
     if (page.key) {
       axios
-        .post('/api/page', page)
+        .post(`${this.root}/api/page`, page)
         .then(response => {
           if (response.data) {
             this.loadPages()
@@ -103,10 +104,7 @@ class App extends React.Component {
     let pageType = 'content'
     let parentId = null
     if (this.state.activePage) {
-      if (
-        !(this.state.activePage.key === 'home') &&
-        this.state.activePage.parentId === null
-      ) {
+      if (this.state.activePage.key !== 'home') {
         parentId = this.state.activePage.id
       }
     }
@@ -122,7 +120,7 @@ class App extends React.Component {
   deletePage(page) {
     if (this.editable) {
       axios
-        .delete(`/api/page/${page.id}`)
+        .delete(`${this.root}/api/page/${page.id}`)
         .then(response => {
           if (response.status === 200) {
             this.loadPages()
@@ -303,6 +301,14 @@ class App extends React.Component {
     return menu
   }
 
+  get root() {
+    let r = ''
+    if (this.props.root && this.props.root !== '$ROOT') {
+      r = this.props.root
+    }
+    return r
+  }
+
   get settings() {
     let s = Object.assign({}, this.fallbackSettings)
     if (
@@ -352,13 +358,15 @@ class App extends React.Component {
         () => {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
-            axios.post('/api/settings', this.state.siteSettings).then(() => {
-              this.emitSave(() => {
-                if (this.settingsUpdateTimer !== undefined) {
-                  this.loadSettings()
-                }
+            axios
+              .post(`${this.root}/api/settings`, this.state.siteSettings)
+              .then(() => {
+                this.emitSave(() => {
+                  if (this.settingsUpdateTimer !== undefined) {
+                    this.loadSettings()
+                  }
+                })
               })
-            })
           }, 1000)
         }
       )
@@ -381,7 +389,7 @@ class App extends React.Component {
           resolve()
         }
       }
-      axios.get('/api/session').then(response => {
+      axios.get(`${this.root}/api/session`).then(response => {
         if (response.data && response.data.authenticated) {
           this.setState(state => {
             state.authenticated = true
@@ -400,7 +408,7 @@ class App extends React.Component {
 
   loadSettings() {
     return new Promise((resolve, reject) => {
-      axios.get('/api/settings').then(response => {
+      axios.get(`${this.root}/api/settings`).then(response => {
         if (response.data) {
           this.setState(
             state => {
@@ -419,7 +427,7 @@ class App extends React.Component {
 
   loadPages() {
     return new Promise((resolve, reject) => {
-      axios.get('/api/page').then(response => {
+      axios.get(`${this.root}/api/page`).then(response => {
         if (response.data) {
           this.setState(
             state => {
@@ -436,7 +444,7 @@ class App extends React.Component {
   }
 
   logout() {
-    axios.get('/api/logout').then(() => {
+    axios.get(`${this.root}/api/logout`).then(() => {
       this.setState(state => {
         state.authenticated = false
         state.editable = false
@@ -547,7 +555,7 @@ class App extends React.Component {
       <div
         className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
       >
-        <Router>
+        <Router basename={`${this.root}/`}>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
@@ -590,6 +598,7 @@ class App extends React.Component {
                   )}
                   <Header
                     activePage={this.state.activePage}
+                    appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
                     settings={this.settings}
@@ -614,6 +623,7 @@ class App extends React.Component {
               footer={
                 <Footer
                   activePage={this.state.activePage}
+                  appRoot={this.root}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
                   settings={this.settings}
@@ -631,6 +641,7 @@ class App extends React.Component {
               <Switch>
                 <Route exact path='/'>
                   <Page
+                    appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
                     fallbackSettings={this.fallbackSettings}
@@ -644,12 +655,17 @@ class App extends React.Component {
                 </Route>
                 <Route exact path='/login'>
                   <div className='container'>
-                    <Login settings={this.state.siteSettings} />
+                    <Login
+                      appRoot={this.root}
+                      settings={this.state.siteSettings}
+                    />
                   </div>
                 </Route>
                 <Route
                   render={({ location }) => {
-                    switch (location.pathname) {
+                    let root = new RegExp(`^${this.root}`)
+                    let pathname = location.pathname.replace(root, '')
+                    switch (pathname) {
                       case '/home/':
                       case '/header/':
                       case '/footer/':
@@ -657,8 +673,9 @@ class App extends React.Component {
                       default:
                         return (
                           <Page
+                            appRoot={this.root}
                             editable={this.state.editable}
-                            path={location.pathname}
+                            path={pathname}
                             deletePage={this.deletePage.bind(this)}
                             emitSave={this.emitSave.bind(this)}
                             ref={this.activePage}
@@ -757,6 +774,7 @@ class App extends React.Component {
             }
           >
             <SiteSettings
+              appRoot={this.root}
               authenticated={this.state.authenticated}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
@@ -821,7 +839,7 @@ class App extends React.Component {
     this.loadPages()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
-    this.socket = io()
+    this.socket = io({ path: `${this.root}/socket.io` })
     this.socket.on('load', () => {
       if (!this.state.editable) {
         this.reload()
@@ -836,6 +854,10 @@ class App extends React.Component {
       this.setActivePathname(window.location.pathname)
     }
   }
+}
+
+App.propTypes = {
+  root: PropTypes.string
 }
 
 export default App

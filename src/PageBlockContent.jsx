@@ -186,6 +186,7 @@ class PageBlockContent extends React.Component {
       >
         {this.props.content.contentType === 'wysiwyg' ? (
           <PageBlockWysiwyg
+            appRoot={this.props.appRoot}
             block={this.props.block}
             content={this.props.content}
             editable={this.props.editable}
@@ -198,6 +199,7 @@ class PageBlockContent extends React.Component {
         )}
         {this.props.content.contentType === 'image' ? (
           <PageBlockImage
+            appRoot={this.props.appRoot}
             block={this.props.block}
             content={this.props.content}
             editable={this.props.editable}
@@ -351,6 +353,7 @@ class PageBlockContent extends React.Component {
 
 PageBlockContent.propTypes = {
   block: PropTypes.object.isRequired,
+  appRoot: PropTypes.string.isRequired,
   column: PropTypes.bool,
   content: PropTypes.object.isRequired,
   contentControl: PropTypes.func.isRequired,

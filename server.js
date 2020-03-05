@@ -19,6 +19,7 @@ const app = express()
 
 // <== LOCAL IMPORTS ==>
 const db = require('./lib/db.js')
+const env = require('./lib/env.js')
 const settings = require('./lib/modules/settings.js')
 const pages = require('./lib/modules/pages.js')
 const redirects = require('./lib/modules/redirects.js')
@@ -53,7 +54,19 @@ app.route('/icon').get((req, res) => {
       res.status(404).send('')
       return
     }
-    res.redirect(setting.value)
+    if (req.query.pageId) {
+      pages.model.Page.findByPk(req.query.pageId).then(page => {
+        if (!page) {
+          res.redirect(setting.value)
+          return
+        }
+        if (page.icon) {
+          res.redirect(page.icon)
+        }
+      })
+    } else {
+      res.redirect(setting.value)
+    }
   })
 })
 
@@ -203,13 +216,11 @@ io.on('connection', socket => {
 
 // <== SERVER SETUP ==>
 
-const port = process.env.PREACTION_PORT || 8999
-
 db.sync()
   .then(session.sync)
   .then(pages.sync)
   .then(redirects.sync)
 
-http.listen(port, () => {
-  console.log(`@preaction/cms app listening on port ${port}`)
+http.listen(env.port, () => {
+  console.log(`@preaction/cms app listening on port ${env.port}`)
 })

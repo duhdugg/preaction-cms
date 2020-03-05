@@ -32,9 +32,11 @@ class PageSettings extends React.Component {
   }
 
   deleteRedirect(redirect) {
-    axios.delete(`/api/redirect/${redirect.id}`).then(response => {
-      this.getRedirects()
-    })
+    axios
+      .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
+      .then(response => {
+        this.getRedirects()
+      })
   }
 
   editRedirect(redirect) {
@@ -45,7 +47,7 @@ class PageSettings extends React.Component {
   }
 
   getRedirects() {
-    axios.get('/api/redirect').then(response => {
+    axios.get(`${this.props.appRoot}/api/redirect`).then(response => {
       this.setState(state => {
         state.redirects = response.data
         return state
@@ -111,14 +113,19 @@ class PageSettings extends React.Component {
     }
     if (this.state.redirect.id) {
       axios
-        .put(`/api/redirect/${this.state.redirect.id}`, this.state.redirect)
+        .put(
+          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}`,
+          this.state.redirect
+        )
         .then(response => {
           this.getRedirects()
         })
     } else {
-      axios.post('/api/redirect/', this.state.redirect).then(response => {
-        this.getRedirects()
-      })
+      axios
+        .post(`${this.props.appRoot}/api/redirect/`, this.state.redirect)
+        .then(response => {
+          this.getRedirects()
+        })
     }
     this.setState(state => {
       state.redirect = null
@@ -932,7 +939,7 @@ class PageSettings extends React.Component {
             </form>
             <form
               method='POST'
-              action='/api/upload'
+              action={`${this.props.appRoot}/api/upload`}
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -973,7 +980,9 @@ class PageSettings extends React.Component {
                       this.bgFileInput.current.value = null
                       iframe.src = 'about:blank'
                       axios
-                        .get(`/api/page/${this.props.pageId}/settings`)
+                        .get(
+                          `${this.props.appRoot}/api/page/${this.props.pageId}/settings`
+                        )
                         .then(response => {
                           let settings = response.data
                           if (settings.bg) {
@@ -990,7 +999,7 @@ class PageSettings extends React.Component {
             />
             <form
               method='POST'
-              action='/api/upload'
+              action={`${this.props.appRoot}/api/upload`}
               target='upload-icon-frame'
               encType='multipart/form-data'
               ref={this.uploadIconForm}
@@ -1049,6 +1058,7 @@ class PageSettings extends React.Component {
 }
 
 PageSettings.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   authenticated: PropTypes.bool,
   deletePage: PropTypes.func,
   getPageSettingIsUndefined: PropTypes.func.isRequired,

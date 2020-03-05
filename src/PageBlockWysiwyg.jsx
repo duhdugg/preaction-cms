@@ -31,9 +31,12 @@ class PageBlockWysiwyg extends React.Component {
           this.wysiwygUpdateTimer = setTimeout(() => {
             if (this.props.editable) {
               axios
-                .put(`/api/page/blocks/content/${this.props.content.id}`, {
-                  wysiwyg: this.state.wysiwyg
-                })
+                .put(
+                  `${this.props.appRoot}/api/page/blocks/content/${this.props.content.id}`,
+                  {
+                    wysiwyg: this.state.wysiwyg
+                  }
+                )
                 .then(() => {
                   this.setState(state => {
                     state.savingWysiwyg = false
@@ -134,6 +137,7 @@ class PageBlockWysiwyg extends React.Component {
 }
 
 PageBlockWysiwyg.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   block: PropTypes.object.isRequired,
   content: PropTypes.object.isRequired,
   emitSave: PropTypes.func.isRequired,
