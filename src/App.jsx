@@ -42,7 +42,6 @@ class App extends React.Component {
       newPage: {
         title: ''
       },
-      pages: [],
       redirect: null,
       show: {
         header: true,
@@ -50,6 +49,7 @@ class App extends React.Component {
         newPage: false,
         settings: false
       },
+      siteMap: {},
       siteSettings: {
         bgColor: '#000000',
         borderColor: '#000000',
@@ -84,7 +84,7 @@ class App extends React.Component {
         .post(`${this.root}/api/page`, page)
         .then(response => {
           if (response.data) {
-            this.loadPages()
+            this.loadSiteMap()
           }
         })
         .then(() => {
@@ -119,22 +119,12 @@ class App extends React.Component {
 
   deletePage(page) {
     if (this.editable) {
-      axios
-        .delete(`${this.root}/api/page/${page.id}`)
-        .then(response => {
-          if (response.status === 200) {
-            this.loadPages()
-          }
+      axios.delete(`${this.root}/api/page/${page.id}`).then(response => {
+        if (response.status === 200) {
+          this.redirect('..')
           this.emitSave()
-        })
-        .then(() => {
-          this.setState(state => {
-            state.activePage = null
-            return state
-          })
-          this.loadPages()
-          this.redirect('/')
-        })
+        }
+      })
     }
   }
 
@@ -144,7 +134,7 @@ class App extends React.Component {
 
   emitSave(callback = () => {}) {
     this.socket.emit('save', () => {
-      this.loadPages()
+      this.loadSiteMap()
       callback()
     })
   }
@@ -162,58 +152,43 @@ class App extends React.Component {
     if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
         name: <MdHome />,
-        href: '/',
+        href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
         component: Link,
         order: -1,
-        active: this.state.activePathname === '/home/',
+        active:
+          this.state.activePathname === '/home/' ||
+          this.state.activePathname === `/${this.siteMap.path}/`,
         onClick: e => {
-          this.navigate('/')
+          this.navigate(
+            `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
+          )
         }
       })
     }
-    this.state.pages.forEach(page => {
+    this.siteMap.children.forEach(page => {
       if (page.userCreated) {
-        let path = `/${page.key}/`
-        if (page.parentId) {
-          let parentPage = this.getPageById(page.parentId)
-          if (parentPage) {
-            path = `/${parentPage.key}/${page.key}/`
-            menu.forEach(menuItem => {
-              if (menuItem.href === `/${parentPage.key}/`) {
-                if (menuItem.subMenu === undefined) {
-                  menuItem.subMenu = []
-                }
-                menuItem.subMenu.push({
-                  name: page.title,
-                  href: path,
-                  component: NavLink,
-                  onClick: e => {
-                    this.navigate(path)
-                  }
-                })
-                menuItem.subMenu.sort((a, b) => {
-                  let retval = 0
-                  if (a.name < b.name) {
-                    retval--
-                  } else if (a.name > b.name) {
-                    retval++
-                  }
-                  return retval
-                })
+        let subMenu = []
+        page.children.forEach(pg => {
+          if (pg.userCreated) {
+            subMenu.push({
+              name: pg.title,
+              href: `/${pg.path}/`,
+              component: NavLink,
+              onClick: e => {
+                this.navigate(`/${pg.path}/`)
               }
             })
           }
-        } else {
-          menu.push({
-            name: page.title,
-            href: path,
-            component: NavLink,
-            onClick: e => {
-              e.preventDefault()
-              this.navigate(path)
-            }
-          })
-        }
+        })
+        menu.push({
+          name: page.title,
+          href: `/${page.path}/`,
+          component: NavLink,
+          onClick: e => {
+            this.navigate(`/${page.path}/`)
+          },
+          subMenu: subMenu.length ? subMenu : null
+        })
       }
     })
     if (this.state.authenticated) {
@@ -321,6 +296,16 @@ class App extends React.Component {
     return s
   }
 
+  get siteMap() {
+    let sm = {
+      key: 'home',
+      path: '',
+      children: []
+    }
+    Object.assign(sm, this.state.siteMap)
+    return sm
+  }
+
   getNewPageValueHandler(key) {
     return value => {
       this.setState(state => {
@@ -328,16 +313,6 @@ class App extends React.Component {
         return state
       })
     }
-  }
-
-  getPageById(id) {
-    let retval = null
-    this.state.pages.forEach(page => {
-      if (page.id === id) {
-        retval = page
-      }
-    })
-    return retval
   }
 
   getSettingsValueHandler(key) {
@@ -425,21 +400,23 @@ class App extends React.Component {
     })
   }
 
-  loadPages() {
+  loadSiteMap() {
     return new Promise((resolve, reject) => {
-      axios.get(`${this.root}/api/page`).then(response => {
-        if (response.data) {
-          this.setState(
-            state => {
-              state.pages = response.data
-              return state
-            },
-            () => {
-              resolve(this.state.pages)
-            }
-          )
-        }
-      })
+      if (this.state.activePage && this.state.activePage.id) {
+        axios
+          .get(`${this.root}/api/page/${this.state.activePage.id}/sitemap`)
+          .then(response => {
+            this.setState(
+              state => {
+                state.siteMap = response.data
+                return state
+              },
+              () => {
+                resolve(this.state.siteMap)
+              }
+            )
+          })
+      }
     })
   }
 
@@ -515,7 +492,7 @@ class App extends React.Component {
   }
 
   reload() {
-    this.loadPages()
+    this.loadSiteMap()
     this.loadSettings()
     if (this.activePage.current) {
       this.header.current.reload()
@@ -527,6 +504,7 @@ class App extends React.Component {
   setActivePage(page) {
     this.setState(state => {
       state.activePage = page
+      state.siteMap = JSON.parse(JSON.stringify(page.siteMap))
       return state
     })
   }
@@ -569,10 +547,16 @@ class App extends React.Component {
                 theme={this.settings.navTheme}
                 brand={{
                   name: this.settings.siteTitle,
-                  href: `${this.root}/`,
+                  href: `${this.root}/${this.siteMap.path}${
+                    this.siteMap.key === 'home' ? '' : '/'
+                  }`,
                   onClick: e => {
                     e.preventDefault()
-                    this.redirect('/')
+                    this.navigate(
+                      `/${this.siteMap.path}${
+                        this.siteMap.key === 'home' ? '' : '/'
+                      }`
+                    )
                   }
                 }}
                 menu={this.menu}
@@ -836,7 +820,6 @@ class App extends React.Component {
 
   componentDidMount() {
     this.loadSettings()
-    this.loadPages()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
     this.socket = io({ path: `${this.root}/socket.io` })
