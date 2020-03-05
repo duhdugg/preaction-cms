@@ -75,7 +75,13 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    registerSmartLinkFormat(this.navigate.bind(this))
+    registerSmartLinkFormat(href => {
+      if (href.indexOf(this.root) === 0) {
+        let regex = new RegExp(`^${this.root}`)
+        href = href.replace(regex, '')
+      }
+      this.navigate(href)
+    })
   }
 
   addPage(page) {
