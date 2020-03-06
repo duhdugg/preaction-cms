@@ -218,6 +218,7 @@ io.on('connection', socket => {
 
 db.sync()
   .then(session.sync)
+  .then(settings.sync)
   .then(pages.sync)
   .then(redirects.sync)
 

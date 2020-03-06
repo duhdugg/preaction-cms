@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Card, Spinner } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
-import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md'
 
 class PageSettings extends React.Component {
   constructor(props) {
@@ -12,8 +12,6 @@ class PageSettings extends React.Component {
     this.state = {
       confirmDelete: false,
       newPageTitle: '',
-      redirect: null,
-      redirects: [],
       uploadingBg: false,
       uploadingIcon: false
     }
@@ -28,39 +26,6 @@ class PageSettings extends React.Component {
       if (this.props.deletePage) {
         this.props.deletePage()
       }
-    }
-  }
-
-  deleteRedirect(redirect) {
-    axios
-      .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
-      .then(response => {
-        this.getRedirects()
-      })
-  }
-
-  editRedirect(redirect) {
-    this.setState(state => {
-      state.redirect = JSON.parse(JSON.stringify(redirect))
-      return state
-    })
-  }
-
-  getRedirects() {
-    axios.get(`${this.props.appRoot}/api/redirect`).then(response => {
-      this.setState(state => {
-        state.redirects = response.data
-        return state
-      })
-    })
-  }
-
-  getRedirectValueHandler(key) {
-    return value => {
-      this.setState(state => {
-        state.redirect[key] = value
-        return state
-      })
     }
   }
 
@@ -104,35 +69,6 @@ class PageSettings extends React.Component {
     icon.href = `/icon?v=${timestamp}`
   }
 
-  saveRedirect() {
-    if (!this.state.redirect.match.trim()) {
-      return
-    }
-    if (!this.state.redirect.location.trim()) {
-      return
-    }
-    if (this.state.redirect.id) {
-      axios
-        .put(
-          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}`,
-          this.state.redirect
-        )
-        .then(response => {
-          this.getRedirects()
-        })
-    } else {
-      axios
-        .post(`${this.props.appRoot}/api/redirect/`, this.state.redirect)
-        .then(response => {
-          this.getRedirects()
-        })
-    }
-    this.setState(state => {
-      state.redirect = null
-      return state
-    })
-  }
-
   resetSetting(key) {
     let isUndefined = this.props.getPageSettingIsUndefined(key)
     if (!isUndefined) {
@@ -163,16 +99,6 @@ class PageSettings extends React.Component {
       <div className='settings-component'>
         {this.props.authenticated ? (
           <div>
-            <style type='text/css'>{`
-              table.redirects td {
-                border-left: 1px solid black;
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-              }
-              table.redirects td:first-child {
-                border-left: 0;
-              }
-            `}</style>
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
               <div className='row'>
                 <div className='col'>
@@ -357,6 +283,36 @@ class PageSettings extends React.Component {
                         ''
                       )}
                     </div>
+                  </Card>
+                  <Card header='Header' headerTheme='light'>
+                    <Checkbox
+                      label='Show Header'
+                      checked={this.props.settings.showHeader}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showHeader'
+                      )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'showHeader'
+                      )}
+                      onClick={e => {
+                        this.overrideSetting('showHeader')
+                      }}
+                    />
+                    <ResetButton settingsKey='showHeader' />
+                    <Checkbox
+                      label='Show Footer'
+                      checked={this.props.settings.showFooter}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showFooter'
+                      )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'showFooter'
+                      )}
+                      onClick={e => {
+                        this.overrideSetting('showFooter')
+                      }}
+                    />
+                    <ResetButton settingsKey='showFooter' />
                   </Card>
                 </div>
               </div>
@@ -669,44 +625,6 @@ class PageSettings extends React.Component {
                   </div>
                 </div>
               </Card>
-              <div className='row'>
-                <div className='col-sm-6'>
-                  <Input
-                    type='number'
-                    label='Container Padding'
-                    min='0'
-                    max='3'
-                    step='0.01'
-                    value={this.props.settings.containerPadding}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'containerPadding'
-                    )}
-                    readOnly={this.props.getPageSettingIsUndefined(
-                      'containerPadding'
-                    )}
-                    onClick={() => {
-                      this.overrideSetting('containerPadding')
-                    }}
-                  />
-                  <Input
-                    type='range'
-                    min='0'
-                    max='3'
-                    step='0.01'
-                    value={this.props.settings.containerPadding}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'containerPadding'
-                    )}
-                    readOnly={this.props.getPageSettingIsUndefined(
-                      'containerPadding'
-                    )}
-                    onClick={() => {
-                      this.overrideSetting('containerPadding')
-                    }}
-                  />
-                  <ResetButton settingsKey='containerPadding' />
-                </div>
-              </div>
               <Card
                 header='Samples'
                 style={{
@@ -742,9 +660,7 @@ class PageSettings extends React.Component {
                         'background-color 0.5s linear, border-color 0.5s linear'
                     },
                     body: {
-                      padding: this.props.settings.containerPadding
-                        ? `${this.props.settings.containerPadding}em`
-                        : 0
+                      padding: '1em'
                     }
                   }}
                 >
@@ -768,112 +684,6 @@ class PageSettings extends React.Component {
                 }}
               />
               <ResetButton settingsKey='cssOverrides' />
-              <Card
-                header='Redirects'
-                headerTheme='green'
-                style={{
-                  card: { backgroundColor: 'transparent' }
-                }}
-              >
-                <div className='row'>
-                  <table className='redirects'>
-                    <thead>
-                      <tr>
-                        <th />
-                        <th>Match</th>
-                        <th>Location</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.redirects.map(redirect => {
-                        return (
-                          <tr key={redirect.id}>
-                            <td>
-                              <button
-                                type='button'
-                                className='btn btn-sm btn-light'
-                                onClick={e => {
-                                  this.editRedirect(redirect)
-                                }}
-                              >
-                                <MdCreate /> edit
-                              </button>
-                              <button
-                                type='button'
-                                className='btn btn-sm btn-danger'
-                                onClick={e => {
-                                  this.deleteRedirect(redirect)
-                                }}
-                              >
-                                <MdDelete /> delete
-                              </button>
-                            </td>
-                            <td>{redirect.match}</td>
-                            <td>{redirect.location}</td>
-                          </tr>
-                        )
-                      })}
-                      <tr>
-                        <td>
-                          <button
-                            type='button'
-                            className='btn btn-sm btn-primary'
-                            onClick={e => {
-                              this.editRedirect({
-                                id: null,
-                                match: '',
-                                location: ''
-                              })
-                            }}
-                          >
-                            <MdCreate /> new
-                          </button>
-                        </td>
-                        <td />
-                        <td />
-                      </tr>
-                    </tbody>
-                    {this.state.redirect ? (
-                      <tfoot>
-                        <tr>
-                          <td
-                            style={{
-                              top: '-0.5rem',
-                              position: 'relative'
-                            }}
-                          >
-                            <button
-                              type='button'
-                              className='btn btn-success btn-sm'
-                              onClick={this.saveRedirect.bind(this)}
-                            >
-                              <MdSave /> save
-                            </button>
-                          </td>
-                          <td>
-                            <Input
-                              value={this.state.redirect.match}
-                              valueHandler={this.getRedirectValueHandler(
-                                'match'
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={this.state.redirect.location}
-                              valueHandler={this.getRedirectValueHandler(
-                                'location'
-                              )}
-                            />
-                          </td>
-                        </tr>
-                      </tfoot>
-                    ) : (
-                      <tfoot />
-                    )}
-                  </table>
-                </div>
-              </Card>
               <Card
                 header='Analytics'
                 headerTheme='blue'
@@ -1050,10 +860,6 @@ class PageSettings extends React.Component {
         )}
       </div>
     )
-  }
-
-  componentDidMount() {
-    this.getRedirects()
   }
 }
 

@@ -128,8 +128,15 @@ class App extends React.Component {
     if (this.editable) {
       axios.delete(`${this.root}/api/page/${page.id}`).then(response => {
         if (response.status === 200) {
-          this.redirect('..')
-          this.emitSave()
+          this.setState(
+            state => {
+              state.activePage = null
+            },
+            () => {
+              this.redirect('..')
+              this.emitSave()
+            }
+          )
         }
       })
     }
@@ -461,12 +468,12 @@ class App extends React.Component {
     this.setState(
       state => {
         state.navigate = path
+        state.activePathname = path
         return state
       },
       () => {
-        this.setActivePathname(path)
         this.setState(state => {
-          state.navigate = null
+          state.navigate = false
           return state
         })
       }
@@ -510,7 +517,7 @@ class App extends React.Component {
       },
       () => {
         this.setState(state => {
-          state.redirect = null
+          state.redirect = false
           return state
         })
       }
@@ -572,7 +579,8 @@ class App extends React.Component {
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
-              <Redirect to={this.state.navigate} push={true} />
+              // FIXME: redirects are pushing extra state to window.history
+              <Redirect to={this.state.navigate} push={false} />
             ) : (
               ''
             )}
@@ -621,7 +629,7 @@ class App extends React.Component {
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
                     settings={this.settings}
-                    show={this.state.show.header}
+                    show={this.settings.showHeader}
                     ref={this.header}
                   />
                   {this.settings.navPosition === 'below-header' ? (
@@ -647,7 +655,7 @@ class App extends React.Component {
                   emitSave={this.emitSave.bind(this)}
                   settings={this.settings}
                   ref={this.footer}
-                  show={this.state.show.footer}
+                  show={this.settings.showFooter}
                 />
               }
             >

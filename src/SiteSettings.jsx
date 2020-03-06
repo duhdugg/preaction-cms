@@ -249,6 +249,22 @@ class SiteSettings extends React.Component {
                       )}
                     </div>
                   </Card>
+                  <Card header='Header' headerTheme='light'>
+                    <Checkbox
+                      label='Show Header'
+                      checked={this.props.settings.showHeader}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showHeader'
+                      )}
+                    />
+                    <Checkbox
+                      label='Show Footer'
+                      checked={this.props.settings.showFooter}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showFooter'
+                      )}
+                    />
+                  </Card>
                 </div>
               </div>
               <div className='row'>
@@ -475,31 +491,6 @@ class SiteSettings extends React.Component {
                   </div>
                 </div>
               </Card>
-              <div className='row'>
-                <div className='col-sm-6'>
-                  <Input
-                    type='number'
-                    label='Container Padding'
-                    min='0'
-                    max='3'
-                    step='0.01'
-                    value={this.props.settings.containerPadding}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'containerPadding'
-                    )}
-                  />
-                  <Input
-                    type='range'
-                    min='0'
-                    max='3'
-                    step='0.01'
-                    value={this.props.settings.containerPadding}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'containerPadding'
-                    )}
-                  />
-                </div>
-              </div>
               <Card
                 header='Samples'
                 style={{
@@ -535,9 +526,7 @@ class SiteSettings extends React.Component {
                         'background-color 0.5s linear, border-color 0.5s linear'
                     },
                     body: {
-                      padding: this.props.settings.containerPadding
-                        ? `${this.props.settings.containerPadding}em`
-                        : 0
+                      padding: '1em'
                     }
                   }}
                 >
