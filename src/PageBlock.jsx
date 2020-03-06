@@ -183,7 +183,7 @@ class PageBlock extends React.Component {
                     width={{
                       lg: content.settings.lgWidth / 12,
                       md: content.settings.mdWidth / 12,
-                      sm: content.settings.smWith / 12,
+                      sm: content.settings.smWidth / 12,
                       xs: content.settings.xsWidth / 12
                     }}
                     content={content}
