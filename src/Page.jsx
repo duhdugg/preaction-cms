@@ -569,6 +569,7 @@ class Page extends React.Component {
                 state.notFound = true
                 return state
               })
+              this.onNotFound()
             }
           })
       }
@@ -581,6 +582,12 @@ class Page extends React.Component {
       let showFooter = this.settings.showFooter !== false
       this.props.headerControl(showHeader)
       this.props.footerControl(showFooter)
+    }
+  }
+
+  onNotFound() {
+    if (this.props.onNotFound) {
+      this.props.onNotFound(this.props.path)
     }
   }
 
@@ -742,6 +749,7 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   navigate: PropTypes.func,
+  onNotFound: PropTypes.func,
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,
   setActivePathname: PropTypes.func

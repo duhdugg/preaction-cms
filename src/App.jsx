@@ -38,6 +38,7 @@ class App extends React.Component {
       activeSettings: {},
       authenticated: false,
       editable: false,
+      fallbackSettings: {},
       navigate: null,
       newPage: {
         title: ''
@@ -147,8 +148,8 @@ class App extends React.Component {
 
   get fallbackSettings() {
     let s = Object.assign({}, this.state.siteSettings)
-    if (this.state.activePage && this.state.activePathname !== '/home/') {
-      Object.assign(s, this.state.activePage.fallbackSettings)
+    if (this.state.fallbackSettings && this.state.activePathname !== '/home/') {
+      Object.assign(s, this.state.fallbackSettings)
     }
     return s
   }
@@ -363,6 +364,15 @@ class App extends React.Component {
     }
   }
 
+  handleNotFound(path) {
+    this.setState(state => {
+      state.activePage = null
+      return state
+    })
+    this.loadSiteMap(path)
+    this.loadSettings(path)
+  }
+
   loadSession() {
     return new Promise((resolve, reject) => {
       let conditionallyResolve = () => {
@@ -387,26 +397,28 @@ class App extends React.Component {
     })
   }
 
-  loadSettings() {
-    return new Promise((resolve, reject) => {
-      axios.get(`${this.root}/api/settings`).then(response => {
-        if (response.data) {
-          this.setState(
-            state => {
-              state.siteSettings = response.data
-              state.siteSettings.hostname = window.location.origin || ''
-              return state
-            },
-            () => {
-              resolve(this.state.siteSettings)
-            }
-          )
-        }
-      })
+  loadSettings(path = '') {
+    axios.get(`${this.root}/api/settings`).then(response => {
+      if (response.data) {
+        this.setState(state => {
+          state.siteSettings = response.data
+          state.siteSettings.hostname = window.location.origin || ''
+          return state
+        })
+      }
     })
+    if (path) {
+      axios
+        .get(`${this.root}/api/page/settings/by-key${path}`)
+        .then(response => {
+          if (response.data) {
+            this.setFallbackSettings(response.data)
+          }
+        })
+    }
   }
 
-  loadSiteMap() {
+  loadSiteMap(path = '') {
     return new Promise((resolve, reject) => {
       if (this.state.activePage && this.state.activePage.id) {
         axios
@@ -421,6 +433,15 @@ class App extends React.Component {
                 resolve(this.state.siteMap)
               }
             )
+          })
+      } else if (path) {
+        axios
+          .get(`${this.root}/api/page/sitemap/by-key${path}`)
+          .then(response => {
+            this.setState(state => {
+              state.siteMap = response.data
+              return state
+            })
           })
       }
     })
@@ -511,6 +532,7 @@ class App extends React.Component {
     this.setState(state => {
       state.activePage = page
       state.siteMap = JSON.parse(JSON.stringify(page.siteMap))
+      state.fallbackSettings = JSON.parse(JSON.stringify(page.fallbackSettings))
       return state
     })
   }
@@ -518,6 +540,13 @@ class App extends React.Component {
   setActivePathname(pathname) {
     this.setState(state => {
       state.activePathname = pathname
+      return state
+    })
+  }
+
+  setFallbackSettings(settings) {
+    this.setState(state => {
+      state.fallbackSettings = settings
       return state
     })
   }
@@ -676,6 +705,7 @@ class App extends React.Component {
                               'footer'
                             )}
                             navigate={this.navigate.bind(this)}
+                            onNotFound={this.handleNotFound.bind(this)}
                             setActivePathname={this.setActivePathname.bind(
                               this
                             )}
