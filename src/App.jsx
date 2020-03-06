@@ -675,6 +675,7 @@ class App extends React.Component {
                             footerControl={this.getShowPropertyValueHandler(
                               'footer'
                             )}
+                            navigate={this.navigate.bind(this)}
                             setActivePathname={this.setActivePathname.bind(
                               this
                             )}

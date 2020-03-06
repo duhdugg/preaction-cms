@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import PageBlockContent from './PageBlockContent.jsx'
+import PageBlockNav from './PageBlockNav.jsx'
 import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
@@ -196,6 +197,19 @@ class PageBlock extends React.Component {
           ) : (
             ''
           )}
+          {this.props.block.blockType === 'nav' ? (
+            <PageBlockNav
+              appRoot={this.props.appRoot}
+              block={this.props.block}
+              editable={this.props.editable}
+              emitSave={this.props.emitSave}
+              navigate={this.props.navigate}
+              page={this.props.page}
+              settings={this.props.settings}
+            />
+          ) : (
+            ''
+          )}
         </Card>
         {this.props.editable && this.state.showSettings ? (
           <Modal
@@ -250,6 +264,17 @@ class PageBlock extends React.Component {
                   'showBorder'
                 )}
               />
+              {this.props.block.blockType === 'nav' ? (
+                <Checkbox
+                  label='Enable Submenus'
+                  checked={this.props.block.settings.subMenu}
+                  valueHandler={this.getPageBlockSettingsValueHandler(
+                    'subMenu'
+                  )}
+                />
+              ) : (
+                ''
+              )}
             </Form>
           </Modal>
         ) : (
@@ -323,6 +348,8 @@ PageBlock.propTypes = {
   getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
+  navigate: PropTypes.func,
+  page: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired
 }
 

@@ -7,7 +7,7 @@ import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
 import { MdCreate } from 'react-icons/md'
-import { FaHtml5 } from 'react-icons/fa'
+import { FaHtml5, FaSitemap } from 'react-icons/fa'
 
 class Page extends React.Component {
   constructor(props) {
@@ -414,6 +414,17 @@ class Page extends React.Component {
               e.preventDefault()
               this.addPageBlock('content')
             }
+          },
+          {
+            name: (
+              <span>
+                <FaSitemap /> Navigation
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.addPageBlock('nav')
+            }
           }
         ],
         onClick: e => {
@@ -642,6 +653,8 @@ class Page extends React.Component {
                         )}
                         key={block.id}
                         last={index === this.state.page.pageblocks.length - 1}
+                        navigate={this.props.navigate}
+                        page={this.state.page}
                         settings={this.settings}
                       />
                     )
@@ -728,6 +741,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
+  navigate: PropTypes.func,
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,
   setActivePathname: PropTypes.func
