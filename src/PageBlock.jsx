@@ -140,24 +140,30 @@ class PageBlock extends React.Component {
                 >
                   <MdSettings />
                 </button>
-                <button
-                  type='button'
-                  className='btn btn-secondary btn-sm'
-                  onClick={() => {
-                    this.props.addContent(this.props.block, 'wysiwyg')
-                  }}
-                >
-                  <MdTextFields />
-                </button>
-                <button
-                  type='button'
-                  className='btn btn-secondary btn-sm'
-                  onClick={() => {
-                    this.photosInput.current.click()
-                  }}
-                >
-                  <MdImage />
-                </button>
+                {this.props.block.blockType === 'content' ? (
+                  <span>
+                    <button
+                      type='button'
+                      className='btn btn-secondary btn-sm'
+                      onClick={() => {
+                        this.props.addContent(this.props.block, 'wysiwyg')
+                      }}
+                    >
+                      <MdTextFields />
+                    </button>
+                    <button
+                      type='button'
+                      className='btn btn-secondary btn-sm'
+                      onClick={() => {
+                        this.photosInput.current.click()
+                      }}
+                    >
+                      <MdImage />
+                    </button>
+                  </span>
+                ) : (
+                  ''
+                )}
               </div>
             ) : (
               ''
