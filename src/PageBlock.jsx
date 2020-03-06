@@ -196,6 +196,7 @@ class PageBlock extends React.Component {
                     )}
                     editable={this.props.editable}
                     emitSave={this.props.emitSave}
+                    navigate={this.props.navigate}
                     settings={this.props.settings}
                   />
                 ))}

@@ -204,6 +204,7 @@ class PageBlockContent extends React.Component {
             content={this.props.content}
             editable={this.props.editable}
             emitSave={this.props.emitSave}
+            navigate={this.props.navigate}
           />
         ) : (
           ''
@@ -341,6 +342,27 @@ class PageBlockContent extends React.Component {
                   'showBorder'
                 )}
               />
+              {this.props.content.contentType === 'image' ? (
+                <div>
+                  <Input
+                    label='Alt Text'
+                    value={this.props.content.settings.altText}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'altText'
+                    )}
+                  />
+                  <Input
+                    label='Link URL'
+                    type='url'
+                    value={this.props.content.settings.linkUrl}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'linkUrl'
+                    )}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
             </Form>
           </Modal>
         ) : (
@@ -363,6 +385,7 @@ PageBlockContent.propTypes = {
   getContentSettingsValueHandler: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   last: PropTypes.bool,
+  navigate: PropTypes.func,
   settings: PropTypes.object.isRequired,
   width: PropTypes.any
 }
