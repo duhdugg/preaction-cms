@@ -3,7 +3,7 @@ import React from 'react'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
-import { Form, Input, Checkbox } from '@preaction/inputs'
+import { Form, Input, Checkbox, Select } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
 import {
   MdArrowUpward,
@@ -271,13 +271,34 @@ class PageBlock extends React.Component {
                 )}
               />
               {this.props.block.blockType === 'nav' ? (
-                <Checkbox
-                  label='Enable Submenus'
-                  checked={this.props.block.settings.subMenu}
-                  valueHandler={this.getPageBlockSettingsValueHandler(
-                    'subMenu'
-                  )}
-                />
+                <span>
+                  <Select
+                    label='Alignment'
+                    value={this.props.block.settings.navAlignment}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'navAlignment'
+                    )}
+                  >
+                    <option>left</option>
+                    <option>center</option>
+                    <option>right</option>
+                    <option>vertical</option>
+                  </Select>
+                  <Checkbox
+                    label='Collabsible'
+                    checked={this.props.block.settings.navCollapsible}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'navCollapsible'
+                    )}
+                  />
+                  <Checkbox
+                    label='Enable Submenus'
+                    checked={this.props.block.settings.subMenu}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'subMenu'
+                    )}
+                  />
+                </span>
               ) : (
                 ''
               )}

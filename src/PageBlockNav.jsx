@@ -52,6 +52,7 @@ class PageBlockNav extends React.Component {
   render() {
     return (
       <Nav
+        align={this.props.block.settings.navAlignment}
         type={this.props.block.settings.navType || 'basic'}
         collapsible={this.props.block.settings.navCollapsible}
         menu={this.menu}
