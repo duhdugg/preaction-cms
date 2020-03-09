@@ -546,20 +546,20 @@ class Page extends React.Component {
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
+                if (
+                  this.topLevelPageKey !== 'header' &&
+                  this.topLevelPageKey !== 'footer'
+                ) {
+                  let title = ''
+                  if (this.topLevelPageKey === 'home') {
+                    title = this.settings.siteTitle
+                  } else {
+                    title = `${response.data.title} | ${this.settings.siteTitle}`
+                  }
+                  document.title = title
+                }
               }
             )
-            if (
-              this.topLevelPageKey !== 'header' &&
-              this.topLevelPageKey !== 'footer'
-            ) {
-              let title = ''
-              if (this.topLevelPageKey === 'home') {
-                title = this.settings.siteTitle
-              } else {
-                title = `${response.data.title} | ${this.settings.siteTitle}`
-              }
-              document.title = title
-            }
           })
           .catch(e => {
             console.error(e)
