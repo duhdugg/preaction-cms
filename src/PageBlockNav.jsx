@@ -14,6 +14,9 @@ class PageBlockNav extends React.Component {
   get menu() {
     let m = []
     this.props.page.siteTree.children.forEach(page => {
+      if (!page.userCreated) {
+        return
+      }
       let subMenu = []
       if (this.props.block.settings.subMenu) {
         page.children.forEach(pg => {
