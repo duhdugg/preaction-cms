@@ -75,7 +75,26 @@ class PageBlock extends React.Component {
 
   render() {
     return (
-      <div className={`page-block ${this.props.block.blockType}`}>
+      <Card
+        className={{
+          card: `page-block page-block-${this.props.block.blockType}`
+        }}
+        style={{
+          body: {
+            padding: 0
+          },
+          card: {
+            border: 0
+          }
+        }}
+        column
+        width={{
+          lg: this.props.block.settings.lgWidth / 12,
+          md: this.props.block.settings.mdWidth / 12,
+          sm: this.props.block.settings.smWidth / 12,
+          xs: this.props.block.settings.xsWidth / 12
+        }}
+      >
         <Card
           style={{
             body: {
@@ -245,6 +264,42 @@ class PageBlock extends React.Component {
                 )}
               />
               <Input
+                label={`Desktop Width: ${this.props.block.settings.lgWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.lgWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('lgWidth')}
+              />
+              <Input
+                label={`Tablet Width: ${this.props.block.settings.mdWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.mdWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('mdWidth')}
+              />
+              <Input
+                label={`Phone Width (Landscape): ${this.props.block.settings.smWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.smWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('smWidth')}
+              />
+              <Input
+                label={`Phone Width (Portrait): ${this.props.block.settings.xsWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.xsWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('xsWidth')}
+              />
+              <Input
                 type='range'
                 label={`Padding: ${
                   this.props.block.settings.padding
@@ -358,7 +413,7 @@ class PageBlock extends React.Component {
         ) : (
           ''
         )}
-      </div>
+      </Card>
     )
   }
 }

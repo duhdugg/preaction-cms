@@ -278,6 +278,13 @@ class Page extends React.Component {
         state => {
           this.state.page.pageblocks.forEach(pageblock => {
             if (pageblock.id === pageblockId) {
+              if (
+                ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >= 0
+              ) {
+                if (value < 1) {
+                  value = 1
+                }
+              }
               pageblock.settings[key] = value
             }
           })
@@ -637,7 +644,7 @@ class Page extends React.Component {
     return (
       <div className='page'>
         {this.state.page ? (
-          <div>
+          <div className='row'>
             {this.state.page.pageblocks
               ? this.getBlocks(this.state.page.pageblocks).map(
                   (block, index) => {
@@ -669,7 +676,7 @@ class Page extends React.Component {
                 )
               : ''}
             {this.props.editable ? (
-              <div className='page-controls'>
+              <div className='page-controls col-12'>
                 <Nav type='tabs' menu={this.pageControlsMenu} />
               </div>
             ) : (
