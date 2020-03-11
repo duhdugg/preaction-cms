@@ -13,7 +13,7 @@ class PageBlockNav extends React.Component {
 
   get menu() {
     let m = []
-    this.props.page.siteTree.children.forEach(page => {
+    this.props.page.tree.children.forEach(page => {
       if (!page.userCreated) {
         return
       }
