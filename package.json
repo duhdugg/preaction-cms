@@ -47,6 +47,8 @@
     "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && react-scripts test --coverage",
     "eject": "react-scripts eject",
     "dev-server": "nodemon -i src server.js",
+    "start-inspect": "node --inspect server.js",
+    "start-profile": "node --prof server.js",
     "start": "node server.js"
   },
   "eslintConfig": {
