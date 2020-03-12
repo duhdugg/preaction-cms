@@ -305,7 +305,16 @@ class App extends React.Component {
       this.state.activePathname !== '/home' &&
       this.state.activePathname !== '/'
     ) {
-      Object.assign(s, this.state.activePage.settings)
+      Object.keys(this.state.activePage.settings).forEach(key => {
+        switch (key) {
+          case 'cssOverrides':
+            s[key] = s[key] + '\n\n' + this.state.activePage.settings[key]
+            break
+          default:
+            s[key] = this.state.activePage.settings[key]
+            break
+        }
+      })
     }
     return s
   }
