@@ -10,20 +10,3 @@
 .page .page-block .preaction.wysiwyg {
   margin-bottom: 0 !important;
 }
-
-.page .page-block-wysiwyg {
-  margin-bottom: 1rem;
-}
-
-.card.image.nocontainer {
-  background-color: transparent !important;
-  border: 0 !important;
-}
-
-.card.image.nocontainer .card-body {
-  padding: 0 !important;
-}
-
-.card.image.nocontainer img {
-  border: 0 !important;
-}
