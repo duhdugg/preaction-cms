@@ -77,14 +77,15 @@ class PageBlock extends React.Component {
     return (
       <Card
         className={{
-          card: `page-block page-block-${this.props.block.blockType}`
+          card: `page-block page-block-outer block-type-${this.props.block.blockType}`
         }}
         style={{
           body: {
             padding: 0
           },
           card: {
-            border: 0
+            border: 0,
+            backgroundColor: 'transparent'
           }
         }}
         column
@@ -96,6 +97,9 @@ class PageBlock extends React.Component {
         }}
       >
         <Card
+          className={{
+            card: `page-block-inner block-type-${this.props.block.blockType}`
+          }}
           style={{
             body: {
               padding: this.props.block.settings.padding

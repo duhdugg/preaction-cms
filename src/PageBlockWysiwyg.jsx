@@ -57,7 +57,7 @@ class PageBlockWysiwyg extends React.Component {
 
   render() {
     return (
-      <div className='page-block-content-wysiwyg'>
+      <div className='page-block-content-type-wysiwyg'>
         <Form
           onSubmit={e => {
             e.preventDefault()

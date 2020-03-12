@@ -71,6 +71,7 @@ class PageBlockContent extends React.Component {
   render() {
     return (
       <Card
+        className={{ card: 'page-block-content' }}
         noMargin
         column={this.props.column}
         header={this.header}
