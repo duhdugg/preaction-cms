@@ -36,7 +36,7 @@ ImgContainer.propTypes = {
 class PageBlockImage extends React.Component {
   render() {
     return (
-      <div className='page-block-image'>
+      <div className='page-block-content-image'>
         <ImgContainer
           appRoot={this.props.appRoot}
           linkUrl={this.props.content.settings.linkUrl}
