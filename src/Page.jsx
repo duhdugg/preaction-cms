@@ -722,7 +722,7 @@ class Page extends React.Component {
           ''
         )}
         {this.state.loading ? (
-          <div className='container'>
+          <div className='container spinner-container'>
             <Spinner size='3.25' />
           </div>
         ) : (

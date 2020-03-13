@@ -1,3 +1,8 @@
+.spinner-container {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
 .page .page-controls {
   margin-bottom: 1em;
 }
