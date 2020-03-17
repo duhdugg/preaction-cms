@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom'
 import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
 import { Input } from '@preaction/inputs'
-import { MdCreate, MdHome, MdPerson, MdSettings } from 'react-icons/md'
+import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 // styles
@@ -165,7 +165,7 @@ class App extends React.Component {
     let menu = []
     if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
-        name: <MdHome />,
+        name: 'Home',
         href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
         component: Link,
         order: -1,
