@@ -33,6 +33,12 @@ const updateAdminPassword = require('./lib/session').updateAdminPassword
 updateAdminPassword('newpass')
 ```
 
+### Environment Variables
+
+`PREACTION_DB_LOGGING=1` enables logging from Sequelize ORM
+`PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
+`PREACTION_PORT=8080` configures the port to listen on
+
 ### Features
 
 - [x] authentication
@@ -43,30 +49,15 @@ updateAdminPassword('newpass')
   - [ ] reload only specific block with updates
 - [x] automatic saving of updates
 - [x] block types
-  - [ ] bio (photo, name, subtitle, description)
-  - [x] contained wysiwyg
-  - [ ] embedded frame
-  - [x] images
-  - [ ] panel
-  - [ ] social links
-  - [ ] storefront info (address, phone, hours)
-  - [ ] uncontained wysiwyg
-  - [ ] youtube
+  - [x] content
+  - [ ] iframe
+  - [x] navigation
 - [x] editable page footers
 - [x] editable page headers
 - [x] image block controls
   - [x] add image
   - [x] delete image
   - [x] move image
-- [x] image block settings
-  - [x] center/justify
-  - [x] collapse columns responsively
-  - [x] push to zoom
-  - [x] show container
-  - [x] width percentage
-- [ ] wysiwyg block settings
-  - [ ] show container
-  - [ ] show timestamp
 - [x] page management
   - [x] create page
   - [x] delete blocks
@@ -74,12 +65,9 @@ updateAdminPassword('newpass')
   - [x] rearrange blocks
   - [x] rename page
   - [x] view page
-- [x] module types
-  - [x] page
-  - [x] subpage
 - [x] page settings
-  - [x] show footer
-  - [x] show header
+  - [x] override parent settings
+  - [x] css overrides inherit from parent
 - [x] redirects
   - [x] create redirect
   - [x] update redirect
@@ -92,18 +80,23 @@ updateAdminPassword('newpass')
   - [x] background color
   - [x] background image
   - [x] background image tile
+  - [x] border color
+  - [x] border opacity
   - [x] container color
+  - [x] container header theme
   - [x] container opacity
+  - [x] CSS overrides
   - [x] favicon image
   - [x] link color
   - [x] navigation type
+  - [x] show footer
+  - [x] show header
   - [x] text color
   - [ ] uncontained link color
   - [ ] uncontained text color
   - [ ] submenu item background color
   - [ ] font families
   - [ ] font scaling
-  - [x] CSS overrides
 - [ ] extension API
 - [ ] user documentation
 - [ ] developer documentation
