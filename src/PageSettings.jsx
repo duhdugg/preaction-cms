@@ -284,7 +284,7 @@ class PageSettings extends React.Component {
                       )}
                     </div>
                   </Card>
-                  <Card header='Header' headerTheme='light'>
+                  <Card header='Header/Footer' headerTheme='light'>
                     <Checkbox
                       label='Show Header'
                       checked={this.props.settings.showHeader}
@@ -299,6 +299,26 @@ class PageSettings extends React.Component {
                       }}
                     />
                     <ResetButton settingsKey='showHeader' />
+                    {this.props.settings.showHeader ? (
+                      <div>
+                        <Input
+                          label='Header Path'
+                          value={this.props.settings.headerPath}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'headerPath'
+                          )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'headerPath'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('headerPath')
+                          }}
+                        />
+                        <ResetButton settingsKey='headerPath' />
+                      </div>
+                    ) : (
+                      ''
+                    )}
                     <Checkbox
                       label='Show Footer'
                       checked={this.props.settings.showFooter}
@@ -313,6 +333,26 @@ class PageSettings extends React.Component {
                       }}
                     />
                     <ResetButton settingsKey='showFooter' />
+                    {this.props.settings.showFooter ? (
+                      <div>
+                        <Input
+                          label='Header Path'
+                          value={this.props.settings.footerPath}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'footerPath'
+                          )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'footerPath'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('footerPath')
+                          }}
+                        />
+                        <ResetButton settingsKey='footerPath' />
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </Card>
                 </div>
               </div>

@@ -60,6 +60,8 @@ class App extends React.Component {
         containerOpacity: 0,
         cssOverrides: '',
         fontColor: '#ffffff',
+        footerPath: '/home/footer/',
+        headerPath: '/home/header/',
         hostname: '',
         linkColor: '#ffffff',
         siteTitle: '',

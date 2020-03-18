@@ -8,6 +8,14 @@ class Header extends React.Component {
     this.page = React.createRef()
   }
 
+  get cleanPath() {
+    let path = '/home/header/'
+    if (this.props.settings.headerPath.match(/\/header\/$/) !== null) {
+      path = this.props.settings.headerPath
+    }
+    return path
+  }
+
   reload() {
     this.page.current.reload()
   }
@@ -25,7 +33,7 @@ class Header extends React.Component {
               editable={this.props.editable}
               emitSave={this.props.emitSave}
               fallbackSettings={this.props.settings}
-              path='/home/header/'
+              path={this.cleanPath}
               ref={this.page}
             />
           </div>

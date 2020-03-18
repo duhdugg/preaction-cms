@@ -8,6 +8,14 @@ class Footer extends React.Component {
     this.page = React.createRef()
   }
 
+  get cleanPath() {
+    let path = '/home/footer/'
+    if (this.props.settings.footerPath.match(/\/footer\/$/) !== null) {
+      path = this.props.settings.footerPath
+    }
+    return path
+  }
+
   reload() {
     this.page.current.reload()
   }
@@ -25,7 +33,7 @@ class Footer extends React.Component {
               editable={this.props.editable}
               emitSave={this.props.emitSave}
               fallbackSettings={this.props.settings}
-              path='/home/footer/'
+              path={this.cleanPath}
               ref={this.page}
             />
           </div>
