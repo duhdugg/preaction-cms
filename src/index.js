@@ -6,12 +6,17 @@ import 'es5-shim'
 import 'es6-shim'
 
 let settings = {
-  root: sessionStorage.preactionAppRoot || window.appRoot || '',
-  socketMode:
-    sessionStorage.preactionSocketMode === 'true' ||
-    window.socketMode === true ||
-    false
+  root: '',
+  socketMode: false
 }
+settings.root =
+  sessionStorage.preactionAppRoot || window.appRoot !== '$ROOT'
+    ? window.appRoot
+    : ''
+settings.socketMode =
+  sessionStorage.preactionSocketMode || window.socketMode !== '$SOCKET_MODE'
+    ? window.socketMode === 'true'
+    : false
 
 ReactDOM.render(
   <App root={settings.root} socketMode={settings.socketMode} />,

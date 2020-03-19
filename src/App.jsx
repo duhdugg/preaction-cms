@@ -321,11 +321,7 @@ class App extends React.Component {
   }
 
   get root() {
-    let r = ''
-    if (this.props.root && this.props.root !== '$ROOT') {
-      r = this.props.root
-    }
-    return r
+    return this.props.root || ''
   }
 
   get settings() {
