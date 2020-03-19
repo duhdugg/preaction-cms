@@ -929,6 +929,17 @@ class App extends React.Component {
     window.onpopstate = event => {
       this.setActivePathname(window.location.pathname)
     }
+    window.preaction = {
+      navigate: path => {
+        this.navigate(path)
+      },
+      redirect: path => {
+        this.redirect(path)
+      },
+      toggleEditMode: () => {
+        this.toggleEditMode()
+      }
+    }
   }
 }
 
