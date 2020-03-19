@@ -553,10 +553,7 @@ class Page extends React.Component {
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
-                if (
-                  this.topLevelPageKey !== 'header' &&
-                  this.topLevelPageKey !== 'footer'
-                ) {
+                if (path.match(/\/(header|footer)\/$/g) === null) {
                   let title = ''
                   if (this.topLevelPageKey === 'home') {
                     title = this.settings.siteTitle
