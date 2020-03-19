@@ -182,10 +182,10 @@ class App extends React.Component {
       })
     }
     this.siteMap.children.forEach(page => {
-      if (page.userCreated) {
+      if (page.settings.includeInNav) {
         let subMenu = []
         page.children.forEach(pg => {
-          if (pg.userCreated) {
+          if (pg.settings.includeInNav) {
             subMenu.push({
               name: pg.title,
               href: `/${pg.path}/`,

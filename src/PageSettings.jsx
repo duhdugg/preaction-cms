@@ -141,6 +141,13 @@ class PageSettings extends React.Component {
                       checked={this.props.settings.site === true}
                       valueHandler={this.props.getSettingsValueHandler('site')}
                     />
+                    <Checkbox
+                      label='Include Page in Navigation'
+                      checked={this.props.settings.includeInNav === true}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'includeInNav'
+                      )}
+                    />
                     <div className='row'>
                       <div className='col-sm-6'>
                         <Select

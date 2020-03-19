@@ -14,13 +14,13 @@ class PageBlockNav extends React.Component {
   get menu() {
     let m = []
     this.props.page.tree.children.forEach(page => {
-      if (!page.userCreated) {
+      if (!page.settings.includeInNav) {
         return
       }
       let subMenu = []
       if (this.props.block.settings.subMenu) {
         page.children.forEach(pg => {
-          if (pg.userCreated) {
+          if (pg.settings.includeInNav) {
             subMenu.push({
               name: pg.title,
               href: `/${pg.path}/`,
