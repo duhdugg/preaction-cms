@@ -104,7 +104,9 @@ class App extends React.Component {
         let regex = new RegExp(`^${this.root}`)
         href = href.replace(regex, '')
       }
-      this.navigate(href)
+      if (!this.state.editable) {
+        this.navigate(href)
+      }
     })
   }
 
