@@ -27,7 +27,28 @@ import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 import SiteSettings from './SiteSettings.jsx'
 
-import { registerSmartLinkFormat } from '@preaction/inputs'
+import { Quill } from '@preaction/inputs'
+
+function registerSmartLinkFormat(relativeLinkHandler = url => {}) {
+  const LinkFormat = Quill.import('formats/link')
+  class SmartLinkFormat extends LinkFormat {
+    static create(value) {
+      let node = super.create(value)
+      node.addEventListener('click', event => {
+        let r = new RegExp('(?:^[a-z][a-z0-9+.-]*:|//)', 'i')
+        let href = node.getAttribute('href')
+        let absolute = r.test(href)
+        if (absolute) {
+        } else {
+          event.preventDefault()
+          relativeLinkHandler(href)
+        }
+      })
+      return node
+    }
+  }
+  Quill.register('formats/link', SmartLinkFormat)
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -476,6 +497,9 @@ class App extends React.Component {
   }
 
   navigate(path) {
+    if (path.match(/\/$/) === null) {
+      path = path + '/'
+    }
     this.setState(
       state => {
         state.navigate = path
@@ -875,6 +899,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    if (window.location.pathname.match(/\/$/) === null) {
+      window.location.pathname = window.location.pathname + '/'
+      return
+    }
     this.loadSettings()
     this.loadSession()
     this.setActivePathname(window.location.pathname)

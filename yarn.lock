@@ -1192,10 +1192,10 @@
   dependencies:
     prop-types "^15.7.2"
 
-"@preaction/inputs@^1.3.13":
-  version "1.3.13"
-  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-1.3.13.tgz#81a6cdd7a955dc91f4a313b32788562715c906dc"
-  integrity sha512-ULAWrkhzQU90WdeyAlE/67SARzS+mYajkG6vQjozv8xcNoWljLS5myhkbxpIc+tPfuqqVv2uRsuca4rm1ImGxQ==
+"@preaction/inputs@^1.3.14":
+  version "1.3.14"
+  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-1.3.14.tgz#36fa9dd351bcc28bf83442a80d0cc860b182c291"
+  integrity sha512-aVnj75w0MxDgk4UavKG3LDXnHktDuird3aTz4OTPzehLx4cc/VULn8/5mGfHuz/GYmGKIugq4EfRNZbHYSlVpA==
   dependencies:
     dompurify "^2.0.8"
     prop-types "^15.7.2"

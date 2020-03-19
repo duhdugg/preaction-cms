@@ -10,9 +10,11 @@ let ImgContainer = props =>
         String(props.linkUrl || '').indexOf('/') === 0 ? '_self' : '_blank'
       }
       onClick={e => {
-        if (props.navigate && String(props.linkUrl || '').indexOf('/') === 0) {
+        let r = new RegExp('(?:^[a-z][a-z0-9+.-]*:|//)', 'i')
+        let href = props.linkUrl
+        let absolute = r.test(href)
+        if (props.navigate && !absolute) {
           e.preventDefault()
-          let href = props.linkUrl
           if (href.indexOf(props.appRoot) === 0) {
             let regex = new RegExp(`^${props.appRoot}`)
             href = href.replace(regex, '')
