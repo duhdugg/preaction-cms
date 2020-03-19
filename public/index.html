@@ -21,7 +21,8 @@
       }
     </style>
     <script>
-      window.appRoot = '$ROOT'
+      window.appRoot = '$ROOT' !== '$root'.toUpperCase() ? '$ROOT' : ''
+      window.socketMode = '$SOCKET_MODE' === 'true'
     </script>
     <script></script>
   </head>

@@ -5,8 +5,16 @@ import * as serviceWorker from './serviceWorker'
 import 'es5-shim'
 import 'es6-shim'
 
+let settings = {
+  root: sessionStorage.preactionAppRoot || window.appRoot || '',
+  socketMode:
+    sessionStorage.preactionSocketMode === 'true' ||
+    window.socketMode === true ||
+    false
+}
+
 ReactDOM.render(
-  <App root={window.appRoot || ''} />,
+  <App root={settings.root} socketMode={settings.socketMode} />,
   document.getElementById('root')
 )
 

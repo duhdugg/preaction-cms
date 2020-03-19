@@ -38,13 +38,14 @@ updateAdminPassword('newpass')
 `PREACTION_DB_LOGGING=1` enables logging from Sequelize ORM
 `PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
 `PREACTION_PORT=8080` configures the port to listen on
+`PREACTION_SOCKET_MODE=1` enables socket features (automatic reload)
 
 ### Features
 
 - [x] authentication
   - [x] user+pw login, bcrypted
   - [ ] email+pw login, bcrypted, registered, verified, self-service, reset
-- [x] automatic reload on updates
+- [x] automatic reload on updates (socket mode)
   - [x] reload page data with updates
   - [ ] reload only specific block with updates
 - [x] automatic saving of updates

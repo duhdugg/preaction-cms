@@ -172,10 +172,15 @@ class App extends React.Component {
   }
 
   emitSave(callback = () => {}) {
-    this.socket.emit('save', () => {
+    if (this.props.socketMode) {
+      this.socket.emit('save', () => {
+        this.loadSiteMap()
+        callback()
+      })
+    } else {
       this.loadSiteMap()
       callback()
-    })
+    }
   }
 
   get fallbackSettings() {
@@ -908,17 +913,19 @@ class App extends React.Component {
     this.loadSettings()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
-    this.socket = io({ path: `${this.root}/socket.io` })
-    this.socket.on('load', () => {
-      if (!this.state.editable) {
-        this.reload()
-      }
-    })
-    this.socket.on('reload-app', () => {
-      if (!this.state.editable) {
-        window.location.reload()
-      }
-    })
+    if (this.props.socketMode) {
+      this.socket = io({ path: `${this.root}/socket.io` })
+      this.socket.on('load', () => {
+        if (!this.state.editable) {
+          this.reload()
+        }
+      })
+      this.socket.on('reload-app', () => {
+        if (!this.state.editable) {
+          window.location.reload()
+        }
+      })
+    }
     window.onpopstate = event => {
       this.setActivePathname(window.location.pathname)
     }
@@ -926,7 +933,8 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  root: PropTypes.string
+  root: PropTypes.string,
+  socketMode: PropTypes.bool
 }
 
 export default App
