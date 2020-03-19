@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import absoluteUrl from './lib/absoluteUrl.js'
 
 let ImgContainer = props =>
   props.linkUrl ? (
     <a
       href={props.linkUrl}
       rel='noreferrer noopener'
-      target={
-        String(props.linkUrl || '').indexOf('/') === 0 ? '_self' : '_blank'
-      }
+      target={absoluteUrl(props.linkUrl) ? '_blank' : 'self'}
       onClick={e => {
-        let r = new RegExp('(?:^[a-z][a-z0-9+.-]*:|//)', 'i')
         let href = props.linkUrl
-        let absolute = r.test(href)
+        let absolute = absoluteUrl(href)
         if (props.navigate && !absolute) {
           e.preventDefault()
           if (href.indexOf(props.appRoot) === 0) {

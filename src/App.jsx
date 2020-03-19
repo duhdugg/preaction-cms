@@ -29,16 +29,16 @@ import SiteSettings from './SiteSettings.jsx'
 
 import { Quill } from '@preaction/inputs'
 
+import absoluteUrl from './lib/absoluteUrl.js'
+
 function registerSmartLinkFormat(relativeLinkHandler = url => {}) {
   const LinkFormat = Quill.import('formats/link')
   class SmartLinkFormat extends LinkFormat {
     static create(value) {
       let node = super.create(value)
       node.addEventListener('click', event => {
-        let r = new RegExp('(?:^[a-z][a-z0-9+.-]*:|//)', 'i')
         let href = node.getAttribute('href')
-        let absolute = r.test(href)
-        if (absolute) {
+        if (absoluteUrl(href)) {
         } else {
           event.preventDefault()
           relativeLinkHandler(href)
