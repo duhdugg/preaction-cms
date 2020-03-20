@@ -97,7 +97,7 @@ class PageSettings extends React.Component {
 
     return (
       <div className='settings-component'>
-        {this.props.authenticated ? (
+        {this.props.admin ? (
           <div>
             <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
               <div className='row'>
@@ -911,8 +911,8 @@ class PageSettings extends React.Component {
 }
 
 PageSettings.propTypes = {
+  admin: PropTypes.bool,
   appRoot: PropTypes.string.isRequired,
-  authenticated: PropTypes.bool,
   deletePage: PropTypes.func,
   getPageSettingIsUndefined: PropTypes.func.isRequired,
   getPageValueHandler: PropTypes.func.isRequired,

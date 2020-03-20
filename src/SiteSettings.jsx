@@ -113,7 +113,7 @@ class SiteSettings extends React.Component {
   render() {
     return (
       <div className='settings-component'>
-        {this.props.authenticated ? (
+        {this.props.admin ? (
           <div>
             <style type='text/css'>{`
               table.redirects td {
@@ -792,8 +792,8 @@ class SiteSettings extends React.Component {
 }
 
 SiteSettings.propTypes = {
+  admin: PropTypes.bool,
   appRoot: PropTypes.string.isRequired,
-  authenticated: PropTypes.bool,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired
 }

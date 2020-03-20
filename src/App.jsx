@@ -57,6 +57,7 @@ class App extends React.Component {
       activePage: null,
       activePathname: '',
       activeSettings: {},
+      admin: false,
       authenticated: false,
       editable: false,
       fallbackSettings: {},
@@ -168,7 +169,7 @@ class App extends React.Component {
   }
 
   get editable() {
-    return this.state.authenticated && this.state.editable
+    return this.state.authenticated && this.state.admin && this.state.editable
   }
 
   emitSave(callback = () => {}) {
@@ -235,7 +236,7 @@ class App extends React.Component {
         })
       }
     })
-    if (this.state.authenticated) {
+    if (this.state.admin) {
       let adminSubmenu = []
       adminSubmenu.push({
         name: 'Logout',
@@ -426,6 +427,9 @@ class App extends React.Component {
         if (response.data && response.data.authenticated) {
           this.setState(state => {
             state.authenticated = true
+            if (response.data.admin) {
+              state.admin = true
+            }
             return state
           }, conditionallyResolve)
         }
@@ -492,6 +496,7 @@ class App extends React.Component {
   logout() {
     axios.get(`${this.root}/api/logout`).then(() => {
       this.setState(state => {
+        state.admin = false
         state.authenticated = false
         state.editable = false
         return state
@@ -842,7 +847,7 @@ class App extends React.Component {
           >
             <SiteSettings
               appRoot={this.root}
-              authenticated={this.state.authenticated}
+              admin={this.state.admin}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
             />

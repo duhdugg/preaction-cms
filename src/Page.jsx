@@ -706,7 +706,7 @@ class Page extends React.Component {
               >
                 <PageSettings
                   appRoot={this.props.appRoot}
-                  authenticated={this.props.editable}
+                  admin={this.props.editable}
                   pageId={this.state.page.id}
                   page={this.state.page}
                   path={this.props.path}
