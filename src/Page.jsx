@@ -6,7 +6,7 @@ import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
-import { MdCreate } from 'react-icons/md'
+import { MdCreate, MdFilterFrames } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 
 class Page extends React.Component {
@@ -420,6 +420,17 @@ class Page extends React.Component {
             onClick: e => {
               e.preventDefault()
               this.addPageBlock('content')
+            }
+          },
+          {
+            name: (
+              <span>
+                <MdFilterFrames /> iframe
+              </span>
+            ),
+            onClick: e => {
+              e.preventDefault()
+              this.addPageBlock('iframe')
             }
           },
           {

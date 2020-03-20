@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
-import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
+import PageBlockIframe from './PageBlockIframe.jsx'
+import { Card, Modal } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox, Select } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
 import {
@@ -240,10 +241,23 @@ class PageBlock extends React.Component {
           ) : (
             ''
           )}
+          {this.props.block.blockType === 'iframe' ? (
+            <PageBlockIframe
+              appRoot={this.props.appRoot}
+              block={this.props.block}
+              editable={this.props.editable}
+              emitSave={this.props.emitSave}
+              navigate={this.props.navigate}
+              page={this.props.page}
+              settings={this.props.settings}
+            />
+          ) : (
+            ''
+          )}
         </Card>
         {this.props.editable && this.state.showSettings ? (
           <Modal
-            title='Block Settings'
+            title={`Block Type ${this.props.block.blockType} Settings`}
             closeHandler={this.toggleSettings.bind(this)}
           >
             <Form
@@ -356,6 +370,19 @@ class PageBlock extends React.Component {
                     checked={this.props.block.settings.subMenu}
                     valueHandler={this.getPageBlockSettingsValueHandler(
                       'subMenu'
+                    )}
+                  />
+                </span>
+              ) : (
+                ''
+              )}
+              {this.props.block.blockType === 'iframe' ? (
+                <span>
+                  <Input
+                    label='URL'
+                    value={this.props.block.settings.iframeSrc}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'iframeSrc'
                     )}
                   />
                 </span>
