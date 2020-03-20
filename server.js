@@ -12,7 +12,9 @@ const path = require('path')
 // excerptHtml is used to generate descriptions from content
 const excerptHtml = require('excerpt-html')
 // sitemap is used to generate sitemaps
-const sm = require('sitemap')
+const { SitemapStream } = require('sitemap')
+// zlib is used to gzip sitemap
+const { createGzip } = require('zlib')
 
 // app is our main express module
 const app = express()
@@ -74,30 +76,40 @@ app.route('/sitemap.xml').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
     let hostname = setting && setting.value ? setting.value : ''
     let changefreq = 'always'
-    let sitemap = sm.createSitemap({
-      hostname,
-      urls: [
-        {
-          url: '/',
-          changefreq
-        }
-      ]
-    })
-    pages.model.Page.findAll().then(pages => {
-      pages.forEach(page => {
-        if (page.userCreated) {
-          let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-          sitemap.add({ url: `/${title}/`, changefreq })
-        }
+    try {
+      let smStream = new SitemapStream({ hostname: hostname })
+      let pipeline = smStream.pipe(createGzip())
+      smStream.write({
+        url: '/',
+        changefreq
       })
-      sitemap.toXML((err, xml) => {
-        if (err) {
-          res.status(500).end()
+      pages.model.Page.findAll({ where: { userCreated: true } }).then(
+        pageRows => {
+          let rowCount = pageRows.length
+          let countMapped = 0
+          pageRows.forEach(page => {
+            pages.funcs.getPagePath(page).then(path => {
+              smStream.write({
+                url: `${env.root}/${path}/`,
+                changefreq
+              })
+              countMapped++
+              if (countMapped >= rowCount) {
+                smStream.end()
+                res.header('Content-Type', 'application/xml')
+                res.header('Content-Encoding', 'gzip')
+                pipeline.pipe(res).on('error', e => {
+                  throw e
+                })
+              }
+            })
+          })
         }
-        res.header('Content-Type', 'application/xml')
-        res.send(xml)
-      })
-    })
+      )
+    } catch (e) {
+      console.error(e)
+      res.status(500).end()
+    }
   })
 })
 
