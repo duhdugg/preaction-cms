@@ -11,7 +11,6 @@ class PageSettings extends React.Component {
     super(props)
     this.state = {
       confirmDelete: false,
-      newPageTitle: '',
       uploadingBg: false,
       uploadingIcon: false
     }
@@ -35,17 +34,6 @@ class PageSettings extends React.Component {
         state[key] = value
         return state
       })
-    }
-  }
-
-  get newPage() {
-    let title = this.state.newPageTitle
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-    let pageType = 'content'
-    return {
-      key,
-      title,
-      pageType
     }
   }
 
@@ -111,6 +99,12 @@ class PageSettings extends React.Component {
                   <Input
                     label='Page Path'
                     type='text'
+                    value={this.props.page.key}
+                    valueHandler={this.props.getPageValueHandler('key')}
+                  />
+                  <Input
+                    label='Full Path (readonly)'
+                    type='text'
                     value={this.path}
                     readOnly={true}
                   />
@@ -138,7 +132,7 @@ class PageSettings extends React.Component {
                   >
                     <Checkbox
                       label='Parent Site'
-                      checked={this.props.settings.site === true}
+                      checked={this.props.settings.site}
                       valueHandler={this.props.getSettingsValueHandler('site')}
                     />
                     <Checkbox

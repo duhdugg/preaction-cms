@@ -30,6 +30,7 @@ import SiteSettings from './SiteSettings.jsx'
 import { Quill } from '@preaction/inputs'
 
 import absoluteUrl from './lib/absoluteUrl.js'
+import getKeyFromTitle from './lib/getKeyFromTitle.js'
 
 function registerSmartLinkFormat(relativeLinkHandler = url => {}) {
   const LinkFormat = Quill.import('formats/link')
@@ -126,11 +127,11 @@ class App extends React.Component {
     }
   }
 
-  createPage(title) {
-    if (!title) {
+  createPage(newPage) {
+    if (!newPage.title) {
       return
     }
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+    let key = newPage.key
     if (!key.replace(/-/gi, '')) {
       return
     }
@@ -141,13 +142,13 @@ class App extends React.Component {
         parentId = this.state.activePage.id
       }
     }
-    let newPage = {
+    let page = {
       key,
-      title,
+      title: newPage.title,
       pageType,
       parentId
     }
-    this.addPage(newPage)
+    this.addPage(page)
   }
 
   deletePage(page) {
@@ -360,6 +361,9 @@ class App extends React.Component {
     return value => {
       this.setState(state => {
         state.newPage[key] = value
+        if (key === 'title') {
+          state.newPage.key = getKeyFromTitle(value)
+        }
         return state
       })
     }
@@ -866,7 +870,7 @@ class App extends React.Component {
                   className='btn btn-success'
                   onClick={() => {
                     if (this.state.newPage.title) {
-                      this.createPage(this.state.newPage.title)
+                      this.createPage(this.state.newPage)
                       this.toggleNewPage()
                       this.setState(state => {
                         state.newPage.title = ''
@@ -895,6 +899,13 @@ class App extends React.Component {
                 label='Page Title'
                 value={this.state.newPage.title}
                 valueHandler={this.getNewPageValueHandler('title')}
+                required
+              />
+              <Input
+                type='text'
+                label='URL Path'
+                value={this.state.newPage.key}
+                valueHandler={this.getNewPageValueHandler('key')}
                 required
               />
             </form>

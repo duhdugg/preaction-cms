@@ -162,17 +162,6 @@ class Page extends React.Component {
     }
   }
 
-  get newPage() {
-    let title = this.state.newPageTitle
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-    let pageType = 'content'
-    return {
-      key,
-      title,
-      pageType
-    }
-  }
-
   get splitPath() {
     let path = []
     this.props.path.split('/').forEach(dir => {
@@ -373,12 +362,6 @@ class Page extends React.Component {
       this.setState(
         state => {
           state.page[key] = value
-          if (key === 'title') {
-            let k = value.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-            if (k.replace(/-/gi, '')) {
-              state.page.key = k
-            }
-          }
           return state
         },
         () => {
@@ -608,37 +591,6 @@ class Page extends React.Component {
 
   reload() {
     this.loadPage(this.props.path)
-  }
-
-  renamePage() {
-    let oldTitle = this.state.page.title
-    let title = window.prompt(`New Page Title for ${this.state.page.title}`)
-    if (title) {
-      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-      this.setState(
-        state => {
-          state.page.title = title
-          state.page.key = key
-        },
-        () => {
-          axios
-            .put(
-              `${this.props.appRoot}/api/page/${this.state.page.id}`,
-              this.state.page
-            )
-            .then(() => {
-              if (title !== oldTitle) {
-                this.props.emitSave()
-                if (this.state.page.parentId) {
-                  window.location.href = `/${this.topLevelPageKey}/${key}/`
-                } else {
-                  window.location.href = `/${key}/`
-                }
-              }
-            })
-        }
-      )
-    }
   }
 
   toggleSettings() {

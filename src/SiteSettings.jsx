@@ -10,7 +10,6 @@ class SiteSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      newPageTitle: '',
       redirect: null,
       redirects: [],
       uploadingBg: false,
@@ -61,17 +60,6 @@ class SiteSettings extends React.Component {
         state[key] = value
         return state
       })
-    }
-  }
-
-  get newPage() {
-    let title = this.state.newPageTitle
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-    let pageType = 'content'
-    return {
-      key,
-      title,
-      pageType
     }
   }
 
