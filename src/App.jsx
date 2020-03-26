@@ -205,6 +205,7 @@ class App extends React.Component {
           this.state.activePathname === '/home/' ||
           this.state.activePathname === `/${this.siteMap.path}/`,
         onClick: e => {
+          e.preventDefault()
           this.navigate(
             `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
           )
@@ -221,6 +222,7 @@ class App extends React.Component {
               href: `/${pg.path}/`,
               component: NavLink,
               onClick: e => {
+                e.preventDefault()
                 this.navigate(`/${pg.path}/`)
               }
             })
@@ -231,6 +233,7 @@ class App extends React.Component {
           href: `/${page.path}/`,
           component: NavLink,
           onClick: e => {
+            e.preventDefault()
             this.navigate(`/${page.path}/`)
           },
           subMenu: subMenu.length ? subMenu : null
@@ -626,8 +629,7 @@ class App extends React.Component {
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
-              // FIXME: redirects are pushing extra state to window.history
-              <Redirect to={this.state.navigate} push={false} />
+              <Redirect to={this.state.navigate} push />
             ) : (
               ''
             )}
