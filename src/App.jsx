@@ -102,10 +102,6 @@ class App extends React.Component {
     this.header = React.createRef()
     this.footer = React.createRef()
     registerSmartLinkFormat(href => {
-      if (href.indexOf(this.root) === 0) {
-        let regex = new RegExp(`^${this.root}`)
-        href = href.replace(regex, '')
-      }
       if (!this.state.editable) {
         this.navigate(href)
       }
@@ -538,6 +534,10 @@ class App extends React.Component {
   navigate(path) {
     if (path.match(/\/$/) === null) {
       path = path + '/'
+    }
+    if (path.indexOf(this.root) === 0) {
+      let regex = new RegExp(`^${this.root}`)
+      path = path.replace(regex, '')
     }
     this.setState(
       state => {

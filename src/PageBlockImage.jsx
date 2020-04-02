@@ -13,10 +13,6 @@ let ImgContainer = props =>
         let absolute = absoluteUrl(href)
         if (props.navigate && !absolute) {
           e.preventDefault()
-          if (href.indexOf(props.appRoot) === 0) {
-            let regex = new RegExp(`^${props.appRoot}`)
-            href = href.replace(regex, '')
-          }
           props.navigate(href)
         }
       }}
@@ -27,7 +23,6 @@ let ImgContainer = props =>
     <span>{props.children}</span>
   )
 ImgContainer.propTypes = {
-  appRoot: PropTypes.string.isRequired,
   children: PropTypes.node,
   linkUrl: PropTypes.string,
   navigate: PropTypes.func
@@ -38,7 +33,6 @@ class PageBlockImage extends React.Component {
     return (
       <div className='page-block-content-type-image'>
         <ImgContainer
-          appRoot={this.props.appRoot}
           linkUrl={this.props.content.settings.linkUrl}
           navigate={this.props.navigate}
         >
