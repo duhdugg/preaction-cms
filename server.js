@@ -211,20 +211,22 @@ app.route('*').get((req, res) => {
 
 // <== SOCKET.IO EVENT CONFIG ==>
 
-io.on('connection', socket => {
-  socket.on('save', fn => {
-    fn()
-    if (socket.conn.request.session.authenticated) {
-      io.emit('load')
-    }
+if (env.socketMode) {
+  io.on('connection', socket => {
+    socket.on('save', fn => {
+      fn()
+      if (socket.conn.request.session.authenticated) {
+        io.emit('load')
+      }
+    })
+    socket.on('force-reload', fn => {
+      fn()
+      if (socket.conn.request.session.authenticated) {
+        io.emit('reload-app')
+      }
+    })
   })
-  socket.on('force-reload', fn => {
-    fn()
-    if (socket.conn.request.session.authenticated) {
-      io.emit('reload-app')
-    }
-  })
-})
+}
 
 // <== SERVER SETUP ==>
 
