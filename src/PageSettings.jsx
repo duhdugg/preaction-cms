@@ -142,6 +142,20 @@ class PageSettings extends React.Component {
                         'includeInNav'
                       )}
                     />
+                    {this.props.settings.includeInNav ? (
+                      <Input
+                        type='number'
+                        step='1'
+                        label='Ordering'
+                        placeholder='0'
+                        value={this.props.settings.navOrdering}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'navOrdering'
+                        )}
+                      />
+                    ) : (
+                      ''
+                    )}
                     <div className='row'>
                       <div className='col-sm-6'>
                         <Select

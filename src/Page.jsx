@@ -178,6 +178,9 @@ class Page extends React.Component {
       Object.assign(s, this.props.fallbackSettings)
     }
     Object.assign(s, this.state.page.settings)
+    if (this.state.page.settings.navOrdering === undefined) {
+      s.navOrdering = undefined
+    }
     return s
   }
 

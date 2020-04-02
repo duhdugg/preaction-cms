@@ -200,7 +200,7 @@ class App extends React.Component {
         name: 'Home',
         href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
         component: Link,
-        order: -1,
+        order: -100,
         active:
           this.state.activePathname === '/home/' ||
           this.state.activePathname === `/${this.siteMap.path}/`,
@@ -221,6 +221,7 @@ class App extends React.Component {
               name: pg.title,
               href: `/${pg.path}/`,
               component: NavLink,
+              order: Number(pg.settings.navOrdering || 0),
               onClick: e => {
                 e.preventDefault()
                 this.navigate(`/${pg.path}/`)
@@ -228,10 +229,33 @@ class App extends React.Component {
             })
           }
         })
+        subMenu.sort((a, b) => {
+          let retval = 0
+          if (a.name < b.name) {
+            retval = -1
+          } else if (a.name > b.name) {
+            retval = 1
+          }
+          let aOrder = a.order
+          let bOrder = b.order
+          if (aOrder === undefined) {
+            aOrder = 0
+          }
+          if (bOrder === undefined) {
+            bOrder = 0
+          }
+          if (aOrder < bOrder) {
+            retval = -1
+          } else if (aOrder > bOrder) {
+            retval = 1
+          }
+          return retval
+        })
         menu.push({
           name: page.title,
           href: `/${page.path}/`,
           component: NavLink,
+          order: Number(page.settings.navOrdering || 0),
           onClick: e => {
             e.preventDefault()
             this.navigate(`/${page.path}/`)
@@ -260,7 +284,7 @@ class App extends React.Component {
           e.preventDefault()
           this.toggleEditMode()
         },
-        order: 1
+        order: 100
       })
 
       if (this.state.editable) {
@@ -274,7 +298,7 @@ class App extends React.Component {
             e.preventDefault()
             this.toggleNewPage()
           },
-          order: 2
+          order: 200
         })
         menu.push({
           name: (
@@ -286,7 +310,7 @@ class App extends React.Component {
             e.preventDefault()
             this.toggleSettings()
           },
-          order: 3
+          order: 300
         })
       }
 
@@ -297,7 +321,7 @@ class App extends React.Component {
           </span>
         ),
         subMenu: adminSubmenu,
-        order: 4
+        order: 400
       })
     }
     menu.sort((a, b) => {

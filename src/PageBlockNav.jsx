@@ -25,7 +25,9 @@ class PageBlockNav extends React.Component {
               name: pg.title,
               href: `/${pg.path}/`,
               component: NavLink,
+              order: Number(pg.settings.navOrdering || 0),
               onClick: e => {
+                e.preventDefault()
                 this.props.navigate(`/${pg.path}/`)
               }
             })
@@ -36,10 +38,34 @@ class PageBlockNav extends React.Component {
         name: page.title,
         href: `/${page.path}/`,
         component: NavLink,
+        order: Number(page.settings.navOrdering || 0),
         onClick: e => {
+          e.preventDefault()
           this.props.navigate(`/${page.path}/`)
         },
         subMenu: subMenu.length ? subMenu : null
+      })
+      m.sort((a, b) => {
+        let retval = 0
+        if (a.name < b.name) {
+          retval = -1
+        } else if (a.name > b.name) {
+          retval = 1
+        }
+        let aOrder = a.order
+        let bOrder = b.order
+        if (aOrder === undefined) {
+          aOrder = 0
+        }
+        if (bOrder === undefined) {
+          bOrder = 0
+        }
+        if (aOrder < bOrder) {
+          retval = -1
+        } else if (aOrder > bOrder) {
+          retval = 1
+        }
+        return retval
       })
     })
     return m
