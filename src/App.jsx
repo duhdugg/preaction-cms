@@ -539,20 +539,22 @@ class App extends React.Component {
       let regex = new RegExp(`^${this.root}`)
       path = path.replace(regex, '')
     }
-    this.setState(
-      state => {
-        state.navigate = path
-        state.activePathname = path
-        return state
-      },
-      () => {
-        this.setState(state => {
-          state.navigate = false
+    if (path !== this.state.activePathname) {
+      this.setState(
+        state => {
+          state.navigate = path
+          state.activePathname = path
           return state
-        })
-      }
-    )
-    this.trackPageView(path)
+        },
+        () => {
+          this.setState(state => {
+            state.navigate = false
+            return state
+          })
+        }
+      )
+      this.trackPageView(path)
+    }
   }
 
   toggleEditMode() {
