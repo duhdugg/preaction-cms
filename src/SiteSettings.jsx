@@ -124,6 +124,13 @@ class SiteSettings extends React.Component {
                       'siteTitle'
                     )}
                   />
+                  <Checkbox
+                    label='Max Width Layout'
+                    checked={this.props.settings.maxWidthLayout}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'maxWidthLayout'
+                    )}
+                  />
                   <Card
                     header='Navigation'
                     headerTheme='dark'
@@ -235,6 +242,15 @@ class SiteSettings extends React.Component {
                       ) : (
                         ''
                       )}
+                      <div className='col-12'>
+                        <Input
+                          label='Nav Class Name'
+                          value={this.props.settings.navClassName}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navClassName'
+                          )}
+                        />
+                      </div>
                     </div>
                   </Card>
                   <Card header='Header' headerTheme='light'>

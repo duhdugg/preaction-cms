@@ -78,7 +78,9 @@ class PageBlock extends React.Component {
     return (
       <Card
         className={{
-          card: `page-block page-block-outer block-type-${this.props.block.blockType}`
+          card: `page-block page-block-outer block-type-${
+            this.props.block.blockType
+          } ${this.props.block.settings.className || ''}`
         }}
         style={{
           body: {
@@ -86,7 +88,8 @@ class PageBlock extends React.Component {
           },
           card: {
             border: 0,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            padding: 0
           }
         }}
         column
@@ -98,15 +101,11 @@ class PageBlock extends React.Component {
         }}
       >
         <Card
-          className={{
-            card: `page-block-inner block-type-${this.props.block.blockType}`
-          }}
+          className={{ card: 'page-block-inner' }}
           style={{
             body: {
-              padding: this.props.block.settings.padding
-                ? `${this.props.block.settings.padding}em`
-                : 0,
-              backgroundColor: 'transparent'
+              backgroundColor: 'transparent',
+              padding: 0
             },
             card: {
               border: this.props.block.settings.showBorder
@@ -282,6 +281,14 @@ class PageBlock extends React.Component {
                 )}
               />
               <Input
+                type='text'
+                label='Class Name'
+                value={this.props.block.settings.className}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'className'
+                )}
+              />
+              <Input
                 label={`Desktop Width: ${this.props.block.settings.lgWidth} / 12`}
                 type='range'
                 min='0'
@@ -316,19 +323,6 @@ class PageBlock extends React.Component {
                 step='1'
                 value={this.props.block.settings.xsWidth}
                 valueHandler={this.getPageBlockSettingsValueHandler('xsWidth')}
-              />
-              <Input
-                type='range'
-                label={`Padding: ${
-                  this.props.block.settings.padding
-                    ? Number(this.props.block.settings.padding).toFixed(2)
-                    : '0.00'
-                }`}
-                min='0'
-                max='3'
-                step='0.05'
-                value={this.props.block.settings.padding || 0}
-                valueHandler={this.getPageBlockSettingsValueHandler('padding')}
               />
               <Checkbox
                 label='Show Container Background'

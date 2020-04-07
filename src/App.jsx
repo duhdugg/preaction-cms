@@ -683,6 +683,7 @@ class App extends React.Component {
               ''
             )}
             <Boilerplate
+              noContain={this.settings.maxWidthLayout}
               header={
                 <div>
                   {this.settings.navPosition === 'above-header' ? (
@@ -693,7 +694,7 @@ class App extends React.Component {
                       justify={this.settings.navSpacing === 'justify'}
                       fill={this.settings.navSpacing === 'fill'}
                       collapsible={this.settings.navCollapsible}
-                      className='mb-3'
+                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''
@@ -715,7 +716,7 @@ class App extends React.Component {
                       justify={this.settings.navSpacing === 'justify'}
                       fill={this.settings.navSpacing === 'fill'}
                       collapsible={this.settings.navCollapsible}
-                      className='mb-3'
+                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''

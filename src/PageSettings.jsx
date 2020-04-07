@@ -121,6 +121,20 @@ class PageSettings extends React.Component {
                     }}
                   />
                   <ResetButton settingsKey='siteTitle' />
+                  <Checkbox
+                    label='Max Width Layout'
+                    checked={this.props.settings.maxWidthLayout}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'maxWidthLayout'
+                    )}
+                    readOnly={this.props.getPageSettingIsUndefined(
+                      'maxWidthLayout'
+                    )}
+                    onClick={() => {
+                      this.overrideSetting('maxWidthLayout')
+                    }}
+                  />
+                  <ResetButton settingsKey='maxWidthLayout' />
                   <Card
                     header='Navigation'
                     headerTheme='dark'
@@ -297,6 +311,22 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
+                      <div className='col-12'>
+                        <Input
+                          label='Nav Class Name'
+                          value={this.props.settings.navClassName}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navClassName'
+                          )}
+                          readOnly={this.props.getPageSettingIsUndefined(
+                            'navClassName'
+                          )}
+                          onClick={e => {
+                            this.overrideSetting('navClassName')
+                          }}
+                        />
+                        <ResetButton settingsKey='navClassName' />
+                      </div>
                     </div>
                   </Card>
                   <Card header='Header/Footer' headerTheme='light'>

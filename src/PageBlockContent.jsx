@@ -71,7 +71,10 @@ class PageBlockContent extends React.Component {
   render() {
     return (
       <Card
-        className={{ card: 'page-block-content' }}
+        className={{
+          card: `page-block-content ${this.props.content.settings.className ||
+            ''}`
+        }}
         noMargin
         column={this.props.column}
         header={this.header}
@@ -167,18 +170,10 @@ class PageBlockContent extends React.Component {
               ? `1px solid ${
                   getRgbaFromSettings(this.props.settings, 'border').string
                 }`
-              : 0,
-            marginTop: this.props.content.settings.marginTop
-              ? `${this.props.content.settings.marginTop}em`
-              : 0,
-            marginBottom: this.props.content.settings.marginBottom
-              ? `${this.props.content.settings.marginBottom}em`
               : 0
           },
           body: {
-            padding: this.props.content.settings.padding
-              ? `${this.props.content.settings.padding}em`
-              : 0
+            padding: 0
           },
           footer: {
             padding: 0
@@ -239,6 +234,14 @@ class PageBlockContent extends React.Component {
                 )}
               />
               <Input
+                type='text'
+                label='Class Name'
+                value={this.props.content.settings.className}
+                valueHandler={this.props.getContentSettingsValueHandler(
+                  'className'
+                )}
+              />
+              <Input
                 label={`Desktop Width: ${this.props.content.settings.lgWidth} / 12`}
                 type='range'
                 min='0'
@@ -280,53 +283,6 @@ class PageBlockContent extends React.Component {
                 value={this.props.content.settings.xsWidth}
                 valueHandler={this.props.getContentSettingsValueHandler(
                   'xsWidth'
-                )}
-              />
-              <Input
-                label={`Padding: ${
-                  this.props.content.settings.padding
-                    ? Number(this.props.content.settings.padding).toFixed(2)
-                    : '0.00'
-                }`}
-                type='range'
-                min='0'
-                max='3'
-                step='0.05'
-                value={this.props.content.settings.padding || 0}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'padding'
-                )}
-              />
-              <Input
-                label={`Top Margin: ${
-                  this.props.content.settings.marginTop
-                    ? Number(this.props.content.settings.marginTop).toFixed(2)
-                    : '0.00'
-                }`}
-                type='range'
-                min='0'
-                max='5'
-                step='0.05'
-                value={this.props.content.settings.marginTop || 0}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'marginTop'
-                )}
-              />
-              <Input
-                label={`Bottom Margin: ${
-                  this.props.content.settings.marginBottom
-                    ? Number(this.props.content.settings.marginBottom).toFixed(
-                        2
-                      )
-                    : '0.00'
-                }`}
-                type='range'
-                min='0'
-                max='5'
-                step='0.05'
-                value={this.props.content.settings.marginBottom || 0}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'marginBottom'
                 )}
               />
               <Checkbox
