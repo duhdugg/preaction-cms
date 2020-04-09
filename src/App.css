@@ -73,6 +73,10 @@ a:hover {
   max-height: 50vh;
 }
 
+.settings-component .card {
+  margin-bottom: 1em;
+}
+
 .settings-component h3,
 .settings-component table,
 .settings-component label {
