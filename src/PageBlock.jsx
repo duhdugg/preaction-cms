@@ -11,7 +11,7 @@ import {
   MdArrowDownward,
   MdDelete,
   MdSettings,
-  MdTextFields
+  MdTextFields,
 } from 'react-icons/md'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 
@@ -20,7 +20,7 @@ class PageBlock extends React.Component {
     super(props)
     this.state = {
       showSettings: false,
-      uploading: false
+      uploading: false,
     }
     this.uploadForm = React.createRef()
     this.photosInput = React.createRef()
@@ -50,7 +50,7 @@ class PageBlock extends React.Component {
   }
 
   getContentSettingsValueHandler(contentId) {
-    return key =>
+    return (key) =>
       this.props.getContentSettingsValueHandler(
         this.props.block.id,
         contentId,
@@ -68,7 +68,7 @@ class PageBlock extends React.Component {
   }
 
   toggleSettings() {
-    this.setState(state => {
+    this.setState((state) => {
       state.showSettings = !state.showSettings
       return state
     })
@@ -80,24 +80,24 @@ class PageBlock extends React.Component {
         className={{
           card: `page-block page-block-outer block-type-${
             this.props.block.blockType
-          } ${this.props.block.settings.className || ''}`
+          } ${this.props.block.settings.className || ''}`,
         }}
         style={{
           body: {
-            padding: 0
+            padding: 0,
           },
           card: {
             border: 0,
             backgroundColor: 'transparent',
-            padding: 0
-          }
+            padding: 0,
+          },
         }}
         column
         width={{
           lg: this.props.block.settings.lgWidth / 12,
           md: this.props.block.settings.mdWidth / 12,
           sm: this.props.block.settings.smWidth / 12,
-          xs: this.props.block.settings.xsWidth / 12
+          xs: this.props.block.settings.xsWidth / 12,
         }}
       >
         <Card
@@ -105,7 +105,7 @@ class PageBlock extends React.Component {
           style={{
             body: {
               backgroundColor: 'transparent',
-              padding: 0
+              padding: 0,
             },
             card: {
               border: this.props.block.settings.showBorder
@@ -115,9 +115,9 @@ class PageBlock extends React.Component {
                 : 0,
               backgroundColor: this.props.block.settings.showContainer
                 ? getRgbaFromSettings(this.props.settings, 'container').string
-                : 'transparent'
+                : 'transparent',
             },
-            footer: { padding: 0 }
+            footer: { padding: 0 },
           }}
           header={this.header}
           headerTheme={this.props.settings.containerHeaderTheme}
@@ -207,7 +207,7 @@ class PageBlock extends React.Component {
                       lg: content.settings.lgWidth / 12,
                       md: content.settings.mdWidth / 12,
                       sm: content.settings.smWidth / 12,
-                      xs: content.settings.xsWidth / 12
+                      xs: content.settings.xsWidth / 12,
                     }}
                     content={content}
                     contentControl={this.props.contentControl}
@@ -260,7 +260,7 @@ class PageBlock extends React.Component {
             closeHandler={this.toggleSettings.bind(this)}
           >
             <Form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.prevenDefault()
               }}
             >
@@ -406,7 +406,7 @@ class PageBlock extends React.Component {
                 ref={this.photosInput}
                 onChange={() => {
                   this.uploadForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploading = true
                     return state
                   })
@@ -423,7 +423,7 @@ class PageBlock extends React.Component {
               title='upload'
               onLoad={() => {
                 this.setState(
-                  state => {
+                  (state) => {
                     state.uploading = false
                     return state
                   },
@@ -458,7 +458,7 @@ PageBlock.propTypes = {
   last: PropTypes.bool,
   navigate: PropTypes.func,
   page: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
 export default PageBlock

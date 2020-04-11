@@ -10,7 +10,7 @@ import {
   MdArrowForward,
   MdDelete,
   MdLineStyle,
-  MdSettings
+  MdSettings,
 } from 'react-icons/md'
 import { FaHtml5 } from 'react-icons/fa'
 
@@ -20,7 +20,7 @@ class PageBlockContent extends React.Component {
     this.state = {
       showSettings: false,
       sourceMode: false,
-      theme: 'bubble'
+      theme: 'bubble',
     }
   }
 
@@ -48,21 +48,21 @@ class PageBlockContent extends React.Component {
   }
 
   toggleSettings() {
-    this.setState(state => {
+    this.setState((state) => {
       state.showSettings = !state.showSettings
       return state
     })
   }
 
   toggleSourceMode() {
-    this.setState(state => {
+    this.setState((state) => {
       state.sourceMode = !state.sourceMode
       return state
     })
   }
 
   toggleTheme() {
-    this.setState(state => {
+    this.setState((state) => {
       state.theme = state.theme === 'bubble' ? 'snow' : 'bubble'
       return state
     })
@@ -72,8 +72,9 @@ class PageBlockContent extends React.Component {
     return (
       <Card
         className={{
-          card: `page-block-content ${this.props.content.settings.className ||
-            ''}`
+          card: `page-block-content ${
+            this.props.content.settings.className || ''
+          }`,
         }}
         noMargin
         column={this.props.column}
@@ -170,14 +171,14 @@ class PageBlockContent extends React.Component {
               ? `1px solid ${
                   getRgbaFromSettings(this.props.settings, 'border').string
                 }`
-              : 0
+              : 0,
           },
           body: {
-            padding: 0
+            padding: 0,
           },
           footer: {
-            padding: 0
-          }
+            padding: 0,
+          },
         }}
       >
         {this.props.content.contentType === 'wysiwyg' ? (
@@ -211,7 +212,7 @@ class PageBlockContent extends React.Component {
             closeHandler={this.toggleSettings.bind(this)}
           >
             <Form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.prevenDefault()
               }}
             >
@@ -344,7 +345,7 @@ PageBlockContent.propTypes = {
   last: PropTypes.bool,
   navigate: PropTypes.func,
   settings: PropTypes.object.isRequired,
-  width: PropTypes.any
+  width: PropTypes.any,
 }
 
 export default PageBlockContent

@@ -48,7 +48,7 @@ Footer.propTypes = {
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  show: PropTypes.bool
+  show: PropTypes.bool,
 }
 
 export default Footer

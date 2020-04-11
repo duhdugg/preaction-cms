@@ -7,7 +7,7 @@ import 'es6-shim'
 
 let settings = {
   root: '',
-  socketMode: false
+  socketMode: false,
 }
 settings.root =
   sessionStorage.preactionAppRoot || window.appRoot !== '$ROOT'

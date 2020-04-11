@@ -13,7 +13,7 @@ class SiteSettings extends React.Component {
       redirect: null,
       redirects: [],
       uploadingBg: false,
-      uploadingIcon: false
+      uploadingIcon: false,
     }
     this.uploadIconForm = React.createRef()
     this.iconFileInput = React.createRef()
@@ -24,21 +24,21 @@ class SiteSettings extends React.Component {
   deleteRedirect(redirect) {
     axios
       .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
-      .then(response => {
+      .then((response) => {
         this.getRedirects()
       })
   }
 
   editRedirect(redirect) {
-    this.setState(state => {
+    this.setState((state) => {
       state.redirect = JSON.parse(JSON.stringify(redirect))
       return state
     })
   }
 
   getRedirects() {
-    axios.get(`${this.props.appRoot}/api/redirect`).then(response => {
-      this.setState(state => {
+    axios.get(`${this.props.appRoot}/api/redirect`).then((response) => {
+      this.setState((state) => {
         state.redirects = response.data
         return state
       })
@@ -46,8 +46,8 @@ class SiteSettings extends React.Component {
   }
 
   getRedirectValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state.redirect[key] = value
         return state
       })
@@ -55,8 +55,8 @@ class SiteSettings extends React.Component {
   }
 
   getValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state[key] = value
         return state
       })
@@ -82,17 +82,17 @@ class SiteSettings extends React.Component {
           `${this.props.appRoot}/api/redirect/${this.state.redirect.id}`,
           this.state.redirect
         )
-        .then(response => {
+        .then((response) => {
           this.getRedirects()
         })
     } else {
       axios
         .post(`${this.props.appRoot}/api/redirect/`, this.state.redirect)
-        .then(response => {
+        .then((response) => {
           this.getRedirects()
         })
     }
-    this.setState(state => {
+    this.setState((state) => {
       state.redirect = null
       return state
     })
@@ -113,7 +113,10 @@ class SiteSettings extends React.Component {
                 border-left: 0;
               }
             `}</style>
-            <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
+            <form
+              className='form ml-3 mr-3'
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className='row'>
                 <div className='col'>
                   <Input
@@ -136,8 +139,8 @@ class SiteSettings extends React.Component {
                     headerTheme='dark'
                     style={{
                       card: {
-                        backgroundColor: 'transparent'
-                      }
+                        backgroundColor: 'transparent',
+                      },
                     }}
                   >
                     <div className='row'>
@@ -279,8 +282,8 @@ class SiteSettings extends React.Component {
                   headerTheme='green'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <Checkbox
@@ -336,8 +339,8 @@ class SiteSettings extends React.Component {
                   headerTheme='yellow'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <button
@@ -368,8 +371,8 @@ class SiteSettings extends React.Component {
                 headerTheme='dark'
                 style={{
                   card: {
-                    backgroundColor: 'transparent'
-                  }
+                    backgroundColor: 'transparent',
+                  },
                 }}
               >
                 <div className='row'>
@@ -499,15 +502,15 @@ class SiteSettings extends React.Component {
                 header='Samples'
                 style={{
                   card: {
-                    backgroundColor: this.props.settings.bgColor
-                  }
+                    backgroundColor: this.props.settings.bgColor,
+                  },
                 }}
                 headerTheme='teal'
               >
                 <div>
                   <p>Text</p>
                   <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
                       Test Link
                     </a>
                   </p>
@@ -527,16 +530,16 @@ class SiteSettings extends React.Component {
                       }`,
                       borderRadius: '0.25rem',
                       transition:
-                        'background-color 0.5s linear, border-color 0.5s linear'
+                        'background-color 0.5s linear, border-color 0.5s linear',
                     },
                     body: {
-                      padding: '1em'
-                    }
+                      padding: '1em',
+                    },
                   }}
                 >
                   <p>Text</p>
                   <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
                       Link
                     </a>
                   </p>
@@ -553,7 +556,7 @@ class SiteSettings extends React.Component {
                 header='Redirects'
                 headerTheme='green'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <div className='row'>
@@ -566,14 +569,14 @@ class SiteSettings extends React.Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.redirects.map(redirect => {
+                      {this.state.redirects.map((redirect) => {
                         return (
                           <tr key={redirect.id}>
                             <td>
                               <button
                                 type='button'
                                 className='btn btn-sm btn-light'
-                                onClick={e => {
+                                onClick={(e) => {
                                   this.editRedirect(redirect)
                                 }}
                               >
@@ -582,7 +585,7 @@ class SiteSettings extends React.Component {
                               <button
                                 type='button'
                                 className='btn btn-sm btn-danger'
-                                onClick={e => {
+                                onClick={(e) => {
                                   this.deleteRedirect(redirect)
                                 }}
                               >
@@ -599,11 +602,11 @@ class SiteSettings extends React.Component {
                           <button
                             type='button'
                             className='btn btn-sm btn-primary'
-                            onClick={e => {
+                            onClick={(e) => {
                               this.editRedirect({
                                 id: null,
                                 match: '',
-                                location: ''
+                                location: '',
                               })
                             }}
                           >
@@ -620,7 +623,7 @@ class SiteSettings extends React.Component {
                           <td
                             style={{
                               top: '-0.5rem',
-                              position: 'relative'
+                              position: 'relative',
                             }}
                           >
                             <button
@@ -659,7 +662,7 @@ class SiteSettings extends React.Component {
                 header='Analytics'
                 headerTheme='blue'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <Checkbox
@@ -695,9 +698,9 @@ class SiteSettings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.bgFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadBgForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingBg = true
                     return state
                   })
@@ -713,7 +716,7 @@ class SiteSettings extends React.Component {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
                   this.setState(
-                    state => {
+                    (state) => {
                       state.uploadingBg = false
                       return state
                     },
@@ -722,7 +725,7 @@ class SiteSettings extends React.Component {
                       iframe.src = 'about:blank'
                       axios
                         .get(`${this.props.appRoot}/api/settings`)
-                        .then(response => {
+                        .then((response) => {
                           let settings = response.data
                           if (settings.bg) {
                             this.props.getSettingsValueHandler('bg')(
@@ -750,9 +753,9 @@ class SiteSettings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.iconFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadIconForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingIcon = true
                     return state
                   })
@@ -768,7 +771,7 @@ class SiteSettings extends React.Component {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
                   this.setState(
-                    state => {
+                    (state) => {
                       state.uploadingIcon = false
                       return state
                     },
@@ -799,7 +802,7 @@ SiteSettings.propTypes = {
   admin: PropTypes.bool,
   appRoot: PropTypes.string.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
 export default SiteSettings

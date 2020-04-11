@@ -51,13 +51,13 @@ app.use(pages.expressModule)
 // <== ROUTES ==>
 
 app.route('/icon').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'icon' } }).then(setting => {
+  db.model.Settings.findOne({ where: { key: 'icon' } }).then((setting) => {
     if (!setting) {
       res.status(404).send('')
       return
     }
     if (req.query.pageId) {
-      pages.model.Page.findByPk(req.query.pageId).then(page => {
+      pages.model.Page.findByPk(req.query.pageId).then((page) => {
         if (!page) {
           res.redirect(setting.value)
           return
@@ -73,7 +73,7 @@ app.route('/icon').get((req, res) => {
 })
 
 app.route('/sitemap.xml').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
+  db.model.Settings.findOne({ where: { key: 'hostname' } }).then((setting) => {
     let hostname = setting && setting.value ? setting.value : ''
     let changefreq = 'always'
     try {
@@ -81,24 +81,24 @@ app.route('/sitemap.xml').get((req, res) => {
       let pipeline = smStream.pipe(createGzip())
       smStream.write({
         url: '/',
-        changefreq
+        changefreq,
       })
       pages.model.Page.findAll({ where: { userCreated: true } }).then(
-        pageRows => {
+        (pageRows) => {
           let rowCount = pageRows.length
           let countMapped = 0
-          pageRows.forEach(page => {
-            pages.funcs.getPagePath(page).then(path => {
+          pageRows.forEach((page) => {
+            pages.funcs.getPagePath(page).then((path) => {
               smStream.write({
                 url: `${env.root}/${path}/`,
-                changefreq
+                changefreq,
               })
               countMapped++
               if (countMapped >= rowCount) {
                 smStream.end()
                 res.header('Content-Type', 'application/xml')
                 res.header('Content-Encoding', 'gzip')
-                pipeline.pipe(res).on('error', e => {
+                pipeline.pipe(res).on('error', (e) => {
                   throw e
                 })
               }
@@ -120,10 +120,10 @@ app.route('/').get((req, res) => {
     include: [
       {
         model: pages.model.PageBlock,
-        include: [pages.model.PageBlockContent]
-      }
-    ]
-  }).then(page => {
+        include: [pages.model.PageBlockContent],
+      },
+    ],
+  }).then((page) => {
     let status = page ? 200 : 404
     let content = ''
     let pageblocks = page ? page.pageblocks : []
@@ -136,7 +136,7 @@ app.route('/').get((req, res) => {
       }
       return retval
     })
-    pageblocks.forEach(pageblock => {
+    pageblocks.forEach((pageblock) => {
       if (
         pageblock.pageblockcontent &&
         pageblock.pageblockcontent.contentType === 'wyswiyg'
@@ -156,8 +156,8 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // description metadata generated from pageblocks
 app.route('*').get((req, res) => {
   let matchRedirect = false
-  redirects.model.Redirect.findAll().then(redirects => {
-    redirects.forEach(redirect => {
+  redirects.model.Redirect.findAll().then((redirects) => {
+    redirects.forEach((redirect) => {
       let re = new RegExp(`^/?${redirect.match}/?$`)
       if (re.test(req.path)) {
         matchRedirect = true
@@ -180,10 +180,10 @@ app.route('*').get((req, res) => {
     include: [
       {
         model: pages.model.PageBlock,
-        include: [pages.model.PageBlockContent]
-      }
-    ]
-  }).then(page => {
+        include: [pages.model.PageBlockContent],
+      },
+    ],
+  }).then((page) => {
     if (matchRedirect) {
       return
     }
@@ -199,7 +199,7 @@ app.route('*').get((req, res) => {
       }
       return retval
     })
-    pageblocks.forEach(pageblock => {
+    pageblocks.forEach((pageblock) => {
       if (pageblock.pageblockwysiwyg) {
         content += pageblock.pageblockwysiwyg.content
       }
@@ -212,14 +212,14 @@ app.route('*').get((req, res) => {
 // <== SOCKET.IO EVENT CONFIG ==>
 
 if (env.socketMode) {
-  io.on('connection', socket => {
-    socket.on('save', fn => {
+  io.on('connection', (socket) => {
+    socket.on('save', (fn) => {
       fn()
       if (socket.conn.request.session.authenticated) {
         io.emit('load')
       }
     })
-    socket.on('force-reload', fn => {
+    socket.on('force-reload', (fn) => {
       fn()
       if (socket.conn.request.session.authenticated) {
         io.emit('reload-app')

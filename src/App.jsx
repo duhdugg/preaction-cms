@@ -8,7 +8,7 @@ import {
   Switch,
   NavLink,
   Link,
-  Redirect
+  Redirect,
 } from 'react-router-dom'
 import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
 import { Input } from '@preaction/inputs'
@@ -32,12 +32,12 @@ import { Quill } from '@preaction/inputs'
 import absoluteUrl from './lib/absoluteUrl.js'
 import getKeyFromTitle from './lib/getKeyFromTitle.js'
 
-function registerSmartLinkFormat(relativeLinkHandler = url => {}) {
+function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
   const LinkFormat = Quill.import('formats/link')
   class SmartLinkFormat extends LinkFormat {
     static create(value) {
       let node = super.create(value)
-      node.addEventListener('click', event => {
+      node.addEventListener('click', (event) => {
         let href = node.getAttribute('href')
         if (absoluteUrl(href)) {
         } else {
@@ -64,14 +64,14 @@ class App extends React.Component {
       fallbackSettings: {},
       navigate: null,
       newPage: {
-        title: ''
+        title: '',
       },
       redirect: null,
       show: {
         header: true,
         footer: true,
         newPage: false,
-        settings: false
+        settings: false,
       },
       siteMap: {},
       siteSettings: {
@@ -92,16 +92,16 @@ class App extends React.Component {
         navTheme: 'dark',
         navPosition: 'fixed-top',
         tileBgImage: false,
-        useBgImage: false
+        useBgImage: false,
       },
-      token: ''
+      token: '',
     }
     this.settingsUpdateTimer = null
     this.socket = null
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    registerSmartLinkFormat(href => {
+    registerSmartLinkFormat((href) => {
       if (!this.state.editable) {
         this.navigate(href)
       }
@@ -112,7 +112,7 @@ class App extends React.Component {
     if (page.key) {
       axios
         .post(`${this.root}/api/page`, page)
-        .then(response => {
+        .then((response) => {
           if (response.data) {
             this.loadSiteMap()
           }
@@ -142,17 +142,17 @@ class App extends React.Component {
       key,
       title: newPage.title,
       pageType,
-      parentId
+      parentId,
     }
     this.addPage(page)
   }
 
   deletePage(page) {
     if (this.editable) {
-      axios.delete(`${this.root}/api/page/${page.id}`).then(response => {
+      axios.delete(`${this.root}/api/page/${page.id}`).then((response) => {
         if (response.status === 200) {
           this.setState(
-            state => {
+            (state) => {
               state.activePage = null
             },
             () => {
@@ -200,28 +200,28 @@ class App extends React.Component {
         active:
           this.state.activePathname === '/home/' ||
           this.state.activePathname === `/${this.siteMap.path}/`,
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
           this.navigate(
             `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
           )
-        }
+        },
       })
     }
-    this.siteMap.children.forEach(page => {
+    this.siteMap.children.forEach((page) => {
       if (page.settings.includeInNav) {
         let subMenu = []
-        page.children.forEach(pg => {
+        page.children.forEach((pg) => {
           if (pg.settings.includeInNav) {
             subMenu.push({
               name: pg.title,
               href: `/${pg.path}/`,
               component: NavLink,
               order: Number(pg.settings.navOrdering || 0),
-              onClick: e => {
+              onClick: (e) => {
                 e.preventDefault()
                 this.navigate(`/${pg.path}/`)
-              }
+              },
             })
           }
         })
@@ -252,11 +252,11 @@ class App extends React.Component {
           href: `/${page.path}/`,
           component: NavLink,
           order: Number(page.settings.navOrdering || 0),
-          onClick: e => {
+          onClick: (e) => {
             e.preventDefault()
             this.navigate(`/${page.path}/`)
           },
-          subMenu: subMenu.length ? subMenu : null
+          subMenu: subMenu.length ? subMenu : null,
         })
       }
     })
@@ -264,10 +264,10 @@ class App extends React.Component {
       let adminSubmenu = []
       adminSubmenu.push({
         name: 'Logout',
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
           this.logout()
-        }
+        },
       })
 
       menu.push({
@@ -276,11 +276,11 @@ class App extends React.Component {
             {this.state.editable ? <FaToggleOn /> : <FaToggleOff />} Edit
           </span>
         ),
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
           this.toggleEditMode()
         },
-        order: 100
+        order: 100,
       })
 
       if (this.state.editable) {
@@ -290,11 +290,11 @@ class App extends React.Component {
               <MdCreate /> New Page
             </span>
           ),
-          onClick: e => {
+          onClick: (e) => {
             e.preventDefault()
             this.toggleNewPage()
           },
-          order: 200
+          order: 200,
         })
         menu.push({
           name: (
@@ -302,11 +302,11 @@ class App extends React.Component {
               <MdSettings /> Settings
             </span>
           ),
-          onClick: e => {
+          onClick: (e) => {
             e.preventDefault()
             this.toggleSettings()
           },
-          order: 300
+          order: 300,
         })
       }
 
@@ -317,7 +317,7 @@ class App extends React.Component {
           </span>
         ),
         subMenu: adminSubmenu,
-        order: 400
+        order: 400,
       })
     }
     menu.sort((a, b) => {
@@ -356,7 +356,7 @@ class App extends React.Component {
       this.state.activePathname !== '/home' &&
       this.state.activePathname !== '/'
     ) {
-      Object.keys(this.state.activePage.settings).forEach(key => {
+      Object.keys(this.state.activePage.settings).forEach((key) => {
         switch (key) {
           case 'cssOverrides':
             s[key] = s[key] + '\n\n' + this.state.activePage.settings[key]
@@ -374,15 +374,15 @@ class App extends React.Component {
     let sm = {
       key: 'home',
       path: '',
-      children: []
+      children: [],
     }
     Object.assign(sm, this.state.siteMap)
     return sm
   }
 
   getNewPageValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state.newPage[key] = value
         if (key === 'title') {
           state.newPage.key = getKeyFromTitle(value)
@@ -393,7 +393,7 @@ class App extends React.Component {
   }
 
   getSettingsValueHandler(key) {
-    return value => {
+    return (value) => {
       if (key === 'siteTitle') {
         let splitTitle = document.title.split(' | ')
         if (splitTitle.length < 2) {
@@ -403,7 +403,7 @@ class App extends React.Component {
         }
       }
       this.setState(
-        state => {
+        (state) => {
           state.siteSettings[key] = value
           return state
         },
@@ -426,8 +426,8 @@ class App extends React.Component {
   }
 
   getShowPropertyValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state.show[key] = value
         return state
       })
@@ -435,7 +435,7 @@ class App extends React.Component {
   }
 
   handleNotFound(path) {
-    this.setState(state => {
+    this.setState((state) => {
       state.activePage = null
       return state
     })
@@ -450,9 +450,9 @@ class App extends React.Component {
           resolve()
         }
       }
-      axios.get(`${this.root}/api/session`).then(response => {
+      axios.get(`${this.root}/api/session`).then((response) => {
         if (response.data && response.data.authenticated) {
-          this.setState(state => {
+          this.setState((state) => {
             state.authenticated = true
             if (response.data.admin) {
               state.admin = true
@@ -461,7 +461,7 @@ class App extends React.Component {
           }, conditionallyResolve)
         }
         if (response.data && response.data.token) {
-          this.setState(state => {
+          this.setState((state) => {
             state.token = response.data.token
             return state
           }, conditionallyResolve)
@@ -471,9 +471,9 @@ class App extends React.Component {
   }
 
   loadSettings(path = '') {
-    axios.get(`${this.root}/api/settings`).then(response => {
+    axios.get(`${this.root}/api/settings`).then((response) => {
       if (response.data) {
-        this.setState(state => {
+        this.setState((state) => {
           state.siteSettings = response.data
           state.siteSettings.hostname = window.location.origin || ''
           return state
@@ -483,7 +483,7 @@ class App extends React.Component {
     if (path) {
       axios
         .get(`${this.root}/api/page/settings/by-key${path}`)
-        .then(response => {
+        .then((response) => {
           if (response.data) {
             this.setFallbackSettings(response.data)
           }
@@ -496,9 +496,9 @@ class App extends React.Component {
       if (this.state.activePage && this.state.activePage.id) {
         axios
           .get(`${this.root}/api/page/${this.state.activePage.id}/sitemap`)
-          .then(response => {
+          .then((response) => {
             this.setState(
-              state => {
+              (state) => {
                 state.siteMap = response.data
                 return state
               },
@@ -510,8 +510,8 @@ class App extends React.Component {
       } else if (path) {
         axios
           .get(`${this.root}/api/page/sitemap/by-key${path}`)
-          .then(response => {
-            this.setState(state => {
+          .then((response) => {
+            this.setState((state) => {
               state.siteMap = response.data
               return state
             })
@@ -522,7 +522,7 @@ class App extends React.Component {
 
   logout() {
     axios.get(`${this.root}/api/logout`).then(() => {
-      this.setState(state => {
+      this.setState((state) => {
         state.admin = false
         state.authenticated = false
         state.editable = false
@@ -541,13 +541,13 @@ class App extends React.Component {
     }
     if (path !== this.state.activePathname) {
       this.setState(
-        state => {
+        (state) => {
           state.navigate = path
           state.activePathname = path
           return state
         },
         () => {
-          this.setState(state => {
+          this.setState((state) => {
             state.navigate = false
             return state
           })
@@ -558,7 +558,7 @@ class App extends React.Component {
   }
 
   toggleEditMode() {
-    this.setState(state => {
+    this.setState((state) => {
       state.editable = !state.editable
       return state
     })
@@ -569,7 +569,7 @@ class App extends React.Component {
       this.state.activePathname === '/home/' ||
       this.state.activePathname === '/'
     ) {
-      this.setState(state => {
+      this.setState((state) => {
         state.show.settings = !state.show.settings
         return state
       })
@@ -579,7 +579,7 @@ class App extends React.Component {
   }
 
   toggleNewPage() {
-    this.setState(state => {
+    this.setState((state) => {
       state.show.newPage = !state.show.newPage
       return state
     })
@@ -587,12 +587,12 @@ class App extends React.Component {
 
   redirect(path) {
     this.setState(
-      state => {
+      (state) => {
         state.redirect = path
         return state
       },
       () => {
-        this.setState(state => {
+        this.setState((state) => {
           state.redirect = false
           return state
         })
@@ -612,7 +612,7 @@ class App extends React.Component {
   }
 
   setActivePage(page) {
-    this.setState(state => {
+    this.setState((state) => {
       state.activePage = page
       state.siteMap = JSON.parse(JSON.stringify(page.siteMap))
       state.fallbackSettings = JSON.parse(JSON.stringify(page.fallbackSettings))
@@ -621,14 +621,14 @@ class App extends React.Component {
   }
 
   setActivePathname(pathname) {
-    this.setState(state => {
+    this.setState((state) => {
       state.activePathname = pathname
       return state
     })
   }
 
   setFallbackSettings(settings) {
-    this.setState(state => {
+    this.setState((state) => {
       state.fallbackSettings = settings
       return state
     })
@@ -641,7 +641,7 @@ class App extends React.Component {
       window.gtag
     ) {
       window.gtag('config', this.settings.googleAnalyticsTrackingId, {
-        page_path: path
+        page_path: path,
       })
     }
   }
@@ -668,14 +668,14 @@ class App extends React.Component {
                   href: `${this.root}/${this.siteMap.path}${
                     this.siteMap.key === 'home' ? '' : '/'
                   }`,
-                  onClick: e => {
+                  onClick: (e) => {
                     e.preventDefault()
                     this.navigate(
                       `/${this.siteMap.path}${
                         this.siteMap.key === 'home' ? '' : '/'
                       }`
                     )
-                  }
+                  },
                 }}
                 menu={this.menu}
               />
@@ -901,7 +901,7 @@ class App extends React.Component {
                     if (this.state.newPage.title) {
                       this.createPage(this.state.newPage)
                       this.toggleNewPage()
-                      this.setState(state => {
+                      this.setState((state) => {
                         state.newPage.title = ''
                         return state
                       })
@@ -922,7 +922,7 @@ class App extends React.Component {
               </div>
             }
           >
-            <form onSubmit={e => e.preventDefault()}>
+            <form onSubmit={(e) => e.preventDefault()}>
               <Input
                 type='text'
                 label='Page Title'
@@ -967,26 +967,26 @@ class App extends React.Component {
         }
       })
     }
-    window.onpopstate = event => {
+    window.onpopstate = (event) => {
       this.setActivePathname(window.location.pathname)
     }
     window.preaction = {
-      navigate: path => {
+      navigate: (path) => {
         this.navigate(path)
       },
-      redirect: path => {
+      redirect: (path) => {
         this.redirect(path)
       },
       toggleEditMode: () => {
         this.toggleEditMode()
-      }
+      },
     }
   }
 }
 
 App.propTypes = {
   root: PropTypes.string,
-  socketMode: PropTypes.bool
+  socketMode: PropTypes.bool,
 }
 
 export default App

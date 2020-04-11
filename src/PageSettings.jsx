@@ -12,7 +12,7 @@ class PageSettings extends React.Component {
     this.state = {
       confirmDelete: false,
       uploadingBg: false,
-      uploadingIcon: false
+      uploadingIcon: false,
     }
     this.uploadIconForm = React.createRef()
     this.iconFileInput = React.createRef()
@@ -29,8 +29,8 @@ class PageSettings extends React.Component {
   }
 
   getValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state[key] = value
         return state
       })
@@ -38,7 +38,7 @@ class PageSettings extends React.Component {
   }
 
   get path() {
-    let splitPath = Array.from(this.props.path.split('/')).filter(p => {
+    let splitPath = Array.from(this.props.path.split('/')).filter((p) => {
       return p ? true : false
     })
     splitPath.splice(splitPath.length - 1, 1, this.props.page.key)
@@ -65,7 +65,7 @@ class PageSettings extends React.Component {
   }
 
   render() {
-    let ResetButton = props => {
+    let ResetButton = (props) => {
       let isUndefined = this.props.getPageSettingIsUndefined(props.settingsKey)
       return isUndefined ? (
         ''
@@ -87,7 +87,10 @@ class PageSettings extends React.Component {
       <div className='settings-component'>
         {this.props.admin ? (
           <div>
-            <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
+            <form
+              className='form ml-3 mr-3'
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className='row'>
                 <div className='col'>
                   <Input
@@ -140,8 +143,8 @@ class PageSettings extends React.Component {
                     headerTheme='dark'
                     style={{
                       card: {
-                        backgroundColor: 'transparent'
-                      }
+                        backgroundColor: 'transparent',
+                      },
                     }}
                   >
                     <Checkbox
@@ -224,7 +227,7 @@ class PageSettings extends React.Component {
                             readOnly={this.props.getPageSettingIsUndefined(
                               'navType'
                             )}
-                            onClick={e => {
+                            onClick={(e) => {
                               this.overrideSetting('navType')
                             }}
                           >
@@ -250,7 +253,7 @@ class PageSettings extends React.Component {
                             readOnly={this.props.getPageSettingIsUndefined(
                               'navAlignment'
                             )}
-                            onClick={e => {
+                            onClick={(e) => {
                               this.overrideSetting('navAlignment')
                             }}
                           >
@@ -276,7 +279,7 @@ class PageSettings extends React.Component {
                             readOnly={this.props.getPageSettingIsUndefined(
                               'navSpacing'
                             )}
-                            onClick={e => {
+                            onClick={(e) => {
                               this.overrideSetting('navSpacing')
                             }}
                           >
@@ -302,7 +305,7 @@ class PageSettings extends React.Component {
                             readOnly={this.props.getPageSettingIsUndefined(
                               'navCollapsible'
                             )}
-                            onClick={e => {
+                            onClick={(e) => {
                               this.overrideSetting('navCollapsible')
                             }}
                           />
@@ -321,7 +324,7 @@ class PageSettings extends React.Component {
                           readOnly={this.props.getPageSettingIsUndefined(
                             'navClassName'
                           )}
-                          onClick={e => {
+                          onClick={(e) => {
                             this.overrideSetting('navClassName')
                           }}
                         />
@@ -339,7 +342,7 @@ class PageSettings extends React.Component {
                       readOnly={this.props.getPageSettingIsUndefined(
                         'showHeader'
                       )}
-                      onClick={e => {
+                      onClick={(e) => {
                         this.overrideSetting('showHeader')
                       }}
                     />
@@ -355,7 +358,7 @@ class PageSettings extends React.Component {
                           readOnly={this.props.getPageSettingIsUndefined(
                             'headerPath'
                           )}
-                          onClick={e => {
+                          onClick={(e) => {
                             this.overrideSetting('headerPath')
                           }}
                         />
@@ -373,7 +376,7 @@ class PageSettings extends React.Component {
                       readOnly={this.props.getPageSettingIsUndefined(
                         'showFooter'
                       )}
-                      onClick={e => {
+                      onClick={(e) => {
                         this.overrideSetting('showFooter')
                       }}
                     />
@@ -389,7 +392,7 @@ class PageSettings extends React.Component {
                           readOnly={this.props.getPageSettingIsUndefined(
                             'footerPath'
                           )}
-                          onClick={e => {
+                          onClick={(e) => {
                             this.overrideSetting('footerPath')
                           }}
                         />
@@ -409,8 +412,8 @@ class PageSettings extends React.Component {
                   headerTheme='green'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <Checkbox
@@ -422,7 +425,7 @@ class PageSettings extends React.Component {
                     readOnly={this.props.getPageSettingIsUndefined(
                       'useBgImage'
                     )}
-                    onClick={e => {
+                    onClick={(e) => {
                       this.overrideSetting('useBgImage')
                     }}
                   />
@@ -438,7 +441,7 @@ class PageSettings extends React.Component {
                         readOnly={this.props.getPageSettingIsUndefined(
                           'tileBgImage'
                         )}
-                        onClick={e => {
+                        onClick={(e) => {
                           this.overrideSetting('tileBgImage')
                         }}
                       />
@@ -448,7 +451,7 @@ class PageSettings extends React.Component {
                         valueHandler={this.props.getSettingsValueHandler('bg')}
                         value={this.props.settings.bg}
                         readOnly={this.props.getPageSettingIsUndefined('bg')}
-                        onClick={e => {
+                        onClick={(e) => {
                           this.overrideSetting('bg')
                         }}
                       />
@@ -485,8 +488,8 @@ class PageSettings extends React.Component {
                   headerTheme='yellow'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <button
@@ -517,8 +520,8 @@ class PageSettings extends React.Component {
                 headerTheme='dark'
                 style={{
                   card: {
-                    backgroundColor: 'transparent'
-                  }
+                    backgroundColor: 'transparent',
+                  },
                 }}
               >
                 <div className='row'>
@@ -714,15 +717,15 @@ class PageSettings extends React.Component {
                 header='Samples'
                 style={{
                   card: {
-                    backgroundColor: this.props.settings.bgColor
-                  }
+                    backgroundColor: this.props.settings.bgColor,
+                  },
                 }}
                 headerTheme='teal'
               >
                 <div>
                   <p>Text</p>
                   <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
                       Test Link
                     </a>
                   </p>
@@ -742,16 +745,16 @@ class PageSettings extends React.Component {
                       }`,
                       borderRadius: '0.25rem',
                       transition:
-                        'background-color 0.5s linear, border-color 0.5s linear'
+                        'background-color 0.5s linear, border-color 0.5s linear',
                     },
                     body: {
-                      padding: '1em'
-                    }
+                      padding: '1em',
+                    },
                   }}
                 >
                   <p>Text</p>
                   <p>
-                    <a href='.' onClick={e => e.preventDefault()}>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
                       Link
                     </a>
                   </p>
@@ -773,7 +776,7 @@ class PageSettings extends React.Component {
                 header='Analytics'
                 headerTheme='blue'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <Checkbox
@@ -815,7 +818,7 @@ class PageSettings extends React.Component {
                 header='Delete Page'
                 headerTheme='red'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <Checkbox
@@ -845,9 +848,9 @@ class PageSettings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.bgFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadBgForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingBg = true
                     return state
                   })
@@ -867,7 +870,7 @@ class PageSettings extends React.Component {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
                   this.setState(
-                    state => {
+                    (state) => {
                       state.uploadingBg = false
                       return state
                     },
@@ -878,7 +881,7 @@ class PageSettings extends React.Component {
                         .get(
                           `${this.props.appRoot}/api/page/${this.props.pageId}/settings`
                         )
-                        .then(response => {
+                        .then((response) => {
                           let settings = response.data
                           if (settings.bg) {
                             this.props.getSettingsValueHandler('bg')(
@@ -905,9 +908,9 @@ class PageSettings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.iconFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadIconForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingIcon = true
                     return state
                   })
@@ -927,7 +930,7 @@ class PageSettings extends React.Component {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
                   this.setState(
-                    state => {
+                    (state) => {
                       state.uploadingIcon = false
                       return state
                     },
@@ -961,7 +964,7 @@ PageSettings.propTypes = {
   pageId: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
-  site: PropTypes.bool
+  site: PropTypes.bool,
 }
 
 export default PageSettings

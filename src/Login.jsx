@@ -8,7 +8,7 @@ class Login extends React.Component {
     super(props)
     this.state = {
       username: '',
-      password: ''
+      password: '',
     }
   }
 
@@ -18,21 +18,21 @@ class Login extends React.Component {
     if (event.target.checkValidity()) {
       axios
         .post(`${this.props.appRoot}/api/login`, { username, password })
-        .then(response => {
+        .then((response) => {
           window.location.href = `${this.props.appRoot}/`
         })
-        .catch(e => {
+        .catch((e) => {
           window.alert('incorrect login')
         })
     }
   }
 
   getLoginValueHandler(key) {
-    return value => {
+    return (value) => {
       if (key === 'username') {
         value = value.toLowerCase()
       }
-      this.setState(state => {
+      this.setState((state) => {
         state[key] = value
         return state
       })
@@ -76,7 +76,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   appRoot: PropTypes.string.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
 export default Login

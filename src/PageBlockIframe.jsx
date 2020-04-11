@@ -6,7 +6,7 @@ class PageBlockIframe extends React.Component {
     super(props)
     this.state = {
       height: 0,
-      showSettings: false
+      showSettings: false,
     }
     this.iframe = React.createRef()
     this.iframeResizeInterval = null
@@ -17,7 +17,7 @@ class PageBlockIframe extends React.Component {
   }
 
   toggleSettings() {
-    this.setState(state => {
+    this.setState((state) => {
       state.showSettings = !state.showSettings
       return state
     })
@@ -30,7 +30,7 @@ class PageBlockIframe extends React.Component {
         style={{
           border: 0,
           width: '100%',
-          height: this.height
+          height: this.height,
         }}
         title='iframe'
         ref={this.iframe}
@@ -46,7 +46,7 @@ class PageBlockIframe extends React.Component {
           this.iframe.current.contentWindow.document.body.clientHeight + 'px'
       } catch {}
       if (height !== this.state.height) {
-        this.setState(state => {
+        this.setState((state) => {
           state.height = height
           return state
         })
@@ -62,7 +62,7 @@ PageBlockIframe.propTypes = {
   emitSave: PropTypes.func.isRequired,
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
 export default PageBlockIframe

@@ -7,29 +7,29 @@ class PageBlockNav extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showSettings: false
+      showSettings: false,
     }
   }
 
   get menu() {
     let m = []
-    this.props.page.tree.children.forEach(page => {
+    this.props.page.tree.children.forEach((page) => {
       if (!page.settings.includeInNav) {
         return
       }
       let subMenu = []
       if (this.props.block.settings.subMenu) {
-        page.children.forEach(pg => {
+        page.children.forEach((pg) => {
           if (pg.settings.includeInNav) {
             subMenu.push({
               name: pg.title,
               href: `/${pg.path}/`,
               component: NavLink,
               order: Number(pg.settings.navOrdering || 0),
-              onClick: e => {
+              onClick: (e) => {
                 e.preventDefault()
                 this.props.navigate(`/${pg.path}/`)
-              }
+              },
             })
           }
         })
@@ -39,11 +39,11 @@ class PageBlockNav extends React.Component {
         href: `/${page.path}/`,
         component: NavLink,
         order: Number(page.settings.navOrdering || 0),
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
           this.props.navigate(`/${page.path}/`)
         },
-        subMenu: subMenu.length ? subMenu : null
+        subMenu: subMenu.length ? subMenu : null,
       })
       m.sort((a, b) => {
         let retval = 0
@@ -72,7 +72,7 @@ class PageBlockNav extends React.Component {
   }
 
   toggleSettings() {
-    this.setState(state => {
+    this.setState((state) => {
       state.showSettings = !state.showSettings
       return state
     })
@@ -97,7 +97,7 @@ PageBlockNav.propTypes = {
   emitSave: PropTypes.func.isRequired,
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
 export default PageBlockNav

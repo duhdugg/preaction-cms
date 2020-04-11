@@ -2,13 +2,13 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import absoluteUrl from './lib/absoluteUrl.js'
 
-let ImgContainer = props =>
+let ImgContainer = (props) =>
   props.linkUrl ? (
     <a
       href={props.linkUrl}
       rel='noreferrer noopener'
       target={absoluteUrl(props.linkUrl) ? '_blank' : 'self'}
-      onClick={e => {
+      onClick={(e) => {
         let href = props.linkUrl
         let absolute = absoluteUrl(href)
         if (props.navigate && !absolute) {
@@ -25,7 +25,7 @@ let ImgContainer = props =>
 ImgContainer.propTypes = {
   children: PropTypes.node,
   linkUrl: PropTypes.string,
-  navigate: PropTypes.func
+  navigate: PropTypes.func,
 }
 
 class PageBlockImage extends React.Component {
@@ -51,7 +51,7 @@ class PageBlockImage extends React.Component {
 PageBlockImage.propTypes = {
   appRoot: PropTypes.string.isRequired,
   content: PropTypes.object.isRequired,
-  navigate: PropTypes.func
+  navigate: PropTypes.func,
 }
 
 export default PageBlockImage

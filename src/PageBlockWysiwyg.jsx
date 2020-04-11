@@ -10,7 +10,7 @@ class PageBlockWysiwyg extends React.Component {
     this.state = {
       loading: true,
       wysiwyg: '',
-      savingWysiwyg: false
+      savingWysiwyg: false,
     }
     this.content = React.createRef()
     this.wysiwygUpdateTimer = null
@@ -19,7 +19,7 @@ class PageBlockWysiwyg extends React.Component {
   handleWysiwyg(value) {
     if (!this.state.loading) {
       this.setState(
-        state => {
+        (state) => {
           state.wysiwyg = value
           if (this.props.editable) {
             state.savingWysiwyg = true
@@ -34,11 +34,11 @@ class PageBlockWysiwyg extends React.Component {
                 .put(
                   `${this.props.appRoot}/api/page/blocks/content/${this.props.content.id}`,
                   {
-                    wysiwyg: this.state.wysiwyg
+                    wysiwyg: this.state.wysiwyg,
                   }
                 )
                 .then(() => {
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.savingWysiwyg = false
                     return state
                   })
@@ -59,7 +59,7 @@ class PageBlockWysiwyg extends React.Component {
     return (
       <div className='page-block-content-type-wysiwyg'>
         <Form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault()
           }}
         />
@@ -83,7 +83,7 @@ class PageBlockWysiwyg extends React.Component {
         <div
           style={{
             position: 'relative',
-            display: this.state.savingWysiwyg ? 'block' : 'none'
+            display: this.state.savingWysiwyg ? 'block' : 'none',
           }}
         >
           <div
@@ -91,7 +91,7 @@ class PageBlockWysiwyg extends React.Component {
               position: 'absolute',
               top: '-0.5em',
               width: '100%',
-              textAlign: 'right'
+              textAlign: 'right',
             }}
           >
             saving...
@@ -103,7 +103,7 @@ class PageBlockWysiwyg extends React.Component {
 
   componentDidMount() {
     this.setState(
-      state => {
+      (state) => {
         state.wysiwyg = this.props.content.wysiwyg
         return state
       },
@@ -112,7 +112,7 @@ class PageBlockWysiwyg extends React.Component {
       }
     )
     window.setTimeout(() => {
-      this.setState(state => {
+      this.setState((state) => {
         state.loading = false
         return state
       })
@@ -123,7 +123,7 @@ class PageBlockWysiwyg extends React.Component {
     if (this.props.content.wysiwyg !== prevProps.content.wysiwyg) {
       if (!this.props.editable) {
         this.setState(
-          state => {
+          (state) => {
             state.wysiwyg = this.props.content.wysiwyg
             return state
           },
@@ -143,7 +143,7 @@ PageBlockWysiwyg.propTypes = {
   emitSave: PropTypes.func.isRequired,
   editable: PropTypes.bool,
   sourceMode: PropTypes.bool,
-  theme: PropTypes.string.isRequired
+  theme: PropTypes.string.isRequired,
 }
 
 export default PageBlockWysiwyg

@@ -16,7 +16,7 @@ class Page extends React.Component {
       loading: false,
       notFound: false,
       page: null,
-      showSettings: false
+      showSettings: false,
     }
     this.updateTimer = null
   }
@@ -24,11 +24,11 @@ class Page extends React.Component {
   addContent(block, contentType) {
     axios
       .post(`${this.props.appRoot}/api/page/blocks/${block.id}/content`, {
-        contentType
+        contentType,
       })
-      .then(response => {
-        this.setState(state => {
-          state.page.pageblocks.forEach(pageblock => {
+      .then((response) => {
+        this.setState((state) => {
+          state.page.pageblocks.forEach((pageblock) => {
             if (block.id === pageblock.id) {
               if (!block.pageblockcontents) {
                 block.pageblockcontents = []
@@ -45,10 +45,10 @@ class Page extends React.Component {
   addPageBlock(blockType) {
     axios
       .post(`${this.props.appRoot}/api/page/${this.state.page.id}/blocks`, {
-        blockType
+        blockType,
       })
-      .then(response => {
-        this.setState(state => {
+      .then((response) => {
+        this.setState((state) => {
           if (!state.page.pageblocks) {
             state.page.pageblocks = []
           }
@@ -61,7 +61,7 @@ class Page extends React.Component {
 
   blockControl(blockId, action) {
     // actions: previous, next, delete, refresh
-    this.setState(state => {
+    this.setState((state) => {
       let blocks = this.getBlocks(state.page.pageblocks)
       let block
       let index = 0
@@ -119,7 +119,7 @@ class Page extends React.Component {
             })
           let ordering = block.ordering
           blocks.splice(index, 1)
-          blocks.forEach(blk => {
+          blocks.forEach((blk) => {
             if (blk.ordering > ordering) {
               blk.ordering--
             }
@@ -129,8 +129,8 @@ class Page extends React.Component {
       } else if (action === 'refresh') {
         axios
           .get(`${this.props.appRoot}/api/page/blocks/${blockId}`)
-          .then(response => {
-            this.setState(state => {
+          .then((response) => {
+            this.setState((state) => {
               for (let x = 0; x < state.page.pageblocks.length; x++) {
                 let block = state.page.pageblocks[x]
                 if (block.id === blockId) {
@@ -154,7 +154,7 @@ class Page extends React.Component {
         )
       ) {
         this.props.deletePage(this.state.page)
-        this.setState(state => {
+        this.setState((state) => {
           state.showSettings = false
           return state
         })
@@ -164,7 +164,7 @@ class Page extends React.Component {
 
   get splitPath() {
     let path = []
-    this.props.path.split('/').forEach(dir => {
+    this.props.path.split('/').forEach((dir) => {
       if (dir) {
         path.push(dir)
       }
@@ -213,12 +213,12 @@ class Page extends React.Component {
   }
 
   getContentSettingsValueHandler(pageblockId, contentId, key) {
-    return value => {
+    return (value) => {
       this.setState(
-        state => {
-          this.state.page.pageblocks.forEach(pageblock => {
+        (state) => {
+          this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
-              pageblock.pageblockcontents.forEach(content => {
+              pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
                   if (
                     ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >=
@@ -236,9 +236,9 @@ class Page extends React.Component {
           return state
         },
         () => {
-          this.state.page.pageblocks.forEach(pageblock => {
+          this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
-              pageblock.pageblockcontents.forEach(content => {
+              pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
                   clearTimeout(this.updateTimer)
                   this.updateTimer = setTimeout(() => {
@@ -265,10 +265,10 @@ class Page extends React.Component {
   }
 
   getPageBlockSettingsValueHandler(pageblockId, key) {
-    return value => {
+    return (value) => {
       this.setState(
-        state => {
-          this.state.page.pageblocks.forEach(pageblock => {
+        (state) => {
+          this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
               if (
                 ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >= 0
@@ -283,7 +283,7 @@ class Page extends React.Component {
           return state
         },
         () => {
-          this.state.page.pageblocks.forEach(pageblock => {
+          this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
               clearTimeout(this.updateTimer)
               this.updateTimer = setTimeout(() => {
@@ -306,7 +306,7 @@ class Page extends React.Component {
   getPageSettingsResetter(key) {
     return () => {
       this.setState(
-        state => {
+        (state) => {
           delete state.page.settings[key]
           return state
         },
@@ -329,9 +329,9 @@ class Page extends React.Component {
   }
 
   getPageSettingsValueHandler(key) {
-    return value => {
+    return (value) => {
       this.setState(
-        state => {
+        (state) => {
           state.page.settings[key] = value
           if (key === 'showHeader') {
             this.props.headerControl(value)
@@ -361,9 +361,9 @@ class Page extends React.Component {
   }
 
   getPageValueHandler(key) {
-    return value => {
+    return (value) => {
       this.setState(
-        state => {
+        (state) => {
           state.page[key] = value
           return state
         },
@@ -403,10 +403,10 @@ class Page extends React.Component {
                 <FaHtml5 /> Content
               </span>
             ),
-            onClick: e => {
+            onClick: (e) => {
               e.preventDefault()
               this.addPageBlock('content')
-            }
+            },
           },
           {
             name: (
@@ -414,10 +414,10 @@ class Page extends React.Component {
                 <MdFilterFrames /> iframe
               </span>
             ),
-            onClick: e => {
+            onClick: (e) => {
               e.preventDefault()
               this.addPageBlock('iframe')
-            }
+            },
           },
           {
             name: (
@@ -425,23 +425,23 @@ class Page extends React.Component {
                 <FaSitemap /> Navigation
               </span>
             ),
-            onClick: e => {
+            onClick: (e) => {
               e.preventDefault()
               this.addPageBlock('nav')
-            }
-          }
+            },
+          },
         ],
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
-        }
-      }
+        },
+      },
     ]
     return menu
   }
 
   contentControl(pageBlock, index, action) {
     // actions: previous, next, delete
-    this.setState(state => {
+    this.setState((state) => {
       let contents = this.getContents(pageBlock.pageblockcontents)
       let content = contents[index]
       if (action === 'previous') {
@@ -500,14 +500,14 @@ class Page extends React.Component {
           let x = pageBlock.pageblockcontents.indexOf(content)
           let ordering = content.ordering
           pageBlock.pageblockcontents.splice(x, 1)
-          contents.forEach(content => {
+          contents.forEach((content) => {
             if (content.ordering > ordering) {
               content.ordering--
             }
           })
         }
       }
-      state.page.pageblocks.forEach(pb => {
+      state.page.pageblocks.forEach((pb) => {
         if (pb.id === pageBlock.id) {
           for (let x = 0; x < pb.pageblockcontents.length; x++) {
             if (pb.pageblockcontents[x].id === content.id) {
@@ -524,7 +524,7 @@ class Page extends React.Component {
   loadPage(path) {
     path = path.replace(/^\//, '')
     this.setState(
-      state => {
+      (state) => {
         state.loading = true
         state.notFound = false
         state.page = null
@@ -533,10 +533,10 @@ class Page extends React.Component {
       () => {
         axios
           .get(`${this.props.appRoot}/api/page/by-key/${path}`)
-          .then(response => {
+          .then((response) => {
             let page = response.data
             this.setState(
-              state => {
+              (state) => {
                 state.loading = false
                 state.notFound = false
                 state.page = page
@@ -562,10 +562,10 @@ class Page extends React.Component {
               }
             )
           })
-          .catch(e => {
+          .catch((e) => {
             console.error(e)
             if (e.response.status === 404) {
-              this.setState(state => {
+              this.setState((state) => {
                 state.loading = false
                 state.notFound = true
                 return state
@@ -597,7 +597,7 @@ class Page extends React.Component {
   }
 
   toggleSettings() {
-    this.setState(state => {
+    this.setState((state) => {
       state.showSettings = !state.showSettings
       return state
     })
@@ -722,7 +722,7 @@ Page.propTypes = {
   onNotFound: PropTypes.func,
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,
-  setActivePathname: PropTypes.func
+  setActivePathname: PropTypes.func,
 }
 
 export default Page
