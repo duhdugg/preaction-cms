@@ -64,6 +64,7 @@ class App extends React.Component {
       fallbackSettings: {},
       navigate: null,
       newPage: {
+        key: '',
         title: '',
       },
       redirect: null,
@@ -903,6 +904,7 @@ class App extends React.Component {
                       this.toggleNewPage()
                       this.setState((state) => {
                         state.newPage.title = ''
+                        state.newPage.key = ''
                         return state
                       })
                     }
