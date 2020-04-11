@@ -42,6 +42,7 @@
     "react-router-dom": "^5.1.2"
   },
   "scripts": {
+    "backup-db": "PREACTION_DB_BACKUP=1 node -e \"require('./lib/db.js').backup()\"",
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && yarn test",
