@@ -242,10 +242,12 @@ class Page extends React.Component {
                 if (content.id === contentId) {
                   clearTimeout(this.updateTimer)
                   this.updateTimer = setTimeout(() => {
+                    let contentObj = JSON.parse(JSON.stringify(content))
+                    delete contentObj.wysiwyg
                     axios
                       .put(
                         `${this.props.appRoot}/api/page/blocks/content/${contentId}`,
-                        content
+                        contentObj
                       )
                       .then(() => {
                         this.props.emitSave()
