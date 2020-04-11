@@ -1,6 +1,6 @@
 {
   "name": "@preaction/cms",
-  "description": "Preaction CMS is a CMS intended to be super cool and user friendly.",
+  "description": "Preaction CMS is a barebones, customizeable CMS built on top of simple libraries.",
   "version": "0.3.17",
   "proxy": "http://localhost:8999",
   "dependencies": {
