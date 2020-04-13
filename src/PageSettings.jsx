@@ -12,10 +12,7 @@ class PageSettings extends React.Component {
     this.state = {
       confirmDelete: false,
       uploadingBg: false,
-      uploadingIcon: false,
     }
-    this.uploadIconForm = React.createRef()
-    this.iconFileInput = React.createRef()
     this.uploadBgForm = React.createRef()
     this.bgFileInput = React.createRef()
   }
@@ -49,12 +46,6 @@ class PageSettings extends React.Component {
     if (this.props.getPageSettingIsUndefined(key)) {
       this.props.getSettingsValueHandler(key)(this.props.settings[key])
     }
-  }
-
-  refreshIcon() {
-    let icon = document.querySelector('link[rel="shortcut icon"]')
-    let timestamp = +new Date()
-    icon.href = `/icon?v=${timestamp}`
   }
 
   resetSetting(key) {
@@ -481,36 +472,6 @@ class PageSettings extends React.Component {
                     ''
                   )}
                 </Card>
-                <Card
-                  header='Icon'
-                  column
-                  width={1 / 2}
-                  headerTheme='yellow'
-                  style={{
-                    card: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => {
-                      this.iconFileInput.current.click()
-                    }}
-                    disabled={this.state.uploadingIcon}
-                  >
-                    Upload Icon
-                    {this.state.uploadingIcon ? (
-                      <span>
-                        <span> </span>
-                        <Spinner />
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                  </button>
-                </Card>
               </div>
               <div className='row'>
                 <div className='col'></div>
@@ -889,53 +850,6 @@ class PageSettings extends React.Component {
                             )
                           }
                         })
-                    }
-                  )
-                }
-              }}
-              className='d-none'
-            />
-            <form
-              method='POST'
-              action={`${this.props.appRoot}/api/upload`}
-              target='upload-icon-frame'
-              encType='multipart/form-data'
-              ref={this.uploadIconForm}
-              className='d-none'
-            >
-              <input
-                name='file'
-                type='file'
-                accept='image/*'
-                ref={this.iconFileInput}
-                onChange={(event) => {
-                  this.uploadIconForm.current.submit()
-                  this.setState((state) => {
-                    state.uploadingIcon = true
-                    return state
-                  })
-                }}
-              />
-              <input
-                type='hidden'
-                name='target'
-                value={`page-icon/${this.props.pageId}`}
-              />
-            </form>
-            <iframe
-              id='upload-icon-frame'
-              name='upload-icon-frame'
-              title='upload'
-              onLoad={() => {
-                let iframe = document.getElementById('upload-icon-frame')
-                if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.setState(
-                    (state) => {
-                      state.uploadingIcon = false
-                      return state
-                    },
-                    () => {
-                      this.refreshIcon()
                     }
                   )
                 }

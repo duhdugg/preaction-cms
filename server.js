@@ -56,19 +56,7 @@ app.route('/icon').get((req, res) => {
       res.status(404).send('')
       return
     }
-    if (req.query.pageId) {
-      pages.model.Page.findByPk(req.query.pageId).then((page) => {
-        if (!page) {
-          res.redirect(setting.value)
-          return
-        }
-        if (page.icon) {
-          res.redirect(page.icon)
-        }
-      })
-    } else {
-      res.redirect(setting.value)
-    }
+    res.redirect(setting.value)
   })
 })
 
