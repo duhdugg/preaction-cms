@@ -524,7 +524,9 @@ class Page extends React.Component {
   }
 
   loadPage(path) {
+    // add trailing slash
     path = path.replace(/^\//, '')
+    // clear the state
     this.setState(
       (state) => {
         state.loading = true
@@ -533,9 +535,21 @@ class Page extends React.Component {
         return state
       },
       () => {
+        // use pathOnRequest variable to prevent loading incorrect content
+        // pathonRequest will be compared to the current props path
+        // after axios.get resolves
+        let pathOnRequest = this.props.path
+        // get the page data by path
         axios
           .get(`${this.props.appRoot}/api/page/by-key/${path}`)
           .then((response) => {
+            // if pathOnRequest does not match current props path,
+            // don't do anything, as the application has navigated
+            // to a different path
+            if (pathOnRequest !== this.props.path) {
+              return
+            }
+            // set the page state
             let page = response.data
             this.setState(
               (state) => {
@@ -545,13 +559,16 @@ class Page extends React.Component {
                 return state
               },
               () => {
+                // load settings
                 this.loadSettings()
+                // communicate to parent component
                 if (this.props.setActivePage) {
                   this.props.setActivePage(this.state.page)
                 }
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
+                // set the title if page is not header nor footer
                 if (path.match(/\/(header|footer)\/$/g) === null) {
                   let title = ''
                   if (this.topLevelPageKey === 'home') {
@@ -567,11 +584,13 @@ class Page extends React.Component {
           .catch((e) => {
             console.error(e)
             if (e.response.status === 404) {
+              // set notFound state on 404
               this.setState((state) => {
                 state.loading = false
                 state.notFound = true
                 return state
               })
+              // communicate to parent component
               this.onNotFound()
             }
           })
