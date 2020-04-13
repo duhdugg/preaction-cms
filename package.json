@@ -43,10 +43,11 @@
   },
   "scripts": {
     "backup-db": "PREACTION_DB_BACKUP=1 node -e \"require('./lib/db.js').backup()\"",
+    "clear-sessions": "node scripts/clear-sessions.js",
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
-    "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && yarn test",
-    "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js && react-scripts test --coverage",
+    "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && yarn test",
+    "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && react-scripts test --coverage",
     "eject": "react-scripts eject",
     "dev-server": "nodemon -i src server.js",
     "start-inspect": "node --inspect server.js",
