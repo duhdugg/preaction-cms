@@ -113,7 +113,7 @@ app.route('/').get((req, res) => {
     ],
   }).then((page) => {
     let status = page ? 200 : 404
-    let content = ''
+    let description = ''
     let pageblocks = page ? page.pageblocks : []
     pageblocks.sort((a, b) => {
       let retval = 0
@@ -125,15 +125,28 @@ app.route('/').get((req, res) => {
       return retval
     })
     pageblocks.forEach((pageblock) => {
-      if (
-        pageblock.pageblockcontent &&
-        pageblock.pageblockcontent.contentType === 'wyswiyg'
-      ) {
-        content += pageblock.pageblockcontent.content || ''
+      if (pageblock.pageblockcontents) {
+        let contents = pageblock.pageblockcontents
+        contents.sort((a, b) => {
+          let retval = 0
+          if (a.ordering < b.ordering) {
+            retval = -1
+          } else if (a.ordering > b.ordering) {
+            retval = 1
+          }
+          return retval
+        })
+        pageblock.pageblockcontents.forEach((pbc) => {
+          if (pbc.wysiwyg) {
+            description += pbc.wysiwyg
+          }
+        })
       }
     })
-    content = excerptHtml(content, { pruneLength: 300 })
-    renderClient(req, res.status(status), { description: content })
+    // remove line-break paragraphs
+    description = description.replace(/<p><br><\/p>/g, '')
+    description = excerptHtml(description, { pruneLength: 300 })
+    renderClient(req, res.status(status), { description })
   })
 })
 
@@ -159,41 +172,65 @@ app.route('*').get((req, res) => {
     case 'home':
     case 'header':
     case 'footer':
+    case 'favicon.ico':
       renderClient(req, res.status(404, ''))
       return
     default:
   }
-  pages.model.Page.findOne({
-    where: { key: pageKey },
-    include: [
-      {
-        model: pages.model.PageBlock,
-        include: [pages.model.PageBlockContent],
-      },
-    ],
-  }).then((page) => {
-    if (matchRedirect) {
-      return
-    }
-    let status = page ? 200 : 404
-    let content = ''
-    let pageblocks = page ? page.pageblocks : []
-    pageblocks.sort((a, b) => {
-      let retval = 0
-      if (a.ordering < b.ordering) {
-        retval = -1
-      } else if (a.ordering > b.ordering) {
-        retval = 1
-      }
-      return retval
-    })
-    pageblocks.forEach((pageblock) => {
-      if (pageblock.pageblockwysiwyg) {
-        content += pageblock.pageblockwysiwyg.content
-      }
-    })
-    content = excerptHtml(content, { pruneLength: 300 })
-    renderClient(req, res.status(status), { description: content })
+  pages.funcs.getPageByPath(req.path).then((page) => {
+    pages.funcs
+      .getFullPageById(page.id)
+      .then((page) => {
+        if (matchRedirect) {
+          return
+        }
+        let status = page ? 200 : 404
+        let description = ''
+        let pageblocks = page ? page.pageblocks : []
+        pageblocks.sort((a, b) => {
+          let retval = 0
+          if (a.ordering < b.ordering) {
+            retval = -1
+          } else if (a.ordering > b.ordering) {
+            retval = 1
+          }
+          return retval
+        })
+        pageblocks.forEach((pageblock) => {
+          if (pageblock.pageblockcontents) {
+            let contents = pageblock.pageblockcontents
+            contents.sort((a, b) => {
+              let retval = 0
+              if (a.ordering < b.ordering) {
+                retval = -1
+              } else if (a.ordering > b.ordering) {
+                retval = 1
+              }
+              return retval
+            })
+            pageblock.pageblockcontents.forEach((pbc) => {
+              if (pbc.wysiwyg) {
+                description += pbc.wysiwyg
+              }
+            })
+          }
+        })
+        // remove line-break paragraphs
+        description = description.replace(/<p><br><\/p>/g, '')
+        description = excerptHtml(description, { pruneLength: 300 })
+        pages.funcs.getAppliedPageSettings(page.id).then((settings) => {
+          let siteTitle = settings.siteTitle
+          let pageTitle = page.title
+          renderClient(req, res.status(status), {
+            description,
+            siteTitle,
+            pageTitle,
+          })
+        })
+      })
+      .catch((e) => {
+        console.error(e)
+      })
   })
 })
 
