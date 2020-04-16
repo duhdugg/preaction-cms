@@ -758,7 +758,7 @@ class App extends React.Component {
                   />
                 </Route>
                 <Route exact path='/login'>
-                  <div className='container'>
+                  <div className='login'>
                     <Login
                       appRoot={this.root}
                       settings={this.state.siteSettings}
