@@ -177,61 +177,66 @@ app.route('*').get((req, res) => {
       return
     default:
   }
-  pages.funcs.getPageByPath(req.path).then((page) => {
-    pages.funcs
-      .getFullPageById(page.id)
-      .then((page) => {
-        if (matchRedirect) {
-          return
-        }
-        let status = page ? 200 : 404
-        let description = ''
-        let pageblocks = page ? page.pageblocks : []
-        pageblocks.sort((a, b) => {
-          let retval = 0
-          if (a.ordering < b.ordering) {
-            retval = -1
-          } else if (a.ordering > b.ordering) {
-            retval = 1
+  pages.funcs
+    .getPageByPath(req.path)
+    .then((page) => {
+      pages.funcs
+        .getFullPageById(page.id)
+        .then((page) => {
+          if (matchRedirect) {
+            return
           }
-          return retval
-        })
-        pageblocks.forEach((pageblock) => {
-          if (pageblock.pageblockcontents) {
-            let contents = pageblock.pageblockcontents
-            contents.sort((a, b) => {
-              let retval = 0
-              if (a.ordering < b.ordering) {
-                retval = -1
-              } else if (a.ordering > b.ordering) {
-                retval = 1
-              }
-              return retval
+          let status = page ? 200 : 404
+          let description = ''
+          let pageblocks = page ? page.pageblocks : []
+          pageblocks.sort((a, b) => {
+            let retval = 0
+            if (a.ordering < b.ordering) {
+              retval = -1
+            } else if (a.ordering > b.ordering) {
+              retval = 1
+            }
+            return retval
+          })
+          pageblocks.forEach((pageblock) => {
+            if (pageblock.pageblockcontents) {
+              let contents = pageblock.pageblockcontents
+              contents.sort((a, b) => {
+                let retval = 0
+                if (a.ordering < b.ordering) {
+                  retval = -1
+                } else if (a.ordering > b.ordering) {
+                  retval = 1
+                }
+                return retval
+              })
+              pageblock.pageblockcontents.forEach((pbc) => {
+                if (pbc.wysiwyg) {
+                  description += pbc.wysiwyg
+                }
+              })
+            }
+          })
+          // remove line-break paragraphs
+          description = description.replace(/<p><br><\/p>/g, '')
+          description = excerptHtml(description, { pruneLength: 300 })
+          pages.funcs.getAppliedPageSettings(page.id).then((settings) => {
+            let siteTitle = settings.siteTitle
+            let pageTitle = page.title
+            renderClient(req, res.status(status), {
+              description,
+              siteTitle,
+              pageTitle,
             })
-            pageblock.pageblockcontents.forEach((pbc) => {
-              if (pbc.wysiwyg) {
-                description += pbc.wysiwyg
-              }
-            })
-          }
-        })
-        // remove line-break paragraphs
-        description = description.replace(/<p><br><\/p>/g, '')
-        description = excerptHtml(description, { pruneLength: 300 })
-        pages.funcs.getAppliedPageSettings(page.id).then((settings) => {
-          let siteTitle = settings.siteTitle
-          let pageTitle = page.title
-          renderClient(req, res.status(status), {
-            description,
-            siteTitle,
-            pageTitle,
           })
         })
-      })
-      .catch((e) => {
-        console.error(e)
-      })
-  })
+        .catch((e) => {
+          console.error(e)
+        })
+    })
+    .catch(() => {
+      renderClient(req, res.status(404), {})
+    })
 })
 
 // <== SOCKET.IO EVENT CONFIG ==>
