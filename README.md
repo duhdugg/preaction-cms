@@ -20,9 +20,33 @@ run the server:
 
 `yarn start`
 
-change the admin password:
+### Scripts
 
-`yarn randomize-password` or `yarn set-password`
+#### For Admins
+
+copy the data/db.sqlite database to a timestamped and hashed file in the data/backups directory:
+
+`yarn backup-db`
+
+delete all sessions from the database:
+
+`yarn clear-sessions`
+
+generate a new randomly-generated password for the admin user:
+
+`yarn randomize-password`
+
+set password by prompt:
+
+`yarn set-password`
+
+the above will also accept whatever is piped into it, so this example is one way to generate and set a random password that is 8,192 alphanumeric characters in length:
+
+`dd if=/dev/urandom | strings -e s | sed 's/[^a-za-z0-9]//g' | tr -d '\n' | dd count=1 bs=8192 2> /dev/null | yarn set-password`
+
+create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, the build directory, and any db-referenced files in the uploads directory:
+
+`yarn package`
 
 ### Environment Variables
 
@@ -34,3 +58,29 @@ change the admin password:
 `PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
 `PREACTION_PORT=8080` configures the port to listen on
 `PREACTION_SOCKET_MODE=1` enables socket features (automatic reload)
+
+### Development
+
+run the server with automatic reloading:
+
+`yarn dev-server`
+
+apply prettier requirements to source:
+
+`yarn makeover`
+
+run tests:
+
+`yarn test`
+
+run server with nodejs inspection:
+
+`yarn start-inspect`
+
+run server with nodejs profiling:
+
+`yarn start-profile`
+
+start the react development server for automatic client reloading:
+
+`yarn dev-client`
