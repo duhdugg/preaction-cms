@@ -22,12 +22,7 @@ run the server:
 
 change the admin password:
 
-`node`
-
-```
-const updateAdminPassword = require('./lib/session').updateAdminPassword
-updateAdminPassword('newpass')
-```
+`yarn set-password` or `yarn randomize-password`
 
 ### Environment Variables
 
