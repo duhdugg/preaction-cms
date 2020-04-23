@@ -22,7 +22,7 @@ run the server:
 
 change the admin password:
 
-`yarn set-password` or `yarn randomize-password`
+`yarn randomize-password` or `yarn set-password`
 
 ### Environment Variables
 
