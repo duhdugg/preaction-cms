@@ -863,6 +863,11 @@ class App extends React.Component {
               }
           `
             : ''}
+          {this.settings.init
+            ? `\
+          html { background-color: transparent }
+          `
+            : ''}
         </style>
         <style>{this.settings.cssOverrides || ''}</style>
         {this.state.editable && this.state.show.settings ? (
