@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
-import { Nav } from '@preaction/bootstrap-clips'
+import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
+import PageSettings from './PageSettings.jsx'
+import { MdCreate, MdFilterFrames } from 'react-icons/md'
+import { FaHtml5, FaSitemap } from 'react-icons/fa'
 
 class Page extends React.Component {
   constructor(props) {
@@ -12,30 +15,40 @@ class Page extends React.Component {
     this.state = {
       loading: false,
       notFound: false,
-      page: null
+      page: null,
+      showSettings: false,
     }
+    this.updateTimer = null
   }
 
-  addPage() {
-    let title = window.prompt('New Page Title')
-    if (title) {
-      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-      let pageType = 'content'
-      let page = {
-        title,
-        key,
-        pageType,
-        parentId: this.state.page.id
-      }
-      this.props.addPage(page)
-    }
+  addContent(block, contentType) {
+    axios
+      .post(`${this.props.appRoot}/api/page/blocks/${block.id}/content`, {
+        contentType,
+      })
+      .then((response) => {
+        this.setState((state) => {
+          state.page.pageblocks.forEach((pageblock) => {
+            if (block.id === pageblock.id) {
+              if (!block.pageblockcontents) {
+                block.pageblockcontents = []
+              }
+              block.pageblockcontents.push(response.data)
+            }
+          })
+          return state
+        })
+        this.props.emitSave()
+      })
   }
 
   addPageBlock(blockType) {
     axios
-      .post(`/api/page/${this.state.page.id}/blocks`, { blockType })
-      .then(response => {
-        this.setState(state => {
+      .post(`${this.props.appRoot}/api/page/${this.state.page.id}/blocks`, {
+        blockType,
+      })
+      .then((response) => {
+        this.setState((state) => {
           if (!state.page.pageblocks) {
             state.page.pageblocks = []
           }
@@ -48,7 +61,7 @@ class Page extends React.Component {
 
   blockControl(blockId, action) {
     // actions: previous, next, delete, refresh
-    this.setState(state => {
+    this.setState((state) => {
       let blocks = this.getBlocks(state.page.pageblocks)
       let block
       let index = 0
@@ -63,34 +76,50 @@ class Page extends React.Component {
         block.ordering--
         let prevBlock = blocks[index - 1]
         prevBlock.ordering++
-        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.emitSave()
-        })
-        axios.put(`/api/page/blocks/${prevBlock.id}`, prevBlock).then(() => {
-          this.props.emitSave()
-        })
+        axios
+          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .then(() => {
+            this.props.emitSave()
+          })
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${prevBlock.id}`,
+            prevBlock
+          )
+          .then(() => {
+            this.props.emitSave()
+          })
         blocks[index] = block
         blocks[index - 1] = prevBlock
       } else if (action === 'next') {
         block.ordering++
         let nextBlock = blocks[index + 1]
         nextBlock.ordering--
-        axios.put(`/api/page/blocks/${block.id}`, block).then(() => {
-          this.props.emitSave()
-        })
-        axios.put(`/api/page/blocks/${nextBlock.id}`, nextBlock).then(() => {
-          this.props.emitSave()
-        })
+        axios
+          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .then(() => {
+            this.props.emitSave()
+          })
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${nextBlock.id}`,
+            nextBlock
+          )
+          .then(() => {
+            this.props.emitSave()
+          })
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
-          axios.delete(`/api/page/blocks/${blockId}`).then(() => {
-            this.props.emitSave()
-          })
+          axios
+            .delete(`${this.props.appRoot}/api/page/blocks/${blockId}`)
+            .then(() => {
+              this.props.emitSave()
+            })
           let ordering = block.ordering
           blocks.splice(index, 1)
-          blocks.forEach(blk => {
+          blocks.forEach((blk) => {
             if (blk.ordering > ordering) {
               blk.ordering--
             }
@@ -98,18 +127,20 @@ class Page extends React.Component {
           state.page.pageblocks = blocks
         }
       } else if (action === 'refresh') {
-        axios.get(`/api/page/blocks/${blockId}`).then(response => {
-          this.setState(state => {
-            for (let x = 0; x < state.page.pageblocks.length; x++) {
-              let block = state.page.pageblocks[x]
-              if (block.id === blockId) {
-                state.page.pageblocks[x] = response.data
-                break
+        axios
+          .get(`${this.props.appRoot}/api/page/blocks/${blockId}`)
+          .then((response) => {
+            this.setState((state) => {
+              for (let x = 0; x < state.page.pageblocks.length; x++) {
+                let block = state.page.pageblocks[x]
+                if (block.id === blockId) {
+                  state.page.pageblocks[x] = response.data
+                  break
+                }
               }
-            }
-            return state
+              return state
+            })
           })
-        })
       }
       return state
     })
@@ -123,29 +154,34 @@ class Page extends React.Component {
         )
       ) {
         this.props.deletePage(this.state.page)
+        this.setState((state) => {
+          state.showSettings = false
+          return state
+        })
       }
-    }
-  }
-
-  get newPage() {
-    let title = this.state.newPageTitle
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-    let pageType = 'content'
-    return {
-      key,
-      title,
-      pageType
     }
   }
 
   get splitPath() {
     let path = []
-    this.props.path.split('/').forEach(dir => {
+    this.props.path.split('/').forEach((dir) => {
       if (dir) {
         path.push(dir)
       }
     })
     return path
+  }
+
+  get settings() {
+    let s = Object.assign({}, this.state.page.fallbackSettings)
+    if (this.props.fallbackSettings) {
+      Object.assign(s, this.props.fallbackSettings)
+    }
+    Object.assign(s, this.state.page.settings)
+    if (this.state.page.settings.navOrdering === undefined) {
+      s.navOrdering = undefined
+    }
+    return s
   }
 
   get topLevelPageKey() {
@@ -164,8 +200,8 @@ class Page extends React.Component {
     })
   }
 
-  getImages(pageblockimages) {
-    return pageblockimages.concat().sort((a, b) => {
+  getContents(contents) {
+    return contents.concat().sort((a, b) => {
       let retval = 0
       if (a.ordering < b.ordering) {
         retval = -1
@@ -176,198 +212,308 @@ class Page extends React.Component {
     })
   }
 
+  getContentSettingsValueHandler(pageblockId, contentId, key) {
+    return (value) => {
+      this.setState(
+        (state) => {
+          this.state.page.pageblocks.forEach((pageblock) => {
+            if (pageblock.id === pageblockId) {
+              pageblock.pageblockcontents.forEach((content) => {
+                if (content.id === contentId) {
+                  if (
+                    ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >=
+                    0
+                  ) {
+                    if (value < 1) {
+                      value = 1
+                    }
+                  }
+                  content.settings[key] = value
+                }
+              })
+            }
+          })
+          return state
+        },
+        () => {
+          this.state.page.pageblocks.forEach((pageblock) => {
+            if (pageblock.id === pageblockId) {
+              pageblock.pageblockcontents.forEach((content) => {
+                if (content.id === contentId) {
+                  clearTimeout(this.updateTimer)
+                  this.updateTimer = setTimeout(() => {
+                    let contentObj = JSON.parse(JSON.stringify(content))
+                    delete contentObj.wysiwyg
+                    axios
+                      .put(
+                        `${this.props.appRoot}/api/page/blocks/content/${contentId}`,
+                        contentObj
+                      )
+                      .then(() => {
+                        this.props.emitSave()
+                      })
+                  }, 1000)
+                }
+              })
+            }
+          })
+        }
+      )
+    }
+  }
+
+  getPageSettingIsUndefined(key) {
+    return this.state.page.settings[key] === undefined
+  }
+
   getPageBlockSettingsValueHandler(pageblockId, key) {
-    return value => {
-      this.setState(state => {
-        this.state.page.pageblocks.forEach(pageblock => {
-          if (pageblock.id === pageblockId) {
-            pageblock.settings[key] = value
-            axios.put(`/api/page/blocks/${pageblockId}`, pageblock).then(() => {
-              this.props.emitSave()
-            })
-          }
-        })
-        return state
-      })
+    return (value) => {
+      this.setState(
+        (state) => {
+          this.state.page.pageblocks.forEach((pageblock) => {
+            if (pageblock.id === pageblockId) {
+              if (
+                ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >= 0
+              ) {
+                if (value < 1) {
+                  value = 1
+                }
+              }
+              pageblock.settings[key] = value
+            }
+          })
+          return state
+        },
+        () => {
+          this.state.page.pageblocks.forEach((pageblock) => {
+            if (pageblock.id === pageblockId) {
+              clearTimeout(this.updateTimer)
+              this.updateTimer = setTimeout(() => {
+                axios
+                  .put(
+                    `${this.props.appRoot}/api/page/blocks/${pageblockId}`,
+                    pageblock
+                  )
+                  .then(() => {
+                    this.props.emitSave()
+                  })
+              }, 1000)
+            }
+          })
+        }
+      )
+    }
+  }
+
+  getPageSettingsResetter(key) {
+    return () => {
+      this.setState(
+        (state) => {
+          delete state.page.settings[key]
+          return state
+        },
+        () => {
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
+            axios
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
+              .then(() => {
+                this.loadSettings()
+                this.props.emitSave()
+              })
+          }, 1000)
+        }
+      )
     }
   }
 
   getPageSettingsValueHandler(key) {
-    return value => {
-      this.setState(state => {
-        state.page.settings[key] = value
-        if (key === 'showHeader') {
-          this.props.headerControl(value)
-        } else if (key === 'showFooter') {
-          this.props.footerControl(value)
+    return (value) => {
+      this.setState(
+        (state) => {
+          state.page.settings[key] = value
+          if (key === 'showHeader') {
+            this.props.headerControl(value)
+          } else if (key === 'showFooter') {
+            this.props.footerControl(value)
+          }
+          return state
+        },
+        () => {
+          if (this.props.setActivePage) {
+            this.props.setActivePage(this.state.page)
+          }
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
+            axios
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
+              .then(() => {
+                this.props.emitSave()
+              })
+          }, 1000)
         }
-        axios
-          .put(`/api/page/${this.state.page.id}`, this.state.page)
-          .then(() => {
-            this.props.emitSave()
-          })
-        return state
-      })
+      )
+    }
+  }
+
+  getPageValueHandler(key) {
+    return (value) => {
+      this.setState(
+        (state) => {
+          state.page[key] = value
+          return state
+        },
+        () => {
+          if (this.props.setActivePage) {
+            this.props.setActivePage(this.state.page)
+          }
+          clearTimeout(this.updateTimer)
+          this.updateTimer = setTimeout(() => {
+            axios
+              .put(
+                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                this.state.page
+              )
+              .then(() => {
+                this.props.emitSave()
+              })
+          }, 1000)
+        }
+      )
     }
   }
 
   get pageControlsMenu() {
     let menu = [
       {
-        name: 'add block',
+        name: (
+          <span>
+            <MdCreate /> add block
+          </span>
+        ),
         icon: 'arrow-dropdown',
         subMenu: [
           {
             name: (
               <span>
-                <i className='ion ion-md-image' /> image
+                <FaHtml5 /> Content
               </span>
             ),
-            onClick: e => {
+            onClick: (e) => {
               e.preventDefault()
-              this.addPageBlock('image')
-            }
+              this.addPageBlock('content')
+            },
           },
           {
             name: (
               <span>
-                <i className='ion ion-logo-html5' /> wysiwyg
+                <MdFilterFrames /> iframe
               </span>
             ),
-            onClick: e => {
+            onClick: (e) => {
               e.preventDefault()
-              this.addPageBlock('wysiwyg')
-            }
-          }
+              this.addPageBlock('iframe')
+            },
+          },
+          {
+            name: (
+              <span>
+                <FaSitemap /> Navigation
+              </span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              this.addPageBlock('nav')
+            },
+          },
         ],
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
-        }
-      }
+        },
+      },
     ]
-    if (['header', 'footer'].indexOf(this.topLevelPageKey) < 0) {
-      let subMenu = []
-      if (this.topLevelPageKey !== 'home' && !this.state.page.parentId) {
-        subMenu.push({
-          name: 'Add SubPage',
-          onClick: e => {
-            e.preventDefault()
-            this.addPage()
-          }
-        })
-      }
-      if (this.topLevelPageKey !== 'home') {
-        subMenu.push({
-          name: 'Reset Page Title',
-          onClick: e => {
-            e.preventDefault()
-            this.renamePage()
-          }
-        })
-      }
-      subMenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-${
-                this.state.page.settings.showHeader
-                  ? 'checkbox-outline'
-                  : 'square-outline'
-              }`}
-            />{' '}
-            show header
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.getPageSettingsValueHandler('showHeader')(
-            !this.state.page.settings.showHeader
-          )
-        },
-        toggleParent: false
-      })
-      subMenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-${
-                this.state.page.settings.showFooter
-                  ? 'checkbox-outline'
-                  : 'square-outline'
-              }`}
-            />{' '}
-            show footer
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.getPageSettingsValueHandler('showFooter')(
-            !this.state.page.settings.showFooter
-          )
-        },
-        toggleParent: false
-      })
-      menu.push({
-        name: 'page settings',
-        subMenu
-      })
-    }
     return menu
   }
 
-  galleryControl(pageBlock, index, action) {
+  contentControl(pageBlock, index, action) {
     // actions: previous, next, delete
-    this.setState(state => {
-      let images = this.getImages(pageBlock.pageblockimages)
-      let image = images[index]
+    this.setState((state) => {
+      let contents = this.getContents(pageBlock.pageblockcontents)
+      let content = contents[index]
       if (action === 'previous') {
-        image.ordering--
-        let prevUpload = images[index - 1]
+        content.ordering--
+        let prevUpload = contents[index - 1]
         prevUpload.ordering++
-        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.emitSave()
-        })
         axios
-          .put(`/api/page/blocks/image/${prevUpload.id}`, prevUpload)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            content
+          )
           .then(() => {
             this.props.emitSave()
           })
-        images[index] = image
-        images[index - 1] = prevUpload
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${prevUpload.id}`,
+            prevUpload
+          )
+          .then(() => {
+            this.props.emitSave()
+          })
+        contents[index] = content
+        contents[index - 1] = prevUpload
       } else if (action === 'next') {
-        image.ordering++
-        let nextUpload = images[index + 1]
-        nextUpload.ordering--
-        axios.put(`/api/page/blocks/image/${image.id}`, image).then(() => {
-          this.props.emitSave()
-        })
+        content.ordering++
+        let nextContent = contents[index + 1]
+        nextContent.ordering--
         axios
-          .put(`/api/page/blocks/image/${nextUpload.id}`, nextUpload)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            content
+          )
           .then(() => {
             this.props.emitSave()
           })
-        images[index] = image
-        images[index + 1] = nextUpload
-      } else if (action === 'delete') {
-        if (window.confirm('Delete this image?')) {
-          axios.delete(`/api/page/blocks/image/${image.id}`).then(() => {
+        axios
+          .put(
+            `${this.props.appRoot}/api/page/blocks/content/${nextContent.id}`,
+            nextContent
+          )
+          .then(() => {
             this.props.emitSave()
           })
-          let x = pageBlock.pageblockimages.indexOf(image)
-          let ordering = image.ordering
-          pageBlock.pageblockimages.splice(x, 1)
-          images.forEach(image => {
-            if (image.ordering > ordering) {
-              image.ordering--
+        contents[index] = content
+        contents[index + 1] = nextContent
+      } else if (action === 'delete') {
+        if (window.confirm('Delete this content?')) {
+          axios
+            .delete(
+              `${this.props.appRoot}/api/page/blocks/content/${content.id}`
+            )
+            .then(() => {
+              this.props.emitSave()
+            })
+          let x = pageBlock.pageblockcontents.indexOf(content)
+          let ordering = content.ordering
+          pageBlock.pageblockcontents.splice(x, 1)
+          contents.forEach((content) => {
+            if (content.ordering > ordering) {
+              content.ordering--
             }
           })
         }
       }
-      state.page.pageblocks.forEach(pb => {
+      state.page.pageblocks.forEach((pb) => {
         if (pb.id === pageBlock.id) {
-          for (let x = 0; x < pb.pageblockimages.length; x++) {
-            if (pb.pageblockimages[x].id === image.id) {
-              pb.pageblockimages[x] = image
+          for (let x = 0; x < pb.pageblockcontents.length; x++) {
+            if (pb.pageblockcontents[x].id === content.id) {
+              pb.pageblockcontents[x] = content
               break
             }
           }
@@ -378,135 +524,180 @@ class Page extends React.Component {
   }
 
   loadPage(path) {
+    // add trailing slash
     path = path.replace(/^\//, '')
+    // clear the state
     this.setState(
-      state => {
+      (state) => {
         state.loading = true
         state.notFound = false
         state.page = null
         return state
       },
       () => {
+        // use pathOnRequest variable to prevent loading incorrect content
+        // pathonRequest will be compared to the current props path
+        // after axios.get resolves
+        let pathOnRequest = this.props.path
+        // get the page data by path
         axios
-          .get(`/api/page/by-key/${path}`)
-          .then(response => {
+          .get(`${this.props.appRoot}/api/page/by-key/${path}`)
+          .then((response) => {
+            // if pathOnRequest does not match current props path,
+            // don't do anything, as the application has navigated
+            // to a different path
+            if (pathOnRequest !== this.props.path) {
+              return
+            }
+            // set the page state
+            let page = response.data
             this.setState(
-              state => {
+              (state) => {
                 state.loading = false
                 state.notFound = false
-                state.page = response.data
+                state.page = page
                 return state
               },
               () => {
-                if (!['header', 'footer'].includes(this.topLevelPageKey)) {
-                  let showHeader = this.state.page.settings.showHeader !== false
-                  let showFooter = this.state.page.settings.showFooter !== false
-                  this.props.headerControl(showHeader)
-                  this.props.footerControl(showFooter)
+                // load settings
+                this.loadSettings()
+                // communicate to parent component
+                if (this.props.setActivePage) {
+                  this.props.setActivePage(this.state.page)
+                }
+                if (this.props.setActivePathname) {
+                  this.props.setActivePathname(this.props.path)
+                }
+                // set the title if page is not header nor footer
+                if (path.match(/\/(header|footer)\/$/g) === null) {
+                  let title = ''
+                  if (this.topLevelPageKey === 'home') {
+                    title = this.settings.siteTitle
+                  } else {
+                    title = `${response.data.title} | ${this.settings.siteTitle}`
+                  }
+                  document.title = title
                 }
               }
             )
-            if (
-              this.topLevelPageKey !== 'header' &&
-              this.topLevelPageKey !== 'footer'
-            ) {
-              let title = ''
-              if (this.topLevelPageKey === 'home') {
-                title = this.props.siteSettings.siteTitle
-              } else {
-                title = `${response.data.title} | ${this.props.siteSettings.siteTitle}`
-              }
-              document.title = title
-            }
           })
-          .catch(e => {
+          .catch((e) => {
+            console.error(e)
             if (e.response.status === 404) {
-              this.setState(state => {
+              // set notFound state on 404
+              this.setState((state) => {
                 state.loading = false
                 state.notFound = true
                 return state
               })
+              // communicate to parent component
+              this.onNotFound()
             }
           })
       }
     )
   }
 
+  loadSettings() {
+    if (!['header', 'footer'].includes(this.state.page.key)) {
+      let showHeader = this.settings.showHeader !== false
+      let showFooter = this.settings.showFooter !== false
+      this.props.headerControl(showHeader)
+      this.props.footerControl(showFooter)
+    }
+  }
+
+  onNotFound() {
+    if (this.props.onNotFound) {
+      this.props.onNotFound(this.props.path)
+    }
+  }
+
   reload() {
     this.loadPage(this.props.path)
   }
 
-  renamePage() {
-    let oldTitle = this.state.page.title
-    let title = window.prompt(`New Page Title for ${this.state.page.title}`)
-    if (title) {
-      let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-      this.setState(
-        state => {
-          state.page.title = title
-          state.page.key = key
-        },
-        () => {
-          axios
-            .put(`/api/page/${this.state.page.id}`, this.state.page)
-            .then(() => {
-              if (title !== oldTitle) {
-                this.props.emitSave()
-                if (this.state.page.parentId) {
-                  window.location.href = `/${this.topLevelPageKey}/${key}/`
-                } else {
-                  window.location.href = `/${key}/`
-                }
-              }
-            })
-        }
-      )
-    }
+  toggleSettings() {
+    this.setState((state) => {
+      state.showSettings = !state.showSettings
+      return state
+    })
   }
 
   render() {
     return (
       <div className='page'>
         {this.state.page ? (
-          <div>
+          <div className='row'>
             {this.state.page.pageblocks
               ? this.getBlocks(this.state.page.pageblocks).map(
                   (block, index) => {
                     return (
                       <PageBlock
-                        data={block}
-                        key={block.id}
-                        first={index === 0}
-                        last={index === this.state.page.pageblocks.length - 1}
+                        addContent={this.addContent.bind(this)}
+                        appRoot={this.props.appRoot}
+                        block={block}
+                        blockControl={this.blockControl.bind(this)}
+                        contentControl={this.contentControl.bind(this)}
                         editable={this.props.editable}
                         emitSave={this.props.emitSave}
-                        siteSettings={this.props.siteSettings}
-                        blockControl={this.blockControl.bind(this)}
-                        getImages={this.getImages.bind(this)}
-                        galleryControl={this.galleryControl.bind(this)}
+                        first={index === 0}
+                        getContents={this.getContents.bind(this)}
+                        getContentSettingsValueHandler={this.getContentSettingsValueHandler.bind(
+                          this
+                        )}
                         getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
                           this
                         )}
+                        key={block.id}
+                        last={index === this.state.page.pageblocks.length - 1}
+                        navigate={this.props.navigate}
+                        page={this.state.page}
+                        settings={this.settings}
                       />
                     )
                   }
                 )
               : ''}
             {this.props.editable ? (
-              <div className='page-controls'>
+              <div className='page-controls col-12'>
                 <Nav type='tabs' menu={this.pageControlsMenu} />
-                {this.state.page.userCreated ? (
+              </div>
+            ) : (
+              ''
+            )}
+            {this.props.editable && this.state.showSettings ? (
+              <Modal
+                title='Page Settings'
+                closeHandler={this.toggleSettings.bind(this)}
+                footer={
                   <button
                     type='button'
-                    className='btn btn-danger btn-sm'
-                    onClick={this.deletePage.bind(this)}
+                    className='btn btn-secondary'
+                    onClick={this.toggleSettings.bind(this)}
                   >
-                    <i className='ion ion-md-trash' /> Delete Page
+                    Close
                   </button>
-                ) : (
-                  ''
-                )}
-              </div>
+                }
+              >
+                <PageSettings
+                  appRoot={this.props.appRoot}
+                  admin={this.props.editable}
+                  pageId={this.state.page.id}
+                  page={this.state.page}
+                  path={this.props.path}
+                  settings={this.settings}
+                  deletePage={this.deletePage.bind(this)}
+                  getPageValueHandler={this.getPageValueHandler.bind(this)}
+                  getResetter={this.getPageSettingsResetter.bind(this)}
+                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                    this
+                  )}
+                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                    this
+                  )}
+                />
+              </Modal>
             ) : (
               ''
             )}
@@ -515,10 +706,8 @@ class Page extends React.Component {
           ''
         )}
         {this.state.loading ? (
-          <div className='container'>
-            <span style={{ fontSize: '4rem' }}>
-              <i className='ion ion-md-hourglass spinner' />
-            </span>
+          <div className='spinner-container'>
+            <Spinner size='3.25' />
           </div>
         ) : (
           ''
@@ -543,13 +732,18 @@ class Page extends React.Component {
 
 Page.propTypes = {
   addPage: PropTypes.func,
+  appRoot: PropTypes.string.isRequired,
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
+  navigate: PropTypes.func,
+  onNotFound: PropTypes.func,
   path: PropTypes.string.isRequired,
-  siteSettings: PropTypes.object.isRequired
+  setActivePage: PropTypes.func,
+  setActivePathname: PropTypes.func,
 }
 
 export default Page

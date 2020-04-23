@@ -8,6 +8,14 @@ class Header extends React.Component {
     this.page = React.createRef()
   }
 
+  get cleanPath() {
+    let path = '/home/header/'
+    if (this.props.settings.headerPath.match(/\/header\/$/) !== null) {
+      path = this.props.settings.headerPath
+    }
+    return path
+  }
+
   reload() {
     this.page.current.reload()
   }
@@ -21,10 +29,11 @@ class Header extends React.Component {
           <div>
             {this.props.editable ? <h3>Header</h3> : ''}
             <Page
+              appRoot={this.props.appRoot}
               editable={this.props.editable}
               emitSave={this.props.emitSave}
-              path='/header/'
-              siteSettings={this.props.siteSettings}
+              fallbackSettings={this.props.settings}
+              path={this.cleanPath}
               ref={this.page}
             />
           </div>
@@ -35,10 +44,11 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
   show: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
 }
 
 export default Header

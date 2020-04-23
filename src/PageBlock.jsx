@@ -1,95 +1,464 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import PageBlockImages from './PageBlockImages.jsx'
-import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
+import PageBlockContent from './PageBlockContent.jsx'
+import PageBlockNav from './PageBlockNav.jsx'
+import PageBlockIframe from './PageBlockIframe.jsx'
+import { Card, Modal } from '@preaction/bootstrap-clips'
+import { Form, Input, Checkbox, Select } from '@preaction/inputs'
+import { MdImage } from 'react-icons/md'
+import {
+  MdArrowUpward,
+  MdArrowDownward,
+  MdDelete,
+  MdSettings,
+  MdTextFields,
+} from 'react-icons/md'
+import { getRgbaFromSettings } from './lib/getRgba.js'
 
 class PageBlock extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showSettings: false,
+      uploading: false,
+    }
+    this.uploadForm = React.createRef()
+    this.photosInput = React.createRef()
+  }
+
+  get header() {
+    let el
+    let text = this.props.block.settings.header
+    if (!text) {
+      return ''
+    }
+    let headerLevel = this.props.block.settings.headerLevel
+    switch (headerLevel) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+        el = React.createElement(`h${headerLevel}`, {}, text)
+        break
+      default:
+        el = React.createElement('span', {}, text)
+        break
+    }
+    return el
+  }
+
+  getContentSettingsValueHandler(contentId) {
+    return (key) =>
+      this.props.getContentSettingsValueHandler(
+        this.props.block.id,
+        contentId,
+        key
+      )
+  }
+
+  getPageBlockSettingsValueHandler(key) {
+    return this.props.getPageBlockSettingsValueHandler(this.props.block.id, key)
+  }
+
+  refreshBlock() {
+    this.props.blockControl(this.props.block.id, 'refresh')
+    this.props.emitSave()
+  }
+
+  toggleSettings() {
+    this.setState((state) => {
+      state.showSettings = !state.showSettings
+      return state
+    })
+  }
+
   render() {
     return (
-      <div className={`page-block ${this.props.data.blockType}`}>
-        {this.props.data ? (
-          <div>
-            {this.props.data.blockType === 'wysiwyg' ? (
-              <PageBlockWysiwyg
-                data={this.props.data.pageblockwysiwyg}
-                editable={this.props.editable}
-                emitSave={this.props.emitSave}
-                siteSettings={this.props.siteSettings}
-              />
-            ) : (
-              ''
-            )}
-            {this.props.data.blockType === 'image' ? (
-              <PageBlockImages
-                data={this.props.data}
-                editable={this.props.editable}
-                emitSave={this.props.emitSave}
-                siteSettings={this.props.siteSettings}
-                blockControl={this.props.blockControl}
-                galleryControl={this.props.galleryControl}
-                getImages={this.props.getImages}
-                getPageBlockSettingsValueHandler={
-                  this.props.getPageBlockSettingsValueHandler
-                }
-              />
-            ) : (
-              ''
-            )}
-            {this.props.editable ? (
-              <div className='page-block-buttons'>
+      <Card
+        className={{
+          card: `page-block page-block-outer block-type-${
+            this.props.block.blockType
+          } ${this.props.block.settings.className || ''}`,
+        }}
+        style={{
+          body: {
+            padding: 0,
+          },
+          card: {
+            border: 0,
+            backgroundColor: 'transparent',
+            padding: 0,
+          },
+        }}
+        column
+        width={{
+          lg: this.props.block.settings.lgWidth / 12,
+          md: this.props.block.settings.mdWidth / 12,
+          sm: this.props.block.settings.smWidth / 12,
+          xs: this.props.block.settings.xsWidth / 12,
+        }}
+      >
+        <Card
+          className={{ card: 'page-block-inner' }}
+          style={{
+            body: {
+              backgroundColor: 'transparent',
+              padding: 0,
+            },
+            card: {
+              border: this.props.block.settings.showBorder
+                ? `1px solid ${
+                    getRgbaFromSettings(this.props.settings, 'border').string
+                  }`
+                : 0,
+              backgroundColor: this.props.block.settings.showContainer
+                ? getRgbaFromSettings(this.props.settings, 'container').string
+                : 'transparent',
+            },
+            footer: { padding: 0 },
+          }}
+          header={this.header}
+          headerTheme={this.props.settings.containerHeaderTheme}
+          footerTheme={this.props.settings.containerHeaderTheme}
+          footer={
+            this.props.editable ? (
+              <div className='btn-group d-block'>
                 <button
                   type='button'
-                  className='btn btn-primary btn-sm'
+                  className='btn btn-secondary btn-sm'
                   disabled={this.props.first}
                   onClick={() => {
-                    this.props.blockControl(this.props.data.id, 'previous')
+                    this.props.blockControl(this.props.block.id, 'previous')
                   }}
                 >
-                  <i className='ion ion-md-arrow-up' /> move block up
+                  <MdArrowUpward />
+                </button>
+                <button
+                  type='button'
+                  className='btn btn-secondary btn-sm'
+                  disabled={this.props.last}
+                  onClick={() => {
+                    this.props.blockControl(this.props.block.id, 'next')
+                  }}
+                >
+                  <MdArrowDownward />
                 </button>
                 <button
                   type='button'
                   className='btn btn-danger btn-sm'
                   onClick={() => {
-                    this.props.blockControl(this.props.data.id, 'delete')
+                    this.props.blockControl(this.props.block.id, 'delete')
                   }}
                 >
-                  <i className='ion ion-md-trash' /> delete block
+                  <MdDelete />
                 </button>
                 <button
                   type='button'
-                  className='btn btn-primary btn-sm'
-                  disabled={this.props.last}
+                  className='btn btn-secondary btn-sm'
                   onClick={() => {
-                    this.props.blockControl(this.props.data.id, 'next')
+                    this.toggleSettings()
                   }}
                 >
-                  <i className='ion ion-md-arrow-down' /> move block down
+                  <MdSettings />
                 </button>
+                {this.props.block.blockType === 'content' ? (
+                  <span>
+                    <button
+                      type='button'
+                      className='btn btn-secondary btn-sm'
+                      onClick={() => {
+                        this.props.addContent(this.props.block, 'wysiwyg')
+                      }}
+                    >
+                      <MdTextFields />
+                    </button>
+                    <button
+                      type='button'
+                      className='btn btn-secondary btn-sm'
+                      onClick={() => {
+                        this.photosInput.current.click()
+                      }}
+                    >
+                      <MdImage />
+                    </button>
+                  </span>
+                ) : (
+                  ''
+                )}
               </div>
             ) : (
               ''
-            )}
+            )
+          }
+        >
+          {this.props.block.blockType === 'content' ? (
+            <div className='row'>
+              {this.props
+                .getContents(this.props.block.pageblockcontents)
+                .map((content, key) => (
+                  <PageBlockContent
+                    key={content.id}
+                    appRoot={this.props.appRoot}
+                    block={this.props.block}
+                    column
+                    width={{
+                      lg: content.settings.lgWidth / 12,
+                      md: content.settings.mdWidth / 12,
+                      sm: content.settings.smWidth / 12,
+                      xs: content.settings.xsWidth / 12,
+                    }}
+                    content={content}
+                    contentControl={this.props.contentControl}
+                    first={key === 0}
+                    last={key === this.props.block.pageblockcontents.length - 1}
+                    index={key}
+                    getContentSettingsValueHandler={this.getContentSettingsValueHandler(
+                      content.id
+                    )}
+                    editable={this.props.editable}
+                    emitSave={this.props.emitSave}
+                    navigate={this.props.navigate}
+                    settings={this.props.settings}
+                  />
+                ))}
+            </div>
+          ) : (
+            ''
+          )}
+          {this.props.block.blockType === 'nav' ? (
+            <PageBlockNav
+              appRoot={this.props.appRoot}
+              block={this.props.block}
+              editable={this.props.editable}
+              emitSave={this.props.emitSave}
+              navigate={this.props.navigate}
+              page={this.props.page}
+              settings={this.props.settings}
+            />
+          ) : (
+            ''
+          )}
+          {this.props.block.blockType === 'iframe' ? (
+            <PageBlockIframe
+              appRoot={this.props.appRoot}
+              block={this.props.block}
+              editable={this.props.editable}
+              emitSave={this.props.emitSave}
+              navigate={this.props.navigate}
+              page={this.props.page}
+              settings={this.props.settings}
+            />
+          ) : (
+            ''
+          )}
+        </Card>
+        {this.props.editable && this.state.showSettings ? (
+          <Modal
+            title={`Block Type ${this.props.block.blockType} Settings`}
+            closeHandler={this.toggleSettings.bind(this)}
+          >
+            <Form
+              onSubmit={(e) => {
+                e.prevenDefault()
+              }}
+            >
+              <Input
+                type='text'
+                label='Header'
+                value={this.props.block.settings.header}
+                valueHandler={this.getPageBlockSettingsValueHandler('header')}
+              />
+              <Input
+                type='range'
+                label={`Header Level: ${this.props.block.settings.headerLevel}`}
+                min='0'
+                max='6'
+                value={this.props.block.settings.headerLevel}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'headerLevel'
+                )}
+              />
+              <Input
+                type='text'
+                label='Class Name'
+                value={this.props.block.settings.className}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'className'
+                )}
+              />
+              <Input
+                label={`Desktop Width: ${this.props.block.settings.lgWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.lgWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('lgWidth')}
+              />
+              <Input
+                label={`Tablet Width: ${this.props.block.settings.mdWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.mdWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('mdWidth')}
+              />
+              <Input
+                label={`Phone Width (Landscape): ${this.props.block.settings.smWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.smWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('smWidth')}
+              />
+              <Input
+                label={`Phone Width (Portrait): ${this.props.block.settings.xsWidth} / 12`}
+                type='range'
+                min='0'
+                max='12'
+                step='1'
+                value={this.props.block.settings.xsWidth}
+                valueHandler={this.getPageBlockSettingsValueHandler('xsWidth')}
+              />
+              <Checkbox
+                label='Show Container Background'
+                checked={this.props.block.settings.showContainer}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'showContainer'
+                )}
+              />
+              <Checkbox
+                label='Show Border'
+                checked={this.props.block.settings.showBorder}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'showBorder'
+                )}
+              />
+              {this.props.block.blockType === 'nav' ? (
+                <span>
+                  <Select
+                    label='Alignment'
+                    value={this.props.block.settings.navAlignment}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'navAlignment'
+                    )}
+                  >
+                    <option>left</option>
+                    <option>center</option>
+                    <option>right</option>
+                    <option>vertical</option>
+                  </Select>
+                  <Checkbox
+                    label='Collabsible'
+                    checked={this.props.block.settings.navCollapsible}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'navCollapsible'
+                    )}
+                  />
+                  <Checkbox
+                    label='Enable Submenus'
+                    checked={this.props.block.settings.subMenu}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'subMenu'
+                    )}
+                  />
+                </span>
+              ) : (
+                ''
+              )}
+              {this.props.block.blockType === 'iframe' ? (
+                <span>
+                  <Input
+                    label='URL'
+                    value={this.props.block.settings.iframeSrc}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'iframeSrc'
+                    )}
+                  />
+                </span>
+              ) : (
+                ''
+              )}
+            </Form>
+          </Modal>
+        ) : (
+          ''
+        )}
+        {this.props.editable ? (
+          <div>
+            <form
+              method='POST'
+              action={`${this.props.appRoot}/api/upload`}
+              encType='multipart/form-data'
+              ref={this.uploadForm}
+              target={`upload-frame-${this.props.block.id}`}
+              className='d-none'
+            >
+              <input
+                name='photos'
+                type='file'
+                multiple
+                accept='image/*'
+                ref={this.photosInput}
+                onChange={() => {
+                  this.uploadForm.current.submit()
+                  this.setState((state) => {
+                    state.uploading = true
+                    return state
+                  })
+                }}
+              />
+              <input
+                name='target'
+                type='hidden'
+                value={`page-block/${this.props.block.id}`}
+              />
+            </form>
+            <iframe
+              name={`upload-frame-${this.props.block.id}`}
+              title='upload'
+              onLoad={() => {
+                this.setState(
+                  (state) => {
+                    state.uploading = false
+                    return state
+                  },
+                  () => {
+                    this.refreshBlock()
+                  }
+                )
+              }}
+              className='d-none'
+            />
           </div>
         ) : (
           ''
         )}
-      </div>
+      </Card>
     )
   }
 }
 
 PageBlock.propTypes = {
+  addContent: PropTypes.func.isRequired,
+  appRoot: PropTypes.string.isRequired,
+  block: PropTypes.object.isRequired,
   blockControl: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired,
+  contentControl: PropTypes.func.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
   first: PropTypes.bool,
-  galleryControl: PropTypes.func.isRequired,
-  getImages: PropTypes.func.isRequired,
+  getContentSettingsValueHandler: PropTypes.func.isRequired,
+  getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
+  navigate: PropTypes.func,
+  page: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
 }
 
 export default PageBlock

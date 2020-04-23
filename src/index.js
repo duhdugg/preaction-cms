@@ -5,7 +5,23 @@ import * as serviceWorker from './serviceWorker'
 import 'es5-shim'
 import 'es6-shim'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+let settings = {
+  root: '',
+  socketMode: false,
+}
+settings.root =
+  sessionStorage.preactionAppRoot || window.appRoot !== '$ROOT'
+    ? window.appRoot
+    : ''
+settings.socketMode =
+  sessionStorage.preactionSocketMode || window.socketMode !== '$SOCKET_MODE'
+    ? window.socketMode === 'true'
+    : false
+
+ReactDOM.render(
+  <App root={settings.root} socketMode={settings.socketMode} />,
+  document.getElementById('root')
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

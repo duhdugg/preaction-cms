@@ -8,6 +8,14 @@ class Footer extends React.Component {
     this.page = React.createRef()
   }
 
+  get cleanPath() {
+    let path = '/home/footer/'
+    if (this.props.settings.footerPath.match(/\/footer\/$/) !== null) {
+      path = this.props.settings.footerPath
+    }
+    return path
+  }
+
   reload() {
     this.page.current.reload()
   }
@@ -21,10 +29,11 @@ class Footer extends React.Component {
           <div>
             {this.props.editable ? <h3>Footer</h3> : ''}
             <Page
+              appRoot={this.props.appRoot}
               editable={this.props.editable}
               emitSave={this.props.emitSave}
-              path='/footer/'
-              siteSettings={this.props.siteSettings}
+              fallbackSettings={this.props.settings}
+              path={this.cleanPath}
               ref={this.page}
             />
           </div>
@@ -35,10 +44,11 @@ class Footer extends React.Component {
 }
 
 Footer.propTypes = {
+  appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
   show: PropTypes.bool,
-  siteSettings: PropTypes.object.isRequired
 }
 
 export default Footer

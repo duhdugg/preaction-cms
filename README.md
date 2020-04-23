@@ -1,10 +1,6 @@
 ## Preaction CMS
 
-Preaction CMS is a CMS intended to be super cool and user friendly.
-
-### Current State
-
-Development is active. Documentation needs improvement. There is no backwards-compatibility guarantee. There are certainly bugs. The UI needs some serious triage. Pull requests welcome!
+Preaction CMS is a barebones, customizeable CMS built on top of simple libraries.
 
 ### Running
 
@@ -24,86 +20,74 @@ run the server:
 
 `yarn start`
 
-change the admin password:
+### Scripts
 
-`node`
+#### For Admins
 
-```
-const updateAdminPassword = require('./lib/session').updateAdminPassword
-updateAdminPassword('newpass')
-```
+copy the data/db.sqlite database to a timestamped and hashed file in the data/backups directory:
 
-### Features
+`yarn backup-db`
 
-- [x] authentication
-  - [x] user+pw login, bcrypted
-  - [ ] email+pw login, bcrypted, registered, verified, self-service, reset
-- [x] automatic reload on updates
-  - [x] reload page data with updates
-  - [ ] reload only specific block with updates
-- [x] automatic saving of updates
-- [x] block types
-  - [ ] bio (photo, name, subtitle, description)
-  - [x] contained wysiwyg
-  - [ ] embedded frame
-  - [x] images
-  - [ ] panel
-  - [ ] social links
-  - [ ] storefront info (address, phone, hours)
-  - [ ] uncontained wysiwyg
-  - [ ] youtube
-- [x] editable page footers
-- [x] editable page headers
-- [x] image block controls
-  - [x] add image
-  - [x] delete image
-  - [x] move image
-- [x] image block settings
-  - [x] center/justify
-  - [x] collapse columns responsively
-  - [x] push to zoom
-  - [x] show container
-  - [x] width percentage
-- [ ] wysiwyg block settings
-  - [ ] show container
-  - [ ] show timestamp
-- [x] page management
-  - [x] create page
-  - [x] delete blocks
-  - [x] delete page
-  - [x] rearrange blocks
-  - [x] rename page
-  - [x] view page
-- [x] module types
-  - [x] page
-  - [x] subpage
-- [x] page settings
-  - [x] show footer
-  - [x] show header
-- [x] redirects
-  - [x] create redirect
-  - [x] update redirect
-  - [x] delete redirect
-  - [x] handle redirect
-- [x] site settings management
-  - [x] site name setting
-  - [x] analytics
-- [x] style settings
-  - [x] background color
-  - [x] background image
-  - [x] background image tile
-  - [x] container color
-  - [x] container opacity
-  - [x] favicon image
-  - [x] link color
-  - [x] navigation type
-  - [x] text color
-  - [ ] uncontained link color
-  - [ ] uncontained text color
-  - [ ] submenu item background color
-  - [ ] font families
-  - [ ] font scaling
-  - [x] CSS overrides
-- [ ] extension API
-- [ ] user documentation
-- [ ] developer documentation
+delete all sessions from the database:
+
+`yarn clear-sessions`
+
+generate a new randomly-generated password for the admin user:
+
+`yarn randomize-password`
+
+set password by prompt:
+
+`yarn set-password`
+
+the above will also accept whatever is piped into it, so this example is one way to generate and set a random password that is 8,192 alphanumeric characters in length:
+
+`dd if=/dev/urandom | strings -e s | sed 's/[^a-za-z0-9]//g' | tr -d '\n' | dd count=1 bs=8192 2> /dev/null | yarn set-password`
+
+create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, the build directory, and any db-referenced files in the uploads directory:
+
+`yarn package`
+
+### Environment Variables
+
+`PREACTION_COOKIE_SAMESITE=strict` sets cookies to samesite strict
+
+`PREACTION_COOKIE_SECURE=1` sets cookies to require https
+
+`PREACTION_DB_BACKUP=1` enables automatic backup of Sqlite database
+
+`PREACTION_DB_LOGGING=1` enables logging from Sequelize ORM
+
+`PREACTION_READONLY=1` disables all admin-required middleware
+
+`PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
+
+`PREACTION_PORT=8080` configures the port to listen on
+
+`PREACTION_SOCKET_MODE=1` enables socket features (automatic reload)
+
+### Development
+
+run the server with automatic reloading:
+
+`yarn dev-server`
+
+apply prettier requirements to source:
+
+`yarn makeover`
+
+run tests:
+
+`yarn test`
+
+run server with nodejs inspection:
+
+`yarn start-inspect`
+
+run server with nodejs profiling:
+
+`yarn start-profile`
+
+start the react development server for automatic client reloading:
+
+`yarn dev-client`

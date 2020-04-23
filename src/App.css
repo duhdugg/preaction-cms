@@ -26,7 +26,7 @@ code {
   top: 0;
   left: 0;
   background-color: transparent;
-  transition: background-color 1s linear;
+  transition: background-color 0.5s linear;
   will-change: transform;
   z-index: -2;
   pointer-events: none;
@@ -34,13 +34,13 @@ code {
 
 .App::before {
   opacity: 0;
-  transition: opacity 1s linear;
+  transition: opacity 0.5s linear;
 }
 
 .App {
   opacity: 0;
   color: transparent;
-  transition: opacity 1s linear, color 1s linear;
+  transition: opacity 0.5s linear, color 0.5s linear;
 }
 
 footer {
@@ -48,12 +48,20 @@ footer {
   margin-top: 1em;
 }
 
+hr {
+  margin: 0;
+}
+
 a {
-  transition: color 1s linear;
+  transition: color 0.5s linear;
 }
 
 a:hover {
   text-decoration: none;
+}
+
+.ql-editor {
+  padding: 0 !important;
 }
 
 .ql-editor a {
@@ -65,27 +73,88 @@ a:hover {
   max-height: 50vh;
 }
 
+.settings-component .card {
+  margin-bottom: 1em;
+}
+
+.settings-component h3,
+.settings-component table,
+.settings-component label {
+  text-shadow: 1px 1px #ccc;
+}
+
+.page .card .card-header,
+.page .card .card-footer {
+  transition: border-color 0.5s linear, color 0.5s linear,
+    background-color 0.5s linear;
+}
+.page .card {
+  transition: border-color 0.5s linear, background-color 0.5s linear;
+}
+.page .card .card-header h6,
+.page .card .card-header h5,
+.page .card .card-header h4,
+.page .card .card-header h3,
+.page .card .card-header h2,
+.page .card .card-header h1 {
+  margin-bottom: 0;
+}
+.page .card .card-header h6,
+.page .card .card-header h5,
+.page .card .card-header h4 {
+  font-size: 1em;
+}
+.page .card .card-header h3 {
+  font-size: 1.17em;
+}
+.page .card .card-header h2 {
+  font-size: 1.5em;
+}
+.page .card .card-header h1 {
+  font-size: 2em;
+}
+
+.modal-content {
+  color: transparent;
+  background-color: transparent;
+  transition: color 0.5s linear, background-color 0.5s linear;
+}
+
+.modal-content .modal-header,
+.modal-content .modal-footer {
+  color: #f8f9fa;
+  background-color: #343a40;
+  border: 0;
+}
+.modal-content .modal-header svg {
+  color: #fff;
+}
+
 .wysiwyg label {
   display: none;
+}
+
+.wysiwyg .modal label {
+  display: inline-block;
 }
 
 .wysiwyg .ql-container {
   font-size: 1rem;
 }
 
+.wysiwyg .ql-toolbar.ql-snow,
+.wysiwyg .ql-container.ql-snow {
+  border: 0;
+}
+
+.wysiwyg .ql-toolbar.ql-snow {
+  background-color: white;
+}
+
 .wysiwyg .ql-tooltip {
   z-index: 99999;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(180deg);
-  }
-}
-
-i.spinner:before {
-  animation: spin 1s infinite ease-in-out;
+.wysiwyg .ql-editor {
+  overflow: hidden;
 }

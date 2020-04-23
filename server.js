@@ -12,13 +12,16 @@ const path = require('path')
 // excerptHtml is used to generate descriptions from content
 const excerptHtml = require('excerpt-html')
 // sitemap is used to generate sitemaps
-const sm = require('sitemap')
+const { SitemapStream } = require('sitemap')
+// zlib is used to gzip sitemap
+const { createGzip } = require('zlib')
 
 // app is our main express module
 const app = express()
 
 // <== LOCAL IMPORTS ==>
 const db = require('./lib/db.js')
+const env = require('./lib/env.js')
 const settings = require('./lib/modules/settings.js')
 const pages = require('./lib/modules/pages.js')
 const redirects = require('./lib/modules/redirects.js')
@@ -48,17 +51,7 @@ app.use(pages.expressModule)
 // <== ROUTES ==>
 
 app.route('/icon').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'icon' } }).then(setting => {
-    if (!setting) {
-      res.status(404).send('')
-      return
-    }
-    res.redirect(setting.value)
-  })
-})
-
-app.route('/bg').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'bg' } }).then(setting => {
+  db.model.Settings.findOne({ where: { key: 'icon' } }).then((setting) => {
     if (!setting) {
       res.status(404).send('')
       return
@@ -68,33 +61,43 @@ app.route('/bg').get((req, res) => {
 })
 
 app.route('/sitemap.xml').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'hostname' } }).then(setting => {
+  db.model.Settings.findOne({ where: { key: 'hostname' } }).then((setting) => {
     let hostname = setting && setting.value ? setting.value : ''
     let changefreq = 'always'
-    let sitemap = sm.createSitemap({
-      hostname,
-      urls: [
-        {
-          url: '/',
-          changefreq
-        }
-      ]
-    })
-    pages.model.Page.findAll().then(pages => {
-      pages.forEach(page => {
-        if (page.userCreated) {
-          let title = page.title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-          sitemap.add({ url: `/${title}/`, changefreq })
-        }
+    try {
+      let smStream = new SitemapStream({ hostname: hostname })
+      let pipeline = smStream.pipe(createGzip())
+      smStream.write({
+        url: '/',
+        changefreq,
       })
-      sitemap.toXML((err, xml) => {
-        if (err) {
-          res.status(500).end()
+      pages.model.Page.findAll({ where: { userCreated: true } }).then(
+        (pageRows) => {
+          let rowCount = pageRows.length
+          let countMapped = 0
+          pageRows.forEach((page) => {
+            pages.funcs.getPagePath(page).then((path) => {
+              smStream.write({
+                url: `${env.root}/${path}/`,
+                changefreq,
+              })
+              countMapped++
+              if (countMapped >= rowCount) {
+                smStream.end()
+                res.header('Content-Type', 'application/xml')
+                res.header('Content-Encoding', 'gzip')
+                pipeline.pipe(res).on('error', (e) => {
+                  throw e
+                })
+              }
+            })
+          })
         }
-        res.header('Content-Type', 'application/xml')
-        res.send(xml)
-      })
-    })
+      )
+    } catch (e) {
+      console.error(e)
+      res.status(500).end()
+    }
   })
 })
 
@@ -105,12 +108,12 @@ app.route('/').get((req, res) => {
     include: [
       {
         model: pages.model.PageBlock,
-        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
-      }
-    ]
-  }).then(page => {
+        include: [pages.model.PageBlockContent],
+      },
+    ],
+  }).then((page) => {
     let status = page ? 200 : 404
-    let content = ''
+    let description = ''
     let pageblocks = page ? page.pageblocks : []
     pageblocks.sort((a, b) => {
       let retval = 0
@@ -121,13 +124,29 @@ app.route('/').get((req, res) => {
       }
       return retval
     })
-    pageblocks.forEach(pageblock => {
-      if (pageblock.pageblockwysiwyg) {
-        content += pageblock.pageblockwysiwyg.content || ''
+    pageblocks.forEach((pageblock) => {
+      if (pageblock.pageblockcontents) {
+        let contents = pageblock.pageblockcontents
+        contents.sort((a, b) => {
+          let retval = 0
+          if (a.ordering < b.ordering) {
+            retval = -1
+          } else if (a.ordering > b.ordering) {
+            retval = 1
+          }
+          return retval
+        })
+        pageblock.pageblockcontents.forEach((pbc) => {
+          if (pbc.wysiwyg) {
+            description += pbc.wysiwyg
+          }
+        })
       }
     })
-    content = excerptHtml(content, { pruneLength: 300 })
-    renderClient(req, res.status(status), { description: content })
+    // remove line-break paragraphs
+    description = description.replace(/<p><br><\/p>/g, '')
+    description = excerptHtml(description, { pruneLength: 300 })
+    renderClient(req, res.status(status), { description })
   })
 })
 
@@ -138,9 +157,8 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // description metadata generated from pageblocks
 app.route('*').get((req, res) => {
   let matchRedirect = false
-  console.debug(req.path)
-  redirects.model.Redirect.findAll().then(redirects => {
-    redirects.forEach(redirect => {
+  redirects.model.Redirect.findAll().then((redirects) => {
+    redirects.forEach((redirect) => {
       let re = new RegExp(`^/?${redirect.match}/?$`)
       if (re.test(req.path)) {
         matchRedirect = true
@@ -154,70 +172,100 @@ app.route('*').get((req, res) => {
     case 'home':
     case 'header':
     case 'footer':
+    case 'favicon.ico':
       renderClient(req, res.status(404, ''))
       return
     default:
   }
-  pages.model.Page.findOne({
-    where: { key: pageKey },
-    include: [
-      {
-        model: pages.model.PageBlock,
-        include: [pages.model.PageBlockImage, pages.model.PageBlockWysiwyg]
-      }
-    ]
-  }).then(page => {
-    if (matchRedirect) {
-      return
-    }
-    let status = page ? 200 : 404
-    let content = ''
-    let pageblocks = page ? page.pageblocks : []
-    pageblocks.sort((a, b) => {
-      let retval = 0
-      if (a.ordering < b.ordering) {
-        retval = -1
-      } else if (a.ordering > b.ordering) {
-        retval = 1
-      }
-      return retval
+  pages.funcs
+    .getPageByPath(req.path)
+    .then((page) => {
+      pages.funcs
+        .getFullPageById(page.id)
+        .then((page) => {
+          if (matchRedirect) {
+            return
+          }
+          let status = page ? 200 : 404
+          let description = ''
+          let pageblocks = page ? page.pageblocks : []
+          pageblocks.sort((a, b) => {
+            let retval = 0
+            if (a.ordering < b.ordering) {
+              retval = -1
+            } else if (a.ordering > b.ordering) {
+              retval = 1
+            }
+            return retval
+          })
+          pageblocks.forEach((pageblock) => {
+            if (pageblock.pageblockcontents) {
+              let contents = pageblock.pageblockcontents
+              contents.sort((a, b) => {
+                let retval = 0
+                if (a.ordering < b.ordering) {
+                  retval = -1
+                } else if (a.ordering > b.ordering) {
+                  retval = 1
+                }
+                return retval
+              })
+              pageblock.pageblockcontents.forEach((pbc) => {
+                if (pbc.wysiwyg) {
+                  description += pbc.wysiwyg
+                }
+              })
+            }
+          })
+          // remove line-break paragraphs
+          description = description.replace(/<p><br><\/p>/g, '')
+          description = excerptHtml(description, { pruneLength: 300 })
+          pages.funcs.getAppliedPageSettings(page.id).then((settings) => {
+            let siteTitle = settings.siteTitle
+            let pageTitle = page.title
+            renderClient(req, res.status(status), {
+              description,
+              siteTitle,
+              pageTitle,
+            })
+          })
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     })
-    pageblocks.forEach(pageblock => {
-      if (pageblock.pageblockwysiwyg) {
-        content += pageblock.pageblockwysiwyg.content
-      }
+    .catch(() => {
+      renderClient(req, res.status(404), {})
     })
-    content = excerptHtml(content, { pruneLength: 300 })
-    renderClient(req, res.status(status), { description: content })
-  })
 })
 
 // <== SOCKET.IO EVENT CONFIG ==>
 
-io.on('connection', socket => {
-  socket.on('save', fn => {
-    fn()
-    if (socket.conn.request.session.authenticated) {
-      io.emit('load')
-    }
+if (env.socketMode) {
+  io.on('connection', (socket) => {
+    socket.on('save', (fn) => {
+      fn()
+      if (socket.conn.request.session.authenticated) {
+        io.emit('load')
+      }
+    })
+    socket.on('force-reload', (fn) => {
+      fn()
+      if (socket.conn.request.session.authenticated) {
+        io.emit('reload-app')
+      }
+    })
   })
-  socket.on('force-reload', fn => {
-    fn()
-    if (socket.conn.request.session.authenticated) {
-      io.emit('reload-page')
-    }
-  })
-})
+}
 
 // <== SERVER SETUP ==>
 
-const port = process.env.PREACTION_PORT || 8999
-
 db.sync()
   .then(session.sync)
+  .then(settings.sync)
   .then(pages.sync)
   .then(redirects.sync)
 
-http.listen(port, () => {
-  console.log(`@preaction/cms app listening on port ${port}`)
+http.listen(env.port, () => {
+  console.log(`@preaction/cms app listening on port ${env.port}`)
 })

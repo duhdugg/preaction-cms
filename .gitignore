@@ -24,3 +24,6 @@ yarn-error.log*
 
 # backup files
 *.bak
+
+# package
+preaction-cms.tar.gz

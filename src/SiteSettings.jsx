@@ -1,18 +1,19 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
-import { Card } from '@preaction/bootstrap-clips'
+import { Card, Spinner } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
+import { getRgbaFromSettings } from './lib/getRgba.js'
+import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
 
-class Settings extends React.Component {
+class SiteSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      newPageTitle: '',
       redirect: null,
       redirects: [],
       uploadingBg: false,
-      uploadingIcon: false
+      uploadingIcon: false,
     }
     this.uploadIconForm = React.createRef()
     this.iconFileInput = React.createRef()
@@ -21,21 +22,23 @@ class Settings extends React.Component {
   }
 
   deleteRedirect(redirect) {
-    axios.delete(`/api/redirect/${redirect.id}`).then(response => {
-      this.getRedirects()
-    })
+    axios
+      .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
+      .then((response) => {
+        this.getRedirects()
+      })
   }
 
   editRedirect(redirect) {
-    this.setState(state => {
+    this.setState((state) => {
       state.redirect = JSON.parse(JSON.stringify(redirect))
       return state
     })
   }
 
   getRedirects() {
-    axios.get('/api/redirect').then(response => {
-      this.setState(state => {
+    axios.get(`${this.props.appRoot}/api/redirect`).then((response) => {
+      this.setState((state) => {
         state.redirects = response.data
         return state
       })
@@ -43,8 +46,8 @@ class Settings extends React.Component {
   }
 
   getRedirectValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state.redirect[key] = value
         return state
       })
@@ -52,22 +55,11 @@ class Settings extends React.Component {
   }
 
   getValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state[key] = value
         return state
       })
-    }
-  }
-
-  get newPage() {
-    let title = this.state.newPageTitle
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
-    let pageType = 'content'
-    return {
-      key,
-      title,
-      pageType
     }
   }
 
@@ -86,16 +78,21 @@ class Settings extends React.Component {
     }
     if (this.state.redirect.id) {
       axios
-        .put(`/api/redirect/${this.state.redirect.id}`, this.state.redirect)
-        .then(response => {
+        .put(
+          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}`,
+          this.state.redirect
+        )
+        .then((response) => {
           this.getRedirects()
         })
     } else {
-      axios.post('/api/redirect/', this.state.redirect).then(response => {
-        this.getRedirects()
-      })
+      axios
+        .post(`${this.props.appRoot}/api/redirect/`, this.state.redirect)
+        .then((response) => {
+          this.getRedirects()
+        })
     }
-    this.setState(state => {
+    this.setState((state) => {
       state.redirect = null
       return state
     })
@@ -103,8 +100,8 @@ class Settings extends React.Component {
 
   render() {
     return (
-      <div>
-        {this.props.authenticated ? (
+      <div className='settings-component'>
+        {this.props.admin ? (
           <div>
             <style type='text/css'>{`
               table.redirects td {
@@ -116,16 +113,25 @@ class Settings extends React.Component {
                 border-left: 0;
               }
             `}</style>
-            <form className='form ml-3 mr-3' onSubmit={e => e.preventDefault()}>
-              <h3>Site Settings</h3>
+            <form
+              className='form ml-3 mr-3'
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className='row'>
                 <div className='col'>
                   <Input
                     label='Site Name'
                     type='text'
-                    value={this.props.siteSettings.siteTitle}
+                    value={this.props.settings.siteTitle}
                     valueHandler={this.props.getSettingsValueHandler(
                       'siteTitle'
+                    )}
+                  />
+                  <Checkbox
+                    label='Max Width Layout'
+                    checked={this.props.settings.maxWidthLayout}
+                    valueHandler={this.props.getSettingsValueHandler(
+                      'maxWidthLayout'
                     )}
                   />
                   <Card
@@ -133,88 +139,141 @@ class Settings extends React.Component {
                     headerTheme='dark'
                     style={{
                       card: {
-                        backgroundColor: 'transparent'
-                      }
+                        backgroundColor: 'transparent',
+                      },
                     }}
                   >
-                    <Select
-                      label='Nav Position'
-                      value={this.props.siteSettings.navPosition}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'navPosition'
+                    <div className='row'>
+                      <div className='col-sm-6'>
+                        <Select
+                          label='Nav Position'
+                          value={this.props.settings.navPosition}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navPosition'
+                          )}
+                        >
+                          <option value='fixed-top'>Fixed to Top</option>
+                          <option value='above-header'>Above Header</option>
+                          <option value='below-header'>Below Header</option>
+                        </Select>
+                      </div>
+                      {this.props.settings.navPosition === 'fixed-top' ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Theme'
+                            value={this.props.settings.navTheme}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navTheme'
+                            )}
+                          >
+                            <option value='light'>Light</option>
+                            <option value='dark'>Dark</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
                       )}
-                    >
-                      <option value='fixed-top'>Fixed to Top</option>
-                      <option value='above-header'>Above Header</option>
-                      <option value='below-header'>Below Header</option>
-                    </Select>
-                    {this.props.siteSettings.navPosition === 'fixed-top' ? (
-                      <Select
-                        label='Nav Theme'
-                        value={this.props.siteSettings.navTheme}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'navTheme'
-                        )}
-                      >
-                        <option />
-                        <option value='light'>Light</option>
-                        <option value='dark'>Dark</option>
-                      </Select>
-                    ) : (
-                      ''
-                    )}
-                    {['above-header', 'below-header'].indexOf(
-                      this.props.siteSettings.navPosition
-                    ) > -1 ? (
-                      <div>
-                        <Select
-                          label='Nav Type'
-                          value={this.props.siteSettings.navType}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Type'
+                            value={this.props.settings.navType}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navType'
+                            )}
+                          >
+                            <option>basic</option>
+                            <option>tabs</option>
+                            <option>pills</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Alignment'
+                            value={this.props.settings.navAlignment}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navAlignment'
+                            )}
+                          >
+                            <option>left</option>
+                            <option>center</option>
+                            <option>right</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Select
+                            label='Nav Spacing'
+                            value={this.props.settings.navSpacing}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navSpacing'
+                            )}
+                          >
+                            <option>normal</option>
+                            <option>fill</option>
+                            <option>justify</option>
+                          </Select>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {['above-header', 'below-header'].indexOf(
+                        this.props.settings.navPosition
+                      ) > -1 ? (
+                        <div className='col-sm-6'>
+                          <Checkbox
+                            label='Collapse nav for smaller screens'
+                            checked={this.props.settings.navCollapsible}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navCollapsible'
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      <div className='col-12'>
+                        <Input
+                          label='Nav Class Name'
+                          value={this.props.settings.navClassName}
                           valueHandler={this.props.getSettingsValueHandler(
-                            'navType'
-                          )}
-                        >
-                          <option>basic</option>
-                          <option>tabs</option>
-                          <option>pills</option>
-                        </Select>
-                        <Select
-                          label='Nav Alignment'
-                          value={this.props.siteSettings.navAlignment}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navAlignment'
-                          )}
-                        >
-                          <option>left</option>
-                          <option>center</option>
-                          <option>right</option>
-                        </Select>
-                        <Select
-                          label='Nav Spacing'
-                          value={this.props.siteSettings.navSpacing}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navSpacing'
-                          )}
-                        >
-                          <option>normal</option>
-                          <option>fill</option>
-                          <option>justify</option>
-                        </Select>
-                        <Checkbox
-                          label='Collapse nav for smaller screens'
-                          checked={this.props.siteSettings.navCollapsible}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navCollapsible'
+                            'navClassName'
                           )}
                         />
                       </div>
-                    ) : (
-                      ''
-                    )}
+                    </div>
+                  </Card>
+                  <Card header='Header' headerTheme='light'>
+                    <Checkbox
+                      label='Show Header'
+                      checked={this.props.settings.showHeader}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showHeader'
+                      )}
+                    />
+                    <Checkbox
+                      label='Show Footer'
+                      checked={this.props.settings.showFooter}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'showFooter'
+                      )}
+                    />
                   </Card>
                 </div>
               </div>
-
               <div className='row'>
                 <Card
                   header='Background'
@@ -223,44 +282,51 @@ class Settings extends React.Component {
                   headerTheme='green'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <Checkbox
                     label='Use Background Image'
-                    checked={this.props.siteSettings.useBgImage}
+                    checked={this.props.settings.useBgImage}
                     valueHandler={this.props.getSettingsValueHandler(
                       'useBgImage'
                     )}
                   />
-                  {this.props.siteSettings.useBgImage ? (
+                  {this.props.settings.useBgImage ? (
                     <div>
                       <Checkbox
                         label='Tile Background Image'
-                        checked={this.props.siteSettings.tileBgImage}
+                        checked={this.props.settings.tileBgImage}
                         valueHandler={this.props.getSettingsValueHandler(
                           'tileBgImage'
                         )}
                       />
-                      <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={() => {
-                          this.bgFileInput.current.click()
-                        }}
-                        disabled={this.state.uploadingBg}
-                      >
-                        Upload Background
-                        {this.state.uploadingBg ? (
-                          <span>
-                            <span> </span>
-                            <i className='icon ion-md-hourglass spinner' />
-                          </span>
-                        ) : (
-                          ''
-                        )}
-                      </button>
+                      <Input
+                        label='Background Image Path'
+                        valueHandler={this.props.getSettingsValueHandler('bg')}
+                        value={this.props.settings.bg}
+                      />
+                      <div>
+                        <button
+                          type='button'
+                          className='btn btn-primary'
+                          onClick={() => {
+                            this.bgFileInput.current.click()
+                          }}
+                          disabled={this.state.uploadingBg}
+                        >
+                          Upload Background
+                          {this.state.uploadingBg ? (
+                            <span>
+                              <span> </span>
+                              <Spinner />
+                            </span>
+                          ) : (
+                            ''
+                          )}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     ''
@@ -273,8 +339,8 @@ class Settings extends React.Component {
                   headerTheme='yellow'
                   style={{
                     card: {
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
                   <button
@@ -289,7 +355,7 @@ class Settings extends React.Component {
                     {this.state.uploadingIcon ? (
                       <span>
                         <span> </span>
-                        <i className='icon ion-md-hourglass spinner' />
+                        <Spinner />
                       </span>
                     ) : (
                       ''
@@ -297,18 +363,16 @@ class Settings extends React.Component {
                   </button>
                 </Card>
               </div>
-
               <div className='row'>
                 <div className='col'></div>
               </div>
-
               <Card
                 header='Colors'
                 headerTheme='dark'
                 style={{
                   card: {
-                    backgroundColor: 'transparent'
-                  }
+                    backgroundColor: 'transparent',
+                  },
                 }}
               >
                 <div className='row'>
@@ -316,7 +380,7 @@ class Settings extends React.Component {
                     <Input
                       label='Background Color'
                       type='color'
-                      value={this.props.siteSettings.bgColor}
+                      value={this.props.settings.bgColor}
                       valueHandler={this.props.getSettingsValueHandler(
                         'bgColor'
                       )}
@@ -326,29 +390,29 @@ class Settings extends React.Component {
                     <Input
                       label='Text Color'
                       type='color'
-                      value={this.props.siteSettings.fontColor}
+                      value={this.props.settings.fontColor}
                       valueHandler={this.props.getSettingsValueHandler(
                         'fontColor'
                       )}
                     />
                   </div>
-                </div>
-                <div className='row'>
-                  <div className='col'>
+                  <div className='col-sm'>
                     <Input
                       label='Link Color'
                       type='color'
-                      value={this.props.siteSettings.linkColor}
+                      value={this.props.settings.linkColor}
                       valueHandler={this.props.getSettingsValueHandler(
                         'linkColor'
                       )}
                     />
                   </div>
+                </div>
+                <div className='row'>
                   <div className='col-sm'>
                     <Input
                       label='Container Color'
                       type='color'
-                      value={this.props.siteSettings.containerColor}
+                      value={this.props.settings.containerColor}
                       valueHandler={this.props.getSettingsValueHandler(
                         'containerColor'
                       )}
@@ -358,7 +422,7 @@ class Settings extends React.Component {
                     <Input
                       label='Border Color'
                       type='color'
-                      value={this.props.siteSettings.borderColor}
+                      value={this.props.settings.borderColor}
                       valueHandler={this.props.getSettingsValueHandler(
                         'borderColor'
                       )}
@@ -374,7 +438,17 @@ class Settings extends React.Component {
                       min='0'
                       max='1'
                       step='0.01'
-                      value={this.props.siteSettings.containerOpacity}
+                      value={this.props.settings.containerOpacity}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerOpacity'
+                      )}
+                    />
+                    <Input
+                      type='range'
+                      min='0'
+                      max='1'
+                      step='0.01'
+                      value={this.props.settings.containerOpacity}
                       valueHandler={this.props.getSettingsValueHandler(
                         'containerOpacity'
                       )}
@@ -388,56 +462,101 @@ class Settings extends React.Component {
                       min='0'
                       max='1'
                       step='0.01'
-                      value={this.props.siteSettings.borderOpacity}
+                      value={this.props.settings.borderOpacity}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'borderOpacity'
+                      )}
+                    />
+                    <Input
+                      type='range'
+                      min='0'
+                      max='1'
+                      step='0.01'
+                      value={this.props.settings.borderOpacity}
                       valueHandler={this.props.getSettingsValueHandler(
                         'borderOpacity'
                       )}
                     />
                   </div>
-                </div>
-
-                <div>
-                  <h3>Samples</h3>
-                  <div>
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Test Link
-                      </a>
-                    </p>
-                  </div>
-                  <div
-                    className='p-3'
-                    style={{
-                      backgroundColor: this.props.siteSettings.containerRgba
-                        .string,
-                      border: `1px solid ${this.props.siteSettings.borderRgba.string}`,
-                      borderRadius: '0.25rem',
-                      transition:
-                        'background-color 1s linear, border-color 1s linear'
-                    }}
-                  >
-                    <p>Text</p>
-                    <p>
-                      <a href='.' onClick={e => e.preventDefault()}>
-                        Link
-                      </a>
-                    </p>
+                  <div className='col-sm'>
+                    <Select
+                      label='Container Header Theme'
+                      value={this.props.settings.containerHeaderTheme}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'containerHeaderTheme'
+                      )}
+                    >
+                      <option>blue</option>
+                      <option>dark</option>
+                      <option>gray</option>
+                      <option>green</option>
+                      <option>light</option>
+                      <option>red</option>
+                      <option>teal</option>
+                      <option>yellow</option>
+                    </Select>
                   </div>
                 </div>
               </Card>
+              <Card
+                header='Samples'
+                style={{
+                  card: {
+                    backgroundColor: this.props.settings.bgColor,
+                  },
+                }}
+                headerTheme='teal'
+              >
+                <div>
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
+                      Test Link
+                    </a>
+                  </p>
+                </div>
+                <Card
+                  header='Container'
+                  headerTheme={this.props.settings.containerHeaderTheme}
+                  style={{
+                    card: {
+                      backgroundColor: getRgbaFromSettings(
+                        this.props.settings,
+                        'container'
+                      ).string,
+                      border: `1px solid ${
+                        getRgbaFromSettings(this.props.settings, 'border')
+                          .string
+                      }`,
+                      borderRadius: '0.25rem',
+                      transition:
+                        'background-color 0.5s linear, border-color 0.5s linear',
+                    },
+                    body: {
+                      padding: '1em',
+                    },
+                  }}
+                >
+                  <p>Text</p>
+                  <p>
+                    <a href='.' onClick={(e) => e.preventDefault()}>
+                      Link
+                    </a>
+                  </p>
+                </Card>
+              </Card>
               <Textarea
                 label='CSS Overrides'
-                value={this.props.siteSettings.cssOverrides}
+                value={this.props.settings.cssOverrides}
                 valueHandler={this.props.getSettingsValueHandler(
                   'cssOverrides'
                 )}
               />
               <Card
                 header='Redirects'
-                headerTheme='red'
+                headerTheme='green'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <div className='row'>
@@ -450,27 +569,27 @@ class Settings extends React.Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.redirects.map(redirect => {
+                      {this.state.redirects.map((redirect) => {
                         return (
                           <tr key={redirect.id}>
                             <td>
                               <button
                                 type='button'
                                 className='btn btn-sm btn-light'
-                                onClick={e => {
+                                onClick={(e) => {
                                   this.editRedirect(redirect)
                                 }}
                               >
-                                <i className='ion ion-md-create' /> edit
+                                <MdCreate /> edit
                               </button>
                               <button
                                 type='button'
                                 className='btn btn-sm btn-danger'
-                                onClick={e => {
+                                onClick={(e) => {
                                   this.deleteRedirect(redirect)
                                 }}
                               >
-                                <i className='ion ion-md-trash' /> delete
+                                <MdDelete /> delete
                               </button>
                             </td>
                             <td>{redirect.match}</td>
@@ -483,15 +602,15 @@ class Settings extends React.Component {
                           <button
                             type='button'
                             className='btn btn-sm btn-primary'
-                            onClick={e => {
+                            onClick={(e) => {
                               this.editRedirect({
                                 id: null,
                                 match: '',
-                                location: ''
+                                location: '',
                               })
                             }}
                           >
-                            <i className='ion ion-md-create' /> new
+                            <MdCreate /> new
                           </button>
                         </td>
                         <td />
@@ -504,7 +623,7 @@ class Settings extends React.Component {
                           <td
                             style={{
                               top: '-0.5rem',
-                              position: 'relative'
+                              position: 'relative',
                             }}
                           >
                             <button
@@ -512,7 +631,7 @@ class Settings extends React.Component {
                               className='btn btn-success btn-sm'
                               onClick={this.saveRedirect.bind(this)}
                             >
-                              <i className='ion ion-md-save' /> Save
+                              <MdSave /> save
                             </button>
                           </td>
                           <td>
@@ -543,20 +662,20 @@ class Settings extends React.Component {
                 header='Analytics'
                 headerTheme='blue'
                 style={{
-                  card: { backgroundColor: 'transparent' }
+                  card: { backgroundColor: 'transparent' },
                 }}
               >
                 <Checkbox
                   label='Use Google Analytics'
-                  checked={this.props.siteSettings.useGoogleAnalytics}
+                  checked={this.props.settings.useGoogleAnalytics}
                   valueHandler={this.props.getSettingsValueHandler(
                     'useGoogleAnalytics'
                   )}
                 />
-                {this.props.siteSettings.useGoogleAnalytics ? (
+                {this.props.settings.useGoogleAnalytics ? (
                   <Input
                     label='Google Analytics Tracking ID'
-                    value={this.props.siteSettings.googleAnalyticsTrackingId}
+                    value={this.props.settings.googleAnalyticsTrackingId}
                     valueHandler={this.props.getSettingsValueHandler(
                       'googleAnalyticsTrackingId'
                     )}
@@ -568,7 +687,7 @@ class Settings extends React.Component {
             </form>
             <form
               method='POST'
-              action={'/api/upload'}
+              action={`${this.props.appRoot}/api/upload`}
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -579,9 +698,9 @@ class Settings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.bgFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadBgForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingBg = true
                     return state
                   })
@@ -596,20 +715,34 @@ class Settings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload(() => {
-                    window.location.reload()
-                  })
-                  this.setState(state => {
-                    state.uploadingBg = false
-                    return state
-                  })
+                  this.setState(
+                    (state) => {
+                      state.uploadingBg = false
+                      return state
+                    },
+                    () => {
+                      this.bgFileInput.current.value = null
+                      iframe.src = 'about:blank'
+                      axios
+                        .get(`${this.props.appRoot}/api/settings`)
+                        .then((response) => {
+                          let settings = response.data
+                          if (settings.bg) {
+                            this.props.getSettingsValueHandler('bg')(
+                              settings.bg
+                            )
+                          }
+                        })
+                    }
+                  )
+                } else {
                 }
               }}
               className='d-none'
             />
             <form
               method='POST'
-              action={'/api/upload'}
+              action={`${this.props.appRoot}/api/upload`}
               target='upload-icon-frame'
               encType='multipart/form-data'
               ref={this.uploadIconForm}
@@ -620,9 +753,9 @@ class Settings extends React.Component {
                 type='file'
                 accept='image/*'
                 ref={this.iconFileInput}
-                onChange={event => {
+                onChange={(event) => {
                   this.uploadIconForm.current.submit()
-                  this.setState(state => {
+                  this.setState((state) => {
                     state.uploadingIcon = true
                     return state
                   })
@@ -637,13 +770,14 @@ class Settings extends React.Component {
               onLoad={() => {
                 let iframe = document.getElementById('upload-icon-frame')
                 if (iframe.contentWindow.location.href.indexOf('http') > -1) {
-                  this.props.emitReload()
                   this.setState(
-                    state => {
+                    (state) => {
                       state.uploadingIcon = false
                       return state
                     },
                     () => {
+                      this.iconFileInput.current.value = null
+                      iframe.src = 'about:blank'
                       this.refreshIcon()
                     }
                   )
@@ -660,25 +794,15 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Site Settings | ${this.props.siteSettings.siteTitle}`
     this.getRedirects()
   }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.siteSettings.siteTitle !== this.props.siteSettings.siteTitle
-    ) {
-      document.title = `Site Settings | ${nextProps.siteSettings.siteTitle}`
-    }
-    return true
-  }
 }
 
-Settings.propTypes = {
-  authenticated: PropTypes.bool,
-  emitReload: PropTypes.func.isRequired,
+SiteSettings.propTypes = {
+  admin: PropTypes.bool,
+  appRoot: PropTypes.string.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
-  siteSettings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
 }
 
-export default Settings
+export default SiteSettings

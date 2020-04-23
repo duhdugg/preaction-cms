@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
-import hexRgb from 'hex-rgb'
 import io from 'socket.io-client'
 import {
   BrowserRouter as Router,
@@ -8,14 +8,16 @@ import {
   Switch,
   NavLink,
   Link,
-  Redirect
+  Redirect,
 } from 'react-router-dom'
-import { Boilerplate, NavBar, Nav } from '@preaction/bootstrap-clips'
+import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
+import { Input } from '@preaction/inputs'
+import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
+import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 // styles
 import 'animate.css/animate.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'ionicons/dist/css/ionicons.min.css'
 import './App.css'
 
 import Footer from './Footer.jsx'
@@ -23,58 +25,97 @@ import Header from './Header.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
-import Settings from './Settings.jsx'
+import SiteSettings from './SiteSettings.jsx'
 
-import { registerSmartLinkFormat } from '@preaction/inputs'
+import { Quill } from '@preaction/inputs'
+
+import absoluteUrl from './lib/absoluteUrl.js'
+import getKeyFromTitle from './lib/getKeyFromTitle.js'
+
+function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
+  const LinkFormat = Quill.import('formats/link')
+  class SmartLinkFormat extends LinkFormat {
+    static create(value) {
+      let node = super.create(value)
+      node.addEventListener('click', (event) => {
+        let href = node.getAttribute('href')
+        if (absoluteUrl(href)) {
+        } else {
+          event.preventDefault()
+          relativeLinkHandler(href)
+        }
+      })
+      return node
+    }
+  }
+  Quill.register('formats/link', SmartLinkFormat)
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      activePage: null,
       activePathname: '',
+      activeSettings: {},
+      admin: false,
       authenticated: false,
       editable: false,
+      fallbackSettings: {},
       navigate: null,
-      pages: [],
+      newPage: {
+        key: '',
+        title: '',
+      },
       redirect: null,
       show: {
         header: true,
-        footer: true
+        footer: true,
+        newPage: false,
+        settings: false,
       },
+      siteMap: {},
       siteSettings: {
         bgColor: '#000000',
         borderColor: '#000000',
         borderOpacity: 0,
+        containerColor: '#ffffff',
+        containerHeaderTheme: 'dark',
+        containerOpacity: 0,
         cssOverrides: '',
         fontColor: '#ffffff',
+        footerPath: '/home/footer/',
+        headerPath: '/home/header/',
         hostname: '',
         linkColor: '#ffffff',
-        containerColor: '#ffffff',
-        containerOpacity: 0,
         siteTitle: '',
         siteDescription: '',
         navTheme: 'dark',
         navPosition: 'fixed-top',
         tileBgImage: false,
-        useBgImage: false
+        useBgImage: false,
       },
-      token: ''
+      token: '',
     }
     this.settingsUpdateTimer = null
     this.socket = null
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    registerSmartLinkFormat(this.navigate.bind(this))
+    registerSmartLinkFormat((href) => {
+      if (!this.state.editable) {
+        this.navigate(href)
+      }
+    })
   }
 
   addPage(page) {
     if (page.key) {
       axios
-        .post('/api/page', page)
-        .then(response => {
+        .post(`${this.root}/api/page`, page)
+        .then((response) => {
           if (response.data) {
-            this.loadPages()
+            this.loadSiteMap()
           }
         })
         .then(() => {
@@ -83,157 +124,201 @@ class App extends React.Component {
     }
   }
 
-  createPage(title) {
-    if (!title) {
+  createPage(newPage) {
+    if (!newPage.title) {
       return
     }
-    let key = title.toLowerCase().replace(/[^A-z0-9]/gi, '-')
+    let key = newPage.key
     if (!key.replace(/-/gi, '')) {
       return
     }
     let pageType = 'content'
-    let newPage = {
-      key,
-      title,
-      pageType
+    let parentId = null
+    if (this.state.activePage) {
+      if (this.state.activePage.key !== 'home') {
+        parentId = this.state.activePage.id
+      }
     }
-    this.addPage(newPage)
+    let page = {
+      key,
+      title: newPage.title,
+      pageType,
+      parentId,
+    }
+    this.addPage(page)
   }
 
   deletePage(page) {
     if (this.editable) {
-      axios
-        .delete(`/api/page/${page.id}`)
-        .then(response => {
-          if (response.status === 200) {
-            this.loadPages()
-          }
-          this.emitSave()
-        })
-        .then(() => {
-          this.loadPages()
-          this.redirect('/')
-        })
+      axios.delete(`${this.root}/api/page/${page.id}`).then((response) => {
+        if (response.status === 200) {
+          this.setState(
+            (state) => {
+              state.activePage = null
+            },
+            () => {
+              this.redirect('..')
+              this.emitSave()
+            }
+          )
+        }
+      })
     }
   }
 
   get editable() {
-    return this.state.authenticated && this.state.editable
+    return this.state.authenticated && this.state.admin && this.state.editable
   }
 
   emitSave(callback = () => {}) {
-    this.socket.emit('save', callback)
+    if (this.props.socketMode) {
+      this.socket.emit('save', () => {
+        this.loadSiteMap()
+        callback()
+      })
+    } else {
+      this.loadSiteMap()
+      callback()
+    }
   }
 
-  emitReload(callback = () => {}) {
-    this.socket.emit('force-reload', callback)
+  get fallbackSettings() {
+    let s = Object.assign({}, this.state.siteSettings)
+    if (this.state.fallbackSettings && this.state.activePathname !== '/home/') {
+      Object.assign(s, this.state.fallbackSettings)
+    }
+    return s
   }
 
   get menu() {
     let menu = []
-    if (this.state.siteSettings.navPosition !== 'fixed-top') {
+    if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
-        name: <i className='ion ion-md-home' />,
-        href: '/',
+        name: 'Home',
+        href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
         component: Link,
-        order: -1,
-        active: this.state.activePathname === '/',
-        onClick: e => {
-          this.navigate('/')
-        }
+        order: -100,
+        active:
+          this.state.activePathname === '/home/' ||
+          this.state.activePathname === `/${this.siteMap.path}/`,
+        onClick: (e) => {
+          e.preventDefault()
+          this.navigate(
+            `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
+          )
+        },
       })
     }
-    this.state.pages.forEach(page => {
-      if (page.userCreated) {
-        let path = `/${page.key}/`
-        if (page.parentId) {
-          let parentPage = this.getPageById(page.parentId)
-          if (parentPage) {
-            path = `/${parentPage.key}/${page.key}/`
-            menu.forEach(menuItem => {
-              if (menuItem.href === `/${parentPage.key}/`) {
-                if (menuItem.subMenu === undefined) {
-                  menuItem.subMenu = []
-                }
-                menuItem.subMenu.push({
-                  name: page.title,
-                  href: path,
-                  component: NavLink,
-                  onClick: e => {
-                    this.navigate(path)
-                  }
-                })
-                menuItem.subMenu.sort((a, b) => {
-                  let retval = 0
-                  if (a.name < b.name) {
-                    retval--
-                  } else if (a.name > b.name) {
-                    retval++
-                  }
-                  return retval
-                })
-              }
+    this.siteMap.children.forEach((page) => {
+      if (page.settings.includeInNav) {
+        let subMenu = []
+        page.children.forEach((pg) => {
+          if (pg.settings.includeInNav) {
+            subMenu.push({
+              name: pg.title,
+              href: `/${pg.path}/`,
+              component: NavLink,
+              order: Number(pg.settings.navOrdering || 0),
+              onClick: (e) => {
+                e.preventDefault()
+                this.navigate(`/${pg.path}/`)
+              },
             })
           }
-        } else {
-          menu.push({
-            name: page.title,
-            href: path,
-            component: NavLink,
-            onClick: e => {
-              e.preventDefault()
-              this.navigate(path)
-            }
-          })
-        }
+        })
+        subMenu.sort((a, b) => {
+          let retval = 0
+          if (a.name < b.name) {
+            retval = -1
+          } else if (a.name > b.name) {
+            retval = 1
+          }
+          let aOrder = a.order
+          let bOrder = b.order
+          if (aOrder === undefined) {
+            aOrder = 0
+          }
+          if (bOrder === undefined) {
+            bOrder = 0
+          }
+          if (aOrder < bOrder) {
+            retval = -1
+          } else if (aOrder > bOrder) {
+            retval = 1
+          }
+          return retval
+        })
+        menu.push({
+          name: page.title,
+          href: `/${page.path}/`,
+          component: NavLink,
+          order: Number(page.settings.navOrdering || 0),
+          onClick: (e) => {
+            e.preventDefault()
+            this.navigate(`/${page.path}/`)
+          },
+          subMenu: subMenu.length ? subMenu : null,
+        })
       }
     })
-    if (this.state.authenticated) {
+    if (this.state.admin) {
       let adminSubmenu = []
       adminSubmenu.push({
-        name: (
-          <span>
-            <i
-              className={`ion ion-md-radio-button-${
-                this.state.editable ? 'on' : 'off'
-              }`}
-            />{' '}
-            Edit Mode
-          </span>
-        ),
-        onClick: e => {
-          e.preventDefault()
-          this.toggleEditMode()
-        }
-      })
-      adminSubmenu.push({
-        name: 'New Page',
-        onClick: e => {
-          e.preventDefault()
-          let title = prompt('New Page Title')
-          this.createPage(title)
-        }
-      })
-      adminSubmenu.push({
-        name: 'Site Settings',
-        href: '/settings/',
-        component: NavLink,
-        onClick: e => {
-          this.navigate('/settings/')
-        }
-      })
-      adminSubmenu.push({
         name: 'Logout',
-        onClick: e => {
+        onClick: (e) => {
           e.preventDefault()
           this.logout()
-        }
+        },
       })
 
       menu.push({
-        name: 'Admin',
+        name: (
+          <span>
+            {this.state.editable ? <FaToggleOn /> : <FaToggleOff />} Edit
+          </span>
+        ),
+        onClick: (e) => {
+          e.preventDefault()
+          this.toggleEditMode()
+        },
+        order: 100,
+      })
+
+      if (this.state.editable) {
+        menu.push({
+          name: (
+            <span>
+              <MdCreate /> New Page
+            </span>
+          ),
+          onClick: (e) => {
+            e.preventDefault()
+            this.toggleNewPage()
+          },
+          order: 200,
+        })
+        menu.push({
+          name: (
+            <span>
+              <MdSettings /> Settings
+            </span>
+          ),
+          onClick: (e) => {
+            e.preventDefault()
+            this.toggleSettings()
+          },
+          order: 300,
+        })
+      }
+
+      menu.push({
+        name: (
+          <span>
+            <MdPerson /> User
+          </span>
+        ),
         subMenu: adminSubmenu,
-        order: 1
+        order: 400,
       })
     }
     menu.sort((a, b) => {
@@ -261,44 +346,80 @@ class App extends React.Component {
     return menu
   }
 
-  get siteSettings() {
-    function getRgbaString(hexRgbObject) {
-      let { red, green, blue, alpha } = hexRgbObject
-      return `rgba(${red}, ${green}, ${blue}, ${alpha})`
-    }
-    let settings = JSON.parse(JSON.stringify(this.state.siteSettings))
-    settings.containerRgba = hexRgb(settings.containerColor)
-    settings.containerRgba.alpha = settings.containerOpacity
-    settings.containerRgba.string = getRgbaString(settings.containerRgba)
-    settings.borderRgba = hexRgb(settings.borderColor)
-    settings.borderRgba.alpha = settings.borderOpacity
-    settings.borderRgba.string = getRgbaString(settings.borderRgba)
-    return settings
+  get root() {
+    return this.props.root || ''
   }
 
-  getPageById(id) {
-    let retval = null
-    this.state.pages.forEach(page => {
-      if (page.id === id) {
-        retval = page
-      }
-    })
-    return retval
+  get settings() {
+    let s = Object.assign({}, this.fallbackSettings)
+    if (
+      this.state.activePage &&
+      this.state.activePathname !== '/home' &&
+      this.state.activePathname !== '/'
+    ) {
+      Object.keys(this.state.activePage.settings).forEach((key) => {
+        switch (key) {
+          case 'cssOverrides':
+            s[key] = s[key] + '\n\n' + this.state.activePage.settings[key]
+            break
+          default:
+            s[key] = this.state.activePage.settings[key]
+            break
+        }
+      })
+    }
+    return s
+  }
+
+  get siteMap() {
+    let sm = {
+      key: 'home',
+      path: '',
+      children: [],
+    }
+    Object.assign(sm, this.state.siteMap)
+    return sm
+  }
+
+  getNewPageValueHandler(key) {
+    return (value) => {
+      this.setState((state) => {
+        state.newPage[key] = value
+        if (key === 'title') {
+          state.newPage.key = getKeyFromTitle(value)
+        }
+        return state
+      })
+    }
   }
 
   getSettingsValueHandler(key) {
-    return value => {
+    return (value) => {
+      if (key === 'siteTitle') {
+        let splitTitle = document.title.split(' | ')
+        if (splitTitle.length < 2) {
+          document.title = value
+        } else {
+          document.title = `${splitTitle[0]} | ${value}`
+        }
+      }
       this.setState(
-        state => {
+        (state) => {
           state.siteSettings[key] = value
           return state
         },
         () => {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
-            axios.post('/api/settings', this.state.siteSettings).then(() => {
-              this.emitSave()
-            })
+            axios
+              .post(`${this.root}/api/settings`, this.state.siteSettings)
+              .then(() => {
+                this.emitSave(() => {
+                  if (this.settingsUpdateTimer !== undefined) {
+                    this.loadSettings()
+                  }
+                })
+              })
           }, 1000)
         }
       )
@@ -306,57 +427,104 @@ class App extends React.Component {
   }
 
   getShowPropertyValueHandler(key) {
-    return value => {
-      this.setState(state => {
+    return (value) => {
+      this.setState((state) => {
         state.show[key] = value
         return state
       })
     }
   }
 
+  handleNotFound(path) {
+    this.setState((state) => {
+      state.activePage = null
+      return state
+    })
+    this.loadSiteMap(path)
+    this.loadSettings(path)
+  }
+
   loadSession() {
-    axios.get('/api/session').then(response => {
-      if (response.data && response.data.authenticated) {
-        this.setState(state => {
-          state.authenticated = true
-          return state
-        })
+    return new Promise((resolve, reject) => {
+      let conditionallyResolve = () => {
+        if (this.state.authenticated && this.state.token) {
+          resolve()
+        }
       }
-      if (response.data && response.data.token) {
-        this.setState(state => {
-          state.token = response.data.token
-          return state
-        })
-      }
+      axios.get(`${this.root}/api/session`).then((response) => {
+        if (response.data && response.data.authenticated) {
+          this.setState((state) => {
+            state.authenticated = true
+            if (response.data.admin) {
+              state.admin = true
+            }
+            return state
+          }, conditionallyResolve)
+        }
+        if (response.data && response.data.token) {
+          this.setState((state) => {
+            state.token = response.data.token
+            return state
+          }, conditionallyResolve)
+        }
+      })
     })
   }
 
-  loadSettings() {
-    axios.get('/api/settings').then(response => {
+  loadSettings(path = '') {
+    axios.get(`${this.root}/api/settings`).then((response) => {
       if (response.data) {
-        this.setState(state => {
+        this.setState((state) => {
           state.siteSettings = response.data
           state.siteSettings.hostname = window.location.origin || ''
           return state
         })
       }
     })
+    if (path) {
+      axios
+        .get(`${this.root}/api/page/settings/by-key${path}`)
+        .then((response) => {
+          if (response.data) {
+            this.setFallbackSettings(response.data)
+          }
+        })
+    }
   }
 
-  loadPages() {
-    axios.get('/api/page').then(response => {
-      if (response.data) {
-        this.setState(state => {
-          state.pages = response.data
-          return state
-        })
+  loadSiteMap(path = '') {
+    return new Promise((resolve, reject) => {
+      if (this.state.activePage && this.state.activePage.id) {
+        axios
+          .get(`${this.root}/api/page/${this.state.activePage.id}/sitemap`)
+          .then((response) => {
+            this.setState(
+              (state) => {
+                state.siteMap = response.data
+                return state
+              },
+              () => {
+                resolve(this.state.siteMap)
+              }
+            )
+          })
+      } else if (path) {
+        axios
+          .get(`${this.root}/api/page/sitemap/by-key${path}`)
+          .then((response) => {
+            this.setState((state) => {
+              state.siteMap = response.data
+              return state
+            })
+          })
       }
     })
   }
 
   logout() {
-    axios.get('/api/logout').then(() => {
-      this.setState(state => {
+    axios.get(`${this.root}/api/logout`).then(() => {
+      this.setState((state) => {
+        state.admin = false
         state.authenticated = false
         state.editable = false
         return state
@@ -365,38 +533,68 @@ class App extends React.Component {
   }
 
   navigate(path) {
-    this.setState(
-      state => {
-        state.navigate = path
-        return state
-      },
-      () => {
-        this.setActivePathname(path)
-        this.setState(state => {
-          state.navigate = null
+    if (path.match(/\/$/) === null) {
+      path = path + '/'
+    }
+    if (path.indexOf(this.root) === 0) {
+      let regex = new RegExp(`^${this.root}`)
+      path = path.replace(regex, '')
+    }
+    if (path !== this.state.activePathname) {
+      this.setState(
+        (state) => {
+          state.navigate = path
+          state.activePathname = path
           return state
-        })
-      }
-    )
-    this.trackPageView(path)
+        },
+        () => {
+          this.setState((state) => {
+            state.navigate = false
+            return state
+          })
+        }
+      )
+      this.trackPageView(path)
+    }
   }
 
   toggleEditMode() {
-    this.setState(state => {
+    this.setState((state) => {
       state.editable = !state.editable
+      return state
+    })
+  }
+
+  toggleSettings() {
+    if (
+      this.state.activePathname === '/home/' ||
+      this.state.activePathname === '/'
+    ) {
+      this.setState((state) => {
+        state.show.settings = !state.show.settings
+        return state
+      })
+    } else if (this.activePage && this.activePage.current) {
+      this.activePage.current.toggleSettings()
+    }
+  }
+
+  toggleNewPage() {
+    this.setState((state) => {
+      state.show.newPage = !state.show.newPage
       return state
     })
   }
 
   redirect(path) {
     this.setState(
-      state => {
+      (state) => {
         state.redirect = path
         return state
       },
       () => {
-        this.setState(state => {
-          state.redirect = null
+        this.setState((state) => {
+          state.redirect = false
           return state
         })
       }
@@ -405,7 +603,7 @@ class App extends React.Component {
   }
 
   reload() {
-    this.loadPages()
+    this.loadSiteMap()
     this.loadSettings()
     if (this.activePage.current) {
       this.header.current.reload()
@@ -414,21 +612,37 @@ class App extends React.Component {
     }
   }
 
+  setActivePage(page) {
+    this.setState((state) => {
+      state.activePage = page
+      state.siteMap = JSON.parse(JSON.stringify(page.siteMap))
+      state.fallbackSettings = JSON.parse(JSON.stringify(page.fallbackSettings))
+      return state
+    })
+  }
+
   setActivePathname(pathname) {
-    this.setState(state => {
+    this.setState((state) => {
       state.activePathname = pathname
+      return state
+    })
+  }
+
+  setFallbackSettings(settings) {
+    this.setState((state) => {
+      state.fallbackSettings = settings
       return state
     })
   }
 
   trackPageView(path) {
     if (
-      this.state.siteSettings.useGoogleAnalytics &&
-      this.state.siteSettings.googleAnalyticsTrackingId &&
+      this.settings.useGoogleAnalytics &&
+      this.settings.googleAnalyticsTrackingId &&
       window.gtag
     ) {
-      window.gtag('config', this.state.siteSettings.googleAnalyticsTrackingId, {
-        page_path: path
+      window.gtag('config', this.settings.googleAnalyticsTrackingId, {
+        page_path: path,
       })
     }
   }
@@ -438,25 +652,31 @@ class App extends React.Component {
       <div
         className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
       >
-        <Router>
+        <Router basename={`${this.root}/`}>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
-              <Redirect to={this.state.navigate} push={true} />
+              <Redirect to={this.state.navigate} push />
             ) : (
               ''
             )}
-            {this.state.siteSettings.navPosition === 'fixed-top' ? (
+            {this.settings.navPosition === 'fixed-top' ? (
               <NavBar
                 fixedTo='top'
-                theme={this.siteSettings.navTheme}
+                theme={this.settings.navTheme}
                 brand={{
-                  name: this.siteSettings.siteTitle,
-                  href: '/',
-                  onClick: e => {
+                  name: this.settings.siteTitle,
+                  href: `${this.root}/${this.siteMap.path}${
+                    this.siteMap.key === 'home' ? '' : '/'
+                  }`,
+                  onClick: (e) => {
                     e.preventDefault()
-                    this.redirect('/')
-                  }
+                    this.navigate(
+                      `/${this.siteMap.path}${
+                        this.siteMap.key === 'home' ? '' : '/'
+                      }`
+                    )
+                  },
                 }}
                 menu={this.menu}
               />
@@ -464,39 +684,40 @@ class App extends React.Component {
               ''
             )}
             <Boilerplate
+              noContain={this.settings.maxWidthLayout}
               header={
                 <div>
-                  {this.state.siteSettings.navPosition === 'above-header' ? (
+                  {this.settings.navPosition === 'above-header' ? (
                     <Nav
                       menu={this.menu}
-                      type={this.state.siteSettings.navType}
-                      align={this.state.siteSettings.navAlignment}
-                      justify={this.state.siteSettings.navSpacing === 'justify'}
-                      fill={this.state.siteSettings.navSpacing === 'fill'}
-                      collapsible={this.state.siteSettings.navCollapsible}
-                      className='mb-3'
+                      type={this.settings.navType}
+                      align={this.settings.navAlignment}
+                      justify={this.settings.navSpacing === 'justify'}
+                      fill={this.settings.navSpacing === 'fill'}
+                      collapsible={this.settings.navCollapsible}
+                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''
                   )}
                   <Header
+                    activePage={this.state.activePage}
+                    appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
-                    siteSettings={this.siteSettings}
-                    pages={this.state.pages}
-                    logout={this.logout.bind(this)}
-                    show={this.state.show.header}
+                    settings={this.settings}
+                    show={this.settings.showHeader}
                     ref={this.header}
                   />
-                  {this.state.siteSettings.navPosition === 'below-header' ? (
+                  {this.settings.navPosition === 'below-header' ? (
                     <Nav
                       menu={this.menu}
-                      type={this.state.siteSettings.navType}
-                      align={this.state.siteSettings.navAlignment}
-                      justify={this.state.siteSettings.navSpacing === 'justify'}
-                      fill={this.state.siteSettings.navSpacing === 'fill'}
-                      collapsible={this.state.siteSettings.navCollapsible}
-                      className='mb-3'
+                      type={this.settings.navType}
+                      align={this.settings.navAlignment}
+                      justify={this.settings.navSpacing === 'justify'}
+                      fill={this.settings.navSpacing === 'fill'}
+                      collapsible={this.settings.navCollapsible}
+                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''
@@ -505,12 +726,13 @@ class App extends React.Component {
               }
               footer={
                 <Footer
+                  activePage={this.state.activePage}
+                  appRoot={this.root}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
-                  siteSettings={this.siteSettings}
-                  logout={this.logout.bind(this)}
+                  settings={this.settings}
                   ref={this.footer}
-                  show={this.state.show.footer}
+                  show={this.settings.showFooter}
                 />
               }
             >
@@ -523,36 +745,31 @@ class App extends React.Component {
               <Switch>
                 <Route exact path='/'>
                   <Page
+                    appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
+                    fallbackSettings={this.fallbackSettings}
                     path='/home/'
-                    siteSettings={this.siteSettings}
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
                     footerControl={this.getShowPropertyValueHandler('footer')}
+                    setActivePathname={this.setActivePathname.bind(this)}
+                    setActivePage={this.setActivePage.bind(this)}
                   />
                 </Route>
                 <Route exact path='/login'>
-                  <div className='container'>
-                    <Login siteSettings={this.siteSettings} />
+                  <div className='login'>
+                    <Login
+                      appRoot={this.root}
+                      settings={this.state.siteSettings}
+                    />
                   </div>
-                </Route>
-                <Route exact path='/settings'>
-                  <Settings
-                    authenticated={this.state.authenticated}
-                    deletePage={this.deletePage.bind(this)}
-                    emitSave={this.emitSave.bind(this)}
-                    emitReload={this.emitReload.bind(this)}
-                    siteSettings={this.siteSettings}
-                    getSettingsValueHandler={this.getSettingsValueHandler.bind(
-                      this
-                    )}
-                    pages={this.state.pages}
-                  />
                 </Route>
                 <Route
                   render={({ location }) => {
-                    switch (location.pathname) {
+                    let root = new RegExp(`^${this.root}`)
+                    let pathname = location.pathname.replace(root, '')
+                    switch (pathname) {
                       case '/home/':
                       case '/header/':
                       case '/footer/':
@@ -560,10 +777,9 @@ class App extends React.Component {
                       default:
                         return (
                           <Page
+                            appRoot={this.root}
                             editable={this.state.editable}
-                            siteSettings={this.siteSettings}
-                            path={location.pathname}
-                            addPage={this.addPage.bind(this)}
+                            path={pathname}
                             deletePage={this.deletePage.bind(this)}
                             emitSave={this.emitSave.bind(this)}
                             ref={this.activePage}
@@ -573,6 +789,12 @@ class App extends React.Component {
                             footerControl={this.getShowPropertyValueHandler(
                               'footer'
                             )}
+                            navigate={this.navigate.bind(this)}
+                            onNotFound={this.handleNotFound.bind(this)}
+                            setActivePathname={this.setActivePathname.bind(
+                              this
+                            )}
+                            setActivePage={this.setActivePage.bind(this)}
                           />
                         )
                     }
@@ -585,32 +807,31 @@ class App extends React.Component {
         </Router>
         <style>
           {`\
-            a { color: ${this.siteSettings.linkColor}; }
-            a.active { color: ${this.siteSettings.fontColor}; }
-            a:hover { color: ${this.siteSettings.fontColor}; }
-            img {
-              border: 1px solid ${this.siteSettings.borderRgba.string};
-            }
+            a { color: ${this.settings.linkColor}; }
+            a.active { color: ${this.settings.fontColor}; }
+            a:hover { color: ${this.settings.fontColor}; }
             #root::before {
-              background-color: ${this.state.siteSettings.bgColor};
+              background-color: ${this.settings.bgColor};
             }
             .App {
-              color: ${this.state.siteSettings.fontColor};
-              opacity: ${this.siteSettings.init ? 1 : 0};
+              color: ${this.settings.fontColor};
+              opacity: ${this.settings.init ? 1 : 0};
               padding-top: ${
-                this.state.siteSettings.navPosition === 'fixed-top'
-                  ? '4rem'
-                  : '0'
+                this.settings.navPosition === 'fixed-top' ? '4rem' : '0'
               };
             }
             .dropdown-item.active, .dropdown-item:active {
-              background-color: ${this.siteSettings.linkColor};
+              background-color: ${this.settings.linkColor};
             }
             .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-              background-color: ${this.siteSettings.linkColor};
+              background-color: ${this.settings.linkColor};
+            }
+            .modal-content {
+              background-color: ${this.settings.bgColor};
+              color: ${this.settings.fontColor};
             }
           `}
-          {this.state.siteSettings.useBgImage
+          {this.settings.useBgImage
             ? `\
               .App {
                 overflow: hidden;
@@ -623,7 +844,7 @@ class App extends React.Component {
                 height: 100%;
                 top: 0;
                 left: 0;
-                background-image: url("/bg");
+                background-image: url(/${this.settings.bg});
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -634,7 +855,7 @@ class App extends React.Component {
               }
           `
             : ''}
-          {this.state.siteSettings.tileBgImage
+          {this.settings.tileBgImage
             ? `\
               .App::before {
                 background-size: auto;
@@ -642,36 +863,137 @@ class App extends React.Component {
               }
           `
             : ''}
+          {this.settings.init
+            ? `\
+          html { background-color: transparent }
+          `
+            : ''}
         </style>
-        <style>{this.state.siteSettings.cssOverrides || ''}</style>
+        <style>{this.settings.cssOverrides || ''}</style>
+        {this.state.editable && this.state.show.settings ? (
+          <Modal
+            title='Site Settings'
+            closeHandler={this.toggleSettings.bind(this)}
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={this.toggleSettings.bind(this)}
+              >
+                Close
+              </button>
+            }
+          >
+            <SiteSettings
+              appRoot={this.root}
+              admin={this.state.admin}
+              settings={this.state.siteSettings}
+              getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
+            />
+          </Modal>
+        ) : (
+          ''
+        )}
+        {this.state.editable && this.state.show.newPage ? (
+          <Modal
+            title='New Page'
+            hideCloseButton={true}
+            footer={
+              <div>
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  onClick={() => {
+                    if (this.state.newPage.title) {
+                      this.createPage(this.state.newPage)
+                      this.toggleNewPage()
+                      this.setState((state) => {
+                        state.newPage.title = ''
+                        state.newPage.key = ''
+                        return state
+                      })
+                    }
+                  }}
+                >
+                  Save
+                </button>{' '}
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={() => {
+                    this.toggleNewPage()
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            }
+          >
+            <form onSubmit={(e) => e.preventDefault()}>
+              <Input
+                type='text'
+                label='Page Title'
+                value={this.state.newPage.title}
+                valueHandler={this.getNewPageValueHandler('title')}
+                required
+              />
+              <Input
+                type='text'
+                label='URL Path'
+                value={this.state.newPage.key}
+                valueHandler={this.getNewPageValueHandler('key')}
+                required
+              />
+            </form>
+          </Modal>
+        ) : (
+          ''
+        )}
       </div>
     )
   }
 
   componentDidMount() {
+    if (window.location.pathname.match(/\/$/) === null) {
+      window.location.pathname = window.location.pathname + '/'
+      return
+    }
     this.loadSettings()
-    this.loadPages()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
-    this.socket = io()
-    this.socket.on('load', () => {
-      if (!this.state.editable) {
-        if (this.state.activePathname !== '/settings/') {
+    if (this.props.socketMode) {
+      this.socket = io({ path: `${this.root}/socket.io` })
+      this.socket.on('load', () => {
+        if (!this.state.editable) {
           this.reload()
         }
-      }
-    })
-    this.socket.on('reload-page', () => {
-      if (!this.state.editable) {
-        if (this.state.activePathname !== '/settings/') {
+      })
+      this.socket.on('reload-app', () => {
+        if (!this.state.editable) {
           window.location.reload()
         }
-      }
-    })
-    window.onpopstate = event => {
+      })
+    }
+    window.onpopstate = (event) => {
       this.setActivePathname(window.location.pathname)
     }
+    window.preaction = {
+      navigate: (path) => {
+        this.navigate(path)
+      },
+      redirect: (path) => {
+        this.redirect(path)
+      },
+      toggleEditMode: () => {
+        this.toggleEditMode()
+      },
+    }
   }
+}
+
+App.propTypes = {
+  root: PropTypes.string,
+  socketMode: PropTypes.bool,
 }
 
 export default App

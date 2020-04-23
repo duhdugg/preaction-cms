@@ -8,7 +8,7 @@ class Login extends React.Component {
     super(props)
     this.state = {
       username: '',
-      password: ''
+      password: '',
     }
   }
 
@@ -17,22 +17,22 @@ class Login extends React.Component {
     const { username, password } = this.state
     if (event.target.checkValidity()) {
       axios
-        .post('/api/login', { username, password })
-        .then(response => {
-          window.location.href = '/'
+        .post(`${this.props.appRoot}/api/login`, { username, password })
+        .then((response) => {
+          window.location.href = `${this.props.appRoot}/`
         })
-        .catch(e => {
+        .catch((e) => {
           window.alert('incorrect login')
         })
     }
   }
 
   getLoginValueHandler(key) {
-    return value => {
+    return (value) => {
       if (key === 'username') {
         value = value.toLowerCase()
       }
-      this.setState(state => {
+      this.setState((state) => {
         state[key] = value
         return state
       })
@@ -63,21 +63,20 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `Login | ${this.props.siteSettings.siteTitle}`
+    document.title = `Login | ${this.props.settings.siteTitle}`
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.siteSettings.siteTitle !== this.props.siteSettings.siteTitle
-    ) {
-      document.title = `Login | ${nextProps.siteSettings.siteTitle}`
+    if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
+      document.title = `Login | ${nextProps.settings.siteTitle}`
     }
     return true
   }
 }
 
 Login.propTypes = {
-  siteSettings: PropTypes.object.isRequired
+  appRoot: PropTypes.string.isRequired,
+  settings: PropTypes.object.isRequired,
 }
 
 export default Login
