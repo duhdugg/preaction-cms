@@ -58,6 +58,8 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 
 `PREACTION_DB_LOGGING=1` enables logging from Sequelize ORM
 
+`PREACTION_PROXY=1` trust the X-Forwarded-Proto header
+
 `PREACTION_READONLY=1` disables all admin-required middleware
 
 `PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
