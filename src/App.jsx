@@ -548,13 +548,17 @@ class App extends React.Component {
           return state
         },
         () => {
-          this.setState((state) => {
-            state.navigate = false
-            return state
-          })
+          this.setState(
+            (state) => {
+              state.navigate = false
+              return state
+            },
+            () => {
+              this.trackPageView()
+            }
+          )
         }
       )
-      this.trackPageView(path)
     }
   }
 
@@ -593,13 +597,17 @@ class App extends React.Component {
         return state
       },
       () => {
-        this.setState((state) => {
-          state.redirect = false
-          return state
-        })
+        this.setState(
+          (state) => {
+            state.redirect = false
+            return state
+          },
+          () => {
+            this.trackPageView()
+          }
+        )
       }
     )
-    this.trackPageView(path)
   }
 
   reload() {
@@ -635,14 +643,14 @@ class App extends React.Component {
     })
   }
 
-  trackPageView(path) {
+  trackPageView() {
     if (
       this.settings.useGoogleAnalytics &&
       this.settings.googleAnalyticsTrackingId &&
       window.gtag
     ) {
       window.gtag('config', this.settings.googleAnalyticsTrackingId, {
-        page_path: path,
+        page_path: window.location.pathname,
       })
     }
   }
