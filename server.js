@@ -44,6 +44,7 @@ io.use((socket, next) => {
 // enable JSON requests and limit them to 50 megabytes in size
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(session.expressModule)
+app.use(db.expressModule)
 app.use(uploads.expressModule)
 app.use(redirects.expressModule)
 app.use(pages.expressModule)

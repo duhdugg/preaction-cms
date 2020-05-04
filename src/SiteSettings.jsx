@@ -10,8 +10,10 @@ class SiteSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      backups: [],
       redirect: null,
       redirects: [],
+      selectedRestore: '',
       uploadingBg: false,
       uploadingIcon: false,
     }
@@ -21,10 +23,20 @@ class SiteSettings extends React.Component {
     this.bgFileInput = React.createRef()
   }
 
+  getBackups() {
+    axios.get(`${this.props.appRoot}/api/backups`).then((response) => {
+      this.setState((state) => {
+        state.backups = response.data
+        return state
+      })
+    })
+  }
+
   deleteRedirect(redirect) {
     axios
       .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
       .then((response) => {
+        this.props.emitSave()
         this.getRedirects()
       })
   }
@@ -67,6 +79,14 @@ class SiteSettings extends React.Component {
     let icon = document.querySelector('link[rel="shortcut icon"]')
     let timestamp = +new Date()
     icon.href = `/icon?v=${timestamp}`
+  }
+
+  restoreBackup(filename) {
+    axios.post('/api/backups', { filename }).then((response) => {
+      this.props.emitForceReload(() => {
+        window.location.reload()
+      })
+    })
   }
 
   saveRedirect() {
@@ -684,6 +704,49 @@ class SiteSettings extends React.Component {
                   ''
                 )}
               </Card>
+              <Card
+                header='Backups'
+                headerTheme='dark'
+                style={{
+                  card: {
+                    backgroundColor: getRgbaFromSettings(
+                      this.props.settings,
+                      'container'
+                    ).string,
+                  },
+                }}
+              >
+                <div>
+                  <Select
+                    label='Restore File'
+                    value={this.state.selectedRestore}
+                    valueHandler={(value) => {
+                      this.setState((state) => {
+                        state.selectedRestore = value
+                        return state
+                      })
+                    }}
+                  >
+                    <option></option>
+                    {this.state.backups.map((filename, index) => {
+                      return <option key={index}>{filename}</option>
+                    })}
+                  </Select>
+                  {this.state.selectedRestore ? (
+                    <button
+                      className='btn btn-secondary'
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.restoreBackup(this.state.selectedRestore)
+                      }}
+                    >
+                      Restore
+                    </button>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              </Card>
             </form>
             <form
               method='POST'
@@ -794,6 +857,7 @@ class SiteSettings extends React.Component {
   }
 
   componentDidMount() {
+    this.getBackups()
     this.getRedirects()
   }
 }
@@ -801,6 +865,8 @@ class SiteSettings extends React.Component {
 SiteSettings.propTypes = {
   admin: PropTypes.bool,
   appRoot: PropTypes.string.isRequired,
+  emitForceReload: PropTypes.func.isRequired,
+  emitSave: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
 }

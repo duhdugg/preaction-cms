@@ -170,6 +170,16 @@ class App extends React.Component {
     return this.state.authenticated && this.state.admin && this.state.editable
   }
 
+  emitForceReload(callback = () => {}) {
+    if (this.props.socketMode) {
+      this.socket.emit('force-reload', () => {
+        callback()
+      })
+    } else {
+      callback()
+    }
+  }
+
   emitSave(callback = () => {}) {
     if (this.props.socketMode) {
       this.socket.emit('save', () => {
@@ -895,6 +905,8 @@ class App extends React.Component {
             <SiteSettings
               appRoot={this.root}
               admin={this.state.admin}
+              emitForceReload={this.emitForceReload.bind(this)}
+              emitSave={this.emitSave.bind(this)}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
             />
@@ -977,9 +989,7 @@ class App extends React.Component {
         }
       })
       this.socket.on('reload-app', () => {
-        if (!this.state.editable) {
-          window.location.reload()
-        }
+        window.location.reload()
       })
     }
     window.onpopstate = (event) => {
