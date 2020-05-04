@@ -42,7 +42,7 @@
     "react-router-dom": "^5.1.2"
   },
   "scripts": {
-    "backup-db": "PREACTION_DB_BACKUP=1 node -e \"require('./lib/db.js').backup()\"",
+    "backup-db": "node scripts/backup-db.js",
     "clear-sessions": "node scripts/clear-sessions.js",
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
