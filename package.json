@@ -84,6 +84,5 @@
     "type": "git",
     "url": "git+ssh://git@github.com:duhdugg/preaction-cms.git"
   },
-  "homepage": "https://github.com/duhdugg/preaction-cms#readme",
   "bugs": "https://github.com/duhdugg/preaction-cms/issues"
 }
