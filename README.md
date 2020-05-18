@@ -6,7 +6,7 @@ Preaction CMS is a barebones, customizeable CMS built on top of simple libraries
 
 clone the repo:
 
-`git clone https://github.com/duhdugg/preaction-validation.git`
+`git clone https://github.com/duhdugg/preaction-cms.git`
 
 install dependencies:
 
