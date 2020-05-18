@@ -6,7 +6,11 @@ import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import './Page.css'
 import PageSettings from './PageSettings.jsx'
-import { MdCreate, MdFilterFrames } from 'react-icons/md'
+import {
+  MdCreate,
+  MdFilterFrames,
+  MdSettingsInputComponent,
+} from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 
 class Page extends React.Component {
@@ -402,6 +406,17 @@ class Page extends React.Component {
           {
             name: (
               <span>
+                <MdSettingsInputComponent /> Component
+              </span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              this.addPageBlock('component')
+            },
+          },
+          {
+            name: (
+              <span>
                 <FaHtml5 /> Content
               </span>
             ),
@@ -739,7 +754,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
-  navigate: PropTypes.func,
+  navigate: PropTypes.func.isRequired,
   onNotFound: PropTypes.func,
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,

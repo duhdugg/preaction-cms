@@ -723,6 +723,7 @@ class App extends React.Component {
                     appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
+                    navigate={this.navigate.bind(this)}
                     settings={this.settings}
                     show={this.settings.showHeader}
                     ref={this.header}
@@ -748,6 +749,7 @@ class App extends React.Component {
                   appRoot={this.root}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
+                  navigate={this.navigate.bind(this)}
                   settings={this.settings}
                   ref={this.footer}
                   show={this.settings.showFooter}
@@ -771,6 +773,7 @@ class App extends React.Component {
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
                     footerControl={this.getShowPropertyValueHandler('footer')}
+                    navigate={this.navigate.bind(this)}
                     setActivePathname={this.setActivePathname.bind(this)}
                     setActivePage={this.setActivePage.bind(this)}
                   />

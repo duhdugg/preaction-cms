@@ -33,6 +33,7 @@ class Header extends React.Component {
               editable={this.props.editable}
               emitSave={this.props.emitSave}
               fallbackSettings={this.props.settings}
+              navigate={this.props.navigate}
               path={this.cleanPath}
               ref={this.page}
             />
@@ -47,6 +48,7 @@ Header.propTypes = {
   appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  navigate: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   show: PropTypes.bool,
 }

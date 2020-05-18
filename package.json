@@ -48,7 +48,7 @@
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && yarn test",
     "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js lib/modules/*.js scripts/*.js && react-scripts test --coverage",
     "eject": "react-scripts eject",
-    "dev-server": "nodemon -i src -i scripts server.js",
+    "dev-server": "nodemon -i src -i scripts -i uploads server.js",
     "randomize-password": "node scripts/randomize-password.js",
     "set-password": "bash scripts/set-password.sh",
     "start-inspect": "node --inspect server.js",

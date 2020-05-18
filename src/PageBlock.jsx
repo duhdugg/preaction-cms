@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import PageBlockComponent from './PageBlockComponent.jsx'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
 import { Card, Modal } from '@preaction/bootstrap-clips'
-import { Form, Input, Checkbox, Select } from '@preaction/inputs'
+import { Form, Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
 import {
   MdArrowUpward,
@@ -22,8 +23,11 @@ class PageBlock extends React.Component {
       showSettings: false,
       uploading: false,
     }
-    this.uploadForm = React.createRef()
+    this.childRef = React.createRef()
+    this.imgUploadForm = React.createRef()
     this.photosInput = React.createRef()
+    this.jsInput = React.createRef()
+    this.jsUploadForm = React.createRef()
   }
 
   get header() {
@@ -193,6 +197,20 @@ class PageBlock extends React.Component {
             )
           }
         >
+          {this.props.block.blockType === 'component' ? (
+            <PageBlockComponent
+              appRoot={this.props.appRoot}
+              block={this.props.block}
+              editable={this.props.editable}
+              emitSave={this.props.emitSave}
+              navigate={this.props.navigate}
+              page={this.props.page}
+              settings={this.props.settings}
+              ref={this.childRef}
+            />
+          ) : (
+            ''
+          )}
           {this.props.block.blockType === 'content' ? (
             <div className='row'>
               {this.props
@@ -338,6 +356,46 @@ class PageBlock extends React.Component {
                   'showBorder'
                 )}
               />
+              {this.props.block.blockType === 'component' ? (
+                <span>
+                  <Input
+                    label='React Component Source'
+                    info='This should be a React component packaged in the Universal Module Definition format. When using webpack to compile your component, output.libraryTarget should be set as "umd" in your webpack config.'
+                    value={this.props.block.settings.src}
+                    valueHandler={this.getPageBlockSettingsValueHandler('src')}
+                  />
+                  <div className='btn-group'>
+                    <button
+                      className='btn btn-primary mb-3'
+                      type='button'
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.jsInput.current.click()
+                      }}
+                    >
+                      Upload
+                    </button>
+                  </div>
+                  <Input
+                    label='Global Name'
+                    info='This is the global variable (or property of window) which references the component callable. When using webpack to compile your component, this value should match that of output.library.root from your webpack config.'
+                    value={this.props.block.settings.globalName}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'globalName'
+                    )}
+                  />
+                  <Textarea
+                    label='JSON for props object'
+                    required
+                    value={this.props.block.settings.propsData}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'propsData'
+                    )}
+                  />
+                </span>
+              ) : (
+                ''
+              )}
               {this.props.block.blockType === 'nav' ? (
                 <span>
                   <Select
@@ -392,9 +450,9 @@ class PageBlock extends React.Component {
           <div>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload`}
+              action={`${this.props.appRoot}/api/upload-img`}
               encType='multipart/form-data'
-              ref={this.uploadForm}
+              ref={this.imgUploadForm}
               target={`upload-frame-${this.props.block.id}`}
               className='d-none'
             >
@@ -405,7 +463,34 @@ class PageBlock extends React.Component {
                 accept='image/*'
                 ref={this.photosInput}
                 onChange={() => {
-                  this.uploadForm.current.submit()
+                  this.imgUploadForm.current.submit()
+                  this.setState((state) => {
+                    state.uploading = true
+                    return state
+                  })
+                }}
+              />
+              <input
+                name='target'
+                type='hidden'
+                value={`page-block/${this.props.block.id}`}
+              />
+            </form>
+            <form
+              method='POST'
+              action={`${this.props.appRoot}/api/upload-js`}
+              encType='multipart/form-data'
+              ref={this.jsUploadForm}
+              target={`upload-frame-${this.props.block.id}`}
+              className='d-none'
+            >
+              <input
+                name='component'
+                type='file'
+                accept='text/javascript'
+                ref={this.jsInput}
+                onChange={() => {
+                  this.jsUploadForm.current.submit()
                   this.setState((state) => {
                     state.uploading = true
                     return state
@@ -456,7 +541,7 @@ PageBlock.propTypes = {
   getContents: PropTypes.func.isRequired,
   getPageBlockSettingsValueHandler: PropTypes.func.isRequired,
   last: PropTypes.bool,
-  navigate: PropTypes.func,
+  navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
 }

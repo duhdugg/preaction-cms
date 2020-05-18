@@ -798,7 +798,7 @@ class PageSettings extends React.Component {
             </form>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload`}
+              action={`${this.props.appRoot}/api/upload-img`}
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
