@@ -386,7 +386,6 @@ class PageBlock extends React.Component {
                   />
                   <Textarea
                     label='JSON for props object'
-                    required
                     value={this.props.block.settings.propsData}
                     valueHandler={this.getPageBlockSettingsValueHandler(
                       'propsData'
