@@ -100,7 +100,9 @@ class PageBlockComponent extends React.Component {
             {Component !== null ? (
               <Component {...componentProps} />
             ) : (
-              <Spinner size='3' />
+              <div className='spinner-container'>
+                <Spinner size='3' />
+              </div>
             )}
           </div>
         </div>
