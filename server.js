@@ -30,6 +30,9 @@ const session = require('./lib/session.js')
 const uploads = require('./lib/modules/uploads.js')
 
 // <== http and socket.io setup ==>
+// socket.io events needs to verify session
+// which requires the app be put into an http.Server instance
+// and the http.Server instance to be called into the socket.io instance
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
@@ -37,7 +40,7 @@ const io = require('socket.io')(http)
 app.use(settings.expressModule)
 app.use(cookieParser())
 app.use(session.session)
-// connect io to session
+// connect socket.io to session
 io.use((socket, next) => {
   session.session(socket.request, socket.request.res, next)
 })
@@ -51,6 +54,8 @@ app.use(pages.expressModule)
 
 // <== ROUTES ==>
 
+// the favicon is hard-coded to use /icon path
+// and the server needs to redirect to the uploaded url in settings
 app.route('/icon').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'icon' } }).then((setting) => {
     if (!setting) {
@@ -61,6 +66,9 @@ app.route('/icon').get((req, res) => {
   })
 })
 
+// sitemap needs to traverse all pages in database
+// and get the hostname from settings
+// FIXME: hostname should be dynamic and overrideable by env
 app.route('/sitemap.xml').get((req, res) => {
   db.model.Settings.findOne({ where: { key: 'hostname' } }).then((setting) => {
     let hostname = setting && setting.value ? setting.value : ''
@@ -113,7 +121,7 @@ app.route('/').get((req, res) => {
       },
     ],
   }).then((page) => {
-    let status = page ? 200 : 404
+    const status = page ? 200 : 404
     let description = ''
     let pageblocks = page ? page.pageblocks : []
     pageblocks.sort((a, b) => {
@@ -156,6 +164,7 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
+// and titles from page+site settings
 app.route('*').get((req, res) => {
   let matchRedirect = false
   redirects.model.Redirect.findAll().then((redirects) => {
@@ -184,12 +193,16 @@ app.route('*').get((req, res) => {
       pages.funcs
         .getFullPageById(page.id)
         .then((page) => {
+          // do nothing if redirect was matched
+          // response should have already been sent
           if (matchRedirect) {
             return
           }
-          let status = page ? 200 : 404
+          const status = page ? 200 : 404
+          // build the description from sorted contents of sort pageblocks
           let description = ''
           let pageblocks = page ? page.pageblocks : []
+          // sort pageblocks by ordering attribute
           pageblocks.sort((a, b) => {
             let retval = 0
             if (a.ordering < b.ordering) {
@@ -202,6 +215,7 @@ app.route('*').get((req, res) => {
           pageblocks.forEach((pageblock) => {
             if (pageblock.pageblockcontents) {
               let contents = pageblock.pageblockcontents
+              // sort contents by ordering attribute
               contents.sort((a, b) => {
                 let retval = 0
                 if (a.ordering < b.ordering) {
@@ -236,12 +250,13 @@ app.route('*').get((req, res) => {
         })
     })
     .catch(() => {
-      renderClient(req, res.status(404), {})
+      renderClient(req, res.status(404))
     })
 })
 
 // <== SOCKET.IO EVENT CONFIG ==>
 
+// env.socketMode determines whether socket.io events are configured
 if (env.socketMode) {
   io.on('connection', (socket) => {
     socket.on('save', (fn) => {
@@ -261,12 +276,15 @@ if (env.socketMode) {
 
 // <== SERVER SETUP ==>
 
+// sync all the things and run the server
 db.sync()
   .then(session.sync)
   .then(settings.sync)
   .then(pages.sync)
   .then(redirects.sync)
-
-http.listen(env.port, () => {
-  console.log(`@preaction/cms app listening on port ${env.port}`)
-})
+  .then(() => {
+    // http.listen instead of app.listen so that socket.io events work
+    http.listen(env.port, () => {
+      console.log(`@preaction/cms app listening on port ${env.port}`)
+    })
+  })

@@ -66,11 +66,11 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 
 `PREACTION_PORT=8080` configures the port to listen on
 
-`PREACTION_SOCKET_MODE=1` enables socket features (automatic reload)
+`PREACTION_SOCKET_MODE=1` enables socket.io-enabled features (alpha)
 
 ### Development
 
-run the server with automatic reloading:
+run the server with automatic reloading of server-side code:
 
 `yarn dev-server`
 
@@ -90,6 +90,6 @@ run server with nodejs profiling:
 
 `yarn start-profile`
 
-start the react development server for automatic client reloading:
+start the react development server for automatic client-side code reloading:
 
 `yarn dev-client`
