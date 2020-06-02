@@ -32,6 +32,7 @@ import { Quill } from '@preaction/inputs'
 import absoluteUrl from './lib/absoluteUrl.js'
 import getKeyFromTitle from './lib/getKeyFromTitle.js'
 
+// this is needed so relative links in WYSIWYG content will navigate correctly
 function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
   const LinkFormat = Quill.import('formats/link')
   class SmartLinkFormat extends LinkFormat {
@@ -40,6 +41,8 @@ function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
       node.addEventListener('click', (event) => {
         let href = node.getAttribute('href')
         if (absoluteUrl(href)) {
+          // implicitly doin the needful here by
+          // relying on default event handlers
         } else {
           event.preventDefault()
           relativeLinkHandler(href)
@@ -57,24 +60,23 @@ class App extends React.Component {
     this.state = {
       activePage: null,
       activePathname: '',
-      activeSettings: {},
-      admin: false,
-      authenticated: false,
+      admin: false, // is user logged in as admin?
+      authenticated: false, // is user logged in at all?
       editable: false,
       fallbackSettings: {},
-      navigate: null,
+      navigate: null, // used by react-router Redirect component during render
       newPage: {
         key: '',
         title: '',
       },
-      redirect: null,
+      redirect: null, // used by react-router Redirect component during render
       show: {
         header: true,
         footer: true,
-        newPage: false,
-        settings: false,
+        newPage: false, // for rendering the new page modal
+        settings: false, // for rendering the settings modal
       },
-      siteMap: {},
+      siteMap: {}, // for generating the navigation menu
       siteSettings: {
         bgColor: '#000000',
         borderColor: '#000000',
@@ -97,8 +99,8 @@ class App extends React.Component {
       },
       token: '',
     }
-    this.settingsUpdateTimer = null
-    this.socket = null
+    this.settingsUpdateTimer = null // used to set a delay on settings updates
+    this.socket = null // for socket.io-enabled features
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
@@ -109,6 +111,7 @@ class App extends React.Component {
     })
   }
 
+  // calls the server to add a page to the database
   addPage(page) {
     if (page.key) {
       axios
@@ -124,6 +127,7 @@ class App extends React.Component {
     }
   }
 
+  // hydrates values of a new page object before calling addPage
   createPage(newPage) {
     if (!newPage.title) {
       return
@@ -170,6 +174,7 @@ class App extends React.Component {
     return this.state.authenticated && this.state.admin && this.state.editable
   }
 
+  // tell the server to reload all listening clients
   emitForceReload(callback = () => {}) {
     if (this.props.socketMode) {
       this.socket.emit('force-reload', () => {
@@ -180,6 +185,7 @@ class App extends React.Component {
     }
   }
 
+  // tell the server that an edit was made
   emitSave(callback = () => {}) {
     if (this.props.socketMode) {
       this.socket.emit('save', () => {
@@ -192,6 +198,8 @@ class App extends React.Component {
     }
   }
 
+  // these are settings which the application falls back on
+  // when a page doesn't have an override for it
   get fallbackSettings() {
     let s = Object.assign({}, this.state.siteSettings)
     if (this.state.fallbackSettings && this.state.activePathname !== '/home/') {
@@ -200,6 +208,7 @@ class App extends React.Component {
     return s
   }
 
+  // for navigation
   get menu() {
     let menu = []
     if (this.settings.navPosition !== 'fixed-top') {
@@ -356,10 +365,12 @@ class App extends React.Component {
     return menu
   }
 
+  // this is used to set a subpath configuration for reverse proxies
   get root() {
     return this.props.root || ''
   }
 
+  // page overrides, mapped to fallback settings
   get settings() {
     let s = Object.assign({}, this.fallbackSettings)
     if (
@@ -370,6 +381,7 @@ class App extends React.Component {
       Object.keys(this.state.activePage.settings).forEach((key) => {
         switch (key) {
           case 'cssOverrides':
+            // cssOverrides should be extended from fallbackSettings
             s[key] = s[key] + '\n\n' + this.state.activePage.settings[key]
             break
           default:
@@ -381,6 +393,7 @@ class App extends React.Component {
     return s
   }
 
+  // used when generating the navigation menu
   get siteMap() {
     let sm = {
       key: 'home',
@@ -391,6 +404,7 @@ class App extends React.Component {
     return sm
   }
 
+  // for new page modal
   getNewPageValueHandler(key) {
     return (value) => {
       this.setState((state) => {
@@ -403,6 +417,7 @@ class App extends React.Component {
     }
   }
 
+  // for site settings modal
   getSettingsValueHandler(key) {
     return (value) => {
       if (key === 'siteTitle') {
@@ -436,6 +451,7 @@ class App extends React.Component {
     }
   }
 
+  // so page components can control showing the header and footer
   getShowPropertyValueHandler(key) {
     return (value) => {
       this.setState((state) => {
@@ -445,6 +461,7 @@ class App extends React.Component {
     }
   }
 
+  // so page components can handle 404s
   handleNotFound(path) {
     this.setState((state) => {
       state.activePage = null
@@ -491,6 +508,7 @@ class App extends React.Component {
         })
       }
     })
+    // for 404s
     if (path) {
       axios
         .get(`${this.root}/api/page/settings/by-key${path}`)
@@ -519,6 +537,7 @@ class App extends React.Component {
             )
           })
       } else if (path) {
+        // for 404s
         axios
           .get(`${this.root}/api/page/sitemap/by-key${path}`)
           .then((response) => {
@@ -977,13 +996,16 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    // redirect with trailing slash if it's not there
     if (window.location.pathname.match(/\/$/) === null) {
       window.location.pathname = window.location.pathname + '/'
       return
     }
+    // get everything loaded
     this.loadSettings()
     this.loadSession()
     this.setActivePathname(window.location.pathname)
+    // set up socket.io-enabled features
     if (this.props.socketMode) {
       this.socket = io({ path: `${this.root}/socket.io` })
       this.socket.on('load', () => {
@@ -995,19 +1017,17 @@ class App extends React.Component {
         window.location.reload()
       })
     }
+    // handle state changes on back/forward browser buttons
     window.onpopstate = (event) => {
       this.setActivePathname(window.location.pathname)
     }
     window.preaction = {
-      navigate: (path) => {
-        this.navigate(path)
-      },
-      redirect: (path) => {
-        this.redirect(path)
-      },
-      toggleEditMode: () => {
-        this.toggleEditMode()
-      },
+      navigate: this.navigate.bind(this),
+      redirect: this.redirect.bind(this),
+      reload: this.reload.bind(this),
+      toggleEditMode: this.toggleEditMode.bind(this),
+      toggleNewPage: this.toggleNewPage.bind(this),
+      toggleSettings: this.toggleSettings.bind(this),
     }
   }
 }
