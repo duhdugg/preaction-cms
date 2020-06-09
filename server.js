@@ -66,15 +66,13 @@ app.route('/icon').get((req, res) => {
   })
 })
 
-// sitemap needs to traverse all pages in database
-// and get the hostname from settings
-// FIXME: hostname should be dynamic and overrideable by env
-app.route('/sitemap.xml').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'hostname' } }).then((setting) => {
-    let hostname = setting && setting.value ? setting.value : ''
+if (env.sitemapHostname) {
+  // sitemap needs to traverse all pages in database
+  app.route('/sitemap.xml').get((req, res) => {
+    let hostname = env.sitemapHostname
     let changefreq = 'always'
     try {
-      let smStream = new SitemapStream({ hostname: hostname })
+      let smStream = new SitemapStream({ hostname })
       let pipeline = smStream.pipe(createGzip())
       smStream.write({
         url: '/',
@@ -108,7 +106,7 @@ app.route('/sitemap.xml').get((req, res) => {
       res.status(500).end()
     }
   })
-})
+}
 
 // root route should generate description metadata from home page blocks
 app.route('/').get((req, res) => {

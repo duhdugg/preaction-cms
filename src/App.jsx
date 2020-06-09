@@ -88,7 +88,6 @@ class App extends React.Component {
         fontColor: '#ffffff',
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
-        hostname: '',
         linkColor: '#ffffff',
         siteTitle: '',
         siteDescription: '',
@@ -503,7 +502,6 @@ class App extends React.Component {
       if (response.data) {
         this.setState((state) => {
           state.siteSettings = response.data
-          state.siteSettings.hostname = window.location.origin || ''
           return state
         })
       }
