@@ -228,6 +228,8 @@ class Page extends React.Component {
                     ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >=
                     0
                   ) {
+                    // minimum value for width attribute is here
+                    // to allow the correct visual spacing on the sliders
                     if (value < 1) {
                       value = 1
                     }
@@ -279,6 +281,8 @@ class Page extends React.Component {
               if (
                 ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].indexOf(key) >= 0
               ) {
+                // minimum value for width attribute is here
+                // to allow the correct visual spacing on the sliders
                 if (value < 1) {
                   value = 1
                 }
@@ -366,6 +370,7 @@ class Page extends React.Component {
     }
   }
 
+  // used for page settings modal
   getPageValueHandler(key) {
     return (value) => {
       this.setState(
@@ -614,6 +619,7 @@ class Page extends React.Component {
   }
 
   loadSettings() {
+    // control showing header/footer in parent App.jsx component
     if (!['header', 'footer'].includes(this.state.page.key)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
