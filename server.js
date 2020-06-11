@@ -259,13 +259,13 @@ if (env.socketMode) {
   io.on('connection', (socket) => {
     socket.on('save', (fn) => {
       fn()
-      if (socket.conn.request.session.authenticated) {
+      if (socket.conn.request.session.admin) {
         io.emit('load')
       }
     })
     socket.on('force-reload', (fn) => {
       fn()
-      if (socket.conn.request.session.authenticated) {
+      if (socket.conn.request.session.admin) {
         io.emit('reload-app')
       }
     })
