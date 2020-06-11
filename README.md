@@ -68,6 +68,8 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 
 `PREACTION_SOCKET_MODE=1` enables socket.io-enabled features (alpha)
 
+`PREACTION_SITEMAP_HOSTNAME=http://example.com` enables the /sitemap.xml path and configures the protocol and hostname
+
 ### Development
 
 run the server with automatic reloading of server-side code:
