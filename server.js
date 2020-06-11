@@ -78,9 +78,20 @@ if (env.sitemapHostname) {
         url: '/',
         changefreq,
       })
+      function end() {
+        smStream.end()
+        res.header('Content-Type', 'application/xml')
+        res.header('Content-Encoding', 'gzip')
+        pipeline.pipe(res).on('error', (e) => {
+          throw e
+        })
+      }
       pages.model.Page.findAll({ where: { userCreated: true } }).then(
         (pageRows) => {
           let rowCount = pageRows.length
+          if (!rowCount) {
+            end()
+          }
           let countMapped = 0
           pageRows.forEach((page) => {
             pages.funcs.getPagePath(page).then((path) => {
@@ -90,12 +101,7 @@ if (env.sitemapHostname) {
               })
               countMapped++
               if (countMapped >= rowCount) {
-                smStream.end()
-                res.header('Content-Type', 'application/xml')
-                res.header('Content-Encoding', 'gzip')
-                pipeline.pipe(res).on('error', (e) => {
-                  throw e
-                })
+                end()
               }
             })
           })
