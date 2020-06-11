@@ -638,7 +638,6 @@ class App extends React.Component {
   }
 
   reload() {
-    this.loadSiteMap()
     this.loadSettings()
     if (this.activePage.current) {
       this.header.current.reload()
