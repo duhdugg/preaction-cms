@@ -190,6 +190,7 @@ class PageBlockContent extends React.Component {
             emitSave={this.props.emitSave}
             sourceMode={this.state.sourceMode}
             theme={this.state.theme}
+            token={this.props.token}
           />
         ) : (
           ''
@@ -345,6 +346,7 @@ PageBlockContent.propTypes = {
   last: PropTypes.bool,
   navigate: PropTypes.func,
   settings: PropTypes.object.isRequired,
+  token: PropTypes.string,
   width: PropTypes.any,
 }
 

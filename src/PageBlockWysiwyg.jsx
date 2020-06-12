@@ -32,7 +32,7 @@ class PageBlockWysiwyg extends React.Component {
             if (this.props.editable) {
               axios
                 .put(
-                  `${this.props.appRoot}/api/page/blocks/content/${this.props.content.id}`,
+                  `${this.props.appRoot}/api/page/blocks/content/${this.props.content.id}?token=${this.props.token}`,
                   {
                     wysiwyg: this.state.wysiwyg,
                   }
@@ -144,6 +144,7 @@ PageBlockWysiwyg.propTypes = {
   editable: PropTypes.bool,
   sourceMode: PropTypes.bool,
   theme: PropTypes.string.isRequired,
+  token: PropTypes.string,
 }
 
 export default PageBlockWysiwyg

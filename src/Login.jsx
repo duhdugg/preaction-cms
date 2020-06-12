@@ -12,12 +12,19 @@ class Login extends React.Component {
     }
   }
 
+  loadToken() {
+    axios.get(`${this.props.appRoot}/api/token`).then((token) => {
+      this.props.setToken(token)
+    })
+  }
+
   loginSubmit(event) {
     event.preventDefault()
     const { username, password } = this.state
+    const token = this.props.token
     if (event.target.checkValidity()) {
       axios
-        .post(`${this.props.appRoot}/api/login`, { username, password })
+        .post(`${this.props.appRoot}/api/login`, { username, password, token })
         .then((response) => {
           window.location.href = `${this.props.appRoot}/`
         })
@@ -64,6 +71,7 @@ class Login extends React.Component {
 
   componentDidMount() {
     document.title = `Login | ${this.props.settings.siteTitle}`
+    this.loadToken()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -77,6 +85,8 @@ class Login extends React.Component {
 Login.propTypes = {
   appRoot: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
+  setToken: PropTypes.func.isRequired,
+  token: PropTypes.string,
 }
 
 export default Login

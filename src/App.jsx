@@ -114,7 +114,7 @@ class App extends React.Component {
   addPage(page) {
     if (page.key) {
       axios
-        .post(`${this.root}/api/page`, page)
+        .post(`${this.root}/api/page?token=${this.state.token}`, page)
         .then((response) => {
           if (response.data) {
             this.loadSiteMap()
@@ -153,19 +153,21 @@ class App extends React.Component {
 
   deletePage(page) {
     if (this.editable) {
-      axios.delete(`${this.root}/api/page/${page.id}`).then((response) => {
-        if (response.status === 200) {
-          this.setState(
-            (state) => {
-              state.activePage = null
-            },
-            () => {
-              this.redirect('..')
-              this.emitSave()
-            }
-          )
-        }
-      })
+      axios
+        .delete(`${this.root}/api/page/${page.id}?token=${this.state.token}`)
+        .then((response) => {
+          if (response.status === 200) {
+            this.setState(
+              (state) => {
+                state.activePage = null
+              },
+              () => {
+                this.redirect('..')
+                this.emitSave()
+              }
+            )
+          }
+        })
     }
   }
 
@@ -436,7 +438,10 @@ class App extends React.Component {
           clearTimeout(this.settingsUpdateTimer)
           this.settingsUpdateTimer = setTimeout(() => {
             axios
-              .post(`${this.root}/api/settings`, this.state.siteSettings)
+              .post(
+                `${this.root}/api/settings?token=${this.state.token}`,
+                this.state.siteSettings
+              )
               .then(() => {
                 this.emitSave(() => {
                   if (this.settingsUpdateTimer !== undefined) {
@@ -669,6 +674,10 @@ class App extends React.Component {
     })
   }
 
+  setToken(token) {
+    this.setState({ token })
+  }
+
   trackPageView() {
     if (
       this.settings.useGoogleAnalytics &&
@@ -742,6 +751,7 @@ class App extends React.Component {
                     navigate={this.navigate.bind(this)}
                     settings={this.settings}
                     show={this.settings.showHeader}
+                    token={this.state.token}
                     ref={this.header}
                   />
                   {this.settings.navPosition === 'below-header' ? (
@@ -769,6 +779,7 @@ class App extends React.Component {
                   settings={this.settings}
                   ref={this.footer}
                   show={this.settings.showFooter}
+                  token={this.state.token}
                 />
               }
             >
@@ -792,6 +803,7 @@ class App extends React.Component {
                     navigate={this.navigate.bind(this)}
                     setActivePathname={this.setActivePathname.bind(this)}
                     setActivePage={this.setActivePage.bind(this)}
+                    token={this.state.token}
                   />
                 </Route>
                 <Route exact path='/login'>
@@ -799,6 +811,8 @@ class App extends React.Component {
                     <Login
                       appRoot={this.root}
                       settings={this.state.siteSettings}
+                      setToken={this.setToken.bind(this)}
+                      token={this.state.token}
                     />
                   </div>
                 </Route>
@@ -832,6 +846,7 @@ class App extends React.Component {
                               this
                             )}
                             setActivePage={this.setActivePage.bind(this)}
+                            token={this.state.token}
                           />
                         )
                     }
@@ -928,6 +943,7 @@ class App extends React.Component {
               emitSave={this.emitSave.bind(this)}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
+              token={this.state.token}
             />
           </Modal>
         ) : (

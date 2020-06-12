@@ -27,9 +27,12 @@ class Page extends React.Component {
 
   addContent(block, contentType) {
     axios
-      .post(`${this.props.appRoot}/api/page/blocks/${block.id}/content`, {
-        contentType,
-      })
+      .post(
+        `${this.props.appRoot}/api/page/blocks/${block.id}/content?token=${this.props.token}`,
+        {
+          contentType,
+        }
+      )
       .then((response) => {
         this.setState((state) => {
           state.page.pageblocks.forEach((pageblock) => {
@@ -48,9 +51,12 @@ class Page extends React.Component {
 
   addPageBlock(blockType) {
     axios
-      .post(`${this.props.appRoot}/api/page/${this.state.page.id}/blocks`, {
-        blockType,
-      })
+      .post(
+        `${this.props.appRoot}/api/page/${this.state.page.id}/blocks?token=${this.props.token}`,
+        {
+          blockType,
+        }
+      )
       .then((response) => {
         this.setState((state) => {
           if (!state.page.pageblocks) {
@@ -81,13 +87,16 @@ class Page extends React.Component {
         let prevBlock = blocks[index - 1]
         prevBlock.ordering++
         axios
-          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${block.id}?token=${this.props.token}`,
+            block
+          )
           .then(() => {
             this.props.emitSave()
           })
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/${prevBlock.id}`,
+            `${this.props.appRoot}/api/page/blocks/${prevBlock.id}?token=${this.props.token}`,
             prevBlock
           )
           .then(() => {
@@ -100,13 +109,16 @@ class Page extends React.Component {
         let nextBlock = blocks[index + 1]
         nextBlock.ordering--
         axios
-          .put(`${this.props.appRoot}/api/page/blocks/${block.id}`, block)
+          .put(
+            `${this.props.appRoot}/api/page/blocks/${block.id}?token=${this.props.token}`,
+            block
+          )
           .then(() => {
             this.props.emitSave()
           })
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/${nextBlock.id}`,
+            `${this.props.appRoot}/api/page/blocks/${nextBlock.id}?token=${this.props.token}`,
             nextBlock
           )
           .then(() => {
@@ -117,7 +129,9 @@ class Page extends React.Component {
       } else if (action === 'delete') {
         if (window.confirm('Delete this block?')) {
           axios
-            .delete(`${this.props.appRoot}/api/page/blocks/${blockId}`)
+            .delete(
+              `${this.props.appRoot}/api/page/blocks/${blockId}?token=${this.props.token}`
+            )
             .then(() => {
               this.props.emitSave()
             })
@@ -252,7 +266,7 @@ class Page extends React.Component {
                     delete contentObj.wysiwyg
                     axios
                       .put(
-                        `${this.props.appRoot}/api/page/blocks/content/${contentId}`,
+                        `${this.props.appRoot}/api/page/blocks/content/${contentId}?token=${this.props.token}`,
                         contentObj
                       )
                       .then(() => {
@@ -299,7 +313,7 @@ class Page extends React.Component {
               this.updateTimer = setTimeout(() => {
                 axios
                   .put(
-                    `${this.props.appRoot}/api/page/blocks/${pageblockId}`,
+                    `${this.props.appRoot}/api/page/blocks/${pageblockId}?token=${this.props.token}`,
                     pageblock
                   )
                   .then(() => {
@@ -325,7 +339,7 @@ class Page extends React.Component {
           this.updateTimer = setTimeout(() => {
             axios
               .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
                 this.state.page
               )
               .then(() => {
@@ -358,7 +372,7 @@ class Page extends React.Component {
           this.updateTimer = setTimeout(() => {
             axios
               .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
                 this.state.page
               )
               .then(() => {
@@ -386,7 +400,7 @@ class Page extends React.Component {
           this.updateTimer = setTimeout(() => {
             axios
               .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}`,
+                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
                 this.state.page
               )
               .then(() => {
@@ -472,7 +486,7 @@ class Page extends React.Component {
         prevUpload.ordering++
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
             content
           )
           .then(() => {
@@ -480,7 +494,7 @@ class Page extends React.Component {
           })
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/content/${prevUpload.id}`,
+            `${this.props.appRoot}/api/page/blocks/content/${prevUpload.id}?token=${this.props.token}`,
             prevUpload
           )
           .then(() => {
@@ -494,7 +508,7 @@ class Page extends React.Component {
         nextContent.ordering--
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/content/${content.id}`,
+            `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
             content
           )
           .then(() => {
@@ -502,7 +516,7 @@ class Page extends React.Component {
           })
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/content/${nextContent.id}`,
+            `${this.props.appRoot}/api/page/blocks/content/${nextContent.id}?token=${this.props.token}`,
             nextContent
           )
           .then(() => {
@@ -514,7 +528,7 @@ class Page extends React.Component {
         if (window.confirm('Delete this content?')) {
           axios
             .delete(
-              `${this.props.appRoot}/api/page/blocks/content/${content.id}`
+              `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`
             )
             .then(() => {
               this.props.emitSave()
@@ -675,6 +689,7 @@ class Page extends React.Component {
                         navigate={this.props.navigate}
                         page={this.state.page}
                         settings={this.settings}
+                        token={this.props.token}
                       />
                     )
                   }
@@ -708,6 +723,7 @@ class Page extends React.Component {
                   page={this.state.page}
                   path={this.props.path}
                   settings={this.settings}
+                  token={this.props.token}
                   deletePage={this.deletePage.bind(this)}
                   getPageValueHandler={this.getPageValueHandler.bind(this)}
                   getResetter={this.getPageSettingsResetter.bind(this)}
@@ -765,6 +781,7 @@ Page.propTypes = {
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,
   setActivePathname: PropTypes.func,
+  token: PropTypes.string,
 }
 
 export default Page

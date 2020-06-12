@@ -34,7 +34,9 @@ class SiteSettings extends React.Component {
 
   deleteRedirect(redirect) {
     axios
-      .delete(`${this.props.appRoot}/api/redirect/${redirect.id}`)
+      .delete(
+        `${this.props.appRoot}/api/redirect/${redirect.id}?token=${this.props.token}`
+      )
       .then((response) => {
         this.props.emitSave()
         this.getRedirects()
@@ -82,11 +84,13 @@ class SiteSettings extends React.Component {
   }
 
   restoreBackup(filename) {
-    axios.post('/api/backups', { filename }).then((response) => {
-      this.props.emitForceReload(() => {
-        window.location.reload()
+    axios
+      .post(`/api/backups?token=${this.props.token}`, { filename })
+      .then((response) => {
+        this.props.emitForceReload(() => {
+          window.location.reload()
+        })
       })
-    })
   }
 
   saveRedirect() {
@@ -99,7 +103,7 @@ class SiteSettings extends React.Component {
     if (this.state.redirect.id) {
       axios
         .put(
-          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}`,
+          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}?token=${this.props.token}`,
           this.state.redirect
         )
         .then((response) => {
@@ -107,7 +111,10 @@ class SiteSettings extends React.Component {
         })
     } else {
       axios
-        .post(`${this.props.appRoot}/api/redirect/`, this.state.redirect)
+        .post(
+          `${this.props.appRoot}/api/redirect/?token=${this.props.token}`,
+          this.state.redirect
+        )
         .then((response) => {
           this.getRedirects()
         })
@@ -750,7 +757,7 @@ class SiteSettings extends React.Component {
             </form>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload-img`}
+              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -805,7 +812,7 @@ class SiteSettings extends React.Component {
             />
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload-img`}
+              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
               target='upload-icon-frame'
               encType='multipart/form-data'
               ref={this.uploadIconForm}
@@ -869,6 +876,7 @@ SiteSettings.propTypes = {
   emitSave: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
+  token: PropTypes.string,
 }
 
 export default SiteSettings

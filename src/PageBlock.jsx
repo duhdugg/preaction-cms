@@ -206,6 +206,7 @@ class PageBlock extends React.Component {
               navigate={this.props.navigate}
               page={this.props.page}
               settings={this.props.settings}
+              token={this.props.token}
               ref={this.childRef}
             />
           ) : (
@@ -239,6 +240,7 @@ class PageBlock extends React.Component {
                     emitSave={this.props.emitSave}
                     navigate={this.props.navigate}
                     settings={this.props.settings}
+                    token={this.props.token}
                   />
                 ))}
             </div>
@@ -449,7 +451,7 @@ class PageBlock extends React.Component {
           <div>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload-img`}
+              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
               encType='multipart/form-data'
               ref={this.imgUploadForm}
               target={`upload-frame-${this.props.block.id}`}
@@ -477,7 +479,7 @@ class PageBlock extends React.Component {
             </form>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload-js`}
+              action={`${this.props.appRoot}/api/upload-js?token=${this.props.token}`}
               encType='multipart/form-data'
               ref={this.jsUploadForm}
               target={`upload-frame-${this.props.block.id}`}
@@ -543,6 +545,7 @@ PageBlock.propTypes = {
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
+  token: PropTypes.string,
 }
 
 export default PageBlock

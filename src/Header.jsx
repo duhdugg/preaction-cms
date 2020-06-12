@@ -35,6 +35,7 @@ class Header extends React.Component {
               fallbackSettings={this.props.settings}
               navigate={this.props.navigate}
               path={this.cleanPath}
+              token={this.props.token}
               ref={this.page}
             />
           </div>
@@ -51,6 +52,7 @@ Header.propTypes = {
   navigate: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   show: PropTypes.bool,
+  token: PropTypes.string,
 }
 
 export default Header

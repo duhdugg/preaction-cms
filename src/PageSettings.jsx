@@ -798,7 +798,7 @@ class PageSettings extends React.Component {
             </form>
             <form
               method='POST'
-              action={`${this.props.appRoot}/api/upload-img`}
+              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
               target='upload-bg-frame'
               encType='multipart/form-data'
               ref={this.uploadBgForm}
@@ -879,6 +879,7 @@ PageSettings.propTypes = {
   path: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
   site: PropTypes.bool,
+  token: PropTypes.string,
 }
 
 export default PageSettings
