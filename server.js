@@ -22,6 +22,7 @@ const app = express()
 // <== LOCAL IMPORTS ==>
 const db = require('./lib/db.js')
 const env = require('./lib/env.js')
+const ext = require('./lib/ext.js')
 const settings = require('./lib/modules/settings.js')
 const pages = require('./lib/modules/pages.js')
 const redirects = require('./lib/modules/redirects.js')
@@ -46,6 +47,7 @@ io.use((socket, next) => {
 })
 // enable JSON requests and limit them to 50 megabytes in size
 app.use(bodyParser.json({ limit: '50mb' }))
+app.use(ext.middleware)
 app.use(session.middleware)
 app.use(db.middleware)
 app.use(uploads.middleware)
