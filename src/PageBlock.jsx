@@ -105,7 +105,11 @@ class PageBlock extends React.Component {
         }}
       >
         <Card
-          className={{ card: 'page-block-inner' }}
+          className={{
+            card: `page-block-inner ${
+              this.props.block.settings.innerClassName || ''
+            }`,
+          }}
           style={{
             body: {
               backgroundColor: 'transparent',
@@ -306,6 +310,15 @@ class PageBlock extends React.Component {
                 value={this.props.block.settings.className}
                 valueHandler={this.getPageBlockSettingsValueHandler(
                   'className'
+                )}
+              />
+              <Input
+                type='text'
+                label='Inner Class Name'
+                info='set padding here'
+                value={this.props.block.settings.innerClassName}
+                valueHandler={this.getPageBlockSettingsValueHandler(
+                  'innerClassName'
                 )}
               />
               <Input
