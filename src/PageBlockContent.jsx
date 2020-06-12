@@ -214,6 +214,15 @@ class PageBlockContent extends React.Component {
           <Modal
             title={`Content Type ${this.props.content.contentType} Settings`}
             closeHandler={this.toggleSettings.bind(this)}
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={this.toggleSettings.bind(this)}
+              >
+                Close
+              </button>
+            }
           >
             <Form
               onSubmit={(e) => {
