@@ -13,18 +13,20 @@ class Login extends React.Component {
   }
 
   loadToken() {
-    axios.get(`${this.props.appRoot}/api/token`).then((token) => {
-      this.props.setToken(token)
+    axios.get(`${this.props.appRoot}/api/token`).then((response) => {
+      this.props.setToken(response.data)
     })
   }
 
   loginSubmit(event) {
     event.preventDefault()
     const { username, password } = this.state
-    const token = this.props.token
     if (event.target.checkValidity()) {
       axios
-        .post(`${this.props.appRoot}/api/login`, { username, password, token })
+        .post(`${this.props.appRoot}/api/login?token=${this.props.token}`, {
+          username,
+          password,
+        })
         .then((response) => {
           window.location.href = `${this.props.appRoot}/`
         })
