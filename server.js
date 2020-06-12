@@ -37,7 +37,7 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
 // <== express setup and module loading ==>
-app.use(settings.expressModule)
+app.use(settings.middleware)
 app.use(cookieParser())
 app.use(session.session)
 // connect socket.io to session
@@ -46,11 +46,11 @@ io.use((socket, next) => {
 })
 // enable JSON requests and limit them to 50 megabytes in size
 app.use(bodyParser.json({ limit: '50mb' }))
-app.use(session.expressModule)
-app.use(db.expressModule)
-app.use(uploads.expressModule)
-app.use(redirects.expressModule)
-app.use(pages.expressModule)
+app.use(session.middleware)
+app.use(db.middleware)
+app.use(uploads.middleware)
+app.use(redirects.middleware)
+app.use(pages.middleware)
 
 // <== ROUTES ==>
 
