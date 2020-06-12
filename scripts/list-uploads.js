@@ -3,7 +3,7 @@ const path = require('path')
 const Op = require('sequelize').Op
 
 const db = require('../lib/db.js')
-const pages = require('../lib/modules/pages.js')
+const pages = require('../lib/pages.js')
 
 const ignore = ['.gitignore']
 

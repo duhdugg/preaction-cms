@@ -23,12 +23,12 @@ const app = express()
 const db = require('./lib/db.js')
 const env = require('./lib/env.js')
 const ext = require('./lib/ext.js')
-const settings = require('./lib/modules/settings.js')
-const pages = require('./lib/modules/pages.js')
-const redirects = require('./lib/modules/redirects.js')
+const settings = require('./lib/settings.js')
+const pages = require('./lib/pages.js')
+const redirects = require('./lib/redirects.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
-const uploads = require('./lib/modules/uploads.js')
+const uploads = require('./lib/uploads.js')
 
 // <== http and socket.io setup ==>
 // socket.io events needs to verify session
