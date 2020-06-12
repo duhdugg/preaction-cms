@@ -195,6 +195,11 @@ class PageBlock extends React.Component {
                 ) : (
                   ''
                 )}
+                <span
+                  style={{ display: 'inline-block', paddingLeft: '0.5rem' }}
+                >
+                  block type: {this.props.block.blockType}
+                </span>
               </div>
             ) : (
               ''
