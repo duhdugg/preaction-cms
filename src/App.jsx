@@ -554,7 +554,7 @@ class App extends React.Component {
   }
 
   logout() {
-    axios.get(`${this.root}/api/logout`).then(() => {
+    axios.get(`${this.root}/api/logout?token=${this.state.token}`).then(() => {
       this.setState((state) => {
         state.admin = false
         state.authenticated = false
