@@ -60,7 +60,7 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 
 `PREACTION_PROXY=1` trust the X-Forwarded-Proto header
 
-`PREACTION_READONLY=1` disables all admin-required middleware
+`PREACTION_READONLY=1` force admin-required and csrf-protected middleware to return HTTP 403
 
 `PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
 
