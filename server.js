@@ -20,6 +20,7 @@ const { createGzip } = require('zlib')
 const app = express()
 
 // <== LOCAL IMPORTS ==>
+const cache = require('./lib/cache.js')
 const db = require('./lib/db.js')
 const env = require('./lib/env.js')
 const ext = require('./lib/ext.js')
@@ -117,7 +118,7 @@ if (env.sitemapHostname) {
 }
 
 // root route should generate description metadata from home page blocks
-app.route('/').get((req, res) => {
+app.route('/').get(cache.middleware, (req, res) => {
   pages.model.Page.findOne({
     where: { key: 'home' },
     include: [
@@ -171,7 +172,7 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
 // and titles from page+site settings
-app.route('*').get((req, res) => {
+app.route('*').get(cache.middleware, (req, res) => {
   let matchRedirect = false
   redirects.model.Redirect.findAll().then((redirects) => {
     redirects.forEach((redirect) => {
