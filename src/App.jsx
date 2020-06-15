@@ -465,7 +465,15 @@ class App extends React.Component {
     }
   }
 
-  // so page components can handle 404s
+  // handler for page api request errors
+  handlePageError() {
+    this.setState((state) => {
+      state.activePage = null
+      return state
+    })
+  }
+
+  // handler for 404s
   handleNotFound(path) {
     this.setState((state) => {
       state.activePage = null
@@ -841,6 +849,7 @@ class App extends React.Component {
                               'footer'
                             )}
                             navigate={this.navigate.bind(this)}
+                            onError={this.handlePageError.bind(this)}
                             onNotFound={this.handleNotFound.bind(this)}
                             setActivePathname={this.setActivePathname.bind(
                               this

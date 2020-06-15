@@ -1,6 +1,7 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
@@ -17,10 +18,10 @@ class Page extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
-      notFound: false,
+      errorMessage: undefined,
       page: null,
       showSettings: false,
+      status: undefined,
     }
     this.updateTimer = null
   }
@@ -563,8 +564,7 @@ class Page extends React.Component {
     // clear the state
     this.setState(
       (state) => {
-        state.loading = true
-        state.notFound = false
+        state.status = 'loading'
         state.page = null
         return state
       },
@@ -587,8 +587,7 @@ class Page extends React.Component {
             let page = response.data
             this.setState(
               (state) => {
-                state.loading = false
-                state.notFound = false
+                state.status = 'ok'
                 state.page = page
                 return state
               },
@@ -620,12 +619,17 @@ class Page extends React.Component {
             if (e.response.status === 404) {
               // set notFound state on 404
               this.setState((state) => {
-                state.loading = false
-                state.notFound = true
+                state.status = 'notFound'
                 return state
               })
               // communicate to parent component
               this.onNotFound()
+            } else {
+              let errorMessage
+              try {
+                errorMessage = e.response.data.error
+              } catch (e) {}
+              this.onError(errorMessage)
             }
           })
       }
@@ -640,6 +644,14 @@ class Page extends React.Component {
       this.props.headerControl(showHeader)
       this.props.footerControl(showFooter)
     }
+  }
+
+  onError(errorMessage) {
+    this.setState({ errorMessage, status: 'error' }, () => {
+      if (this.props.onError) {
+        this.props.onError()
+      }
+    })
   }
 
   onNotFound() {
@@ -742,14 +754,19 @@ class Page extends React.Component {
         ) : (
           ''
         )}
-        {this.state.loading ? (
+        {this.state.status === 'loading' ? (
           <div className='spinner-container'>
             <Spinner size='3.25' />
           </div>
         ) : (
           ''
         )}
-        {this.state.notFound ? <NotFound /> : ''}
+        {this.state.status === 'error' ? (
+          <ErrorMessage errorMessage={this.state.errorMessage} />
+        ) : (
+          ''
+        )}
+        {this.state.status === 'notFound' ? <NotFound /> : ''}
       </div>
     )
   }
@@ -777,6 +794,7 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   navigate: PropTypes.func.isRequired,
+  onError: PropTypes.func,
   onNotFound: PropTypes.func,
   path: PropTypes.string.isRequired,
   setActivePage: PropTypes.func,
