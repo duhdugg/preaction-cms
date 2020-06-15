@@ -52,6 +52,8 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 
 `PREACTION_COOKIE_SAMESITE=strict` sets cookies to samesite strict
 
+`PREACTION_COOKIE_SECRET=secret` sets the cookie signing secret string
+
 `PREACTION_COOKIE_SECURE=1` sets cookies to require https
 
 `PREACTION_DB_BACKUP=1` enables automatic backup of Sqlite database
@@ -65,6 +67,8 @@ create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, t
 `PREACTION_PATH=/preaction` sets root URL for running behind nginx subdirectory
 
 `PREACTION_PORT=8080` configures the port to listen on
+
+`PREACTION_SESSION_COOKIE_NAME=session` sets the name of the session cookie
 
 `PREACTION_SOCKET_MODE=1` enables socket.io-enabled features (alpha)
 
