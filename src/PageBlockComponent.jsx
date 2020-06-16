@@ -1,6 +1,9 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
+import inputs from '@preaction/inputs'
+import bootstrapClips from '@preaction/bootstrap-clips'
+import validation from '@preaction/validation'
 import { Spinner } from '@preaction/bootstrap-clips'
 
 class ErrorBoundary extends React.Component {
@@ -45,6 +48,9 @@ class PageBlockComponent extends React.Component {
   loadComponent() {
     window.axios = axios
     window.React = React
+    window['@preaction/bootstrap-clips'] = bootstrapClips
+    window['@preaction/inputs'] = inputs
+    window['@preaction/validation'] = validation
     const script = document.createElement('script')
     script.async = true
     script.id = this.scriptId
