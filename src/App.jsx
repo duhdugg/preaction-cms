@@ -301,6 +301,7 @@ class App extends React.Component {
           e.preventDefault()
           this.toggleEditMode()
         },
+        toggleParent: false,
         order: 100,
       })
 
