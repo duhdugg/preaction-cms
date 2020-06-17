@@ -85,7 +85,9 @@ class SiteSettings extends React.Component {
 
   restoreBackup(filename) {
     axios
-      .post(`/api/backups?token=${this.props.token}`, { filename })
+      .post(`${this.props.appRoot}/api/backups?token=${this.props.token}`, {
+        filename,
+      })
       .then((response) => {
         this.props.emitForceReload(() => {
           window.location.reload()
