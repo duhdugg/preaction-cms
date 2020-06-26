@@ -284,14 +284,21 @@ if (env.socketMode) {
 // <== SERVER SETUP ==>
 
 // sync all the things and run the server
-db.sync()
-  .then(session.sync)
-  .then(settings.sync)
-  .then(pages.sync)
-  .then(redirects.sync)
-  .then(() => {
+const sync = async () =>
+  await db.sync().then(session.sync).then(pages.sync).then(redirects.sync)
+
+if (require.main === module) {
+  sync().then(() => {
     // http.listen instead of app.listen so that socket.io events work
     http.listen(env.port, () => {
       console.log(`@preaction/cms app listening on port ${env.port}`)
     })
   })
+}
+
+module.exports = {
+  app,
+  http,
+  io,
+  sync,
+}

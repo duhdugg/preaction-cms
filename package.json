@@ -38,7 +38,9 @@
     "hex-rgb": "^4.1.0",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "superagent": "^5.2.2",
+    "supertest": "^4.0.2"
   },
   "scripts": {
     "backup-db": "node scripts/backup-db.js",
@@ -46,9 +48,11 @@
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
-    "test": "prettier -c ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && eslint ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && react-scripts test --coverage",
+    "test": "yarn prettier-check && yarn eslint-check && react-scripts test --coverage",
     "eject": "react-scripts eject",
+    "eslint-check": "eslint ./*.js src/*.j* src/lib/* lib/*.js lib/__tests__/*.js scripts/*.js",
     "dev-server": "nodemon -i src -i scripts -i uploads server.js",
+    "prettier-check": "prettier -c ./*.json ./*.js src/*.j* src/lib/* lib/*.js lib/__tests__/*.js scripts/*.js",
     "randomize-password": "node scripts/randomize-password.js",
     "set-password": "bash scripts/set-password.sh",
     "start-inspect": "node --inspect server.js",
