@@ -1,5 +1,7 @@
 const db = require('../lib/db.js')
 
-db.model.Session.destroy({ where: {} }).then(() => {
+const run = async () => {
+  await db.model.Session.destroy({ where: {} })
   console.debug('sessions cleared')
-})
+}
+run()

@@ -1,26 +1,22 @@
 const fs = require('fs')
 const hasha = require('hasha')
 const process = require('process')
-const util = require('util')
-
-const copyFile = util.promisify(fs.copyFile)
-const rename = util.promisify(fs.rename)
 
 const backup = async () => {
   console.debug('beginning execution of backup function')
   try {
     console.debug('getting timestamp')
-    let timestamp = new Date().toISOString()
+    const timestamp = new Date().toISOString()
     console.debug('calculating sha256 hash')
-    let hash = await hasha.fromFile('data/db.sqlite', {
+    const hash = await hasha.fromFile('data/db.sqlite', {
       algorithm: 'sha256',
     })
     console.debug('copying file')
-    await copyFile('data/db.sqlite', 'data/backups/latest.sqlite')
-    let newFilename = `${timestamp}-${hash}.sqlite`
-    await rename('data/backups/latest.sqlite', `data/backups/${newFilename}`)
+    fs.copyFileSync('data/db.sqlite', 'data/backups/latest.sqlite')
+    const newFilename = `${timestamp}-${hash}.sqlite`
+    fs.renameSync('data/backups/latest.sqlite', `data/backups/${newFilename}`)
     console.debug(`backup saved to data/backups/${newFilename}`)
-    let verifiedHash = await hasha.fromFile(`data/backups/${newFilename}`, {
+    const verifiedHash = await hasha.fromFile(`data/backups/${newFilename}`, {
       algorithm: 'sha256',
     })
     console.debug('verifying hashes', hash, verifiedHash)
@@ -35,7 +31,9 @@ const backup = async () => {
   return
 }
 
-backup().then(() => {
+const run = async () => {
+  await backup()
   console.debug('done')
   process.exit()
-})
+}
+run()

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -sp "Password: " adminpw
-node -e "require('./lib/session.js').updateAdminPassword('$adminpw').then(() => {})"
+node -e "require('./lib/session.js').updateAdminPassword('$adminpw')"
 echo ""
 echo "--- password set! ---"
 echo "password: $adminpw"

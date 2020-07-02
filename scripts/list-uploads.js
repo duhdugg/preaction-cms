@@ -8,7 +8,7 @@ const pages = require('../lib/pages.js')
 const ignore = ['.gitignore']
 
 const listUploads = () => {
-  let uploads = fs.readdirSync(path.join(__dirname, '../uploads'))
+  const uploads = fs.readdirSync(path.join(__dirname, '../uploads'))
   uploads.forEach(async (filename) => {
     if (ignore.includes(filename)) {
       return
@@ -17,16 +17,18 @@ const listUploads = () => {
     let inPageSetting = false
     let inPageBlockImage = false
     let inPageBlockComponent = false
-    let settingsWithFile = await db.model.Settings.findAll({
+    const settingsWithFile = await db.model.Settings.findAll({
       where: { value: `uploads/${filename}` },
     })
-    let pagesWithBg = await pages.model.PageBlock.findAll({
+    const pagesWithBg = await pages.model.PageBlock.findAll({
       where: { settings: { '"bg"': `uploads/${filename}` } },
     })
-    let pageBlockImagesUsingFile = await pages.model.PageBlockContent.findAll({
-      where: { filename },
-    })
-    let pageBlockComponentsUsingFile = await pages.model.PageBlock.findAll({
+    const pageBlockImagesUsingFile = await pages.model.PageBlockContent.findAll(
+      {
+        where: { filename },
+      }
+    )
+    const pageBlockComponentsUsingFile = await pages.model.PageBlock.findAll({
       where: {
         blockType: 'component',
         settings: { '"src"': { [Op.like]: `%${filename}%` } },

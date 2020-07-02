@@ -59,24 +59,23 @@ app.use(pages.middleware)
 
 // the favicon is hard-coded to use /icon path
 // and the server needs to redirect to the uploaded url in settings
-app.route('/icon').get((req, res) => {
-  db.model.Settings.findOne({ where: { key: 'icon' } }).then((setting) => {
-    if (!setting) {
-      res.status(404).send('')
-      return
-    }
-    res.redirect(setting.value)
-  })
+app.route('/icon').get(async (req, res) => {
+  const setting = await db.model.Settings.findOne({ where: { key: 'icon' } })
+  if (!setting) {
+    res.status(404).send('')
+    return
+  }
+  res.redirect(setting.value)
 })
 
 if (env.sitemapHostname) {
   // sitemap needs to traverse all pages in database
-  app.route('/sitemap.xml').get((req, res) => {
-    let hostname = env.sitemapHostname
-    let changefreq = 'always'
+  app.route('/sitemap.xml').get(async (req, res) => {
+    const hostname = env.sitemapHostname
+    const changefreq = 'always'
     try {
-      let smStream = new SitemapStream({ hostname })
-      let pipeline = smStream.pipe(createGzip())
+      const smStream = new SitemapStream({ hostname })
+      const pipeline = smStream.pipe(createGzip())
       smStream.write({
         url: '/',
         changefreq,
@@ -89,27 +88,25 @@ if (env.sitemapHostname) {
           throw e
         })
       }
-      pages.model.Page.findAll({ where: { userCreated: true } }).then(
-        (pageRows) => {
-          let rowCount = pageRows.length
-          if (!rowCount) {
-            end()
-          }
-          let countMapped = 0
-          pageRows.forEach((page) => {
-            pages.funcs.getPagePath(page).then((path) => {
-              smStream.write({
-                url: `${env.root}/${path}/`,
-                changefreq,
-              })
-              countMapped++
-              if (countMapped >= rowCount) {
-                end()
-              }
-            })
-          })
+      const pageRows = await pages.model.Page.findAll({
+        where: { userCreated: true },
+      })
+      const rowCount = pageRows.length
+      if (!rowCount) {
+        end()
+      }
+      let countMapped = 0
+      for (const page of pageRows) {
+        const path = await pages.funcs.getPagePath(page)
+        smStream.write({
+          url: `${env.root}/${path}/`,
+          changefreq,
+        })
+        countMapped++
+        if (countMapped >= rowCount) {
+          end()
         }
-      )
+      }
     } catch (e) {
       console.error(e)
       res.status(500).end()
@@ -118,52 +115,34 @@ if (env.sitemapHostname) {
 }
 
 // root route should generate description metadata from home page blocks
-app.route('/').get(cache.middleware, (req, res) => {
-  pages.model.Page.findOne({
-    where: { key: 'home' },
-    include: [
-      {
-        model: pages.model.PageBlock,
-        include: [pages.model.PageBlockContent],
-      },
-    ],
-  }).then((page) => {
-    const status = page ? 200 : 404
+app.route('/').get(cache.middleware, async (req, res) => {
+  try {
+    const page = await pages.funcs.getFullPageByPath('/home/')
     let description = ''
-    let pageblocks = page ? page.pageblocks : []
-    pageblocks.sort((a, b) => {
-      let retval = 0
-      if (a.ordering < b.ordering) {
-        retval = -1
-      } else if (a.ordering > b.ordering) {
-        retval = 1
-      }
-      return retval
-    })
-    pageblocks.forEach((pageblock) => {
+    const pageblocks = page ? page.pageblocks : []
+    pageblocks.sort((a, b) =>
+      a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
+    )
+    for (const pageblock of pageblocks) {
       if (pageblock.pageblockcontents) {
-        let contents = pageblock.pageblockcontents
-        contents.sort((a, b) => {
-          let retval = 0
-          if (a.ordering < b.ordering) {
-            retval = -1
-          } else if (a.ordering > b.ordering) {
-            retval = 1
-          }
-          return retval
-        })
-        pageblock.pageblockcontents.forEach((pbc) => {
+        const contents = pageblock.pageblockcontents
+        contents.sort((a, b) =>
+          a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
+        )
+        for (const pbc of pageblock.pageblockcontents) {
           if (pbc.wysiwyg) {
             description += pbc.wysiwyg
           }
-        })
+        }
       }
-    })
+    }
     // remove line-break paragraphs
     description = description.replace(/<p><br><\/p>/g, '')
     description = excerptHtml(description, { pruneLength: 300 })
-    renderClient(req, res.status(status), { description })
-  })
+    renderClient(req, res.status(200), { description })
+  } catch (error) {
+    renderClient(req, res.status(404))
+  }
 })
 
 // root route should also serve the client build
@@ -172,19 +151,16 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
 // and titles from page+site settings
-app.route('*').get(cache.middleware, (req, res) => {
-  let matchRedirect = false
-  redirects.model.Redirect.findAll().then((redirects) => {
-    redirects.forEach((redirect) => {
-      let re = new RegExp(`^/?${redirect.match}/?$`)
-      if (re.test(req.path)) {
-        matchRedirect = true
-        res.redirect(redirect.location)
-      }
-    })
-  })
-
-  let pageKey = req.path.split('/')[1]
+app.route('*').get(cache.middleware, async (req, res) => {
+  const redirs = await redirects.model.Redirect.findAll()
+  for (const redirect of redirs) {
+    const re = new RegExp(`^/?${redirect.match}/?$`)
+    if (re.test(req.path)) {
+      res.redirect(redirect.location)
+      return
+    }
+  }
+  const pageKey = req.path.split('/')[1]
   switch (pageKey) {
     case 'home':
     case 'header':
@@ -194,71 +170,43 @@ app.route('*').get(cache.middleware, (req, res) => {
       return
     default:
   }
-  pages.funcs
-    .getPageByPath(req.path)
-    .then((page) => {
-      pages.funcs
-        .getFullPageById(page.id)
-        .then((page) => {
-          // do nothing if redirect was matched
-          // response should have already been sent
-          if (matchRedirect) {
-            return
+  try {
+    const page = await pages.funcs.getFullPageByPath(req.path)
+    // build the description from sorted contents of sort pageblocks
+    let description = ''
+    const pageblocks = page ? page.pageblocks : []
+    // sort pageblocks by ordering attribute
+    pageblocks.sert((a, b) =>
+      a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
+    )
+    for (const pageblock of pageblocks) {
+      if (pageblock.pageblockcontents) {
+        const contents = pageblock.pageblockcontents
+        // sort contents by ordering attribute
+        contents.sort((a, b) =>
+          a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
+        )
+        for (const pbc of contents) {
+          if (pbc.wysiwyg) {
+            description += pbc.wysiwyg
           }
-          const status = page ? 200 : 404
-          // build the description from sorted contents of sort pageblocks
-          let description = ''
-          let pageblocks = page ? page.pageblocks : []
-          // sort pageblocks by ordering attribute
-          pageblocks.sort((a, b) => {
-            let retval = 0
-            if (a.ordering < b.ordering) {
-              retval = -1
-            } else if (a.ordering > b.ordering) {
-              retval = 1
-            }
-            return retval
-          })
-          pageblocks.forEach((pageblock) => {
-            if (pageblock.pageblockcontents) {
-              let contents = pageblock.pageblockcontents
-              // sort contents by ordering attribute
-              contents.sort((a, b) => {
-                let retval = 0
-                if (a.ordering < b.ordering) {
-                  retval = -1
-                } else if (a.ordering > b.ordering) {
-                  retval = 1
-                }
-                return retval
-              })
-              pageblock.pageblockcontents.forEach((pbc) => {
-                if (pbc.wysiwyg) {
-                  description += pbc.wysiwyg
-                }
-              })
-            }
-          })
-          // remove line-break paragraphs
-          description = description.replace(/<p><br><\/p>/g, '')
-          description = excerptHtml(description, { pruneLength: 300 })
-          pages.funcs.getAppliedPageSettings(page.id).then((settings) => {
-            let siteTitle = settings.siteTitle
-            let pageTitle = page.title
-            renderClient(req, res.status(status), {
-              description,
-              siteTitle,
-              pageTitle,
-            })
-          })
-        })
-        .catch((e) => {
-          console.error(e)
-        })
+        }
+      }
+    }
+    // remove line-break paragraphs
+    description = description.replace(/<p><br><\/p>/g, '')
+    description = excerptHtml(description, { pruneLength: 300 })
+    const settings = await pages.funcs.getAppliedPageSettings(page.id)
+    const siteTitle = settings.siteTitle
+    const pageTitle = page.title
+    renderClient(req, res.status(200), {
+      description,
+      siteTitle,
+      pageTitle,
     })
-    .catch(() => {
-      renderClient(req, res.status(404))
-    })
+  } catch (error) {
+    renderClient(req, res.status(404))
+  }
 })
 
 // <== SOCKET.IO EVENT CONFIG ==>
@@ -284,17 +232,24 @@ if (env.socketMode) {
 // <== SERVER SETUP ==>
 
 // sync all the things and run the server
-const sync = async () =>
-  await db.sync().then(session.sync).then(pages.sync).then(redirects.sync)
+const sync = async () => {
+  await db.sync()
+  await session.sync()
+  await settings.sync()
+  await pages.sync()
+  await redirects.sync()
+}
 
-if (require.main === module) {
-  sync().then(() => {
+const load = async () => {
+  if (require.main === module) {
+    await sync()
     // http.listen instead of app.listen so that socket.io events work
     http.listen(env.port, () => {
       console.log(`@preaction/cms app listening on port ${env.port}`)
     })
-  })
+  }
 }
+load()
 
 module.exports = {
   app,
