@@ -4,6 +4,9 @@
   "version": "1.3.5",
   "proxy": "http://localhost:8999",
   "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "@preaction/validation": "^1.3.6",
     "animate.css": "^4.1.0",
     "axios": "^0.19.2",
