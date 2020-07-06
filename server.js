@@ -68,10 +68,10 @@ app.route('/icon').get(async (req, res) => {
   res.redirect(setting.value)
 })
 
-if (env.sitemapHostname) {
+if (env.sitemapHostname || env.nodeEnv === 'test') {
   // sitemap needs to traverse all pages in database
   app.route('/sitemap.xml').get(async (req, res) => {
-    const hostname = env.sitemapHostname
+    const hostname = env.sitemapHostname || 'http://localhost:8999'
     const changefreq = 'always'
     try {
       const smStream = new SitemapStream({ hostname })
@@ -212,7 +212,7 @@ app.route('*').get(cache.middleware, async (req, res) => {
 // <== SOCKET.IO EVENT CONFIG ==>
 
 // env.socketMode determines whether socket.io events are configured
-if (env.socketMode) {
+if (env.socketMode || env.nodeEnv === 'test') {
   io.on('connection', (socket) => {
     socket.on('save', (fn) => {
       fn()
