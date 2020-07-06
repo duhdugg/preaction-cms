@@ -176,7 +176,7 @@ app.route('*').get(cache.middleware, async (req, res) => {
     let description = ''
     const pageblocks = page ? page.pageblocks : []
     // sort pageblocks by ordering attribute
-    pageblocks.sert((a, b) =>
+    pageblocks.sort((a, b) =>
       a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
     )
     for (const pageblock of pageblocks) {
