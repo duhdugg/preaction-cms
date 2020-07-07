@@ -55,7 +55,7 @@
     "test-server": "jest --coverage",
     "test": "yarn prettier-check && yarn eslint-check && yarn test-server && yarn test-client",
     "eject": "react-scripts eject",
-    "eslint-check": "eslint ./*.js src/*.j* src/lib/* lib/*.js lib/__tests__/*.js scripts/*.js",
+    "eslint-check": "eslint --max-warnings 0 ./*.js src/*.j* src/lib/* lib/*.js lib/__tests__/*.js scripts/*.js",
     "dev-server": "nodemon -i src -i scripts -i uploads server.js",
     "prettier-check": "prettier -c ./*.json ./*.js src/*.j* src/lib/* lib/*.js lib/__tests__/*.js scripts/*.js",
     "randomize-password": "node scripts/randomize-password.js",
