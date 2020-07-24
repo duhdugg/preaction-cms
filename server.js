@@ -29,6 +29,7 @@ const pages = require('./lib/pages.js')
 const redirects = require('./lib/redirects.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
+const ua = require('./lib/ua.js')
 const uploads = require('./lib/uploads.js')
 
 // <== http and socket.io setup ==>
@@ -115,7 +116,7 @@ if (env.sitemapHostname || env.nodeEnv === 'test') {
 }
 
 // root route should generate description metadata from home page blocks
-app.route('/').get(cache.middleware, async (req, res) => {
+app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
   try {
     const page = await pages.funcs.getFullPageByPath('/home/')
     let description = ''
@@ -151,7 +152,7 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
 // and titles from page+site settings
-app.route('*').get(cache.middleware, async (req, res) => {
+app.route('*').get(ua.middleware, cache.middleware, async (req, res) => {
   const redirs = await redirects.model.Redirect.findAll()
   for (const redirect of redirs) {
     const re = new RegExp(`^/?${redirect.match}/?$`)

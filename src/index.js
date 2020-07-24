@@ -2,8 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import 'es5-shim'
-import 'es6-shim'
 
 let settings = {
   root: '',
