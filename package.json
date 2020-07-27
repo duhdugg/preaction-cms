@@ -45,6 +45,7 @@
   },
   "scripts": {
     "backup-db": "node scripts/backup-db.js",
+    "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
     "dev-client": "react-scripts start",
     "build": "react-scripts build",
