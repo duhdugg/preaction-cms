@@ -20,7 +20,7 @@
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "@preaction/bootstrap-clips": "^2.0.0",
+    "@preaction/bootstrap-clips": "^2.0.1",
     "@preaction/inputs": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.2",
     "@testing-library/react": "^10.4.7",
