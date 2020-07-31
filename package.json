@@ -75,16 +75,12 @@
     }
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
+    ],
+    "production": "defaults and supports es6-module"
   },
   "author": "Doug Elkin <doug@dougelkin.com> (https://dougelkin.com)",
   "license": "MIT",
