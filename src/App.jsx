@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
+import globalthis from 'globalthis'
 import io from 'socket.io-client'
 import {
   BrowserRouter as Router,
@@ -31,6 +32,8 @@ import { Quill } from '@preaction/inputs'
 
 import absoluteUrl from './lib/absoluteUrl.js'
 import getKeyFromTitle from './lib/getKeyFromTitle.js'
+
+const globalThis = globalthis()
 
 // this is needed so relative links in WYSIWYG content will navigate correctly
 function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
@@ -691,10 +694,10 @@ class App extends React.Component {
     if (
       this.settings.useGoogleAnalytics &&
       this.settings.googleAnalyticsTrackingId &&
-      window.gtag
+      globalThis.gtag
     ) {
-      window.gtag('config', this.settings.googleAnalyticsTrackingId, {
-        page_path: window.location.pathname,
+      globalThis.gtag('config', this.settings.googleAnalyticsTrackingId, {
+        page_path: globalThis.location.pathname,
       })
     }
   }
@@ -794,7 +797,7 @@ class App extends React.Component {
             >
               {this.state.editable ? <hr /> : ''}
               {this.state.editable ? (
-                <h3>Page: {window.location.pathname}</h3>
+                <h3>Page: {this.state.activePathname}</h3>
               ) : (
                 ''
               )}
@@ -1020,14 +1023,16 @@ class App extends React.Component {
 
   componentDidMount() {
     // redirect with trailing slash if it's not there
-    if (window.location.pathname.match(/\/$/) === null) {
-      window.location.pathname = window.location.pathname + '/'
-      return
+    if (globalThis.location) {
+      if (globalThis.location.pathname.match(/\/$/) === null) {
+        globalThis.location.pathname = globalThis.location.pathname + '/'
+        return
+      }
     }
     // get everything loaded
     this.loadSettings()
     this.loadSession()
-    this.setActivePathname(window.location.pathname)
+    this.setActivePathname(this.props.initPath)
     // set up socket.io-enabled features
     if (this.props.socketMode) {
       this.socket = io({ path: `${this.root}/socket.io` })
@@ -1037,14 +1042,16 @@ class App extends React.Component {
         }
       })
       this.socket.on('reload-app', () => {
-        window.location.reload()
+        globalThis.location.reload()
       })
     }
     // handle state changes on back/forward browser buttons
-    window.onpopstate = (event) => {
-      this.setActivePathname(window.location.pathname)
+    if (typeof globalThis.onpopstate !== 'undefined') {
+      globalThis.onpopstate = (event) => {
+        this.setActivePathname(globalThis.location.pathname)
+      }
     }
-    window.preaction = {
+    globalThis.preaction = {
       navigate: this.navigate.bind(this),
       redirect: this.redirect.bind(this),
       reload: this.reload.bind(this),
@@ -1056,6 +1063,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  initPath: PropTypes.string.isRequired,
   root: PropTypes.string,
   socketMode: PropTypes.bool,
 }

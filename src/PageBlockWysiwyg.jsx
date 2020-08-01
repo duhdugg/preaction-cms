@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Form, Textarea, Wysiwyg } from '@preaction/inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
+import globalthis from 'globalthis'
+
+const globalThis = globalthis()
 
 class PageBlockWysiwyg extends React.Component {
   constructor(props) {
@@ -111,7 +114,7 @@ class PageBlockWysiwyg extends React.Component {
         this.content.current.value = this.props.content.wysiwyg
       }
     )
-    window.setTimeout(() => {
+    globalThis.setTimeout(() => {
       this.setState((state) => {
         state.loading = false
         return state

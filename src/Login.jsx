@@ -2,6 +2,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import { Form, Input } from '@preaction/inputs'
+import globalthis from 'globalthis'
+
+const globalThis = globalthis()
 
 class Login extends React.Component {
   constructor(props) {
@@ -28,10 +31,10 @@ class Login extends React.Component {
           password,
         })
         .then((response) => {
-          window.location.href = `${this.props.appRoot}/`
+          globalThis.location.href = `${this.props.appRoot}/`
         })
         .catch((e) => {
-          window.alert('incorrect login')
+          globalThis.alert('incorrect login')
         })
     }
   }

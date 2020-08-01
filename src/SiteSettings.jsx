@@ -5,6 +5,9 @@ import { Card, Spinner } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
+import globalthis from 'globalthis'
+
+const globalThis = globalthis()
 
 class SiteSettings extends React.Component {
   constructor(props) {
@@ -90,7 +93,7 @@ class SiteSettings extends React.Component {
       })
       .then((response) => {
         this.props.emitForceReload(() => {
-          window.location.reload()
+          globalThis.location.reload()
         })
       })
   }

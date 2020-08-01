@@ -5,6 +5,9 @@ import inputs from '@preaction/inputs'
 import bootstrapClips from '@preaction/bootstrap-clips'
 import validation from '@preaction/validation'
 import { Spinner } from '@preaction/bootstrap-clips'
+import globalthis from 'globalthis'
+
+const globalThis = globalthis()
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -46,18 +49,18 @@ class PageBlockComponent extends React.Component {
   }
 
   loadComponent() {
-    window.axios = axios
-    window.React = React
-    window['@preaction/bootstrap-clips'] = bootstrapClips
-    window['@preaction/inputs'] = inputs
-    window['@preaction/validation'] = validation
+    globalThis.axios = axios
+    globalThis.React = React
+    globalThis['@preaction/bootstrap-clips'] = bootstrapClips
+    globalThis['@preaction/inputs'] = inputs
+    globalThis['@preaction/validation'] = validation
     const script = document.createElement('script')
     script.async = true
     script.id = this.scriptId
     script.src = this.props.block.settings.src
     script.onload = () => {
       try {
-        let Component = window[this.props.block.settings.globalName].default
+        let Component = globalThis[this.props.block.settings.globalName].default
         this.setState({ Component })
       } catch (e) {
         this.setState({

@@ -13,6 +13,9 @@ import {
   MdSettingsInputComponent,
 } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
+import globalthis from 'globalthis'
+
+const globalThis = globalthis()
 
 class Page extends React.Component {
   constructor(props) {
@@ -128,7 +131,7 @@ class Page extends React.Component {
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
-        if (window.confirm('Delete this block?')) {
+        if (globalThis.confirm('Delete this block?')) {
           axios
             .delete(
               `${this.props.appRoot}/api/page/blocks/${blockId}?token=${this.props.token}`
@@ -168,7 +171,7 @@ class Page extends React.Component {
   deletePage() {
     if (this.props.deletePage) {
       if (
-        window.confirm(
+        globalThis.confirm(
           `Are you sure you wish to delete the page, "${this.state.page.title}"?`
         )
       ) {
@@ -526,7 +529,7 @@ class Page extends React.Component {
         contents[index] = content
         contents[index + 1] = nextContent
       } else if (action === 'delete') {
-        if (window.confirm('Delete this content?')) {
+        if (globalThis.confirm('Delete this content?')) {
           axios
             .delete(
               `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`

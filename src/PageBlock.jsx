@@ -407,7 +407,7 @@ class PageBlock extends React.Component {
                   </div>
                   <Input
                     label='Global Name'
-                    info='This is the global variable (or property of window) which references the component callable. When using webpack to compile your component, this value should match that of output.library.root from your webpack config.'
+                    info='This is the global variable (or property of globalThis) which references the component callable. When using webpack to compile your component, this value should match that of output.library.root from your webpack config.'
                     value={this.props.block.settings.globalName}
                     valueHandler={this.getPageBlockSettingsValueHandler(
                       'globalName'
