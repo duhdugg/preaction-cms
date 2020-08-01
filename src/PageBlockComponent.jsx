@@ -1,10 +1,41 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
-import inputs from '@preaction/inputs'
-import bootstrapClips from '@preaction/bootstrap-clips'
-import validation from '@preaction/validation'
-import { Spinner } from '@preaction/bootstrap-clips'
+import {
+  Checkbox,
+  Form,
+  Input,
+  Select,
+  Textarea,
+  Wysiwyg,
+  Quill,
+} from '@preaction/inputs'
+import {
+  Alert,
+  AnimatedButton,
+  Boilerplate,
+  Card,
+  Modal,
+  Nav,
+  NavBar,
+  NavItem,
+  Spinner,
+  getClassesForColumn,
+} from '@preaction/bootstrap-clips'
+import {
+  baseValidator,
+  dateValidator,
+  emailValidator,
+  emptyValidator,
+  isbn10Validator,
+  isbn13Validator,
+  notEmptyValidator,
+  numberValidator,
+  phoneValidator,
+  priceValidator,
+  salesforceIdValidator,
+  urlValidator,
+} from '@preaction/validation'
 import globalthis from 'globalthis'
 
 const globalThis = globalthis()
@@ -51,9 +82,41 @@ class PageBlockComponent extends React.Component {
   loadComponent() {
     globalThis.axios = axios
     globalThis.React = React
-    globalThis['@preaction/bootstrap-clips'] = bootstrapClips
-    globalThis['@preaction/inputs'] = inputs
-    globalThis['@preaction/validation'] = validation
+    globalThis['@preaction/bootstrap-clips'] = {
+      Alert,
+      AnimatedButton,
+      Boilerplate,
+      Card,
+      Modal,
+      Nav,
+      NavBar,
+      NavItem,
+      Spinner,
+      getClassesForColumn,
+    }
+    globalThis['@preaction/inputs'] = {
+      Checkbox,
+      Form,
+      Input,
+      Select,
+      Textarea,
+      Wysiwyg,
+      Quill,
+    }
+    globalThis['@preaction/validation'] = {
+      baseValidator,
+      dateValidator,
+      emailValidator,
+      emptyValidator,
+      isbn10Validator,
+      isbn13Validator,
+      notEmptyValidator,
+      numberValidator,
+      phoneValidator,
+      priceValidator,
+      salesforceIdValidator,
+      urlValidator,
+    }
     const script = document.createElement('script')
     script.async = true
     script.id = this.scriptId
