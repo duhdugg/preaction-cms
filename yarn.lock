@@ -1371,20 +1371,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@preaction/bootstrap-clips@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-2.0.3.tgz#cfa05b71b2b54b98d7db8cf7b6d7fff7282a91ce"
-  integrity sha512-etXMIZoC+JDlCBknv3BzoxneE8fp6wtLhSxXs476egLth+5szhz7AgR79eVpDcky+cK4jk1jtb/h81+xzLFeZw==
+"@preaction/bootstrap-clips@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-2.0.4.tgz#1f1952ef5d97d8e1da7d31b6820dc14826953816"
+  integrity sha512-GV4yi4QG0sAyA/Jtqur4lGQULbssUZTi9GscMO+Q95hRL/5K11fdcqOQQ72Cq4qjPzyIb6H7F5R6B34lb0xq7Q==
 
-"@preaction/inputs@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-2.0.0.tgz#59d27dcb79c460e50b97fc552fbb5c79eadaf1e3"
-  integrity sha512-whegkQ9I0E66oJV7wegjzUZzqT47Es3QzuQjqvCTkw19osQ/te+XWbC+OGxu1pavX6VVlfWHdcbeGeqXUvTStg==
+"@preaction/inputs@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-2.0.1.tgz#e5473166817cdd227a4379e00df8325260d82d21"
+  integrity sha512-1E6jVQ7IzbAeYhEWdZLa06MdzxJhhleeD/s8a4aOaKyhWi3skGCsNx+GIoPqDza0Uej1JHsQcKpXIZpmiU8BBw==
 
-"@preaction/validation@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@preaction/validation/-/validation-2.0.0.tgz#b3cd7e7ee73c30ca8a8d89f5b315d8b10113bf37"
-  integrity sha512-rxR8hkkLhHOprD4A752uMsnsf5FdB+h7bzAo97KUYNlljAV5MA6f+icmnx7Gzm743ia31TAO4ryUhqDZ79W4SQ==
+"@preaction/validation@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@preaction/validation/-/validation-2.0.1.tgz#e263c918ca2d1bf4fa06dd42265f3773644b14eb"
+  integrity sha512-vXRmdWreqtVTheaiPJ+7Bz8rM+ZxGqgBSiBuJSIcZa6RvraXey48/lruTbFurFC3Hr6n179I6mWjlloxsttKsg==
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
