@@ -17,8 +17,8 @@ import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 // styles
-import 'animate.css/animate.min.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'animate.css/animate.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 
 import Footer from './Footer.jsx'
