@@ -6,13 +6,14 @@ import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
 
 const globalThis = globalthis()
+const ssr = typeof window === 'undefined'
 
 class PageBlockWysiwyg extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       loading: true,
-      wysiwyg: '',
+      wysiwyg: this.props.content.wysiwyg || '',
       savingWysiwyg: false,
     }
     this.content = React.createRef()
@@ -75,6 +76,7 @@ class PageBlockWysiwyg extends React.Component {
           />
         ) : (
           <Wysiwyg
+            allowDangerousFallback={ssr}
             theme={this.theme}
             toolbar={wysiwygToolbar}
             value={this.state.wysiwyg}

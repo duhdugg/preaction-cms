@@ -2,8 +2,9 @@ const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
-  entry: './src/App.jsx',
+  entry: './src/ssr.index.js',
   target: 'node',
+  mode: 'production',
   externals: [nodeExternals()],
   output: {
     path: path.resolve('build/static/js'),
@@ -13,25 +14,29 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js.?$/,
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-react',
               [
                 '@babel/preset-env',
                 {
                   targets: {
-                    node: true,
+                    node: 'current',
                   },
                 },
               ],
+              ['@babel/preset-react'],
             ],
           },
         },
       },
-      { test: /\.css$/, use: 'ignore-loader' },
+      {
+        test: /\.css$/,
+        use: ['css-loader'],
+      },
     ],
   },
 }

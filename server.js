@@ -140,7 +140,7 @@ app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
     // remove line-break paragraphs
     description = description.replace(/<p><br><\/p>/g, '')
     description = excerptHtml(description, { pruneLength: 300 })
-    renderClient(req, res.status(200), { description })
+    renderClient(req, res.status(200), { description, page })
   } catch (error) {
     renderClient(req, res.status(404))
   }
@@ -204,6 +204,7 @@ app.route('*').get(ua.middleware, cache.middleware, async (req, res) => {
       description,
       siteTitle,
       pageTitle,
+      page,
     })
   } catch (error) {
     renderClient(req, res.status(404))

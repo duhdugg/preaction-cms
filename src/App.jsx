@@ -4,7 +4,8 @@ import axios from 'axios'
 import globalthis from 'globalthis'
 import io from 'socket.io-client'
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
+  StaticRouter,
   Route,
   Switch,
   NavLink,
@@ -15,11 +16,6 @@ import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
 import { Input } from '@preaction/inputs'
 import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
-
-// styles
-// import 'animate.css/animate.min.css'
-// import 'bootstrap/dist/css/bootstrap.min.css'
-import './App.css'
 
 import Footer from './Footer.jsx'
 import Header from './Header.jsx'
@@ -33,28 +29,58 @@ import { Quill } from '@preaction/inputs'
 import absoluteUrl from './lib/absoluteUrl.js'
 import getKeyFromTitle from './lib/getKeyFromTitle.js'
 
+const ssr = typeof window === 'undefined'
+
+// styles
+if (!ssr) {
+  require('animate.css/animate.min.css')
+  require('bootstrap/dist/css/bootstrap.min.css')
+  require('./App.css')
+}
+
 const globalThis = globalthis()
 
 // this is needed so relative links in WYSIWYG content will navigate correctly
 function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
   const LinkFormat = Quill.import('formats/link')
-  class SmartLinkFormat extends LinkFormat {
-    static create(value) {
-      let node = super.create(value)
-      node.addEventListener('click', (event) => {
-        let href = node.getAttribute('href')
-        if (absoluteUrl(href)) {
-          // implicitly doin the needful here by
-          // relying on default event handlers
-        } else {
-          event.preventDefault()
-          relativeLinkHandler(href)
-        }
-      })
-      return node
+  if (LinkFormat) {
+    class SmartLinkFormat extends LinkFormat {
+      static create(value) {
+        let node = super.create(value)
+        node.addEventListener('click', (event) => {
+          let href = node.getAttribute('href')
+          if (absoluteUrl(href)) {
+            // implicitly doin the needful here by
+            // relying on default event handlers
+          } else {
+            event.preventDefault()
+            relativeLinkHandler(href)
+          }
+        })
+        return node
+      }
     }
+    Quill.register('formats/link', SmartLinkFormat)
   }
-  Quill.register('formats/link', SmartLinkFormat)
+}
+
+class Router extends React.Component {
+  render() {
+    return ssr ? (
+      <StaticRouter location={this.props.location} context={{}}>
+        {this.props.children}
+      </StaticRouter>
+    ) : (
+      <BrowserRouter basename={this.props.basename}>
+        {this.props.children}
+      </BrowserRouter>
+    )
+  }
+}
+Router.propTypes = {
+  location: PropTypes.string,
+  basename: PropTypes.string,
+  children: PropTypes.node,
 }
 
 class App extends React.Component {
@@ -111,6 +137,19 @@ class App extends React.Component {
         this.navigate(href)
       }
     })
+
+    if (this.props.initPath) {
+      this.state.activePathname = this.props.initPath
+    }
+    if (this.props.initPage) {
+      this.state.activePage = JSON.parse(JSON.stringify(this.props.initPage))
+      this.state.siteMap = JSON.parse(
+        JSON.stringify(this.props.initPage.siteMap)
+      )
+      this.state.fallbackSettings = JSON.parse(
+        JSON.stringify(this.props.initPage.fallbackSettings)
+      )
+    }
   }
 
   // calls the server to add a page to the database
@@ -707,7 +746,7 @@ class App extends React.Component {
       <div
         className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
       >
-        <Router basename={`${this.root}/`}>
+        <Router basename={`${this.root}/`} location={this.props.initPath}>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
@@ -816,6 +855,7 @@ class App extends React.Component {
                     setActivePathname={this.setActivePathname.bind(this)}
                     setActivePage={this.setActivePage.bind(this)}
                     token={this.state.token}
+                    initPage={this.props.initPage}
                   />
                 </Route>
                 <Route exact path='/login'>
@@ -860,6 +900,7 @@ class App extends React.Component {
                             )}
                             setActivePage={this.setActivePage.bind(this)}
                             token={this.state.token}
+                            initPage={this.props.initPage}
                           />
                         )
                     }
@@ -1063,6 +1104,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  initPage: PropTypes.object,
   initPath: PropTypes.string.isRequired,
   root: PropTypes.string,
   socketMode: PropTypes.bool,

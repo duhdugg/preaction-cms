@@ -22,7 +22,9 @@ class Page extends React.Component {
     super(props)
     this.state = {
       errorMessage: undefined,
-      page: null,
+      page: this.props.initPage
+        ? JSON.parse(JSON.stringify(this.props.initPage))
+        : null,
       showSettings: false,
       status: undefined,
     }
@@ -796,6 +798,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
+  initPage: PropTypes.object,
   navigate: PropTypes.func.isRequired,
   onError: PropTypes.func,
   onNotFound: PropTypes.func,
