@@ -1376,10 +1376,10 @@
   resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-2.0.6.tgz#edb88f26340c993f77caf0f84f318f7577b03fb8"
   integrity sha512-7mUCp5scj9vw6bgborlKFufxpegI4QE12oDS/TMdkBd1FeaqaRRtOSGTNCMx5rqHSqveQSFJck7cnn7LzPgaww==
 
-"@preaction/inputs@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-2.0.3.tgz#12b723c0c1977f23d8406eb8ab02e8746822b962"
-  integrity sha512-u+RljVBl5/NM7qrHpUpZwnV2hcQ96pXNFJw+kms6cfCL5QsDCUeCMV6pJScGpYKEfykSF5KH490bt63Ozwm2rw==
+"@preaction/inputs@^3.0.0-alpha.1":
+  version "3.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-3.0.0-alpha.1.tgz#372d62711ddc860ad7d5c18780be9366561a119d"
+  integrity sha512-abVU0zWdLND9as0oY/4OrPQUq+uQPCiiPnRxFEOl3xirnfKynnPMKCsK8i/oCUw9GvnRavTnFjdiLUulh/FlQQ==
   dependencies:
     react-quill "^1.3.5"
 
