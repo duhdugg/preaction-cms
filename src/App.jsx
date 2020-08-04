@@ -143,6 +143,11 @@ class App extends React.Component {
     if (this.props.initPath) {
       this.state.activePathname = this.props.initPath
     }
+    if (this.props.initSettings) {
+      this.state.siteSettings = JSON.parse(
+        JSON.stringify(this.props.initSettings)
+      )
+    }
     if (this.props.initPage) {
       this.state.activePage = JSON.parse(JSON.stringify(this.props.initPage))
       this.state.siteMap = JSON.parse(
@@ -797,7 +802,6 @@ class App extends React.Component {
                     ''
                   )}
                   <Header
-                    activePage={this.state.activePage}
                     appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
@@ -806,6 +810,11 @@ class App extends React.Component {
                     show={this.settings.showHeader}
                     token={this.state.token}
                     ref={this.header}
+                    initPage={
+                      this.props.initPage
+                        ? this.props.initPage.header
+                        : undefined
+                    }
                   />
                   {this.settings.navPosition === 'below-header' ? (
                     <Nav
@@ -824,7 +833,6 @@ class App extends React.Component {
               }
               footer={
                 <Footer
-                  activePage={this.state.activePage}
                   appRoot={this.root}
                   editable={this.state.editable}
                   emitSave={this.emitSave.bind(this)}
@@ -833,6 +841,9 @@ class App extends React.Component {
                   ref={this.footer}
                   show={this.settings.showFooter}
                   token={this.state.token}
+                  initPage={
+                    this.props.initPage ? this.props.initPage.footer : undefined
+                  }
                 />
               }
             >
@@ -864,6 +875,8 @@ class App extends React.Component {
                   <div className='login'>
                     <Login
                       appRoot={this.root}
+                      loadSession={this.loadSession.bind(this)}
+                      navigate={this.navigate.bind(this)}
                       settings={this.state.siteSettings}
                       setToken={this.setToken.bind(this)}
                       token={this.state.token}
@@ -903,6 +916,7 @@ class App extends React.Component {
                             setActivePage={this.setActivePage.bind(this)}
                             token={this.state.token}
                             initPage={this.props.initPage}
+                            init404={this.props.init404}
                           />
                         )
                     }
@@ -1073,7 +1087,9 @@ class App extends React.Component {
       }
     }
     // get everything loaded
-    this.loadSettings()
+    if (!this.props.initSettings) {
+      this.loadSettings()
+    }
     this.loadSession()
     this.setActivePathname(this.props.initPath)
     // set up socket.io-enabled features
@@ -1106,8 +1122,10 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  init404: PropTypes.bool,
   initPage: PropTypes.object,
   initPath: PropTypes.string.isRequired,
+  initSettings: PropTypes.object,
   root: PropTypes.string,
   socketMode: PropTypes.bool,
 }

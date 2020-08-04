@@ -37,6 +37,7 @@ class Header extends React.Component {
               path={this.cleanPath}
               token={this.props.token}
               ref={this.page}
+              initPage={this.props.initPage}
             />
           </div>
         )}
@@ -49,6 +50,7 @@ Header.propTypes = {
   appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
+  initPage: PropTypes.object,
   navigate: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   show: PropTypes.bool,

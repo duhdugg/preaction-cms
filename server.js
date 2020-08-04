@@ -29,6 +29,7 @@ const pages = require('./lib/pages.js')
 const redirects = require('./lib/redirects.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
+const slash = require('./lib/slash.js')
 const ua = require('./lib/ua.js')
 const uploads = require('./lib/uploads.js')
 
@@ -117,8 +118,9 @@ if (env.sitemapHostname || env.nodeEnv === 'test') {
 
 // root route should generate description metadata from home page blocks
 app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
+  const siteSettings = await settings.getSettings()
   try {
-    const page = await pages.funcs.getFullPageByPath('/home/')
+    const page = await pages.funcs.getFullPageByPath('/home/', 3)
     let description = ''
     const pageblocks = page ? page.pageblocks : []
     pageblocks.sort((a, b) =>
@@ -140,9 +142,9 @@ app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
     // remove line-break paragraphs
     description = description.replace(/<p><br><\/p>/g, '')
     description = excerptHtml(description, { pruneLength: 300 })
-    renderClient(req, res.status(200), { description, page })
+    renderClient(req, res.status(200), { description, page, siteSettings })
   } catch (error) {
-    renderClient(req, res.status(404))
+    renderClient(req, res.status(404), { init404: true, siteSettings })
   }
 })
 
@@ -152,64 +154,71 @@ app.use('/', express.static(path.join(__dirname, 'build')))
 // all other routes should be caught here, served the appropriate page
 // description metadata generated from pageblocks
 // and titles from page+site settings
-app.route('*').get(ua.middleware, cache.middleware, async (req, res) => {
-  const redirs = await redirects.model.Redirect.findAll()
-  for (const redirect of redirs) {
-    const re = new RegExp(`^/?${redirect.match}/?$`)
-    if (re.test(req.path)) {
-      res.redirect(redirect.location)
-      return
-    }
-  }
-  const pageKey = req.path.split('/')[1]
-  switch (pageKey) {
-    case 'home':
-    case 'header':
-    case 'footer':
-    case 'favicon.ico':
-      renderClient(req, res.status(404, ''))
-      return
-    default:
-  }
-  try {
-    const page = await pages.funcs.getFullPageByPath(req.path)
-    // build the description from sorted contents of sort pageblocks
-    let description = ''
-    const pageblocks = page ? page.pageblocks : []
-    // sort pageblocks by ordering attribute
-    pageblocks.sort((a, b) =>
-      a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
-    )
-    for (const pageblock of pageblocks) {
-      if (pageblock.pageblockcontents) {
-        const contents = pageblock.pageblockcontents
-        // sort contents by ordering attribute
-        contents.sort((a, b) =>
+app
+  .route('*')
+  .get(
+    ua.middleware,
+    cache.middleware,
+    redirects.handlerMiddleware,
+    slash.middleware,
+    async (req, res) => {
+      const siteSettings = await settings.getSettings()
+      const pageKey = req.path.split('/')[1]
+      switch (pageKey) {
+        case 'home':
+        case 'header':
+        case 'footer':
+        case 'favicon.ico':
+          renderClient(req, res.status(404, ''), {
+            init404: true,
+            siteSettings,
+          })
+          return
+        default:
+      }
+      try {
+        const page = await pages.funcs.getFullPageByPath(req.path, 3)
+        // build the description from sorted contents of sort pageblocks
+        let description = ''
+        const pageblocks = page ? page.pageblocks : []
+        // sort pageblocks by ordering attribute
+        pageblocks.sort((a, b) =>
           a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
         )
-        for (const pbc of contents) {
-          if (pbc.wysiwyg) {
-            description += pbc.wysiwyg
+        for (const pageblock of pageblocks) {
+          if (pageblock.pageblockcontents) {
+            const contents = pageblock.pageblockcontents
+            // sort contents by ordering attribute
+            contents.sort((a, b) =>
+              a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
+            )
+            for (const pbc of contents) {
+              if (pbc.wysiwyg) {
+                description += pbc.wysiwyg
+              }
+            }
           }
         }
+        // remove line-break paragraphs
+        description = description.replace(/<p><br><\/p>/g, '')
+        description = excerptHtml(description, { pruneLength: 300 })
+        const appliedSettings = await pages.funcs.getAppliedPageSettings(
+          page.id
+        )
+        const siteTitle = appliedSettings.siteTitle
+        const pageTitle = page.title
+        renderClient(req, res.status(200), {
+          description,
+          siteSettings,
+          siteTitle,
+          pageTitle,
+          page,
+        })
+      } catch (error) {
+        renderClient(req, res.status(404), { init404: true, siteSettings })
       }
     }
-    // remove line-break paragraphs
-    description = description.replace(/<p><br><\/p>/g, '')
-    description = excerptHtml(description, { pruneLength: 300 })
-    const settings = await pages.funcs.getAppliedPageSettings(page.id)
-    const siteTitle = settings.siteTitle
-    const pageTitle = page.title
-    renderClient(req, res.status(200), {
-      description,
-      siteTitle,
-      pageTitle,
-      page,
-    })
-  } catch (error) {
-    renderClient(req, res.status(404))
-  }
-})
+  )
 
 // <== SOCKET.IO EVENT CONFIG ==>
 

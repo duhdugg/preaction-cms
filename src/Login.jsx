@@ -31,7 +31,8 @@ class Login extends React.Component {
           password,
         })
         .then((response) => {
-          globalThis.location.href = `${this.props.appRoot}/`
+          this.props.loadSession()
+          this.props.navigate('/')
         })
         .catch((e) => {
           globalThis.alert('incorrect login')
@@ -89,8 +90,10 @@ class Login extends React.Component {
 
 Login.propTypes = {
   appRoot: PropTypes.string.isRequired,
+  loadSession: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   setToken: PropTypes.func.isRequired,
+  navigate: PropTypes.func.isRequired,
   token: PropTypes.string,
 }
 

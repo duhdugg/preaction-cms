@@ -16,6 +16,7 @@ import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
 
 const globalThis = globalthis()
+const ssr = typeof window === 'undefined'
 
 class Page extends React.Component {
   constructor(props) {
@@ -27,6 +28,12 @@ class Page extends React.Component {
         : null,
       showSettings: false,
       status: undefined,
+    }
+    if (this.props.init404) {
+      this.state.status = 'notFound'
+      if (!ssr) {
+        this.onNotFound()
+      }
     }
     this.updateTimer = null
   }
@@ -777,7 +784,9 @@ class Page extends React.Component {
   }
 
   componentDidMount() {
-    this.loadPage(this.props.path)
+    if (!this.state.page) {
+      this.loadPage(this.props.path)
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -798,6 +807,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
+  init404: PropTypes.bool,
   initPage: PropTypes.object,
   navigate: PropTypes.func.isRequired,
   onError: PropTypes.func,

@@ -7,7 +7,13 @@ import globalthis from 'globalthis'
 const globalThis = globalthis()
 
 let settings = {
+  initPage:
+    globalThis.initPage !== '$INIT_PAGE' ? globalThis.initPage : undefined,
   initPath: '/',
+  initSettings:
+    globalThis.initSettings !== '$INIT_SETTINGS'
+      ? globalThis.initSettings
+      : undefined,
   root: '',
   socketMode: false,
 }
@@ -24,7 +30,8 @@ if (globalThis.location) {
   settings.initPath = `${settings.root}/`
 }
 
-ReactDOM.hydrate(<App {...settings} />, document.getElementById('root'))
+const render = !!module.hot ? ReactDOM.render : ReactDOM.hydrate
+render(<App {...settings} />, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
