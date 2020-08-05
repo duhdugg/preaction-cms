@@ -151,10 +151,10 @@ class App extends React.Component {
     if (this.props.initPage) {
       this.state.activePage = JSON.parse(JSON.stringify(this.props.initPage))
       this.state.siteMap = JSON.parse(
-        JSON.stringify(this.props.initPage.siteMap)
+        JSON.stringify(this.props.initPage.siteMap || {})
       )
       this.state.fallbackSettings = JSON.parse(
-        JSON.stringify(this.props.initPage.fallbackSettings)
+        JSON.stringify(this.props.initPage.fallbackSettings || {})
       )
     }
   }
@@ -712,8 +712,10 @@ class App extends React.Component {
   setActivePage(page) {
     this.setState((state) => {
       state.activePage = page
-      state.siteMap = JSON.parse(JSON.stringify(page.siteMap))
-      state.fallbackSettings = JSON.parse(JSON.stringify(page.fallbackSettings))
+      state.siteMap = JSON.parse(JSON.stringify(page.siteMap || {}))
+      state.fallbackSettings = JSON.parse(
+        JSON.stringify(page.fallbackSettings || {})
+      )
       return state
     })
   }
@@ -1079,13 +1081,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // redirect with trailing slash if it's not there
-    if (globalThis.location) {
-      if (globalThis.location.pathname.match(/\/$/) === null) {
-        globalThis.location.pathname = globalThis.location.pathname + '/'
-        return
-      }
-    }
     // get everything loaded
     if (!this.props.initSettings) {
       this.loadSettings()

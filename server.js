@@ -54,7 +54,7 @@ app.use(ext.middleware)
 app.use(session.middleware)
 app.use(db.middleware)
 app.use(uploads.middleware)
-app.use(redirects.middleware)
+app.use(redirects.apiMiddleware)
 app.use(pages.middleware)
 
 // <== ROUTES ==>
@@ -159,11 +159,12 @@ app
   .get(
     ua.middleware,
     cache.middleware,
-    redirects.handlerMiddleware,
+    redirects.middleware,
     slash.middleware,
     async (req, res) => {
       const siteSettings = await settings.getSettings()
-      const pageKey = req.path.split('/')[1]
+      const splitPath = req.path.split('/')
+      const pageKey = splitPath[splitPath.length - 2]
       switch (pageKey) {
         case 'home':
         case 'header':

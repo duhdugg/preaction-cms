@@ -6,7 +6,6 @@ import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
 
 const globalThis = globalthis()
-const ssr = typeof window === 'undefined'
 
 class PageBlockWysiwyg extends React.Component {
   constructor(props) {
@@ -76,7 +75,8 @@ class PageBlockWysiwyg extends React.Component {
           />
         ) : (
           <Wysiwyg
-            allowDangerousFallback={ssr}
+            allowDangerousFallback // as we know it was sanitized by server
+            fallbackMode={!this.props.editable}
             theme={this.theme}
             toolbar={wysiwygToolbar}
             value={this.state.wysiwyg}

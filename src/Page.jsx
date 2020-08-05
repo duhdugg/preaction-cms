@@ -571,7 +571,7 @@ class Page extends React.Component {
   }
 
   loadPage(path) {
-    // add trailing slash
+    // remove leading slash
     path = path.replace(/^\//, '')
     // clear the state
     this.setState(
