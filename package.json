@@ -57,7 +57,7 @@
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
     "dev-client": "react-scripts start",
-    "build": "react-scripts build && yarn webpack --config webpack.server",
+    "build": "react-scripts build && yarn webpack --config webpack.server.js",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
     "test-client": "CI=true react-scripts",
     "test-server": "jest --coverage --coveragePathIgnorePatterns client\\.cjs\\.js",
