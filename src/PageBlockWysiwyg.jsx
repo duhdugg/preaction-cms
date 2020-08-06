@@ -85,23 +85,28 @@ class PageBlockWysiwyg extends React.Component {
             ref={this.content}
           />
         )}
-        <div
-          style={{
-            position: 'relative',
-            display: this.state.savingWysiwyg ? 'block' : 'none',
-          }}
-        >
+        {this.state.savingWysiwyg ? (
           <div
             style={{
-              position: 'absolute',
-              top: '-0.5em',
-              width: '100%',
-              textAlign: 'right',
+              position: 'relative',
             }}
           >
-            saving...
+            <div
+              style={{
+                fontSize: '0.8em',
+                fontStyle: 'italic',
+                position: 'absolute',
+                top: '-1.25em',
+                width: '100%',
+                textAlign: 'right',
+              }}
+            >
+              saving...
+            </div>
           </div>
-        </div>
+        ) : (
+          ''
+        )}
       </div>
     )
   }
