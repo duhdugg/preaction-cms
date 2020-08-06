@@ -305,22 +305,28 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      <div className='col-12'>
-                        <Input
-                          label='Nav Class Name'
-                          value={this.props.settings.navClassName}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navClassName'
-                          )}
-                          readOnly={this.props.getPageSettingIsUndefined(
-                            'navClassName'
-                          )}
-                          onClick={(e) => {
-                            this.overrideSetting('navClassName')
-                          }}
-                        />
-                        <ResetButton settingsKey='navClassName' />
-                      </div>
+                      {['above-header', 'below-header'].includes(
+                        this.props.settings.navPosition
+                      ) ? (
+                        <div className='col-12'>
+                          <Input
+                            label='Nav Class Name'
+                            value={this.props.settings.navClassName}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navClassName'
+                            )}
+                            readOnly={this.props.getPageSettingIsUndefined(
+                              'navClassName'
+                            )}
+                            onClick={(e) => {
+                              this.overrideSetting('navClassName')
+                            }}
+                          />
+                          <ResetButton settingsKey='navClassName' />
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </Card>
                   <Card header='Header/Footer' headerTheme='light'>

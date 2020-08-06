@@ -277,15 +277,21 @@ class SiteSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      <div className='col-12'>
-                        <Input
-                          label='Nav Class Name'
-                          value={this.props.settings.navClassName}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navClassName'
-                          )}
-                        />
-                      </div>
+                      {['above-header', 'below-header'].includes(
+                        this.props.settings.navPosition
+                      ) ? (
+                        <div className='col-12'>
+                          <Input
+                            label='Nav Class Name'
+                            value={this.props.settings.navClassName}
+                            valueHandler={this.props.getSettingsValueHandler(
+                              'navClassName'
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </Card>
                   <Card header='Header' headerTheme='light'>
