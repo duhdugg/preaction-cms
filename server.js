@@ -170,7 +170,7 @@ app
         case 'header':
         case 'footer':
         case 'favicon.ico':
-          renderClient(req, res.status(404, ''), {
+          renderClient(req, res.status(404), {
             init404: true,
             siteSettings,
           })
