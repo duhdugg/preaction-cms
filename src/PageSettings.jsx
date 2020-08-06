@@ -205,9 +205,9 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      {['above-header', 'below-header'].indexOf(
+                      {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
-                      ) > -1 ? (
+                      ) ? (
                         <div className='col-sm-6'>
                           <Select
                             label='Nav Type'
@@ -231,9 +231,9 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      {['above-header', 'below-header'].indexOf(
+                      {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
-                      ) > -1 ? (
+                      ) ? (
                         <div className='col-sm-6'>
                           <Select
                             label='Nav Alignment'
@@ -257,9 +257,9 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      {['above-header', 'below-header'].indexOf(
+                      {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
-                      ) > -1 ? (
+                      ) ? (
                         <div className='col-sm-6'>
                           <Select
                             label='Nav Spacing'
@@ -283,9 +283,9 @@ class PageSettings extends React.Component {
                       ) : (
                         ''
                       )}
-                      {['above-header', 'below-header'].indexOf(
+                      {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
-                      ) > -1 ? (
+                      ) ? (
                         <div className='col-sm-6'>
                           <Checkbox
                             label='Collapse nav for smaller screens'
@@ -829,7 +829,7 @@ class PageSettings extends React.Component {
               title='upload'
               onLoad={() => {
                 let iframe = document.getElementById('upload-bg-frame')
-                if (iframe.contentWindow.location.href.indexOf('http') > -1) {
+                if (iframe.contentWindow.location.href.match(/^https?:\/\//)) {
                   this.setState(
                     (state) => {
                       state.uploadingBg = false

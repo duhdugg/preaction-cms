@@ -626,8 +626,8 @@ class App extends React.Component {
     if (path.match(/\/$/) === null) {
       path = path + '/'
     }
-    if (path.indexOf(this.root) === 0) {
-      let regex = new RegExp(`^${this.root}`)
+    const regex = new RegExp(`^${this.root}`)
+    if (path.match(regex)) {
       path = path.replace(regex, '')
     }
     if (path !== this.state.activePathname) {
