@@ -1,6 +1,8 @@
 ## Preaction CMS
 
-Preaction CMS is a barebones, developer-friendly Content Management System built on top of simple JavaScript libraries.
+Preaction CMS is a barebones Content Management System built on top of simple JavaScript libraries. It is intended to be friendly to users, administrators, and developers.
+
+This is currently under heavy development in preparation for the v3 Beta release. [View the TODO list here](TODO-v3.md).
 
 ### Running
 
