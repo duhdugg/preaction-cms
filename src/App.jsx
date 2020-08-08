@@ -115,7 +115,6 @@ class App extends React.Component {
         containerColor: '#ffffff',
         containerHeaderTheme: 'dark',
         containerOpacity: 0,
-        cssOverrides: '',
         fontColor: '#ffffff',
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
@@ -429,17 +428,7 @@ class App extends React.Component {
       this.state.activePathname !== '/home' &&
       this.state.activePathname !== '/'
     ) {
-      Object.keys(this.state.activePage.settings).forEach((key) => {
-        switch (key) {
-          case 'cssOverrides':
-            // cssOverrides should be extended from fallbackSettings
-            s[key] = s[key] + '\n\n' + this.state.activePage.settings[key]
-            break
-          default:
-            s[key] = this.state.activePage.settings[key]
-            break
-        }
-      })
+      Object.assign(s, this.state.activePage.settings)
     }
     return s
   }
@@ -993,7 +982,6 @@ class App extends React.Component {
           `
             : ''}
         </style>
-        <style>{this.settings.cssOverrides || ''}</style>
         {this.state.editable && this.state.show.settings ? (
           <Modal
             title='Site Settings'

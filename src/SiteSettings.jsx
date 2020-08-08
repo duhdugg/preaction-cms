@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import { Card, Spinner } from '@preaction/bootstrap-clips'
-import { Input, Checkbox, Select, Textarea } from '@preaction/inputs'
+import { Input, Checkbox, Select } from '@preaction/inputs'
 import { getRgbaFromSettings } from './lib/getRgba.js'
 import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
 import globalthis from 'globalthis'
@@ -583,13 +583,6 @@ class SiteSettings extends React.Component {
                   </p>
                 </Card>
               </Card>
-              <Textarea
-                label='CSS Overrides'
-                value={this.props.settings.cssOverrides}
-                valueHandler={this.props.getSettingsValueHandler(
-                  'cssOverrides'
-                )}
-              />
               <Card
                 header='Redirects'
                 headerTheme='green'
