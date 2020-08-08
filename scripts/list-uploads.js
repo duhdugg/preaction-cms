@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const Op = require('sequelize').Op
 
 const db = require('../lib/db.js')
 const pages = require('../lib/pages.js')
@@ -17,7 +16,6 @@ const listUploads = async () => {
     let inSetting = false
     let inPageSetting = false
     let inPageBlockImage = false
-    let inPageBlockComponent = false
     const settingsWithFile = await db.model.Settings.findAll({
       where: { value: `uploads/${filename}` },
     })
@@ -29,22 +27,10 @@ const listUploads = async () => {
         where: { filename },
       }
     )
-    const pageBlockComponentsUsingFile = await pages.model.PageBlock.findAll({
-      where: {
-        blockType: 'component',
-        settings: { '"src"': { [Op.like]: `%${filename}%` } },
-      },
-    })
     inSetting = settingsWithFile.length > 0
     inPageSetting = pagesWithBg.length > 0
     inPageBlockImage = pageBlockImagesUsingFile.length > 0
-    inPageBlockComponent = pageBlockComponentsUsingFile.length > 0
-    if (
-      inSetting ||
-      inPageSetting ||
-      inPageBlockImage ||
-      inPageBlockComponent
-    ) {
+    if (inSetting || inPageSetting || inPageBlockImage) {
       usedUploads.push(filename)
     }
   }
