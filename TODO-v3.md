@@ -2,7 +2,7 @@
 
 Each of these goals must be met before releasing Preaction CMS v3 Beta:
 
-1. Remove all user capabilities to change CSS add JS components.
+1. Remove all user capabilities to change CSS and add JS components.
 
 > There is no acceptibly secure way to let users upload CSS and JavaScript. This should be an administrative task, alongside server-side extension deployment.
 >
