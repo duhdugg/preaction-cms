@@ -55,7 +55,7 @@ test('GET /', async () => {
   expect(response.statusCode).toBe(200)
 })
 
-test('GET /test', async () => {
+test('GET /test/', async () => {
   const { auth, token, unauth } = await client.init()
   const pageResponse = await auth.post(`/api/page?token=${token}`).send({
     pageType: 'content',
@@ -93,6 +93,6 @@ test('GET /test', async () => {
       })
     expect(update2response.statusCode).toBe(200)
   }
-  const response = await unauth.get('/test')
+  const response = await unauth.get('/test/')
   expect(response.statusCode).toBe(200)
 })
