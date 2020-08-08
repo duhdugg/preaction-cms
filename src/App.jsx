@@ -24,8 +24,6 @@ import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 import SiteSettings from './SiteSettings.jsx'
 
-import { Quill } from '@preaction/inputs'
-
 import absoluteUrl from './lib/absoluteUrl.js'
 import getSaneKey from './lib/getSaneKey.js'
 
@@ -39,26 +37,17 @@ if (!ssr) {
 const globalThis = globalthis()
 
 // this is needed so relative links in WYSIWYG content will navigate correctly
-function registerSmartLinkFormat(relativeLinkHandler = (url) => {}) {
-  const LinkFormat = Quill.import('formats/link')
-  if (LinkFormat) {
-    class SmartLinkFormat extends LinkFormat {
-      static create(value) {
-        let node = super.create(value)
-        node.addEventListener('click', (event) => {
-          let href = node.getAttribute('href')
-          if (absoluteUrl(href)) {
-            // implicitly doin the needful here by
-            // relying on default event handlers
-          } else {
-            event.preventDefault()
-            relativeLinkHandler(href)
-          }
-        })
-        return node
+function setGlobalRelativeLinkHandler(relativeLinkHandler = (url) => {}) {
+  if (typeof document !== 'undefined') {
+    document.onclick = (event) => {
+      const element = event.target
+      if (element.tagName === 'A') {
+        if (!absoluteUrl(element.attributes.href.value)) {
+          event.preventDefault()
+          relativeLinkHandler(element.attributes.href.value)
+        }
       }
     }
-    Quill.register('formats/link', SmartLinkFormat)
   }
 }
 
@@ -117,7 +106,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    registerSmartLinkFormat((href) => {
+    setGlobalRelativeLinkHandler((href) => {
       if (!this.state.editable) {
         this.navigate(href)
       }
