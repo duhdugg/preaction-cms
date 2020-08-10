@@ -11,16 +11,15 @@ class PageBlockWysiwyg extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true,
+      loadingEditor: true,
       wysiwyg: this.props.content.wysiwyg || '',
       savingWysiwyg: false,
     }
-    this.content = React.createRef()
     this.wysiwygUpdateTimer = null
   }
 
   handleWysiwyg(value) {
-    if (!this.state.loading) {
+    if (!this.state.loadingEditor) {
       this.setState(
         (state) => {
           state.wysiwyg = value
@@ -71,7 +70,6 @@ class PageBlockWysiwyg extends React.Component {
             value={this.state.wysiwyg}
             valueHandler={this.handleWysiwyg.bind(this)}
             readOnly={!this.props.editable}
-            ref={this.content}
           />
         ) : (
           <Wysiwyg
@@ -82,7 +80,6 @@ class PageBlockWysiwyg extends React.Component {
             value={this.state.wysiwyg}
             valueHandler={this.handleWysiwyg.bind(this)}
             readOnly={!this.props.editable}
-            ref={this.content}
           />
         )}
         {this.state.savingWysiwyg ? (
@@ -112,35 +109,23 @@ class PageBlockWysiwyg extends React.Component {
   }
 
   componentDidMount() {
-    this.setState(
-      (state) => {
-        state.wysiwyg = this.props.content.wysiwyg
-        return state
-      },
-      () => {
-        this.content.current.value = this.props.content.wysiwyg
-      }
-    )
-    globalThis.setTimeout(() => {
-      this.setState((state) => {
-        state.loading = false
-        return state
-      })
-    }, 0)
+    if (this.props.editable) {
+      globalThis.setTimeout(() => {
+        this.setState({ loadingEditor: false })
+      }, 0)
+    }
+    this.setState({ wysiwyg: this.props.content.wysiwyg })
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.editable && !prevProps.editable) {
+      globalThis.setTimeout(() => {
+        this.setState({ loadingEditor: false })
+      }, 0)
+    }
     if (this.props.content.wysiwyg !== prevProps.content.wysiwyg) {
       if (!this.props.editable) {
-        this.setState(
-          (state) => {
-            state.wysiwyg = this.props.content.wysiwyg
-            return state
-          },
-          () => {
-            this.content.current.value = this.props.content.wysiwyg
-          }
-        )
+        this.setState({ wysiwyg: this.props.content.wysiwyg })
       }
     }
   }
