@@ -72,9 +72,7 @@ class PageBlockContent extends React.Component {
     return (
       <Card
         className={{
-          card: `page-block-content ${
-            this.props.content.settings.className || ''
-          }`,
+          card: 'page-block-content',
         }}
         noMargin
         column={this.props.column}
@@ -245,14 +243,6 @@ class PageBlockContent extends React.Component {
                 value={this.props.content.settings.headerLevel}
                 valueHandler={this.props.getContentSettingsValueHandler(
                   'headerLevel'
-                )}
-              />
-              <Input
-                type='text'
-                label='Class Name'
-                value={this.props.content.settings.className}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'className'
                 )}
               />
               <Input

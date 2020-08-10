@@ -81,9 +81,7 @@ class PageBlock extends React.Component {
     return (
       <Card
         className={{
-          card: `page-block page-block-outer block-type-${
-            this.props.block.blockType
-          } ${this.props.block.settings.className || ''}`,
+          card: `page-block page-block-outer block-type-${this.props.block.blockType}`,
         }}
         style={{
           body: {
@@ -105,9 +103,7 @@ class PageBlock extends React.Component {
       >
         <Card
           className={{
-            card: `page-block-inner ${
-              this.props.block.settings.innerClassName || ''
-            }`,
+            card: 'page-block-inner',
           }}
           style={{
             body: {
@@ -300,23 +296,6 @@ class PageBlock extends React.Component {
                 value={this.props.block.settings.headerLevel}
                 valueHandler={this.getPageBlockSettingsValueHandler(
                   'headerLevel'
-                )}
-              />
-              <Input
-                type='text'
-                label='Class Name'
-                value={this.props.block.settings.className}
-                valueHandler={this.getPageBlockSettingsValueHandler(
-                  'className'
-                )}
-              />
-              <Input
-                type='text'
-                label='Inner Class Name'
-                info='set padding here'
-                value={this.props.block.settings.innerClassName}
-                valueHandler={this.getPageBlockSettingsValueHandler(
-                  'innerClassName'
                 )}
               />
               <Input
