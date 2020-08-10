@@ -787,7 +787,6 @@ class App extends React.Component {
                       justify={this.settings.navSpacing === 'justify'}
                       fill={this.settings.navSpacing === 'fill'}
                       collapsible={this.settings.navCollapsible}
-                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''
@@ -815,7 +814,6 @@ class App extends React.Component {
                       justify={this.settings.navSpacing === 'justify'}
                       fill={this.settings.navSpacing === 'fill'}
                       collapsible={this.settings.navCollapsible}
-                      className={this.settings.navClassName}
                     />
                   ) : (
                     ''

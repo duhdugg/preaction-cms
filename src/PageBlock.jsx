@@ -4,7 +4,7 @@ import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
 import { Card, Modal } from '@preaction/bootstrap-clips'
-import { Form, Input, Checkbox, Select, Textarea } from '@preaction/inputs'
+import { Form, Input, Checkbox, Select } from '@preaction/inputs'
 import { MdImage } from 'react-icons/md'
 import {
   MdArrowUpward,
