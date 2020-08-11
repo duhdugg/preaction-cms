@@ -5,7 +5,6 @@ import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
-import './Page.css'
 import PageSettings from './PageSettings.jsx'
 import {
   MdCreate,

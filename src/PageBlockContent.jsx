@@ -163,9 +163,6 @@ class PageBlockContent extends React.Component {
         }
         width={this.props.width}
         style={{
-          body: {
-            padding: 0,
-          },
           footer: {
             padding: 0,
           },

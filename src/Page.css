@@ -15,3 +15,13 @@
 .page .page-block .preaction.wysiwyg {
   margin-bottom: 0 !important;
 }
+
+.card.page-block-outer,
+.card.page-block-inner {
+  border: 0;
+}
+
+.card.page-block-content {
+  border: 1px solid #333;
+  margin-bottom: 1em;
+}
