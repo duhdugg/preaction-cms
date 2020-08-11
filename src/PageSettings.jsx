@@ -110,15 +110,7 @@ class PageSettings extends React.Component {
                     }}
                   />
                   <ResetButton settingsKey='siteTitle' />
-                  <Card
-                    header='Navigation'
-                    headerTheme='dark'
-                    style={{
-                      card: {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
+                  <Card header='Navigation' headerTheme='dark'>
                     <Checkbox
                       label='Parent Site'
                       checked={this.props.settings.site}
@@ -343,13 +335,7 @@ class PageSettings extends React.Component {
               <div className='row'>
                 <div className='col'></div>
               </div>
-              <Card
-                header='Analytics'
-                headerTheme='blue'
-                style={{
-                  card: { backgroundColor: 'transparent' },
-                }}
-              >
+              <Card header='Analytics' headerTheme='blue'>
                 <Checkbox
                   label='Use Google Analytics'
                   checked={this.props.settings.useGoogleAnalytics}
@@ -385,13 +371,7 @@ class PageSettings extends React.Component {
                   ''
                 )}
               </Card>
-              <Card
-                header='Delete Page'
-                headerTheme='red'
-                style={{
-                  card: { backgroundColor: 'transparent' },
-                }}
-              >
+              <Card header='Delete Page' headerTheme='red'>
                 <Checkbox
                   label='Confirm to delete this page'
                   checked={this.state.confirmDelete}

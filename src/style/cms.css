@@ -1,4 +1,4 @@
-.App.nav-position-fixed-top {
+.nav-position-fixed-top {
   padding-top: 4rem;
 }
 
@@ -44,12 +44,31 @@ hr {
 
 .card.page-block-outer,
 .card.page-block-inner {
+  background-color: transparent;
   border: 0;
+  padding: 0;
+}
+
+.card.page-block-outer > .card-body {
+  padding: 0;
+}
+
+.card.page-block-inner > .card-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.card.page-block-inner > .card-footer {
+  padding: 0;
 }
 
 .card.page-block-content {
   border: 1px solid #333;
   margin-bottom: 1em;
+}
+
+.card.page-block-content > .card-footer {
+  padding: 0;
 }
 
 .page .page-controls {

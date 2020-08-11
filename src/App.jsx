@@ -27,17 +27,13 @@ import SiteSettings from './SiteSettings.jsx'
 import { Quill } from '@preaction/inputs'
 
 import absoluteUrl from './lib/absoluteUrl.js'
-import getKeyFromTitle from './lib/getKeyFromTitle.js'
+import getSaneKey from './lib/getSaneKey.js'
 
 const ssr = typeof window === 'undefined'
 
-// styles
+// import css
 if (!ssr) {
-  require('animate.css/animate.min.css')
-  require('bootstrap/dist/css/bootstrap.min.css')
-  require('react-quill/dist/quill.bubble.css')
-  require('react-quill/dist/quill.snow.css')
-  require('./App.css')
+  require('./style')
 }
 
 const globalThis = globalthis()
@@ -438,7 +434,7 @@ class App extends React.Component {
       this.setState((state) => {
         state.newPage[key] = value
         if (key === 'title') {
-          state.newPage.key = getKeyFromTitle(value)
+          state.newPage.key = getSaneKey(value)
         }
         return state
       })
@@ -1023,6 +1019,15 @@ class App extends React.Component {
       toggleEditMode: this.toggleEditMode.bind(this),
       toggleNewPage: this.toggleNewPage.bind(this),
       toggleSettings: this.toggleSettings.bind(this),
+    }
+  }
+
+  componentDidUpdate() {
+    // set path class on body to allow path-specific styling
+    if (this.state.activePage) {
+      document.body.className = `path-${getSaneKey(
+        this.state.activePage.tree.path || 'undefined'
+      )}-`
     }
   }
 }

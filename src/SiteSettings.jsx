@@ -152,15 +152,7 @@ class SiteSettings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <Card
-                    header='Navigation'
-                    headerTheme='dark'
-                    style={{
-                      card: {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
+                  <Card header='Navigation' headerTheme='dark'>
                     <div className='row'>
                       <div className='col-sm-6'>
                         <Select
@@ -270,13 +262,7 @@ class SiteSettings extends React.Component {
               <div className='row'>
                 <div className='col'></div>
               </div>
-              <Card
-                header='Redirects'
-                headerTheme='green'
-                style={{
-                  card: { backgroundColor: 'transparent' },
-                }}
-              >
+              <Card header='Redirects' headerTheme='green'>
                 <div className='row'>
                   <table className='redirects'>
                     <thead>

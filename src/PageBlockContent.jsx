@@ -162,11 +162,6 @@ class PageBlockContent extends React.Component {
           )
         }
         width={this.props.width}
-        style={{
-          footer: {
-            padding: 0,
-          },
-        }}
       >
         {this.props.content.contentType === 'wysiwyg' ? (
           <PageBlockWysiwyg

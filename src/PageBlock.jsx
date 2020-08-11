@@ -82,16 +82,6 @@ class PageBlock extends React.Component {
         className={{
           card: `page-block page-block-outer block-type-${this.props.block.blockType}`,
         }}
-        style={{
-          body: {
-            padding: 0,
-          },
-          card: {
-            border: 0,
-            backgroundColor: 'transparent',
-            padding: 0,
-          },
-        }}
         column
         width={{
           lg: this.props.block.settings.lgWidth / 12,
@@ -103,13 +93,6 @@ class PageBlock extends React.Component {
         <Card
           className={{
             card: 'page-block-inner',
-          }}
-          style={{
-            body: {
-              backgroundColor: 'transparent',
-              padding: 0,
-            },
-            footer: { padding: 0 },
           }}
           header={this.header}
           headerTheme='dark'
