@@ -38,7 +38,6 @@ if (!ssr) {
   require('react-quill/dist/quill.bubble.css')
   require('react-quill/dist/quill.snow.css')
   require('./App.css')
-  require('./Page.css')
 }
 
 const globalThis = globalthis()

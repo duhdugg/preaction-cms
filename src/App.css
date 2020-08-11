@@ -10,19 +10,13 @@ hr {
   padding: 0 !important;
 }
 
-.ql-editor img {
-  max-width: 50%;
-  max-height: 50vh;
-}
-
 .settings-component .card {
   margin-bottom: 1em;
 }
 
-.settings-component h3,
-.settings-component table,
-.settings-component label {
-  text-shadow: 1px 1px #ccc;
+.spinner-container {
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .page .card .card-header h6,
@@ -48,14 +42,37 @@ hr {
   font-size: 2em;
 }
 
+.card.page-block-outer,
+.card.page-block-inner {
+  border: 0;
+}
+
+.card.page-block-content {
+  border: 1px solid #333;
+  margin-bottom: 1em;
+}
+
+.page .page-controls {
+  margin-bottom: 1em;
+}
+
+.page .page-controls button {
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+.page .page-block .preaction.wysiwyg {
+  margin-bottom: 0 !important;
+}
+
 .modal-content .modal-header,
 .modal-content .modal-footer {
-  color: #f8f9fa;
-  background-color: #343a40;
+  color: var(--light);
+  background-color: var(--dark);
   border: 0;
 }
 .modal-content .modal-header svg {
-  color: #fff;
+  color: var(--white);
 }
 
 .wysiwyg label {
@@ -76,7 +93,7 @@ hr {
 }
 
 .wysiwyg .ql-toolbar.ql-snow {
-  background-color: white;
+  background-color: var(--white);
 }
 
 .wysiwyg .ql-tooltip {
