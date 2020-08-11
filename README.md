@@ -44,7 +44,7 @@ the above will also accept whatever is piped into it, so this example is one way
 
 `dd if=/dev/urandom | strings -e s | sed 's/[^a-za-z0-9]//g' | tr -d '\n' | dd count=1 bs=8192 2> /dev/null | yarn set-password`
 
-create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, the build directory, and any db-referenced files in the uploads directory:
+create a gzipped tarball named preaction-cms.tar.gz containing data/db.sqlite, the build directory, the src/style directory, and any db-referenced files in the uploads directory:
 
 `yarn package`
 

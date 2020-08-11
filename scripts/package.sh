@@ -2,4 +2,4 @@
 
 rm preaction-cms.tar.gz && echo 'existing package deleted'
 uploads=$(node scripts/list-uploads.js)
-tar -vcaf preaction-cms.tar.gz build data/db.sqlite $uploads
+tar --exclude-vcs --exclude="src/style/index.template.js" -vcaf preaction-cms.tar.gz build data/db.sqlite src/style $uploads

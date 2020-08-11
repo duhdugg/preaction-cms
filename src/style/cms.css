@@ -59,7 +59,7 @@ hr {
 }
 
 .card.page-block-content {
-  border: 1px solid #333;
+  border: 1px solid var(--dark);
   margin-bottom: 1em;
 }
 
@@ -122,4 +122,9 @@ hr {
 
 .wysiwyg .ql-editor {
   overflow: hidden;
+}
+
+.App.non-editable a:hover::before,
+.App.non-editable a:hover::after {
+  display: none;
 }

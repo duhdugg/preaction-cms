@@ -818,6 +818,14 @@ class App extends React.Component {
                   }
                 />
               }
+              style={{
+                header: {
+                  marginTop:
+                    this.settings.navPosition === 'fixed-top'
+                      ? '4em'
+                      : undefined,
+                },
+              }}
             >
               {this.state.editable ? <hr /> : ''}
               {this.state.editable ? (
