@@ -61,7 +61,7 @@
     "dev-client": "react-scripts start",
     "build": "react-scripts build && yarn webpack --config webpack.server.js",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
-    "test-client": "CI=true react-scripts",
+    "test-client": "CI=true react-scripts test",
     "test-server": "jest --coverage --coveragePathIgnorePatterns client\\.cjs\\.js",
     "test": "yarn prettier-check && yarn eslint-check && yarn test-server && yarn test-client",
     "eject": "react-scripts eject",
