@@ -726,9 +726,7 @@ class App extends React.Component {
   render() {
     return (
       <div
-        className={`App ${
-          this.state.editable ? 'editable' : 'non-editable'
-        } nav-position-${this.settings.navPosition}`}
+        className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
       >
         <Router basename={`${this.root}/`} location={this.props.initPath}>
           <div>
@@ -738,30 +736,30 @@ class App extends React.Component {
             ) : (
               ''
             )}
-            {this.settings.navPosition === 'fixed-top' ? (
-              <NavBar
-                fixedTo='top'
-                theme='dark'
-                brand={{
-                  name: this.settings.siteTitle,
-                  href: `${this.root}/${this.siteMap.path}${
-                    this.siteMap.key === 'home' ? '' : '/'
-                  }`,
-                  onClick: (e) => {
-                    e.preventDefault()
-                    this.navigate(
-                      `/${this.siteMap.path}${
-                        this.siteMap.key === 'home' ? '' : '/'
-                      }`
-                    )
-                  },
-                }}
-                menu={this.menu}
-              />
-            ) : (
-              ''
-            )}
             <Boilerplate
+              navBar={
+                this.settings.navPosition === 'fixed-top' ? (
+                  <NavBar
+                    fixedTo='top'
+                    theme='dark'
+                    brand={{
+                      name: this.settings.siteTitle,
+                      href: `${this.root}/${this.siteMap.path}${
+                        this.siteMap.key === 'home' ? '' : '/'
+                      }`,
+                      onClick: (e) => {
+                        e.preventDefault()
+                        this.navigate(
+                          `/${this.siteMap.path}${
+                            this.siteMap.key === 'home' ? '' : '/'
+                          }`
+                        )
+                      },
+                    }}
+                    menu={this.menu}
+                  />
+                ) : undefined
+              }
               header={
                 <div>
                   {this.settings.navPosition === 'above-header' ? (
