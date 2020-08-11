@@ -1,71 +1,13 @@
-html {
-  background-color: black;
-}
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: transparent;
-  min-height: 100vh;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-#root::before {
-  content: ' ';
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: transparent;
-  transition: background-color 0.5s linear;
-  will-change: transform;
-  z-index: -2;
-  pointer-events: none;
-}
-
-.App::before {
-  opacity: 0;
-  transition: opacity 0.5s linear;
-}
-
-.App {
-  opacity: 0;
-  color: transparent;
-  transition: opacity 0.5s linear, color 0.5s linear;
-}
-
-footer {
-  padding-bottom: 1em;
-  margin-top: 1em;
+.App.nav-position-fixed-top {
+  padding-top: 4rem;
 }
 
 hr {
   margin: 0;
 }
 
-a {
-  transition: color 0.5s linear;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
 .ql-editor {
   padding: 0 !important;
-}
-
-.ql-editor a {
-  text-decoration: none !important;
 }
 
 .ql-editor img {
@@ -83,14 +25,6 @@ a:hover {
   text-shadow: 1px 1px #ccc;
 }
 
-.page .card .card-header,
-.page .card .card-footer {
-  transition: border-color 0.5s linear, color 0.5s linear,
-    background-color 0.5s linear;
-}
-.page .card {
-  transition: border-color 0.5s linear, background-color 0.5s linear;
-}
 .page .card .card-header h6,
 .page .card .card-header h5,
 .page .card .card-header h4,
@@ -112,12 +46,6 @@ a:hover {
 }
 .page .card .card-header h1 {
   font-size: 2em;
-}
-
-.modal-content {
-  color: transparent;
-  background-color: transparent;
-  transition: color 0.5s linear, background-color 0.5s linear;
 }
 
 .modal-content .modal-header,

@@ -13,7 +13,6 @@ import {
   MdSettings,
   MdTextFields,
 } from 'react-icons/md'
-import { getRgbaFromSettings } from './lib/getRgba.js'
 
 class PageBlock extends React.Component {
   constructor(props) {
@@ -110,21 +109,11 @@ class PageBlock extends React.Component {
               backgroundColor: 'transparent',
               padding: 0,
             },
-            card: {
-              border: this.props.block.settings.showBorder
-                ? `1px solid ${
-                    getRgbaFromSettings(this.props.settings, 'border').string
-                  }`
-                : 0,
-              backgroundColor: this.props.block.settings.showContainer
-                ? getRgbaFromSettings(this.props.settings, 'container').string
-                : 'transparent',
-            },
             footer: { padding: 0 },
           }}
           header={this.header}
-          headerTheme={this.props.settings.containerHeaderTheme}
-          footerTheme={this.props.settings.containerHeaderTheme}
+          headerTheme='dark'
+          footerTheme='dark'
           footer={
             this.props.editable ? (
               <div className='btn-group d-block'>
@@ -333,20 +322,6 @@ class PageBlock extends React.Component {
                 step='1'
                 value={this.props.block.settings.xsWidth}
                 valueHandler={this.getPageBlockSettingsValueHandler('xsWidth')}
-              />
-              <Checkbox
-                label='Show Container Background'
-                checked={this.props.block.settings.showContainer}
-                valueHandler={this.getPageBlockSettingsValueHandler(
-                  'showContainer'
-                )}
-              />
-              <Checkbox
-                label='Show Border'
-                checked={this.props.block.settings.showBorder}
-                valueHandler={this.getPageBlockSettingsValueHandler(
-                  'showBorder'
-                )}
               />
               {this.props.block.blockType === 'nav' ? (
                 <span>

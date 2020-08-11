@@ -109,22 +109,10 @@ class App extends React.Component {
       },
       siteMap: {}, // for generating the navigation menu
       siteSettings: {
-        bgColor: '#000000',
-        borderColor: '#000000',
-        borderOpacity: 0,
-        containerColor: '#ffffff',
-        containerHeaderTheme: 'dark',
-        containerOpacity: 0,
-        fontColor: '#ffffff',
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
-        linkColor: '#ffffff',
         siteTitle: '',
-        siteDescription: '',
-        navTheme: 'dark',
         navPosition: 'fixed-top',
-        tileBgImage: false,
-        useBgImage: false,
       },
       token: '',
     }
@@ -742,7 +730,9 @@ class App extends React.Component {
   render() {
     return (
       <div
-        className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
+        className={`App ${
+          this.state.editable ? 'editable' : 'non-editable'
+        } nav-position-${this.settings.navPosition}`}
       >
         <Router basename={`${this.root}/`} location={this.props.initPath}>
           <div>
@@ -755,7 +745,7 @@ class App extends React.Component {
             {this.settings.navPosition === 'fixed-top' ? (
               <NavBar
                 fixedTo='top'
-                theme={this.settings.navTheme}
+                theme='dark'
                 brand={{
                   name: this.settings.siteTitle,
                   href: `${this.root}/${this.siteMap.path}${
@@ -776,7 +766,6 @@ class App extends React.Component {
               ''
             )}
             <Boilerplate
-              noContain={this.settings.maxWidthLayout}
               header={
                 <div>
                   {this.settings.navPosition === 'above-header' ? (
@@ -916,70 +905,6 @@ class App extends React.Component {
             </Boilerplate>
           </div>
         </Router>
-        <style>
-          {`\
-            a { color: ${this.settings.linkColor}; }
-            a.active { color: ${this.settings.fontColor}; }
-            a:hover { color: ${this.settings.fontColor}; }
-            #root::before {
-              background-color: ${this.settings.bgColor};
-            }
-            .App {
-              color: ${this.settings.fontColor};
-              opacity: ${this.settings.init ? 1 : 0};
-              padding-top: ${
-                this.settings.navPosition === 'fixed-top' ? '4rem' : '0'
-              };
-            }
-            .dropdown-item.active, .dropdown-item:active {
-              background-color: ${this.settings.linkColor};
-            }
-            .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-              background-color: ${this.settings.linkColor};
-            }
-            .modal-content {
-              background-color: ${this.settings.bgColor};
-              color: ${this.settings.fontColor};
-            }
-          `}
-          {this.settings.useBgImage
-            ? `\
-              .App {
-                overflow: hidden;
-                position: relative;
-              }
-              .App::before {
-                content: ' ';
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                background-image: url(/${this.settings.bg});
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                will-change: transform;
-                z-index: -1;
-                opacity: 1;
-                pointer-events: none;
-              }
-          `
-            : ''}
-          {this.settings.tileBgImage
-            ? `\
-              .App::before {
-                background-size: auto;
-                background-repeat: repeat;
-              }
-          `
-            : ''}
-          {this.settings.init
-            ? `\
-          html { background-color: transparent }
-          `
-            : ''}
-        </style>
         {this.state.editable && this.state.show.settings ? (
           <Modal
             title='Site Settings'

@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Card, Modal } from '@preaction/bootstrap-clips'
-import { Form, Checkbox, Input } from '@preaction/inputs'
+import { Form, Input } from '@preaction/inputs'
 import PageBlockImage from './PageBlockImage.jsx'
 import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
-import { getRgbaFromSettings } from './lib/getRgba.js'
 import {
   MdArrowBack,
   MdArrowForward,
@@ -77,8 +76,8 @@ class PageBlockContent extends React.Component {
         noMargin
         column={this.props.column}
         header={this.header}
-        headerTheme={this.props.settings.containerHeaderTheme}
-        footerTheme={this.props.settings.containerHeaderTheme}
+        headerTheme='dark'
+        footerTheme='dark'
         footer={
           this.props.editable ? (
             <div className='btn-group d-block'>
@@ -164,16 +163,6 @@ class PageBlockContent extends React.Component {
         }
         width={this.props.width}
         style={{
-          card: {
-            backgroundColor: this.props.content.settings.showContainer
-              ? getRgbaFromSettings(this.props.settings, 'container').string
-              : 'transparent',
-            border: this.props.content.settings.showBorder
-              ? `1px solid ${
-                  getRgbaFromSettings(this.props.settings, 'border').string
-                }`
-              : 0,
-          },
           body: {
             padding: 0,
           },
@@ -287,20 +276,6 @@ class PageBlockContent extends React.Component {
                 value={this.props.content.settings.xsWidth}
                 valueHandler={this.props.getContentSettingsValueHandler(
                   'xsWidth'
-                )}
-              />
-              <Checkbox
-                label='Show Container Background'
-                checked={this.props.content.settings.showContainer}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'showContainer'
-                )}
-              />
-              <Checkbox
-                label='Show Container Border'
-                checked={this.props.content.settings.showBorder}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'showBorder'
                 )}
               />
               {this.props.content.contentType === 'image' ? (

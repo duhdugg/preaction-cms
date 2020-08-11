@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
-import { Card, Spinner } from '@preaction/bootstrap-clips'
+import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select } from '@preaction/inputs'
-import { getRgbaFromSettings } from './lib/getRgba.js'
 import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
 import globalthis from 'globalthis'
 
@@ -17,13 +16,7 @@ class SiteSettings extends React.Component {
       redirect: null,
       redirects: [],
       selectedRestore: '',
-      uploadingBg: false,
-      uploadingIcon: false,
     }
-    this.uploadIconForm = React.createRef()
-    this.iconFileInput = React.createRef()
-    this.uploadBgForm = React.createRef()
-    this.bgFileInput = React.createRef()
   }
 
   getBackups() {
@@ -159,13 +152,6 @@ class SiteSettings extends React.Component {
                       'siteTitle'
                     )}
                   />
-                  <Checkbox
-                    label='Max Width Layout'
-                    checked={this.props.settings.maxWidthLayout}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'maxWidthLayout'
-                    )}
-                  />
                   <Card
                     header='Navigation'
                     headerTheme='dark'
@@ -189,22 +175,6 @@ class SiteSettings extends React.Component {
                           <option value='below-header'>Below Header</option>
                         </Select>
                       </div>
-                      {this.props.settings.navPosition === 'fixed-top' ? (
-                        <div className='col-sm-6'>
-                          <Select
-                            label='Nav Theme'
-                            value={this.props.settings.navTheme}
-                            valueHandler={this.props.getSettingsValueHandler(
-                              'navTheme'
-                            )}
-                          >
-                            <option value='light'>Light</option>
-                            <option value='dark'>Dark</option>
-                          </Select>
-                        </div>
-                      ) : (
-                        ''
-                      )}
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
@@ -298,276 +268,8 @@ class SiteSettings extends React.Component {
                 </div>
               </div>
               <div className='row'>
-                <Card
-                  header='Background'
-                  column
-                  width={1 / 2}
-                  headerTheme='green'
-                  style={{
-                    card: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <Checkbox
-                    label='Use Background Image'
-                    checked={this.props.settings.useBgImage}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'useBgImage'
-                    )}
-                  />
-                  {this.props.settings.useBgImage ? (
-                    <div>
-                      <Checkbox
-                        label='Tile Background Image'
-                        checked={this.props.settings.tileBgImage}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'tileBgImage'
-                        )}
-                      />
-                      <Input
-                        label='Background Image Path'
-                        valueHandler={this.props.getSettingsValueHandler('bg')}
-                        value={this.props.settings.bg}
-                      />
-                      <div>
-                        <button
-                          type='button'
-                          className='btn btn-primary'
-                          onClick={() => {
-                            this.bgFileInput.current.click()
-                          }}
-                          disabled={this.state.uploadingBg}
-                        >
-                          Upload Background
-                          {this.state.uploadingBg ? (
-                            <span>
-                              <span> </span>
-                              <Spinner />
-                            </span>
-                          ) : (
-                            ''
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                </Card>
-                <Card
-                  header='Icon'
-                  column
-                  width={1 / 2}
-                  headerTheme='yellow'
-                  style={{
-                    card: {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => {
-                      this.iconFileInput.current.click()
-                    }}
-                    disabled={this.state.uploadingIcon}
-                  >
-                    Upload Icon
-                    {this.state.uploadingIcon ? (
-                      <span>
-                        <span> </span>
-                        <Spinner />
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                  </button>
-                </Card>
-              </div>
-              <div className='row'>
                 <div className='col'></div>
               </div>
-              <Card
-                header='Colors'
-                headerTheme='dark'
-                style={{
-                  card: {
-                    backgroundColor: 'transparent',
-                  },
-                }}
-              >
-                <div className='row'>
-                  <div className='col-sm'>
-                    <Input
-                      label='Background Color'
-                      type='color'
-                      value={this.props.settings.bgColor}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'bgColor'
-                      )}
-                    />
-                  </div>
-                  <div className='col-sm'>
-                    <Input
-                      label='Text Color'
-                      type='color'
-                      value={this.props.settings.fontColor}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'fontColor'
-                      )}
-                    />
-                  </div>
-                  <div className='col-sm'>
-                    <Input
-                      label='Link Color'
-                      type='color'
-                      value={this.props.settings.linkColor}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'linkColor'
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col-sm'>
-                    <Input
-                      label='Container Color'
-                      type='color'
-                      value={this.props.settings.containerColor}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'containerColor'
-                      )}
-                    />
-                  </div>
-                  <div className='col-sm'>
-                    <Input
-                      label='Border Color'
-                      type='color'
-                      value={this.props.settings.borderColor}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'borderColor'
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col-sm'>
-                    <Input
-                      label='Container Opacity'
-                      type='number'
-                      info='Enter a number between 0.00-1.00'
-                      min='0'
-                      max='1'
-                      step='0.01'
-                      value={this.props.settings.containerOpacity}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'containerOpacity'
-                      )}
-                    />
-                    <Input
-                      type='range'
-                      min='0'
-                      max='1'
-                      step='0.01'
-                      value={this.props.settings.containerOpacity}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'containerOpacity'
-                      )}
-                    />
-                  </div>
-                  <div className='col-sm'>
-                    <Input
-                      label='Border Opacity'
-                      type='number'
-                      info='Enter a number between 0.00-1.00'
-                      min='0'
-                      max='1'
-                      step='0.01'
-                      value={this.props.settings.borderOpacity}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'borderOpacity'
-                      )}
-                    />
-                    <Input
-                      type='range'
-                      min='0'
-                      max='1'
-                      step='0.01'
-                      value={this.props.settings.borderOpacity}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'borderOpacity'
-                      )}
-                    />
-                  </div>
-                  <div className='col-sm'>
-                    <Select
-                      label='Container Header Theme'
-                      value={this.props.settings.containerHeaderTheme}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'containerHeaderTheme'
-                      )}
-                    >
-                      <option>blue</option>
-                      <option>dark</option>
-                      <option>gray</option>
-                      <option>green</option>
-                      <option>light</option>
-                      <option>red</option>
-                      <option>teal</option>
-                      <option>yellow</option>
-                    </Select>
-                  </div>
-                </div>
-              </Card>
-              <Card
-                header='Samples'
-                style={{
-                  card: {
-                    backgroundColor: this.props.settings.bgColor,
-                  },
-                }}
-                headerTheme='teal'
-              >
-                <div>
-                  <p>Text</p>
-                  <p>
-                    <a href='.' onClick={(e) => e.preventDefault()}>
-                      Test Link
-                    </a>
-                  </p>
-                </div>
-                <Card
-                  header='Container'
-                  headerTheme={this.props.settings.containerHeaderTheme}
-                  style={{
-                    card: {
-                      backgroundColor: getRgbaFromSettings(
-                        this.props.settings,
-                        'container'
-                      ).string,
-                      border: `1px solid ${
-                        getRgbaFromSettings(this.props.settings, 'border')
-                          .string
-                      }`,
-                      borderRadius: '0.25rem',
-                      transition:
-                        'background-color 0.5s linear, border-color 0.5s linear',
-                    },
-                    body: {
-                      padding: '1em',
-                    },
-                  }}
-                >
-                  <p>Text</p>
-                  <p>
-                    <a href='.' onClick={(e) => e.preventDefault()}>
-                      Link
-                    </a>
-                  </p>
-                </Card>
-              </Card>
               <Card
                 header='Redirects'
                 headerTheme='green'
@@ -700,18 +402,7 @@ class SiteSettings extends React.Component {
                   ''
                 )}
               </Card>
-              <Card
-                header='Backups'
-                headerTheme='dark'
-                style={{
-                  card: {
-                    backgroundColor: getRgbaFromSettings(
-                      this.props.settings,
-                      'container'
-                    ).string,
-                  },
-                }}
-              >
+              <Card header='Backups' headerTheme='dark'>
                 <div>
                   <Select
                     label='Restore File'
@@ -744,106 +435,6 @@ class SiteSettings extends React.Component {
                 </div>
               </Card>
             </form>
-            <form
-              method='POST'
-              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
-              target='upload-bg-frame'
-              encType='multipart/form-data'
-              ref={this.uploadBgForm}
-              className='d-none'
-            >
-              <input
-                name='file'
-                type='file'
-                accept='image/*'
-                ref={this.bgFileInput}
-                onChange={(event) => {
-                  this.uploadBgForm.current.submit()
-                  this.setState((state) => {
-                    state.uploadingBg = true
-                    return state
-                  })
-                }}
-              />
-              <input type='hidden' name='target' value='bg' />
-            </form>
-            <iframe
-              id='upload-bg-frame'
-              name='upload-bg-frame'
-              title='upload'
-              onLoad={() => {
-                let iframe = document.getElementById('upload-bg-frame')
-                if (iframe.contentWindow.location.href.match(/^https?:\/\//)) {
-                  this.setState(
-                    (state) => {
-                      state.uploadingBg = false
-                      return state
-                    },
-                    () => {
-                      this.bgFileInput.current.value = null
-                      iframe.src = 'about:blank'
-                      axios
-                        .get(`${this.props.appRoot}/api/settings`)
-                        .then((response) => {
-                          let settings = response.data
-                          if (settings.bg) {
-                            this.props.getSettingsValueHandler('bg')(
-                              settings.bg
-                            )
-                          }
-                        })
-                    }
-                  )
-                } else {
-                }
-              }}
-              className='d-none'
-            />
-            <form
-              method='POST'
-              action={`${this.props.appRoot}/api/upload-img?token=${this.props.token}`}
-              target='upload-icon-frame'
-              encType='multipart/form-data'
-              ref={this.uploadIconForm}
-              className='d-none'
-            >
-              <input
-                name='file'
-                type='file'
-                accept='image/*'
-                ref={this.iconFileInput}
-                onChange={(event) => {
-                  this.uploadIconForm.current.submit()
-                  this.setState((state) => {
-                    state.uploadingIcon = true
-                    return state
-                  })
-                }}
-              />
-              <input type='hidden' name='target' value='icon' />
-            </form>
-            <iframe
-              id='upload-icon-frame'
-              name='upload-icon-frame'
-              title='upload'
-              onLoad={() => {
-                let iframe = document.getElementById('upload-icon-frame')
-                if (iframe.contentWindow.location.href.match(/^https?:\/\//)) {
-                  this.setState(
-                    (state) => {
-                      state.uploadingIcon = false
-                      return state
-                    },
-                    () => {
-                      this.iconFileInput.current.value = null
-                      iframe.src = 'about:blank'
-                      this.refreshIcon()
-                    }
-                  )
-                }
-              }}
-              className='d-none'
-            />
           </div>
         ) : (
           ''
