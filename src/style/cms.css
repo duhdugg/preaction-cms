@@ -128,3 +128,7 @@ hr {
 .App.non-editable a:hover::after {
   display: none;
 }
+
+.App .login {
+  margin-bottom: 1rem;
+}
