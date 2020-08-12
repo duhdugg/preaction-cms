@@ -42,7 +42,6 @@ hr {
 .page-block-inner {
   background-color: transparent;
   border: 0;
-  padding: 0;
 }
 
 .page-block-outer > .card-body {
@@ -54,11 +53,22 @@ hr {
   padding-bottom: 0;
 }
 
+.page-block-inner > .card-body {
+  padding: 0;
+}
+
+.block-type-ext .page-block-inner > .card-body {
+  padding: 1em;
+}
+
 .page-block-inner > .card-footer {
   padding: 0;
 }
 
-.page-block-content {
+.page-block-content,
+.block-type-ext,
+.block-type-iframe,
+.block-type-nav {
   border: 1px solid var(--dark);
   margin-bottom: 1em;
 }
