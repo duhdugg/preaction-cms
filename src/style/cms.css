@@ -38,32 +38,32 @@ hr {
   font-size: 2em;
 }
 
-.card.page-block-outer,
-.card.page-block-inner {
+.page-block-outer,
+.page-block-inner {
   background-color: transparent;
   border: 0;
   padding: 0;
 }
 
-.card.page-block-outer > .card-body {
+.page-block-outer > .card-body {
   padding: 0;
 }
 
-.card.page-block-inner > .card-body {
+.page-block-inner > .card-body {
   padding-top: 0;
   padding-bottom: 0;
 }
 
-.card.page-block-inner > .card-footer {
+.page-block-inner > .card-footer {
   padding: 0;
 }
 
-.card.page-block-content {
+.page-block-content {
   border: 1px solid var(--dark);
   margin-bottom: 1em;
 }
 
-.card.page-block-content > .card-footer {
+.page-block-content > .card-footer {
   padding: 0;
 }
 
