@@ -191,7 +191,7 @@ class PageBlockContent extends React.Component {
         )}
         {this.state.showSettings ? (
           <Modal
-            title={`Content Type ${this.props.content.contentType} Settings`}
+            title={`Content Type "${this.props.content.contentType}" Settings`}
             closeHandler={this.toggleSettings.bind(this)}
             footer={
               <button

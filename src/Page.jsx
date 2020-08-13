@@ -13,6 +13,7 @@ import {
 } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
+import { blockExtensions } from './ext'
 
 const globalThis = globalthis()
 const ssr = typeof window === 'undefined'
@@ -61,13 +62,11 @@ class Page extends React.Component {
       })
   }
 
-  addPageBlock(blockType) {
+  addPageBlock(block) {
     axios
       .post(
         `${this.props.appRoot}/api/page/${this.state.page.id}/blocks?token=${this.props.token}`,
-        {
-          blockType,
-        }
+        block
       )
       .then((response) => {
         this.setState((state) => {
@@ -422,7 +421,28 @@ class Page extends React.Component {
   }
 
   get pageControlsMenu() {
-    let menu = [
+    const extensionBlockMenuItems = []
+    for (let extKey of Object.keys(blockExtensions)) {
+      const Extension = blockExtensions[extKey]
+      extensionBlockMenuItems.push({
+        name: (
+          <span>
+            <MdSettingsInputComponent /> {Extension.label}
+          </span>
+        ),
+        onClick: (e) => {
+          e.preventDefault()
+          this.addPageBlock({
+            blockType: 'ext',
+            settings: {
+              extKey,
+              propsData: Extension.defaultProps || {},
+            },
+          })
+        },
+      })
+    }
+    const menu = [
       {
         name: (
           <span>
@@ -434,23 +454,12 @@ class Page extends React.Component {
           {
             name: (
               <span>
-                <MdSettingsInputComponent /> Component
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock('component')
-            },
-          },
-          {
-            name: (
-              <span>
                 <FaHtml5 /> Content
               </span>
             ),
             onClick: (e) => {
               e.preventDefault()
-              this.addPageBlock('content')
+              this.addPageBlock({ blockType: 'content' })
             },
           },
           {
@@ -461,7 +470,7 @@ class Page extends React.Component {
             ),
             onClick: (e) => {
               e.preventDefault()
-              this.addPageBlock('iframe')
+              this.addPageBlock({ blockType: 'iframe' })
             },
           },
           {
@@ -472,9 +481,10 @@ class Page extends React.Component {
             ),
             onClick: (e) => {
               e.preventDefault()
-              this.addPageBlock('nav')
+              this.addPageBlock({ blockType: 'nav' })
             },
           },
+          ...extensionBlockMenuItems,
         ],
         onClick: (e) => {
           e.preventDefault()

@@ -58,9 +58,9 @@
     "backup-db": "node scripts/backup-db.js",
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
-    "dev-client": "yarn init-style && react-scripts start",
-    "init-style": "node scripts/init-style.js",
-    "build": "yarn init-style && react-scripts build && yarn webpack --config webpack.server.js",
+    "dev-client": "yarn init-client && react-scripts start",
+    "init-client": "node scripts/init-client.js",
+    "build": "yarn init-client && react-scripts build && yarn webpack --config webpack.server.js",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
     "test-client": "CI=true react-scripts test",
     "test-server": "jest --coverage --coveragePathIgnorePatterns client\\.cjs\\.js",
@@ -100,5 +100,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com:duhdugg/preaction-cms.git"
   },
-  "bugs": "https://github.com/duhdugg/preaction-cms/issues"
+  "bugs": "https://github.com/duhdugg/preaction-cms/issues",
+  "optionalDependencies": {}
 }

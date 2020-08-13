@@ -13,6 +13,8 @@ import {
   MdSettings,
   MdTextFields,
 } from 'react-icons/md'
+import { PageBlockExtension } from './PageBlockExtension.jsx'
+import { blockExtensions } from './ext'
 
 class PageBlock extends React.Component {
   constructor(props) {
@@ -21,11 +23,8 @@ class PageBlock extends React.Component {
       showSettings: false,
       uploading: false,
     }
-    this.childRef = React.createRef()
     this.imgUploadForm = React.createRef()
     this.photosInput = React.createRef()
-    this.jsInput = React.createRef()
-    this.jsUploadForm = React.createRef()
   }
 
   get header() {
@@ -166,6 +165,9 @@ class PageBlock extends React.Component {
                   style={{ display: 'inline-block', paddingLeft: '0.5rem' }}
                 >
                   block type: {this.props.block.blockType}
+                  {this.props.block.blockType === 'ext'
+                    ? `/${this.props.block.settings.extKey}`
+                    : ''}
                 </span>
               </div>
             ) : (
@@ -234,10 +236,37 @@ class PageBlock extends React.Component {
           ) : (
             ''
           )}
+          {this.props.block.blockType === 'ext' ? (
+            <PageBlockExtension
+              extBlockIndex={blockExtensions}
+              extKey={this.props.block.settings.extKey}
+              propsData={{
+                ...this.props.block.settings.propsData,
+                preaction: {
+                  appRoot: this.props.appRoot,
+                  block: this.props.block,
+                  editable: this.props.editable,
+                  emitSave: this.props.emitSave,
+                  getPageBlockSettingsValueHandler: this.props
+                    .getPageBlockSettingsValueHandler,
+                  navigate: this.props.navigate,
+                  page: this.props.page,
+                  settings: this.props.settings,
+                  token: this.props.token,
+                },
+              }}
+            />
+          ) : (
+            ''
+          )}
         </Card>
         {this.props.editable && this.state.showSettings ? (
           <Modal
-            title={`Block Type ${this.props.block.blockType} Settings`}
+            title={`Block Type "${this.props.block.blockType}${
+              this.props.block.blockType === 'ext'
+                ? `/${this.props.block.settings.extKey}`
+                : ''
+            }" Settings`}
             closeHandler={this.toggleSettings.bind(this)}
             footer={
               <button
@@ -348,6 +377,18 @@ class PageBlock extends React.Component {
                     )}
                   />
                 </span>
+              ) : (
+                ''
+              )}
+              {this.props.block.blockType === 'ext' ? (
+                <PageBlockExtension.Settings
+                  extBlockIndex={blockExtensions}
+                  extKey={this.props.block.settings.extKey}
+                  getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
+                    this
+                  )}
+                  propsData={this.props.block.settings.propsData}
+                />
               ) : (
                 ''
               )}
