@@ -10,7 +10,7 @@ Each of these goals must be met before releasing Preaction CMS v3 Beta:
 >
 > Additionally, all CSS-related values should be sanitized, and element class names should not be open-ended.
 
-[ ] Document code with JSDoc.
+[x] Document code with JSDoc.
 
 > ...including the Preaction library dependencies.
 
