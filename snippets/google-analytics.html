@@ -8,6 +8,7 @@
   function gtag() {
     dataLayer.push(arguments)
   }
+  window.gtagId = '$TRACKINGID'
   gtag('js', new Date())
-  gtag('config', '$TRACKINGID', { page_path: '$PATH' })
+  gtag('config', window.gtagId, { page_path: '$PATH' })
 </script>

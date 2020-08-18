@@ -362,32 +362,6 @@ class SiteSettings extends React.Component {
                   </table>
                 </div>
               </Card>
-              <Card
-                header='Analytics'
-                headerTheme='blue'
-                style={{
-                  card: { backgroundColor: 'transparent' },
-                }}
-              >
-                <Checkbox
-                  label='Use Google Analytics'
-                  checked={this.props.settings.useGoogleAnalytics}
-                  valueHandler={this.props.getSettingsValueHandler(
-                    'useGoogleAnalytics'
-                  )}
-                />
-                {this.props.settings.useGoogleAnalytics ? (
-                  <Input
-                    label='Google Analytics Tracking ID'
-                    value={this.props.settings.googleAnalyticsTrackingId}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'googleAnalyticsTrackingId'
-                    )}
-                  />
-                ) : (
-                  ''
-                )}
-              </Card>
               <Card header='Backups' headerTheme='dark'>
                 <div>
                   <Select

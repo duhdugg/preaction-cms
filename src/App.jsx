@@ -701,12 +701,8 @@ class App extends React.Component {
   }
 
   trackPageView() {
-    if (
-      this.settings.useGoogleAnalytics &&
-      this.settings.googleAnalyticsTrackingId &&
-      globalThis.gtag
-    ) {
-      globalThis.gtag('config', this.settings.googleAnalyticsTrackingId, {
+    if (globalThis.gtag && globalThis.gtagId) {
+      globalThis.gtag('config', globalThis.gtagId, {
         page_path: globalThis.location.pathname,
       })
     }

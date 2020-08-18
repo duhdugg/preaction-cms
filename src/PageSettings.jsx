@@ -335,42 +335,6 @@ class PageSettings extends React.Component {
               <div className='row'>
                 <div className='col'></div>
               </div>
-              <Card header='Analytics' headerTheme='blue'>
-                <Checkbox
-                  label='Use Google Analytics'
-                  checked={this.props.settings.useGoogleAnalytics}
-                  valueHandler={this.props.getSettingsValueHandler(
-                    'useGoogleAnalytics'
-                  )}
-                  readOnly={this.props.getPageSettingIsUndefined(
-                    'useGoogleAnalytics'
-                  )}
-                  onClick={() => {
-                    this.overrideSetting('useGoogleAnalytics')
-                  }}
-                />
-                <ResetButton settingsKey='useGoogleAnalytics' />
-                {this.props.settings.useGoogleAnalytics ? (
-                  <div>
-                    <Input
-                      label='Google Analytics Tracking ID'
-                      value={this.props.settings.googleAnalyticsTrackingId}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'googleAnalyticsTrackingId'
-                      )}
-                      readOnly={this.props.getPageSettingIsUndefined(
-                        'googleAnalyticsTrackingId'
-                      )}
-                      onClick={() => {
-                        this.overrideSetting('googleAnalyticsTrackingId')
-                      }}
-                    />
-                    <ResetButton settingsKey='googleAnalyticsTrackingId' />
-                  </div>
-                ) : (
-                  ''
-                )}
-              </Card>
               <Card header='Delete Page' headerTheme='red'>
                 <Checkbox
                   label='Confirm to delete this page'
