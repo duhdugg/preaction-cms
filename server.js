@@ -99,7 +99,7 @@ if (env.sitemapHostname || env.nodeEnv === 'test') {
       }
       let countMapped = 0
       for (const page of pageRows) {
-        const path = await pages.funcs.getPagePath(page)
+        const path = await pages.getPagePath(page)
         smStream.write({
           url: `${env.root}/${path}/`,
           changefreq,
@@ -120,7 +120,7 @@ if (env.sitemapHostname || env.nodeEnv === 'test') {
 app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
   const siteSettings = await settings.getSettings()
   try {
-    const page = await pages.funcs.getFullPageByPath('/home/', 3)
+    const page = await pages.getFullPageByPath('/home/', 3)
     let description = ''
     const pageblocks = page ? page.pageblocks : []
     pageblocks.sort((a, b) =>
@@ -178,7 +178,7 @@ app
         default:
       }
       try {
-        const page = await pages.funcs.getFullPageByPath(req.path, 3)
+        const page = await pages.getFullPageByPath(req.path, 3)
         // build the description from sorted contents of sort pageblocks
         let description = ''
         const pageblocks = page ? page.pageblocks : []
@@ -203,9 +203,7 @@ app
         // remove line-break paragraphs
         description = description.replace(/<p><br><\/p>/g, '')
         description = excerptHtml(description, { pruneLength: 300 })
-        const appliedSettings = await pages.funcs.getAppliedPageSettings(
-          page.id
-        )
+        const appliedSettings = await pages.getAppliedPageSettings(page.id)
         const siteTitle = appliedSettings.siteTitle
         const pageTitle = page.title
         renderClient(req, res.status(200), {
