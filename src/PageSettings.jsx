@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Card } from '@preaction/bootstrap-clips'
+import { Alert, Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select } from '@preaction/inputs'
 import { MdDelete } from 'react-icons/md'
 
@@ -30,11 +30,19 @@ class PageSettings extends React.Component {
   }
 
   get path() {
-    let splitPath = Array.from(this.props.path.split('/')).filter((p) => {
-      return p ? true : false
-    })
+    const splitPath = Array.from(this.props.path.split('/')).filter((p) => !!p)
     splitPath.splice(splitPath.length - 1, 1, this.props.page.key)
     return '/' + splitPath.join('/') + '/'
+  }
+
+  get pathAncestry() {
+    const ancestry = []
+    const splitPath = Array.from(this.path.split('/')).filter((p) => !!p)
+    for (let x = 0; x < splitPath.length - 1; x++) {
+      const path = '/' + splitPath.slice(0, x + 1).join('/') + '/'
+      ancestry.push(path)
+    }
+    return ancestry
   }
 
   overrideSetting(key) {
@@ -79,6 +87,60 @@ class PageSettings extends React.Component {
             >
               <div className='row'>
                 <div className='col'>
+                  <Alert>
+                    <div>
+                      <strong>Page-Level Settings</strong>
+                    </div>
+                    <div>
+                      These settings are specific to pages under the current
+                      path:
+                      {this.props.path}
+                    </div>
+                    <div className='mt-3'>
+                      Navigate to the{' '}
+                      <a
+                        href={`${this.props.appRoot}/`}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          this.props.navigate('/')
+                        }}
+                      >
+                        root page
+                      </a>{' '}
+                      and click <strong>Settings</strong> to change site-level
+                      settings.
+                    </div>
+                    <div className='mt-3'>
+                      Defaults for this page are inherited from the following
+                      parent pages (in this order):
+                      <ol>
+                        <li>
+                          <a
+                            href={`${this.props.appRoot}/`}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              this.props.navigate(this.props.appRoot + '/')
+                            }}
+                          >
+                            (root page)
+                          </a>
+                        </li>
+                        {this.pathAncestry.map((path, index) => (
+                          <li key={index}>
+                            <a
+                              href={`${this.props.appRoot}${path}`}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                this.props.navigate(path)
+                              }}
+                            >
+                              {path}
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </Alert>
                   <Input
                     label='Page Title'
                     type='text'
@@ -116,6 +178,15 @@ class PageSettings extends React.Component {
                       checked={this.props.settings.site}
                       valueHandler={this.props.getSettingsValueHandler('site')}
                     />
+                    {this.props.settings.site ? (
+                      <Alert level='info'>
+                        <strong>Notice:</strong> This setting will cause the
+                        navigation menu to behave as if the current page were a
+                        top-level site.
+                      </Alert>
+                    ) : (
+                      ''
+                    )}
                     <Checkbox
                       label='Include Page in Navigation'
                       checked={this.props.settings.includeInNav === true}
@@ -128,6 +199,7 @@ class PageSettings extends React.Component {
                         type='number'
                         step='1'
                         label='Ordering'
+                        info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
                         placeholder='0'
                         value={this.props.settings.navOrdering}
                         valueHandler={this.props.getSettingsValueHandler(
@@ -260,7 +332,7 @@ class PageSettings extends React.Component {
                       )}
                     </div>
                   </Card>
-                  <Card header='Header/Footer' headerTheme='light'>
+                  <Card header='Header/Footer' headerTheme='dark'>
                     <Checkbox
                       label='Show Header'
                       checked={this.props.settings.showHeader}
@@ -279,6 +351,7 @@ class PageSettings extends React.Component {
                       <div>
                         <Input
                           label='Header Path'
+                          info={`By default, every page has a header subpage automatically created. In order to use the header specific to this page, enter: ${this.props.path}header/`}
                           value={this.props.settings.headerPath}
                           valueHandler={this.props.getSettingsValueHandler(
                             'headerPath'
@@ -313,6 +386,7 @@ class PageSettings extends React.Component {
                       <div>
                         <Input
                           label='Header Path'
+                          info={`By default, every page has a footer subpage automatically created. In order to use the footer specific to this page, enter: ${this.props.path}footer/`}
                           value={this.props.settings.footerPath}
                           valueHandler={this.props.getSettingsValueHandler(
                             'footerPath'
@@ -368,6 +442,7 @@ PageSettings.propTypes = {
   getResetter: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   hide: PropTypes.array,
+  navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   pageId: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,

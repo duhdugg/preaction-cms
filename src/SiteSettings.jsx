@@ -241,7 +241,7 @@ class SiteSettings extends React.Component {
                       )}
                     </div>
                   </Card>
-                  <Card header='Header' headerTheme='light'>
+                  <Card header='Header' headerTheme='dark'>
                     <Checkbox
                       label='Show Header'
                       checked={this.props.settings.showHeader}
@@ -262,7 +262,7 @@ class SiteSettings extends React.Component {
               <div className='row'>
                 <div className='col'></div>
               </div>
-              <Card header='Redirects' headerTheme='green'>
+              <Card header='Redirects' headerTheme='dark'>
                 <div className='row'>
                   <table className='redirects'>
                     <thead>
@@ -362,7 +362,7 @@ class SiteSettings extends React.Component {
                   </table>
                 </div>
               </Card>
-              <Card header='Backups' headerTheme='dark'>
+              <Card header='Backups' headerTheme='red'>
                 <div>
                   <Select
                     label='Restore File'

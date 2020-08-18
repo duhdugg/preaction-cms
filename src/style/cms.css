@@ -10,6 +10,11 @@ hr {
   margin-bottom: 1em;
 }
 
+.settings-component .alert a {
+  color: var(--dark) !important;
+  text-decoration: underline !important;
+}
+
 .spinner-container {
   padding-top: 1em;
   padding-bottom: 1em;

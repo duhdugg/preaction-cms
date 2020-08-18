@@ -749,6 +749,11 @@ class Page extends React.Component {
                 <PageSettings
                   appRoot={this.props.appRoot}
                   admin={this.props.editable}
+                  navigate={(path) => {
+                    this.setState({ showSettings: false }, () => {
+                      this.props.navigate(path)
+                    })
+                  }}
                   pageId={this.state.page.id}
                   page={this.state.page}
                   path={this.props.path}
