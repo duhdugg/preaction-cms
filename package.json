@@ -59,6 +59,8 @@
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
     "dev-client": "yarn init-client && react-scripts start",
+    "doc": "documentation serve --sort-order alpha --config ./documentation.yml --watch lib/*.js",
+    "doc-build": "documentation build --sort-order alpha --config ./documentation.yml lib/*.js -o documentation -f html",
     "init-client": "node scripts/init-client.js",
     "build": "yarn init-client && react-scripts build && yarn webpack --config webpack.server.js",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
