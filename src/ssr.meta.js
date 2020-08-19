@@ -15,6 +15,9 @@ const getTags = (options) => {
     tags.push(meta('description', options.description))
     tags.push(meta('og:description', options.description))
   }
+  if (options.siteTitle) {
+    tags.push(meta('og:site_name', options.siteTitle))
+  }
   if (options.ogType) {
     tags.push(meta('og:type', options.ogType))
   }
