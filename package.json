@@ -63,7 +63,7 @@
     "doc-build": "documentation build --sort-order alpha --config ./documentation.yml lib/*.js -o documentation -f html",
     "doc-lint": "documentation lint lib/*js",
     "init-client": "node scripts/init-client.js",
-    "build": "yarn init-client && react-scripts build && yarn webpack --config webpack.server.js",
+    "build": "yarn init-client && react-scripts build && yarn webpack --config webpack.client.ssr.js && yarn webpack --config webpack.meta.ssr.js",
     "makeover": "prettier --write ./*.js src/*.j* src/lib/* lib/*.js scripts/*.js && yarn test",
     "test-client": "CI=true react-scripts test",
     "test-server": "jest --coverage --coveragePathIgnorePatterns client\\.cjs\\.js",
