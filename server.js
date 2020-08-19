@@ -20,9 +20,12 @@ const { createGzip } = require('zlib')
 const app = express()
 
 // <== LOCAL IMPORTS ==>
+const env = require('./lib/env.js')
+if (env.nodeEnv !== 'test') {
+  console.debug('Preaction CMS environment variables =', env)
+}
 const cache = require('./lib/cache.js')
 const db = require('./lib/db.js')
-const env = require('./lib/env.js')
 const ext = require('./lib/ext.js')
 const settings = require('./lib/settings.js')
 const pages = require('./lib/pages.js')
