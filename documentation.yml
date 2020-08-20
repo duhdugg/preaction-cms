@@ -5,8 +5,10 @@ toc:
   - lib/db
   - lib/env
   - lib/ext
+  - lib/icon
   - lib/pages
   - lib/processImg
+  - lib/randomString
   - lib/redirects
   - lib/renameUpload
   - lib/render
