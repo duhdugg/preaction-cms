@@ -27,6 +27,11 @@ const getTags = (options) => {
   if (options.ogUrl) {
     tags.push(meta('og:url', options.ogUrl))
   }
+  if (options.icons) {
+    for (let icon of options.icons) {
+      tags.push(createElement('link', icon))
+    }
+  }
   return tags
 }
 
