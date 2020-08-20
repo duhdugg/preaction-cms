@@ -11,15 +11,23 @@ class PageBlockWysiwyg extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loadingEditor: true,
       wysiwyg: this.props.content.wysiwyg || '',
       savingWysiwyg: false,
     }
+    this.wysiwyg = React.createRef()
     this.wysiwygUpdateTimer = null
   }
 
+  dirtyEnough(pval, nval) {
+    // quill will make some iconsequential formatting adjustments to html,
+    // which causes the PUT request to fire unnecessarily.
+    // workaround this by assuming some replacements made and comparing length
+    pval = pval.replace(/<br \/>/g, '<br>')
+    return pval.length !== nval.length
+  }
+
   handleWysiwyg(value) {
-    if (!this.state.loadingEditor) {
+    if (this.dirtyEnough(this.state.wysiwyg, value)) {
       this.setState(
         (state) => {
           state.wysiwyg = value
@@ -30,7 +38,7 @@ class PageBlockWysiwyg extends React.Component {
         },
         () => {
           clearTimeout(this.wysiwygUpdateTimer)
-          this.wysiwygUpdateTimer = setTimeout(() => {
+          this.wysiwygUpdateTimer = globalThis.setTimeout(() => {
             if (this.props.editable) {
               axios
                 .put(
@@ -73,13 +81,16 @@ class PageBlockWysiwyg extends React.Component {
           />
         ) : (
           <Wysiwyg
-            allowDangerousFallback // as we know it was sanitized by server
+            // allowDangerousFallback as the value was sanitized by server,
+            // but the error message is preferred if component fails when editing
+            allowDangerousFallback={!this.props.editable}
             fallbackMode={!this.props.editable}
             theme={this.theme}
             toolbar={wysiwygToolbar}
             value={this.state.wysiwyg}
             valueHandler={this.handleWysiwyg.bind(this)}
             readOnly={!this.props.editable}
+            ref={this.wysiwyg}
           />
         )}
         {this.state.savingWysiwyg ? (
@@ -109,20 +120,10 @@ class PageBlockWysiwyg extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.editable) {
-      globalThis.setTimeout(() => {
-        this.setState({ loadingEditor: false })
-      }, 0)
-    }
     this.setState({ wysiwyg: this.props.content.wysiwyg })
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.editable && !prevProps.editable) {
-      globalThis.setTimeout(() => {
-        this.setState({ loadingEditor: false })
-      }, 0)
-    }
     if (this.props.content.wysiwyg !== prevProps.content.wysiwyg) {
       if (!this.props.editable) {
         this.setState({ wysiwyg: this.props.content.wysiwyg })
