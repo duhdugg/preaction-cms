@@ -1,6 +1,7 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { Spinner } from '@preaction/bootstrap-clips'
 import { Form, Textarea, Wysiwyg } from '@preaction/inputs'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
@@ -85,6 +86,7 @@ class PageBlockWysiwyg extends React.Component {
             // but the error message is preferred if component fails when editing
             allowDangerousFallback={!this.props.editable}
             fallbackMode={!this.props.editable}
+            loadableFallback={<Spinner />}
             theme={this.theme}
             toolbar={wysiwygToolbar}
             value={this.state.wysiwyg}
