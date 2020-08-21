@@ -2,7 +2,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import globalthis from 'globalthis'
-import io from 'socket.io-client'
 import {
   BrowserRouter,
   StaticRouter,
@@ -986,8 +985,8 @@ class App extends React.Component {
     this.loadSession()
     this.setActivePathname(this.props.initPath)
     // set up socket.io-enabled features
-    if (this.props.socketMode) {
-      this.socket = io({ path: `${this.root}/socket.io` })
+    if (this.props.socketMode && globalThis.io) {
+      this.socket = globalThis.io({ path: `${this.root}/socket.io` })
       this.socket.on('load', () => {
         if (!this.state.editable) {
           this.reload()
