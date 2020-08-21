@@ -7,7 +7,7 @@ module.exports = {
   mode: 'production',
   externals: [nodeExternals()],
   output: {
-    path: path.resolve('build/static/js'),
+    path: path.resolve('build/ssr'),
     filename: 'meta.cjs.js',
     libraryTarget: 'commonjs2',
   },
