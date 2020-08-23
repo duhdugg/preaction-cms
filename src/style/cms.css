@@ -101,7 +101,7 @@ hr {
   background-color: var(--dark);
   border: 0;
 }
-.modal-content .modal-header svg {
+.modal-content .modal-header button {
   color: var(--white);
 }
 
