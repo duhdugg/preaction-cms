@@ -41,7 +41,8 @@ function setGlobalRelativeLinkHandler(relativeLinkHandler = (url) => {}) {
     document.onclick = (event) => {
       const element = event.target
       if (element.tagName === 'A') {
-        if (!absoluteUrl(element.attributes.href.value)) {
+        const href = element.attributes.href.value
+        if (href && !absoluteUrl(href)) {
           event.preventDefault()
           relativeLinkHandler(element.attributes.href.value)
         }
