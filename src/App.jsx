@@ -25,6 +25,7 @@ import SiteSettings from './SiteSettings.jsx'
 
 import absoluteUrl from './lib/absoluteUrl.js'
 import getSaneKey from './lib/getSaneKey.js'
+import { menuExtensions } from './ext'
 
 const ssr = typeof window === 'undefined'
 
@@ -363,6 +364,20 @@ class App extends React.Component {
         order: 400,
       })
     }
+
+    for (let key of Object.keys(menuExtensions)) {
+      menu.push(
+        menuExtensions[key]({
+          appRoot: this.root,
+          editable: this.state.editable,
+          navigate: this.navigate.bind(this),
+          page: this.state.activePage,
+          settings: this.settings,
+          token: this.state.token,
+        })
+      )
+    }
+
     menu.sort((a, b) => {
       let retval = 0
       if (a.name < b.name) {

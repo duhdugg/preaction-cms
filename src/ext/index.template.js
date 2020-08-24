@@ -1,2 +1,3 @@
 const blockExtensions = {}
-export { blockExtensions }
+const menuExtensions = {}
+export { blockExtensions, menuExtensions }
