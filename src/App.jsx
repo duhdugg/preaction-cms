@@ -871,7 +871,6 @@ class App extends React.Component {
                       .replace(/(^\/|\/$)/g, '')
                       .split('/')
                     const key = splitPath[splitPath.length - 1]
-                    console.debug(key)
                     switch (key) {
                       case 'home':
                       case 'header':
