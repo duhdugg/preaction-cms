@@ -865,12 +865,17 @@ class App extends React.Component {
                 </Route>
                 <Route
                   render={({ location }) => {
-                    let root = new RegExp(`^${this.root}`)
-                    let pathname = location.pathname.replace(root, '')
-                    switch (pathname) {
-                      case '/home/':
-                      case '/header/':
-                      case '/footer/':
+                    const root = new RegExp(`^${this.root}`)
+                    const pathname = location.pathname.replace(root, '')
+                    const splitPath = pathname
+                      .replace(/(^\/|\/$)/g, '')
+                      .split('/')
+                    const key = splitPath[splitPath.length - 1]
+                    console.debug(key)
+                    switch (key) {
+                      case 'home':
+                      case 'header':
+                      case 'footer':
                         return <NotFound />
                       default:
                         return (
