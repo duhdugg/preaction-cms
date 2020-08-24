@@ -1035,7 +1035,9 @@ class App extends React.Component {
 
   componentDidUpdate() {
     // set path class on body to allow path-specific styling
-    if (this.state.activePage) {
+    if (this.state.activePathname === '/login/') {
+      document.body.className = 'path-login-'
+    } else if (this.state.activePage) {
       document.body.className = `path-${getSaneKey(
         this.state.activePage.tree.path || 'undefined'
       )}-`
