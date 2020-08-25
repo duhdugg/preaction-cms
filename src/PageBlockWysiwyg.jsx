@@ -73,50 +73,51 @@ class PageBlockWysiwyg extends React.Component {
           onSubmit={(e) => {
             e.preventDefault()
           }}
-        />
-        {this.props.editable && this.props.sourceMode ? (
-          <Textarea
-            value={this.state.wysiwyg}
-            valueHandler={this.handleWysiwyg.bind(this)}
-            readOnly={!this.props.editable}
-          />
-        ) : (
-          <Wysiwyg
-            // allowDangerousFallback as the value was sanitized by server,
-            // but the error message is preferred if component fails when editing
-            allowDangerousFallback={!this.props.editable}
-            fallbackMode={!this.props.editable}
-            loadableFallback={<Spinner />}
-            theme={this.theme}
-            toolbar={wysiwygToolbar}
-            value={this.state.wysiwyg}
-            valueHandler={this.handleWysiwyg.bind(this)}
-            readOnly={!this.props.editable}
-            ref={this.wysiwyg}
-          />
-        )}
-        {this.state.savingWysiwyg ? (
-          <div
-            style={{
-              position: 'relative',
-            }}
-          >
+        >
+          {this.props.editable && this.props.sourceMode ? (
+            <Textarea
+              value={this.state.wysiwyg}
+              valueHandler={this.handleWysiwyg.bind(this)}
+              readOnly={!this.props.editable}
+            />
+          ) : (
+            <Wysiwyg
+              // allowDangerousFallback as the value was sanitized by server,
+              // but the error message is preferred if component fails when editing
+              allowDangerousFallback={!this.props.editable}
+              fallbackMode={!this.props.editable}
+              loadableFallback={<Spinner />}
+              theme={this.theme}
+              toolbar={wysiwygToolbar}
+              value={this.state.wysiwyg}
+              valueHandler={this.handleWysiwyg.bind(this)}
+              readOnly={!this.props.editable}
+              ref={this.wysiwyg}
+            />
+          )}
+          {this.state.savingWysiwyg ? (
             <div
               style={{
-                fontSize: '0.8em',
-                fontStyle: 'italic',
-                position: 'absolute',
-                top: '-1.25em',
-                width: '100%',
-                textAlign: 'right',
+                position: 'relative',
               }}
             >
-              saving...
+              <div
+                style={{
+                  fontSize: '0.8em',
+                  fontStyle: 'italic',
+                  position: 'absolute',
+                  top: '-1.25em',
+                  width: '100%',
+                  textAlign: 'right',
+                }}
+              >
+                saving...
+              </div>
             </div>
-          </div>
-        ) : (
-          ''
-        )}
+          ) : (
+            ''
+          )}
+        </Form>
       </div>
     )
   }
