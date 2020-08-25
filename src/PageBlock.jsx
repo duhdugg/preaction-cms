@@ -101,7 +101,7 @@ class PageBlock extends React.Component {
               <div className='btn-group d-block'>
                 <button
                   type='button'
-                  className='btn btn-secondary btn-sm'
+                  className='btn btn-secondary btn-sm move-block previous'
                   disabled={this.props.first}
                   onClick={() => {
                     this.props.blockControl(this.props.block.id, 'previous')
@@ -111,7 +111,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-secondary btn-sm'
+                  className='btn btn-secondary btn-sm move-block next'
                   disabled={this.props.last}
                   onClick={() => {
                     this.props.blockControl(this.props.block.id, 'next')
@@ -121,7 +121,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-danger btn-sm'
+                  className='btn btn-danger btn-sm delete-block'
                   onClick={() => {
                     this.props.blockControl(this.props.block.id, 'delete')
                   }}
@@ -130,7 +130,7 @@ class PageBlock extends React.Component {
                 </button>
                 <button
                   type='button'
-                  className='btn btn-secondary btn-sm'
+                  className='btn btn-secondary btn-sm block-settings'
                   onClick={() => {
                     this.toggleSettings()
                   }}
@@ -141,7 +141,7 @@ class PageBlock extends React.Component {
                   <span>
                     <button
                       type='button'
-                      className='btn btn-secondary btn-sm'
+                      className='btn btn-secondary btn-sm add-wysiwyg'
                       onClick={() => {
                         this.props.addContent(this.props.block, 'wysiwyg')
                       }}
@@ -150,7 +150,7 @@ class PageBlock extends React.Component {
                     </button>
                     <button
                       type='button'
-                      className='btn btn-secondary btn-sm'
+                      className='btn btn-secondary btn-sm add-images'
                       onClick={() => {
                         this.photosInput.current.click()
                       }}
@@ -278,121 +278,155 @@ class PageBlock extends React.Component {
               </button>
             }
           >
-            <Form
-              onSubmit={(e) => {
-                e.prevenDefault()
-              }}
-            >
-              <Input
-                type='text'
-                label='Header'
-                value={this.props.block.settings.header}
-                valueHandler={this.getPageBlockSettingsValueHandler('header')}
-              />
-              <Input
-                type='range'
-                label={`Header Level: ${this.props.block.settings.headerLevel}`}
-                min='0'
-                max='6'
-                value={this.props.block.settings.headerLevel}
-                valueHandler={this.getPageBlockSettingsValueHandler(
-                  'headerLevel'
-                )}
-              />
-              <Input
-                label={`Desktop Width: ${this.props.block.settings.lgWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.block.settings.lgWidth}
-                valueHandler={this.getPageBlockSettingsValueHandler('lgWidth')}
-              />
-              <Input
-                label={`Tablet Width: ${this.props.block.settings.mdWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.block.settings.mdWidth}
-                valueHandler={this.getPageBlockSettingsValueHandler('mdWidth')}
-              />
-              <Input
-                label={`Phone Width (Landscape): ${this.props.block.settings.smWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.block.settings.smWidth}
-                valueHandler={this.getPageBlockSettingsValueHandler('smWidth')}
-              />
-              <Input
-                label={`Phone Width (Portrait): ${this.props.block.settings.xsWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.block.settings.xsWidth}
-                valueHandler={this.getPageBlockSettingsValueHandler('xsWidth')}
-              />
-              {this.props.block.blockType === 'nav' ? (
-                <span>
-                  <Select
-                    label='Alignment'
-                    value={this.props.block.settings.navAlignment}
-                    valueHandler={this.getPageBlockSettingsValueHandler(
-                      'navAlignment'
-                    )}
-                  >
-                    <option>left</option>
-                    <option>center</option>
-                    <option>right</option>
-                    <option>vertical</option>
-                  </Select>
-                  <Checkbox
-                    label='Collabsible'
-                    checked={this.props.block.settings.navCollapsible}
-                    valueHandler={this.getPageBlockSettingsValueHandler(
-                      'navCollapsible'
-                    )}
-                  />
-                  <Checkbox
-                    label='Enable Submenus'
-                    checked={this.props.block.settings.subMenu}
-                    valueHandler={this.getPageBlockSettingsValueHandler(
-                      'subMenu'
-                    )}
-                  />
-                </span>
-              ) : (
-                ''
-              )}
-              {this.props.block.blockType === 'iframe' ? (
-                <span>
+            <div className='block-settings'>
+              <Form
+                onSubmit={(e) => {
+                  e.prevenDefault()
+                }}
+              >
+                <div className='header-field'>
                   <Input
-                    label='URL'
-                    value={this.props.block.settings.iframeSrc}
+                    type='text'
+                    label='Header'
+                    value={this.props.block.settings.header}
                     valueHandler={this.getPageBlockSettingsValueHandler(
-                      'iframeSrc'
+                      'header'
                     )}
                   />
-                </span>
-              ) : (
-                ''
-              )}
-              {this.props.block.blockType === 'ext' ? (
-                <PageBlockExtension.Settings
-                  extBlockIndex={blockExtensions}
-                  extKey={this.props.block.settings.extKey}
-                  getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
-                    this
-                  )}
-                  propsData={this.props.block.settings.propsData}
-                />
-              ) : (
-                ''
-              )}
-            </Form>
+                </div>
+                <div className='header-level-field'>
+                  <Input
+                    type='range'
+                    label={`Header Level: ${this.props.block.settings.headerLevel}`}
+                    min='0'
+                    max='6'
+                    value={this.props.block.settings.headerLevel}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'headerLevel'
+                    )}
+                  />
+                </div>
+                <div className='width-field desktop-width-field'>
+                  <Input
+                    label={`Desktop Width: ${this.props.block.settings.lgWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.block.settings.lgWidth}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'lgWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field tablet-width-field'>
+                  <Input
+                    label={`Tablet Width: ${this.props.block.settings.mdWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.block.settings.mdWidth}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'mdWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field landscape-phone-width-field'>
+                  <Input
+                    label={`Phone Width (Landscape): ${this.props.block.settings.smWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.block.settings.smWidth}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'smWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field portrait-phone-width-field'>
+                  <Input
+                    label={`Phone Width (Portrait): ${this.props.block.settings.xsWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.block.settings.xsWidth}
+                    valueHandler={this.getPageBlockSettingsValueHandler(
+                      'xsWidth'
+                    )}
+                  />
+                </div>
+                {this.props.block.blockType === 'nav' ? (
+                  <div>
+                    <div className='nav-alignment-field'>
+                      <Select
+                        label='Alignment'
+                        value={this.props.block.settings.navAlignment}
+                        valueHandler={this.getPageBlockSettingsValueHandler(
+                          'navAlignment'
+                        )}
+                      >
+                        <option>left</option>
+                        <option>center</option>
+                        <option>right</option>
+                        <option>vertical</option>
+                      </Select>
+                    </div>
+                    <div className='nav-collapsible-field'>
+                      <Checkbox
+                        label='Collabsible'
+                        checked={this.props.block.settings.navCollapsible}
+                        valueHandler={this.getPageBlockSettingsValueHandler(
+                          'navCollapsible'
+                        )}
+                      />
+                    </div>
+                    <div className='enable-submenus-field'>
+                      <Checkbox
+                        label='Enable Submenus'
+                        checked={this.props.block.settings.subMenu}
+                        valueHandler={this.getPageBlockSettingsValueHandler(
+                          'subMenu'
+                        )}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  ''
+                )}
+                {this.props.block.blockType === 'iframe' ? (
+                  <div className='iframe-src-field'>
+                    <Input
+                      label='URL'
+                      value={this.props.block.settings.iframeSrc}
+                      valueHandler={this.getPageBlockSettingsValueHandler(
+                        'iframeSrc'
+                      )}
+                    />
+                  </div>
+                ) : (
+                  ''
+                )}
+                {this.props.block.blockType === 'ext' ? (
+                  <div
+                    className={`block-ext-settings key-${this.props.block.settings.extKey}`}
+                  >
+                    <PageBlockExtension.Settings
+                      extBlockIndex={blockExtensions}
+                      extKey={this.props.block.settings.extKey}
+                      getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
+                        this
+                      )}
+                      propsData={this.props.block.settings.propsData}
+                    />
+                  </div>
+                ) : (
+                  ''
+                )}
+              </Form>
+            </div>
           </Modal>
         ) : (
           ''

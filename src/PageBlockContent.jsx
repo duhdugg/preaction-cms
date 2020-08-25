@@ -83,7 +83,7 @@ class PageBlockContent extends React.Component {
             <div className='btn-group d-block'>
               <button
                 type='button'
-                className='btn btn-sm btn-secondary'
+                className='btn btn-sm btn-secondary move-content previous'
                 disabled={this.props.first}
                 onClick={() => {
                   this.props.contentControl(
@@ -98,7 +98,7 @@ class PageBlockContent extends React.Component {
               <button
                 type='button'
                 disabled={this.props.last}
-                className='btn btn-sm btn-secondary'
+                className='btn btn-sm btn-secondary move-content next'
                 onClick={() => {
                   this.props.contentControl(
                     this.props.block,
@@ -112,7 +112,7 @@ class PageBlockContent extends React.Component {
               <button
                 type='button'
                 disabled={this.props.first && this.props.last}
-                className='btn btn-sm btn-danger'
+                className='btn btn-sm btn-danger delete-content'
                 onClick={() => {
                   this.props.contentControl(
                     this.props.block,
@@ -125,7 +125,7 @@ class PageBlockContent extends React.Component {
               </button>
               <button
                 type='button'
-                className='btn btn-sm btn-secondary'
+                className='btn btn-sm btn-secondary content-settings'
                 onClick={this.toggleSettings.bind(this)}
               >
                 <MdSettings />
@@ -133,7 +133,7 @@ class PageBlockContent extends React.Component {
               {this.props.content.contentType === 'wysiwyg' ? (
                 <button
                   type='button'
-                  className='btn btn-sm btn-secondary'
+                  className='btn btn-sm btn-secondary toggle-wysiwyg-html'
                   onClick={this.toggleSourceMode.bind(this)}
                 >
                   <FaHtml5 />
@@ -145,7 +145,7 @@ class PageBlockContent extends React.Component {
               !this.state.sourceMode ? (
                 <button
                   type='button'
-                  className='btn btn-sm btn-secondary'
+                  className='btn btn-sm btn-secondary toggle-wysiwyg-theme'
                   onClick={this.toggleTheme.bind(this)}
                 >
                   <MdLineStyle />
@@ -203,95 +203,113 @@ class PageBlockContent extends React.Component {
               </button>
             }
           >
-            <Form
-              onSubmit={(e) => {
-                e.prevenDefault()
-              }}
-            >
-              <Input
-                type='text'
-                label='Header'
-                value={this.props.content.settings.header}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'header'
-                )}
-              />
-              <Input
-                type='range'
-                label={`Header Level: ${this.props.content.settings.headerLevel}`}
-                min='0'
-                max='6'
-                value={this.props.content.settings.headerLevel}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'headerLevel'
-                )}
-              />
-              <Input
-                label={`Desktop Width: ${this.props.content.settings.lgWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.content.settings.lgWidth}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'lgWidth'
-                )}
-              />
-              <Input
-                label={`Tablet Width: ${this.props.content.settings.mdWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.content.settings.mdWidth}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'mdWidth'
-                )}
-              />
-              <Input
-                label={`Phone Width (Landscape): ${this.props.content.settings.smWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.content.settings.smWidth}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'smWidth'
-                )}
-              />
-              <Input
-                label={`Phone Width (Portrait): ${this.props.content.settings.xsWidth} / 12`}
-                type='range'
-                min='0'
-                max='12'
-                step='1'
-                value={this.props.content.settings.xsWidth}
-                valueHandler={this.props.getContentSettingsValueHandler(
-                  'xsWidth'
-                )}
-              />
-              {this.props.content.contentType === 'image' ? (
-                <div>
+            <div className='content-settings'>
+              <Form
+                onSubmit={(e) => {
+                  e.prevenDefault()
+                }}
+              >
+                <div className='header-field'>
                   <Input
-                    label='Alt Text'
-                    value={this.props.content.settings.altText}
+                    type='text'
+                    label='Header'
+                    value={this.props.content.settings.header}
                     valueHandler={this.props.getContentSettingsValueHandler(
-                      'altText'
-                    )}
-                  />
-                  <Input
-                    label='Link URL'
-                    type='url'
-                    value={this.props.content.settings.linkUrl}
-                    valueHandler={this.props.getContentSettingsValueHandler(
-                      'linkUrl'
+                      'header'
                     )}
                   />
                 </div>
-              ) : (
-                ''
-              )}
-            </Form>
+                <div className='header-level-field'>
+                  <Input
+                    type='range'
+                    label={`Header Level: ${this.props.content.settings.headerLevel}`}
+                    min='0'
+                    max='6'
+                    value={this.props.content.settings.headerLevel}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'headerLevel'
+                    )}
+                  />
+                </div>
+                <div className='width-field desktop-width-field'>
+                  <Input
+                    label={`Desktop Width: ${this.props.content.settings.lgWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.content.settings.lgWidth}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'lgWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field tablet-width-field'>
+                  <Input
+                    label={`Tablet Width: ${this.props.content.settings.mdWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.content.settings.mdWidth}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'mdWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field landscape-phone-width-field'>
+                  <Input
+                    label={`Phone Width (Landscape): ${this.props.content.settings.smWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.content.settings.smWidth}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'smWidth'
+                    )}
+                  />
+                </div>
+                <div className='width-field portrait-phone-width-field'>
+                  <Input
+                    label={`Phone Width (Portrait): ${this.props.content.settings.xsWidth} / 12`}
+                    type='range'
+                    min='0'
+                    max='12'
+                    step='1'
+                    value={this.props.content.settings.xsWidth}
+                    valueHandler={this.props.getContentSettingsValueHandler(
+                      'xsWidth'
+                    )}
+                  />
+                </div>
+                {this.props.content.contentType === 'image' ? (
+                  <div>
+                    <div className='alt-text-field'>
+                      <Input
+                        label='Alt Text'
+                        value={this.props.content.settings.altText}
+                        valueHandler={this.props.getContentSettingsValueHandler(
+                          'altText'
+                        )}
+                      />
+                    </div>
+                    <div className='link-url-field'>
+                      <Input
+                        label='Link URL'
+                        type='url'
+                        value={this.props.content.settings.linkUrl}
+                        valueHandler={this.props.getContentSettingsValueHandler(
+                          'linkUrl'
+                        )}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </Form>
+            </div>
           </Modal>
         ) : (
           ''

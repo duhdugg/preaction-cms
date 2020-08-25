@@ -141,76 +141,98 @@ class PageSettings extends React.Component {
                       </ol>
                     </div>
                   </Alert>
-                  <Input
-                    label='Page Title'
-                    type='text'
-                    value={this.props.page.title}
-                    valueHandler={this.props.getPageValueHandler('title')}
-                  />
-                  <Input
-                    label='Page Path'
-                    type='text'
-                    value={this.props.page.key}
-                    valueHandler={this.props.getPageValueHandler('key')}
-                  />
-                  <Input
-                    label='Full Path (readonly)'
-                    type='text'
-                    value={this.path}
-                    readOnly={true}
-                  />
-                  <Input
-                    label='Site Name'
-                    type='text'
-                    value={this.props.settings.siteTitle}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'siteTitle'
-                    )}
-                    readOnly={this.props.getPageSettingIsUndefined('siteTitle')}
-                    onClick={() => {
-                      this.overrideSetting('siteTitle')
-                    }}
-                  />
-                  <ResetButton settingsKey='siteTitle' />
-                  <Card header='Navigation' headerTheme='dark'>
-                    <Checkbox
-                      label='Parent Site'
-                      checked={this.props.settings.site}
-                      valueHandler={this.props.getSettingsValueHandler('site')}
+                  <div className='page-title-field'>
+                    <Input
+                      label='Page Title'
+                      type='text'
+                      value={this.props.page.title}
+                      valueHandler={this.props.getPageValueHandler('title')}
                     />
-                    {this.props.settings.site ? (
-                      <Alert level='info'>
-                        <strong>Notice:</strong> This setting will cause the
-                        navigation menu to behave as if the current page were a
-                        top-level site.
-                      </Alert>
-                    ) : (
-                      ''
-                    )}
-                    <Checkbox
-                      label='Include Page in Navigation'
-                      checked={this.props.settings.includeInNav === true}
+                  </div>
+                  <div className='page-path-field'>
+                    <Input
+                      label='Page Path'
+                      type='text'
+                      value={this.props.page.key}
+                      valueHandler={this.props.getPageValueHandler('key')}
+                    />
+                  </div>
+                  <div className='full-path-field'>
+                    <Input
+                      label='Full Path (readonly)'
+                      type='text'
+                      value={this.path}
+                      readOnly={true}
+                    />
+                  </div>
+                  <div className='site-name-field'>
+                    <Input
+                      label='Site Name'
+                      type='text'
+                      value={this.props.settings.siteTitle}
                       valueHandler={this.props.getSettingsValueHandler(
-                        'includeInNav'
+                        'siteTitle'
                       )}
+                      readOnly={this.props.getPageSettingIsUndefined(
+                        'siteTitle'
+                      )}
+                      onClick={() => {
+                        this.overrideSetting('siteTitle')
+                      }}
                     />
-                    {this.props.settings.includeInNav ? (
-                      <Input
-                        type='number'
-                        step='1'
-                        label='Ordering'
-                        info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
-                        placeholder='0'
-                        value={this.props.settings.navOrdering}
+                    <ResetButton settingsKey='siteTitle' />
+                  </div>
+                  <Card
+                    header='Navigation'
+                    headerTheme='dark'
+                    className={{ card: 'navigation' }}
+                  >
+                    <div className='parent-site-field'>
+                      <Checkbox
+                        label='Parent Site'
+                        checked={this.props.settings.site}
                         valueHandler={this.props.getSettingsValueHandler(
-                          'navOrdering'
+                          'site'
                         )}
                       />
+                      {this.props.settings.site ? (
+                        <Alert level='info'>
+                          <strong>Notice:</strong> This setting will cause the
+                          navigation menu to behave as if the current page were
+                          a top-level site.
+                        </Alert>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    <div className='include-page-in-nav-field'>
+                      <Checkbox
+                        label='Include Page in Navigation'
+                        checked={this.props.settings.includeInNav === true}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'includeInNav'
+                        )}
+                      />
+                    </div>
+                    {this.props.settings.includeInNav ? (
+                      <div className='ordering-field'>
+                        <Input
+                          type='number'
+                          step='1'
+                          label='Ordering'
+                          info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
+                          placeholder='0'
+                          value={this.props.settings.navOrdering}
+                          valueHandler={this.props.getSettingsValueHandler(
+                            'navOrdering'
+                          )}
+                        />
+                      </div>
                     ) : (
                       ''
                     )}
                     <div className='row'>
-                      <div className='col-sm-6'>
+                      <div className='col-sm-6 nav-position-field'>
                         <Select
                           label='Nav Position'
                           value={this.props.settings.navPosition}
@@ -233,7 +255,7 @@ class PageSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-type-field'>
                           <Select
                             label='Nav Type'
                             value={this.props.settings.navType}
@@ -259,7 +281,7 @@ class PageSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-alignment-field'>
                           <Select
                             label='Nav Alignment'
                             value={this.props.settings.navAlignment}
@@ -285,7 +307,7 @@ class PageSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-spacing-field'>
                           <Select
                             label='Nav Spacing'
                             value={this.props.settings.navSpacing}
@@ -311,7 +333,7 @@ class PageSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 collapse-nav-field'>
                           <Checkbox
                             label='Collapse nav for smaller screens'
                             checked={this.props.settings.navCollapsible}
@@ -332,23 +354,29 @@ class PageSettings extends React.Component {
                       )}
                     </div>
                   </Card>
-                  <Card header='Header/Footer' headerTheme='dark'>
-                    <Checkbox
-                      label='Show Header'
-                      checked={this.props.settings.showHeader}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'showHeader'
-                      )}
-                      readOnly={this.props.getPageSettingIsUndefined(
-                        'showHeader'
-                      )}
-                      onClick={(e) => {
-                        this.overrideSetting('showHeader')
-                      }}
-                    />
-                    <ResetButton settingsKey='showHeader' />
+                  <Card
+                    header='Header/Footer'
+                    headerTheme='dark'
+                    className={{ card: 'header-footer' }}
+                  >
+                    <div className='show-header-field'>
+                      <Checkbox
+                        label='Show Header'
+                        checked={this.props.settings.showHeader}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'showHeader'
+                        )}
+                        readOnly={this.props.getPageSettingIsUndefined(
+                          'showHeader'
+                        )}
+                        onClick={(e) => {
+                          this.overrideSetting('showHeader')
+                        }}
+                      />
+                      <ResetButton settingsKey='showHeader' />
+                    </div>
                     {this.props.settings.showHeader ? (
-                      <div>
+                      <div className='header-path-field'>
                         <Input
                           label='Header Path'
                           info={`By default, every page has a header subpage automatically created. In order to use the header specific to this page, enter: ${this.props.path}header/`}
@@ -368,24 +396,26 @@ class PageSettings extends React.Component {
                     ) : (
                       ''
                     )}
-                    <Checkbox
-                      label='Show Footer'
-                      checked={this.props.settings.showFooter}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'showFooter'
-                      )}
-                      readOnly={this.props.getPageSettingIsUndefined(
-                        'showFooter'
-                      )}
-                      onClick={(e) => {
-                        this.overrideSetting('showFooter')
-                      }}
-                    />
-                    <ResetButton settingsKey='showFooter' />
+                    <div className='show-footer-field'>
+                      <Checkbox
+                        label='Show Footer'
+                        checked={this.props.settings.showFooter}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'showFooter'
+                        )}
+                        readOnly={this.props.getPageSettingIsUndefined(
+                          'showFooter'
+                        )}
+                        onClick={(e) => {
+                          this.overrideSetting('showFooter')
+                        }}
+                      />
+                      <ResetButton settingsKey='showFooter' />
+                    </div>
                     {this.props.settings.showFooter ? (
-                      <div>
+                      <div className='footer-path-field'>
                         <Input
-                          label='Header Path'
+                          label='Footer Path'
                           info={`By default, every page has a footer subpage automatically created. In order to use the footer specific to this page, enter: ${this.props.path}footer/`}
                           value={this.props.settings.footerPath}
                           valueHandler={this.props.getSettingsValueHandler(
@@ -406,10 +436,11 @@ class PageSettings extends React.Component {
                   </Card>
                 </div>
               </div>
-              <div className='row'>
-                <div className='col'></div>
-              </div>
-              <Card header='Delete Page' headerTheme='red'>
+              <Card
+                header='Delete Page'
+                headerTheme='red'
+                className={{ card: 'delete-page' }}
+              >
                 <Checkbox
                   label='Confirm to delete this page'
                   checked={this.state.confirmDelete}

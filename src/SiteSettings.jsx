@@ -125,7 +125,7 @@ class SiteSettings extends React.Component {
 
   render() {
     return (
-      <div className='settings-component'>
+      <div className='site-level settings-component'>
         {this.props.admin ? (
           <div>
             <style type='text/css'>{`
@@ -144,17 +144,23 @@ class SiteSettings extends React.Component {
             >
               <div className='row'>
                 <div className='col'>
-                  <Input
-                    label='Site Name'
-                    type='text'
-                    value={this.props.settings.siteTitle}
-                    valueHandler={this.props.getSettingsValueHandler(
-                      'siteTitle'
-                    )}
-                  />
-                  <Card header='Navigation' headerTheme='dark'>
+                  <div className='site-name-field'>
+                    <Input
+                      label='Site Name'
+                      type='text'
+                      value={this.props.settings.siteTitle}
+                      valueHandler={this.props.getSettingsValueHandler(
+                        'siteTitle'
+                      )}
+                    />
+                  </div>
+                  <Card
+                    header='Navigation'
+                    headerTheme='dark'
+                    className={{ card: 'navigation' }}
+                  >
                     <div className='row'>
-                      <div className='col-sm-6'>
+                      <div className='col-sm-6 nav-position-field'>
                         <Select
                           label='Nav Position'
                           value={this.props.settings.navPosition}
@@ -170,7 +176,7 @@ class SiteSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-type-field'>
                           <Select
                             label='Nav Type'
                             value={this.props.settings.navType}
@@ -189,7 +195,7 @@ class SiteSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-alignment-field'>
                           <Select
                             label='Nav Alignment'
                             value={this.props.settings.navAlignment}
@@ -208,7 +214,7 @@ class SiteSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 nav-spacing-field'>
                           <Select
                             label='Nav Spacing'
                             value={this.props.settings.navSpacing}
@@ -227,7 +233,7 @@ class SiteSettings extends React.Component {
                       {['above-header', 'below-header'].includes(
                         this.props.settings.navPosition
                       ) ? (
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 collapse-nav-field'>
                           <Checkbox
                             label='Collapse nav for smaller screens'
                             checked={this.props.settings.navCollapsible}
@@ -241,28 +247,37 @@ class SiteSettings extends React.Component {
                       )}
                     </div>
                   </Card>
-                  <Card header='Header' headerTheme='dark'>
-                    <Checkbox
-                      label='Show Header'
-                      checked={this.props.settings.showHeader}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'showHeader'
-                      )}
-                    />
-                    <Checkbox
-                      label='Show Footer'
-                      checked={this.props.settings.showFooter}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'showFooter'
-                      )}
-                    />
+                  <Card
+                    header='Header/Footer'
+                    headerTheme='dark'
+                    className={{ card: 'header-footer' }}
+                  >
+                    <div className='show-header-field'>
+                      <Checkbox
+                        label='Show Header'
+                        checked={this.props.settings.showHeader}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'showHeader'
+                        )}
+                      />
+                    </div>
+                    <div className='show-footer-field'>
+                      <Checkbox
+                        label='Show Footer'
+                        checked={this.props.settings.showFooter}
+                        valueHandler={this.props.getSettingsValueHandler(
+                          'showFooter'
+                        )}
+                      />
+                    </div>
                   </Card>
                 </div>
               </div>
-              <div className='row'>
-                <div className='col'></div>
-              </div>
-              <Card header='Redirects' headerTheme='dark'>
+              <Card
+                header='Redirects'
+                headerTheme='dark'
+                className={{ card: 'redirects' }}
+              >
                 <div className='row'>
                   <table className='redirects'>
                     <thead>
@@ -362,7 +377,11 @@ class SiteSettings extends React.Component {
                   </table>
                 </div>
               </Card>
-              <Card header='Backups' headerTheme='red'>
+              <Card
+                header='Backups'
+                headerTheme='red'
+                className={{ card: 'backups' }}
+              >
                 <div>
                   <Select
                     label='Restore File'
