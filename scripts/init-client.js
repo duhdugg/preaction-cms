@@ -25,8 +25,9 @@ if (!extDirContents.includes('index.js')) {
     path.join(__dirname, '../src/ext/index.js')
   )
 }
-console.log('Block extensions are defined in src/ext/index.js')
-console.log('To use other block types, modify this file and rebuild.')
+console.log('Client-side extensions are defined in src/ext/index.js')
+console.log('To use other block types or menu extensions,')
+console.log('modify this file and rebuild.')
 console.log('-------------------------------------------------------')
 console.log(
   fs.readFileSync(path.join(__dirname, '../src/ext/index.js'), 'utf8')
