@@ -196,13 +196,9 @@ function PageBlock(props) {
         )}
         {props.block.blockType === 'nav' ? (
           <PageBlockNav
-            appRoot={props.appRoot}
             block={props.block}
-            editable={props.editable}
-            emitSave={props.emitSave}
             navigate={props.navigate}
             page={props.page}
-            settings={props.settings}
           />
         ) : (
           ''

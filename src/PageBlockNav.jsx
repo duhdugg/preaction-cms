@@ -75,13 +75,9 @@ function PageBlockNav(props) {
 }
 
 PageBlockNav.propTypes = {
-  appRoot: PropTypes.string.isRequired,
   block: PropTypes.object.isRequired,
-  editable: PropTypes.bool,
-  emitSave: PropTypes.func.isRequired,
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired,
 }
 
 export default PageBlockNav
