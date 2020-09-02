@@ -634,7 +634,7 @@ class Page extends React.Component {
           })
           .catch((e) => {
             console.error(e)
-            if (e.response.status === 404) {
+            if (e.response && e.response.status === 404) {
               // set notFound state on 404
               this.setState((state) => {
                 state.status = 'notFound'
