@@ -1,14 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Wysiwyg } from '@preaction/inputs'
 
 function ErrorMessage(props) {
-  const errorMessage =
-    props.errorMessage ||
-    '<h1>Error</h1><p>The site encountered an unexpected error. Please check your connection and try again.</p>'
   return (
     <div className='page-error-message'>
-      <Wysiwyg value={errorMessage} theme='bubble' />
+      <div className='preaction wysiwyg mb-3'>
+        <div className='mock quill'>
+          <div className='ql-container'>
+            <div className='ql-editor'>
+              {props.errorMessage ? (
+                <div>{props.errorMessage}</div>
+              ) : (
+                <div>
+                  <h1>Error</h1>
+                  <p>
+                    The site encountered an unexpected error. Please check your
+                    connection and try again.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
