@@ -3,12 +3,12 @@ import React from 'react'
 
 function PageBlockIframe(props) {
   const [height, setHeight] = React.useState(0)
-  const [mounted, setMounted] = React.useState(false)
   const [iframeResizeInterval, setIframeResizeInterval] = React.useState(null)
   const iframe = React.useRef()
+  const firstRender = React.useRef(true)
   React.useEffect(() => {
-    if (!mounted) {
-      setMounted(true)
+    if (firstRender.current) {
+      firstRender.current = false
       setIframeResizeInterval(
         setInterval(() => {
           let h = '10em'
@@ -24,7 +24,13 @@ function PageBlockIframe(props) {
     return () => {
       clearInterval(iframeResizeInterval)
     }
-  }, [setIframeResizeInterval, iframeResizeInterval, iframe, height, mounted])
+  }, [
+    setIframeResizeInterval,
+    iframeResizeInterval,
+    iframe,
+    height,
+    firstRender,
+  ])
   return (
     <iframe
       src={props.block.settings.iframeSrc}

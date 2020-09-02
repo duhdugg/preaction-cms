@@ -9,7 +9,7 @@ const globalThis = globalthis()
 function Login(props) {
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [mounted, setMounted] = React.useState(false)
+  const firstRender = React.useRef(true)
 
   const loadToken = React.useCallback(() => {
     axios.get(`${props.appRoot}/api/token`).then((response) => {
@@ -41,11 +41,11 @@ function Login(props) {
 
   React.useEffect(() => {
     document.title = `Login | ${props.settings.siteTitle}`
-    if (!mounted) {
+    if (firstRender.current) {
+      firstRender.current = false
       loadToken()
-      setMounted(true)
     }
-  }, [mounted, props, loadToken])
+  }, [firstRender, props, loadToken])
 
   return (
     <Form onSubmit={loginSubmit} noValidate>
