@@ -8,424 +8,374 @@ import globalthis from 'globalthis'
 
 const globalThis = globalthis()
 
-class SiteSettings extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      backups: [],
-      redirect: null,
-      redirects: [],
-      selectedRestore: '',
-    }
-  }
+function SiteSettings(props) {
+  const [backups, setBackups] = React.useState([])
+  const [redirect, setRedirect] = React.useState(null)
+  const [redirects, setRedirects] = React.useState([])
+  const [selectedRestore, setSelectedRestore] = React.useState('')
+  const [mounted, setMounted] = React.useState(false)
 
-  getBackups() {
-    axios.get(`${this.props.appRoot}/api/backups`).then((response) => {
-      this.setState((state) => {
-        state.backups = response.data
-        return state
-      })
+  const getBackups = React.useCallback(() => {
+    axios.get(`${props.appRoot}/api/backups`).then((response) => {
+      setBackups(response.data)
     })
-  }
+  }, [props.appRoot])
 
-  deleteRedirect(redirect) {
+  const deleteRedirect = (redirect) => {
     axios
       .delete(
-        `${this.props.appRoot}/api/redirect/${redirect.id}?token=${this.props.token}`
+        `${props.appRoot}/api/redirect/${redirect.id}?token=${props.token}`
       )
       .then((response) => {
-        this.props.emitSave()
-        this.getRedirects()
+        props.emitSave()
+        getRedirects()
       })
   }
 
-  editRedirect(redirect) {
-    this.setState((state) => {
-      state.redirect = JSON.parse(JSON.stringify(redirect))
-      return state
-    })
+  const editRedirect = (redirect) => {
+    setRedirect(JSON.parse(JSON.stringify(redirect)))
   }
 
-  getRedirects() {
-    axios.get(`${this.props.appRoot}/api/redirect`).then((response) => {
-      this.setState((state) => {
-        state.redirects = response.data
-        return state
-      })
+  const getRedirects = React.useCallback(() => {
+    axios.get(`${props.appRoot}/api/redirect`).then((response) => {
+      setRedirects(response.data)
     })
-  }
+  }, [props.appRoot])
 
-  getRedirectValueHandler(key) {
+  const getRedirectValueHandler = (key) => {
     return (value) => {
-      this.setState((state) => {
-        state.redirect[key] = value
-        return state
-      })
+      const obj = JSON.parse(JSON.stringify(redirect))
+      obj[key] = value
+      setRedirect(obj)
     }
   }
 
-  getValueHandler(key) {
-    return (value) => {
-      this.setState((state) => {
-        state[key] = value
-        return state
-      })
-    }
-  }
-
-  refreshIcon() {
-    let icon = document.querySelector('link[rel="shortcut icon"]')
-    let timestamp = +new Date()
-    icon.href = `/icon?v=${timestamp}`
-  }
-
-  restoreBackup(filename) {
+  const restoreBackup = (filename) => {
     axios
-      .post(`${this.props.appRoot}/api/backups?token=${this.props.token}`, {
+      .post(`${props.appRoot}/api/backups?token=${props.token}`, {
         filename,
       })
       .then((response) => {
-        this.props.emitForceReload(() => {
+        props.emitForceReload(() => {
           globalThis.location.reload()
         })
       })
   }
 
-  saveRedirect() {
-    if (!this.state.redirect.match.trim()) {
+  const saveRedirect = () => {
+    if (!redirect.match.trim()) {
       return
     }
-    if (!this.state.redirect.location.trim()) {
+    if (!redirect.location.trim()) {
       return
     }
-    if (this.state.redirect.id) {
+    if (redirect.id) {
       axios
         .put(
-          `${this.props.appRoot}/api/redirect/${this.state.redirect.id}?token=${this.props.token}`,
-          this.state.redirect
+          `${props.appRoot}/api/redirect/${redirect.id}?token=${props.token}`,
+          redirect
         )
         .then((response) => {
-          this.getRedirects()
+          getRedirects()
         })
     } else {
       axios
-        .post(
-          `${this.props.appRoot}/api/redirect/?token=${this.props.token}`,
-          this.state.redirect
-        )
+        .post(`${props.appRoot}/api/redirect/?token=${props.token}`, redirect)
         .then((response) => {
-          this.getRedirects()
+          getRedirects()
         })
     }
-    this.setState((state) => {
-      state.redirect = null
-      return state
-    })
+    setRedirect(null)
   }
 
-  render() {
-    return (
-      <div className='site-level settings-component'>
-        {this.props.admin ? (
-          <div>
-            <style type='text/css'>{`
-              table.redirects td {
-                border-left: 1px solid black;
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-              }
-              table.redirects td:first-child {
-                border-left: 0;
-              }
-            `}</style>
-            <form
-              className='form ml-3 mr-3'
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <div className='row'>
-                <div className='col'>
-                  <div className='site-name-field'>
-                    <Input
-                      label='Site Name'
-                      type='text'
-                      value={this.props.settings.siteTitle}
-                      valueHandler={this.props.getSettingsValueHandler(
-                        'siteTitle'
-                      )}
-                    />
-                  </div>
-                  <Card
-                    header='Navigation'
-                    headerTheme='dark'
-                    className={{ card: 'navigation' }}
-                  >
-                    <div className='row'>
-                      <div className='col-sm-6 nav-position-field'>
+  React.useEffect(() => {
+    if (!mounted) {
+      setMounted(true)
+      getBackups()
+      getRedirects()
+    }
+  }, [mounted, getBackups, getRedirects])
+
+  return (
+    <div className='site-level settings-component'>
+      {props.admin ? (
+        <div>
+          <style type='text/css'>{`
+            table.redirects td {
+              border-left: 1px solid black;
+              padding-left: 0.5em;
+              padding-right: 0.5em;
+            }
+            table.redirects td:first-child {
+              border-left: 0;
+            }
+          `}</style>
+          <form className='form ml-3 mr-3' onSubmit={(e) => e.preventDefault()}>
+            <div className='row'>
+              <div className='col'>
+                <div className='site-name-field'>
+                  <Input
+                    label='Site Name'
+                    type='text'
+                    value={props.settings.siteTitle}
+                    valueHandler={props.getSettingsValueHandler('siteTitle')}
+                  />
+                </div>
+                <Card
+                  header='Navigation'
+                  headerTheme='dark'
+                  className={{ card: 'navigation' }}
+                >
+                  <div className='row'>
+                    <div className='col-sm-6 nav-position-field'>
+                      <Select
+                        label='Nav Position'
+                        value={props.settings.navPosition}
+                        valueHandler={props.getSettingsValueHandler(
+                          'navPosition'
+                        )}
+                      >
+                        <option value='fixed-top'>Fixed to Top</option>
+                        <option value='above-header'>Above Header</option>
+                        <option value='below-header'>Below Header</option>
+                      </Select>
+                    </div>
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) ? (
+                      <div className='col-sm-6 nav-type-field'>
                         <Select
-                          label='Nav Position'
-                          value={this.props.settings.navPosition}
-                          valueHandler={this.props.getSettingsValueHandler(
-                            'navPosition'
+                          label='Nav Type'
+                          value={props.settings.navType}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navType'
                           )}
                         >
-                          <option value='fixed-top'>Fixed to Top</option>
-                          <option value='above-header'>Above Header</option>
-                          <option value='below-header'>Below Header</option>
+                          <option>basic</option>
+                          <option>tabs</option>
+                          <option>pills</option>
                         </Select>
                       </div>
-                      {['above-header', 'below-header'].includes(
-                        this.props.settings.navPosition
-                      ) ? (
-                        <div className='col-sm-6 nav-type-field'>
-                          <Select
-                            label='Nav Type'
-                            value={this.props.settings.navType}
-                            valueHandler={this.props.getSettingsValueHandler(
-                              'navType'
-                            )}
-                          >
-                            <option>basic</option>
-                            <option>tabs</option>
-                            <option>pills</option>
-                          </Select>
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                      {['above-header', 'below-header'].includes(
-                        this.props.settings.navPosition
-                      ) ? (
-                        <div className='col-sm-6 nav-alignment-field'>
-                          <Select
-                            label='Nav Alignment'
-                            value={this.props.settings.navAlignment}
-                            valueHandler={this.props.getSettingsValueHandler(
-                              'navAlignment'
-                            )}
-                          >
-                            <option>left</option>
-                            <option>center</option>
-                            <option>right</option>
-                          </Select>
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                      {['above-header', 'below-header'].includes(
-                        this.props.settings.navPosition
-                      ) ? (
-                        <div className='col-sm-6 nav-spacing-field'>
-                          <Select
-                            label='Nav Spacing'
-                            value={this.props.settings.navSpacing}
-                            valueHandler={this.props.getSettingsValueHandler(
-                              'navSpacing'
-                            )}
-                          >
-                            <option>normal</option>
-                            <option>fill</option>
-                            <option>justify</option>
-                          </Select>
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                      {['above-header', 'below-header'].includes(
-                        this.props.settings.navPosition
-                      ) ? (
-                        <div className='col-sm-6 collapse-nav-field'>
-                          <Checkbox
-                            label='Collapse nav for smaller screens'
-                            checked={this.props.settings.navCollapsible}
-                            valueHandler={this.props.getSettingsValueHandler(
-                              'navCollapsible'
-                            )}
-                          />
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  </Card>
-                  <Card
-                    header='Header/Footer'
-                    headerTheme='dark'
-                    className={{ card: 'header-footer' }}
-                  >
-                    <div className='show-header-field'>
-                      <Checkbox
-                        label='Show Header'
-                        checked={this.props.settings.showHeader}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'showHeader'
-                        )}
-                      />
-                    </div>
-                    <div className='show-footer-field'>
-                      <Checkbox
-                        label='Show Footer'
-                        checked={this.props.settings.showFooter}
-                        valueHandler={this.props.getSettingsValueHandler(
-                          'showFooter'
-                        )}
-                      />
-                    </div>
-                  </Card>
-                </div>
+                    ) : (
+                      ''
+                    )}
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) ? (
+                      <div className='col-sm-6 nav-alignment-field'>
+                        <Select
+                          label='Nav Alignment'
+                          value={props.settings.navAlignment}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navAlignment'
+                          )}
+                        >
+                          <option>left</option>
+                          <option>center</option>
+                          <option>right</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) ? (
+                      <div className='col-sm-6 nav-spacing-field'>
+                        <Select
+                          label='Nav Spacing'
+                          value={props.settings.navSpacing}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navSpacing'
+                          )}
+                        >
+                          <option>normal</option>
+                          <option>fill</option>
+                          <option>justify</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) ? (
+                      <div className='col-sm-6 collapse-nav-field'>
+                        <Checkbox
+                          label='Collapse nav for smaller screens'
+                          checked={props.settings.navCollapsible}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navCollapsible'
+                          )}
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                </Card>
+                <Card
+                  header='Header/Footer'
+                  headerTheme='dark'
+                  className={{ card: 'header-footer' }}
+                >
+                  <div className='show-header-field'>
+                    <Checkbox
+                      label='Show Header'
+                      checked={props.settings.showHeader}
+                      valueHandler={props.getSettingsValueHandler('showHeader')}
+                    />
+                  </div>
+                  <div className='show-footer-field'>
+                    <Checkbox
+                      label='Show Footer'
+                      checked={props.settings.showFooter}
+                      valueHandler={props.getSettingsValueHandler('showFooter')}
+                    />
+                  </div>
+                </Card>
               </div>
-              <Card
-                header='Redirects'
-                headerTheme='dark'
-                className={{ card: 'redirects' }}
-              >
-                <div className='row'>
-                  <table className='redirects'>
-                    <thead>
-                      <tr>
-                        <th />
-                        <th>Match</th>
-                        <th>Location</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.redirects.map((redirect) => {
-                        return (
-                          <tr key={redirect.id}>
-                            <td>
-                              <button
-                                type='button'
-                                className='btn btn-sm btn-light'
-                                onClick={(e) => {
-                                  this.editRedirect(redirect)
-                                }}
-                              >
-                                <MdCreate /> edit
-                              </button>
-                              <button
-                                type='button'
-                                className='btn btn-sm btn-danger'
-                                onClick={(e) => {
-                                  this.deleteRedirect(redirect)
-                                }}
-                              >
-                                <MdDelete /> delete
-                              </button>
-                            </td>
-                            <td>{redirect.match}</td>
-                            <td>{redirect.location}</td>
-                          </tr>
-                        )
-                      })}
-                      <tr>
-                        <td>
-                          <button
-                            type='button'
-                            className='btn btn-sm btn-primary'
-                            onClick={(e) => {
-                              this.editRedirect({
-                                id: null,
-                                match: '',
-                                location: '',
-                              })
-                            }}
-                          >
-                            <MdCreate /> new
-                          </button>
-                        </td>
-                        <td />
-                        <td />
-                      </tr>
-                    </tbody>
-                    {this.state.redirect ? (
-                      <tfoot>
-                        <tr>
-                          <td
-                            style={{
-                              top: '-0.5rem',
-                              position: 'relative',
-                            }}
-                          >
+            </div>
+            <Card
+              header='Redirects'
+              headerTheme='dark'
+              className={{ card: 'redirects' }}
+            >
+              <div className='row'>
+                <table className='redirects'>
+                  <thead>
+                    <tr>
+                      <th />
+                      <th>Match</th>
+                      <th>Location</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {redirects.map((redirect) => {
+                      return (
+                        <tr key={redirect.id}>
+                          <td>
                             <button
                               type='button'
-                              className='btn btn-success btn-sm'
-                              onClick={this.saveRedirect.bind(this)}
+                              className='btn btn-sm btn-light'
+                              onClick={(e) => {
+                                editRedirect(redirect)
+                              }}
                             >
-                              <MdSave /> save
+                              <MdCreate /> edit
+                            </button>
+                            <button
+                              type='button'
+                              className='btn btn-sm btn-danger'
+                              onClick={(e) => {
+                                deleteRedirect(redirect)
+                              }}
+                            >
+                              <MdDelete /> delete
                             </button>
                           </td>
-                          <td>
-                            <Input
-                              value={this.state.redirect.match}
-                              valueHandler={this.getRedirectValueHandler(
-                                'match'
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={this.state.redirect.location}
-                              valueHandler={this.getRedirectValueHandler(
-                                'location'
-                              )}
-                            />
-                          </td>
+                          <td>{redirect.match}</td>
+                          <td>{redirect.location}</td>
                         </tr>
-                      </tfoot>
-                    ) : (
-                      <tfoot />
-                    )}
-                  </table>
-                </div>
-              </Card>
-              <Card
-                header='Backups'
-                headerTheme='red'
-                className={{ card: 'backups' }}
-              >
-                <div>
-                  <Select
-                    label='Restore File'
-                    value={this.state.selectedRestore}
-                    valueHandler={(value) => {
-                      this.setState((state) => {
-                        state.selectedRestore = value
-                        return state
-                      })
+                      )
+                    })}
+                    <tr>
+                      <td>
+                        <button
+                          type='button'
+                          className='btn btn-sm btn-primary'
+                          onClick={(e) => {
+                            editRedirect({
+                              id: null,
+                              match: '',
+                              location: '',
+                            })
+                          }}
+                        >
+                          <MdCreate /> new
+                        </button>
+                      </td>
+                      <td />
+                      <td />
+                    </tr>
+                  </tbody>
+                  {redirect ? (
+                    <tfoot>
+                      <tr>
+                        <td
+                          style={{
+                            top: '-0.5rem',
+                            position: 'relative',
+                          }}
+                        >
+                          <button
+                            type='button'
+                            className='btn btn-success btn-sm'
+                            onClick={saveRedirect}
+                          >
+                            <MdSave /> save
+                          </button>
+                        </td>
+                        <td>
+                          <Input
+                            value={redirect.match}
+                            valueHandler={getRedirectValueHandler('match')}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            value={redirect.location}
+                            valueHandler={getRedirectValueHandler('location')}
+                          />
+                        </td>
+                      </tr>
+                    </tfoot>
+                  ) : (
+                    <tfoot />
+                  )}
+                </table>
+              </div>
+            </Card>
+            <Card
+              header='Backups'
+              headerTheme='red'
+              className={{ card: 'backups' }}
+            >
+              <div>
+                <Select
+                  label='Restore File'
+                  value={selectedRestore}
+                  valueHandler={(value) => {
+                    setSelectedRestore(value)
+                  }}
+                >
+                  <option></option>
+                  {backups.map((filename, index) => {
+                    return <option key={index}>{filename}</option>
+                  })}
+                </Select>
+                {selectedRestore ? (
+                  <button
+                    className='btn btn-secondary'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      restoreBackup(selectedRestore)
                     }}
                   >
-                    <option></option>
-                    {this.state.backups.map((filename, index) => {
-                      return <option key={index}>{filename}</option>
-                    })}
-                  </Select>
-                  {this.state.selectedRestore ? (
-                    <button
-                      className='btn btn-secondary'
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.restoreBackup(this.state.selectedRestore)
-                      }}
-                    >
-                      Restore
-                    </button>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </Card>
-            </form>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    this.getBackups()
-    this.getRedirects()
-  }
+                    Restore
+                  </button>
+                ) : (
+                  ''
+                )}
+              </div>
+            </Card>
+          </form>
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
+  )
 }
 
 SiteSettings.propTypes = {

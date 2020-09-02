@@ -6,33 +6,28 @@ import globalthis from 'globalthis'
 
 const globalThis = globalthis()
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      username: '',
-      password: '',
-    }
-  }
+function Login(props) {
+  const [username, setUsername] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [mounted, setMounted] = React.useState(false)
 
-  loadToken() {
-    axios.get(`${this.props.appRoot}/api/token`).then((response) => {
-      this.props.setToken(response.data)
+  const loadToken = React.useCallback(() => {
+    axios.get(`${props.appRoot}/api/token`).then((response) => {
+      props.setToken(response.data)
     })
-  }
+  }, [props])
 
-  loginSubmit(event) {
+  const loginSubmit = (event) => {
     event.preventDefault()
-    const { username, password } = this.state
     if (event.target.checkValidity()) {
       axios
-        .post(`${this.props.appRoot}/api/login?token=${this.props.token}`, {
+        .post(`${props.appRoot}/api/login?token=${props.token}`, {
           username,
           password,
         })
         .then((response) => {
-          this.props.loadSession()
-          this.props.navigate('/')
+          props.loadSession()
+          props.navigate('/')
         })
         .catch((e) => {
           globalThis.alert('incorrect login')
@@ -40,52 +35,38 @@ class Login extends React.Component {
     }
   }
 
-  getLoginValueHandler(key) {
-    return (value) => {
-      if (key === 'username') {
-        value = value.toLowerCase()
-      }
-      this.setState((state) => {
-        state[key] = value
-        return state
-      })
+  const usernameValueHandler = (value) => {
+    setUsername(value.toLowerCase())
+  }
+
+  React.useEffect(() => {
+    document.title = `Login | ${props.settings.siteTitle}`
+    if (!mounted) {
+      loadToken()
+      setMounted(true)
     }
-  }
+  }, [mounted, props, loadToken])
 
-  render() {
-    return (
-      <Form onSubmit={this.loginSubmit.bind(this)} noValidate>
-        <Input
-          label='Username'
-          autoComplete='username'
-          required
-          valueHandler={this.getLoginValueHandler('username')}
-        />
-        <Input
-          type='password'
-          autoComplete='current-password'
-          label='Password'
-          required
-          valueHandler={this.getLoginValueHandler('password')}
-        />
-        <button type='submit' className='btn btn-success'>
-          Log In
-        </button>
-      </Form>
-    )
-  }
-
-  componentDidMount() {
-    document.title = `Login | ${this.props.settings.siteTitle}`
-    this.loadToken()
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.settings.siteTitle !== this.props.settings.siteTitle) {
-      document.title = `Login | ${nextProps.settings.siteTitle}`
-    }
-    return true
-  }
+  return (
+    <Form onSubmit={loginSubmit} noValidate>
+      <Input
+        label='Username'
+        autoComplete='username'
+        required
+        valueHandler={usernameValueHandler}
+      />
+      <Input
+        type='password'
+        autoComplete='current-password'
+        label='Password'
+        required
+        valueHandler={setPassword}
+      />
+      <button type='submit' className='btn btn-success'>
+        Log In
+      </button>
+    </Form>
+  )
 }
 
 Login.propTypes = {

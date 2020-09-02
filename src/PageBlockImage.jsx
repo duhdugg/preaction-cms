@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import absoluteUrl from './lib/absoluteUrl.js'
 
-let ImgContainer = (props) =>
-  props.linkUrl ? (
+function ImgContainer(props) {
+  return props.linkUrl ? (
     <a
       href={props.linkUrl}
       rel='noreferrer noopener'
@@ -22,30 +22,29 @@ let ImgContainer = (props) =>
   ) : (
     <span>{props.children}</span>
   )
+}
 ImgContainer.propTypes = {
   children: PropTypes.node,
   linkUrl: PropTypes.string,
   navigate: PropTypes.func,
 }
 
-class PageBlockImage extends React.Component {
-  render() {
-    return (
-      <div className='page-block-content-type-image'>
-        <ImgContainer
-          linkUrl={this.props.content.settings.linkUrl}
-          navigate={this.props.navigate}
-        >
-          <img
-            src={`${this.props.appRoot}/uploads/${this.props.content.filename}`}
-            style={{ width: '100%' }}
-            alt={this.props.content.settings.altText || ''}
-            title={this.props.content.settings.altText || ''}
-          />
-        </ImgContainer>
-      </div>
-    )
-  }
+function PageBlockImage(props) {
+  return (
+    <div className='page-block-content-type-image'>
+      <ImgContainer
+        linkUrl={props.content.settings.linkUrl}
+        navigate={props.navigate}
+      >
+        <img
+          src={`${props.appRoot}/uploads/${props.content.filename}`}
+          style={{ width: '100%' }}
+          alt={props.content.settings.altText || ''}
+          title={props.content.settings.altText || ''}
+        />
+      </ImgContainer>
+    </div>
+  )
 }
 
 PageBlockImage.propTypes = {

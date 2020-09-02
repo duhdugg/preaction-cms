@@ -3,91 +3,75 @@ import React from 'react'
 import { Nav } from '@preaction/bootstrap-clips'
 import { NavLink } from 'react-router-dom'
 
-class PageBlockNav extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSettings: false,
+const getMenu = (props) => {
+  const m = []
+  props.page.tree.children.forEach((page) => {
+    if (!page.settings.includeInNav) {
+      return
     }
-  }
-
-  get menu() {
-    let m = []
-    this.props.page.tree.children.forEach((page) => {
-      if (!page.settings.includeInNav) {
-        return
-      }
-      let subMenu = []
-      if (this.props.block.settings.subMenu) {
-        page.children.forEach((pg) => {
-          if (pg.settings.includeInNav) {
-            subMenu.push({
-              name: pg.title,
-              href: `/${pg.path}/`,
-              component: NavLink,
-              order: Number(pg.settings.navOrdering || 0),
-              onClick: (e) => {
-                e.preventDefault()
-                this.props.navigate(`/${pg.path}/`)
-              },
-            })
-          }
-        })
-      }
-      m.push({
-        name: page.title,
-        href: `/${page.path}/`,
-        component: NavLink,
-        order: Number(page.settings.navOrdering || 0),
-        onClick: (e) => {
-          e.preventDefault()
-          this.props.navigate(`/${page.path}/`)
-        },
-        subMenu: subMenu.length ? subMenu : null,
+    let subMenu = []
+    if (props.block.settings.subMenu) {
+      page.children.forEach((pg) => {
+        if (pg.settings.includeInNav) {
+          subMenu.push({
+            name: pg.title,
+            href: `/${pg.path}/`,
+            component: NavLink,
+            order: Number(pg.settings.navOrdering || 0),
+            onClick: (e) => {
+              e.preventDefault()
+              props.navigate(`/${pg.path}/`)
+            },
+          })
+        }
       })
-      m.sort((a, b) => {
-        let retval = 0
-        if (a.name < b.name) {
-          retval = -1
-        } else if (a.name > b.name) {
-          retval = 1
-        }
-        let aOrder = a.order
-        let bOrder = b.order
-        if (aOrder === undefined) {
-          aOrder = 0
-        }
-        if (bOrder === undefined) {
-          bOrder = 0
-        }
-        if (aOrder < bOrder) {
-          retval = -1
-        } else if (aOrder > bOrder) {
-          retval = 1
-        }
-        return retval
-      })
+    }
+    m.push({
+      name: page.title,
+      href: `/${page.path}/`,
+      component: NavLink,
+      order: Number(page.settings.navOrdering || 0),
+      onClick: (e) => {
+        e.preventDefault()
+        props.navigate(`/${page.path}/`)
+      },
+      subMenu: subMenu.length ? subMenu : null,
     })
-    return m
-  }
-
-  toggleSettings() {
-    this.setState((state) => {
-      state.showSettings = !state.showSettings
-      return state
+    m.sort((a, b) => {
+      let retval = 0
+      if (a.name < b.name) {
+        retval = -1
+      } else if (a.name > b.name) {
+        retval = 1
+      }
+      let aOrder = a.order
+      let bOrder = b.order
+      if (aOrder === undefined) {
+        aOrder = 0
+      }
+      if (bOrder === undefined) {
+        bOrder = 0
+      }
+      if (aOrder < bOrder) {
+        retval = -1
+      } else if (aOrder > bOrder) {
+        retval = 1
+      }
+      return retval
     })
-  }
+  })
+  return m
+}
 
-  render() {
-    return (
-      <Nav
-        align={this.props.block.settings.navAlignment}
-        type={this.props.block.settings.navType || 'basic'}
-        collapsible={this.props.block.settings.navCollapsible}
-        menu={this.menu}
-      />
-    )
-  }
+function PageBlockNav(props) {
+  return (
+    <Nav
+      align={this.props.block.settings.navAlignment}
+      type={this.props.block.settings.navType || 'basic'}
+      collapsible={this.props.block.settings.navCollapsible}
+      menu={getMenu(props)}
+    />
+  )
 }
 
 PageBlockNav.propTypes = {

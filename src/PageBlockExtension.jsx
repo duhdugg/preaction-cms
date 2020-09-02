@@ -1,21 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-class PageBlockExtension extends React.Component {
-  render() {
-    let Component = (
-      <div className='alert alert-danger'>
-        <strong>Error:</strong> Extension {this.props.extKey} not found!
-      </div>
-    )
-    const extBlockIndex = this.props.extBlockIndex || {}
-    if (extBlockIndex[this.props.extKey]) {
-      Component = React.createElement(extBlockIndex[this.props.extKey], {
-        ...this.props.propsData,
-      })
-    }
-    return Component
+function PageBlockExtension(props) {
+  let Component = (
+    <div className='alert alert-danger'>
+      <strong>Error:</strong> Extension {props.extKey} not found!
+    </div>
+  )
+  const extBlockIndex = props.extBlockIndex || {}
+  if (extBlockIndex[props.extKey]) {
+    Component = React.createElement(extBlockIndex[props.extKey], {
+      ...props.propsData,
+    })
   }
+  return Component
 }
 
 PageBlockExtension.propTypes = {
@@ -24,29 +22,24 @@ PageBlockExtension.propTypes = {
   propsData: PropTypes.object.isRequired,
 }
 
-class PageBlockExtensionSettings extends React.Component {
-  getPropsDataValueHandler(key) {
+function PageBlockExtensionSettings(props) {
+  const getPropsDataValueHandler = (key) => {
     return (value) => {
-      const propsData = JSON.parse(JSON.stringify(this.props.propsData))
+      const propsData = JSON.parse(JSON.stringify(props.propsData))
       propsData[key] = value
-      this.props.getPageBlockSettingsValueHandler('propsData')(propsData)
+      props.getPageBlockSettingsValueHandler('propsData')(propsData)
     }
   }
 
-  render() {
-    let Settings = <div />
-    const extBlockIndex = this.props.extBlockIndex || {}
-    if (extBlockIndex[this.props.extKey].Settings) {
-      Settings = React.createElement(
-        extBlockIndex[this.props.extKey].Settings,
-        {
-          propsData: this.props.propsData,
-          getPropsDataValueHandler: this.getPropsDataValueHandler.bind(this),
-        }
-      )
-    }
-    return Settings
+  let Settings = <div />
+  const extBlockIndex = props.extBlockIndex || {}
+  if (extBlockIndex[props.extKey].Settings) {
+    Settings = React.createElement(extBlockIndex[props.extKey].Settings, {
+      propsData: props.propsData,
+      getPropsDataValueHandler,
+    })
   }
+  return Settings
 }
 
 PageBlockExtensionSettings.propTypes = {
