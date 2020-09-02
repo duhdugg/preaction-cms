@@ -1532,10 +1532,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@preaction/bootstrap-clips@^3.0.0-alpha.10":
-  version "3.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-3.0.0-alpha.10.tgz#ccf2737af87ab28563c5ca7473751824f3ade253"
-  integrity sha512-r/qtdBS78NN5QpyJKmXwghyT4idmMc26N0ahuVQjoazgin3xWKVkL2NkMPRBv8YU3YulI24fxe/7mUVSM8ZHvw==
+"@preaction/bootstrap-clips@^3.0.0-alpha.11":
+  version "3.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-3.0.0-alpha.11.tgz#68942d81663aa44da4a55eb15697b6e02008c18c"
+  integrity sha512-n1/eDwdfaN5gtEPKYLmOxnimr9a6blslzfei2++wDFHw1Rmslpcyw4QGL5vwr8dt4Fa1Out7FMM06kV+ZyktnQ==
   dependencies:
     prop-types "^15.7.2"
 
