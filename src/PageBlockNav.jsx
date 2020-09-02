@@ -66,9 +66,9 @@ const getMenu = (props) => {
 function PageBlockNav(props) {
   return (
     <Nav
-      align={this.props.block.settings.navAlignment}
-      type={this.props.block.settings.navType || 'basic'}
-      collapsible={this.props.block.settings.navCollapsible}
+      align={props.block.settings.navAlignment}
+      type={props.block.settings.navType || 'basic'}
+      collapsible={props.block.settings.navCollapsible}
       menu={getMenu(props)}
     />
   )
