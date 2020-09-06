@@ -95,6 +95,9 @@ hr {
   margin-bottom: 0 !important;
 }
 
+.modal-content {
+  border: 0;
+}
 .modal-content .modal-header,
 .modal-content .modal-footer {
   color: var(--light);
