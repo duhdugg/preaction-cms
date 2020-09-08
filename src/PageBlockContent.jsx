@@ -61,7 +61,7 @@ function PageBlockContent(props) {
         card: 'page-block-content',
       }}
       noMargin
-      column={props.column}
+      column
       header={header}
       headerTheme='dark'
       footerTheme='dark'
@@ -154,10 +154,7 @@ function PageBlockContent(props) {
       {props.content.contentType === 'image' ? (
         <PageBlockImage
           appRoot={props.appRoot}
-          block={props.block}
           content={props.content}
-          editable={props.editable}
-          emitSave={props.emitSave}
           navigate={props.navigate}
         />
       ) : (
@@ -285,7 +282,6 @@ function PageBlockContent(props) {
 PageBlockContent.propTypes = {
   block: PropTypes.object.isRequired,
   appRoot: PropTypes.string.isRequired,
-  column: PropTypes.bool,
   content: PropTypes.object.isRequired,
   contentControl: PropTypes.func.isRequired,
   emitSave: PropTypes.func.isRequired,

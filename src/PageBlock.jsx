@@ -168,7 +168,6 @@ function PageBlock(props) {
                   key={content.id}
                   appRoot={props.appRoot}
                   block={props.block}
-                  column
                   width={{
                     lg: content.settings.lgWidth / 12,
                     md: content.settings.mdWidth / 12,

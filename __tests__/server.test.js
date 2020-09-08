@@ -1,11 +1,5 @@
 const client = require('./client.test.js')
 
-test('GET /icon before setting returns 404', async () => {
-  const { unauth } = await client.init()
-  const response = await unauth.get('/icon')
-  expect(response.statusCode).toBe(404)
-})
-
 test('/sitemap.xml', async () => {
   const { auth, token, unauth } = await client.init()
   for (let i = 0; i < 3; i++) {

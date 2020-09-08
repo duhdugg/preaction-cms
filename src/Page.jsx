@@ -810,7 +810,6 @@ class Page extends React.Component {
 }
 
 Page.propTypes = {
-  addPage: PropTypes.func,
   appRoot: PropTypes.string.isRequired,
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
