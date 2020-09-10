@@ -20,6 +20,7 @@ function PageBlock(props) {
   const [showSettings, setShowSettings] = React.useState(false)
   const imgUploadForm = React.useRef()
   const photosInput = React.useRef()
+  const imgUploadFrame = React.useRef()
 
   const getHeader = () => {
     let el
@@ -416,9 +417,18 @@ function PageBlock(props) {
             name={`upload-frame-${props.block.id}`}
             title='upload'
             onLoad={() => {
-              refreshBlock()
+              try {
+                if (
+                  imgUploadFrame.current.contentWindow.location.href.match(
+                    /api\/upload-img/g
+                  )
+                ) {
+                  refreshBlock()
+                }
+              } catch {}
             }}
             className='d-none'
+            ref={imgUploadFrame}
           />
         </div>
       ) : (

@@ -36,6 +36,10 @@ class Page extends React.Component {
       }
     }
     this.updateTimer = null
+    // ref needed for testing
+    if (process.env.NODE_ENV === 'test') {
+      this.ref = React.createRef()
+    }
   }
 
   addContent(block, contentType) {
@@ -425,6 +429,7 @@ class Page extends React.Component {
     for (let extKey of Object.keys(blockExtensions)) {
       const Extension = blockExtensions[extKey]
       extensionBlockMenuItems.push({
+        className: `add-extension-block-${extKey}`,
         name: (
           <span>
             <MdSettingsInputComponent /> {Extension.label}
@@ -444,6 +449,7 @@ class Page extends React.Component {
     }
     const menu = [
       {
+        className: 'add-block-dropdown',
         name: (
           <span>
             <MdCreate /> add block
@@ -452,6 +458,7 @@ class Page extends React.Component {
         icon: 'arrow-dropdown',
         subMenu: [
           {
+            className: 'add-content-block',
             name: (
               <span>
                 <FaHtml5 /> Content
@@ -463,6 +470,7 @@ class Page extends React.Component {
             },
           },
           {
+            className: 'add-iframe-block',
             name: (
               <span>
                 <MdFilterFrames /> iframe
@@ -474,6 +482,7 @@ class Page extends React.Component {
             },
           },
           {
+            className: 'add-nav-block',
             name: (
               <span>
                 <FaSitemap /> Navigation
@@ -691,7 +700,7 @@ class Page extends React.Component {
 
   render() {
     return (
-      <div className='page'>
+      <div className='page' ref={this.ref}>
         {this.state.page ? (
           <div className='row'>
             {this.state.page.pageblocks
@@ -797,6 +806,11 @@ class Page extends React.Component {
   componentDidMount() {
     if (!this.state.page) {
       this.loadPage(this.props.path)
+    }
+    if (process.env.NODE_ENV === 'test') {
+      this.ref.current.blockControl = this.blockControl.bind(this)
+      this.ref.current.deletePage = this.deletePage.bind(this)
+      this.ref.current.toggleSettings = this.toggleSettings.bind(this)
     }
   }
 

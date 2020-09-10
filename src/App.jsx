@@ -237,6 +237,7 @@ class App extends React.Component {
     if (this.settings.navPosition !== 'fixed-top') {
       menu.push({
         name: 'Home',
+        className: 'nav-page-home',
         href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
         component: Link,
         order: -100,
@@ -258,6 +259,7 @@ class App extends React.Component {
           if (pg.settings.includeInNav) {
             subMenu.push({
               name: pg.title,
+              className: `nav-page-${page.key}-subpage-${pg.key}`,
               href: `/${pg.path}/`,
               component: NavLink,
               order: Number(pg.settings.navOrdering || 0),
@@ -292,6 +294,7 @@ class App extends React.Component {
         })
         menu.push({
           name: page.title,
+          className: `nav-page-${page.key}`,
           href: `/${page.path}/`,
           component: NavLink,
           order: Number(page.settings.navOrdering || 0),
@@ -307,6 +310,7 @@ class App extends React.Component {
       let adminSubmenu = []
       adminSubmenu.push({
         name: 'Logout',
+        className: 'nav-logout',
         onClick: (e) => {
           e.preventDefault()
           this.logout()
@@ -314,6 +318,7 @@ class App extends React.Component {
       })
 
       menu.push({
+        className: 'nav-toggle-edit',
         name: (
           <span>
             {this.state.editable ? <FaToggleOn /> : <FaToggleOff />} Edit
@@ -329,6 +334,7 @@ class App extends React.Component {
 
       if (this.state.editable) {
         menu.push({
+          className: 'nav-new-page',
           name: (
             <span>
               <MdCreate /> New Page
@@ -341,6 +347,7 @@ class App extends React.Component {
           order: 200,
         })
         menu.push({
+          className: 'nav-settings',
           name: (
             <span>
               <MdSettings /> Settings
@@ -355,6 +362,7 @@ class App extends React.Component {
       }
 
       menu.push({
+        className: 'nav-user',
         name: (
           <span>
             <MdPerson /> User
@@ -367,14 +375,17 @@ class App extends React.Component {
 
     for (let key of Object.keys(menuExtensions)) {
       menu.push(
-        menuExtensions[key]({
-          appRoot: this.root,
-          editable: this.state.editable,
-          navigate: this.navigate.bind(this),
-          page: this.state.activePage,
-          settings: this.settings,
-          token: this.state.token,
-        })
+        Object.assign(
+          { className: `nav-extension-${key}` },
+          menuExtensions[key]({
+            appRoot: this.root,
+            editable: this.state.editable,
+            navigate: this.navigate.bind(this),
+            page: this.state.activePage,
+            settings: this.settings,
+            token: this.state.token,
+          })
+        )
       )
     }
 
