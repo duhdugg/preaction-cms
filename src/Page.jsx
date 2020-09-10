@@ -642,7 +642,9 @@ class Page extends React.Component {
             )
           })
           .catch((e) => {
-            console.error(e)
+            if (process.env.NODE_ENV !== 'test') {
+              console.error(e)
+            }
             if (e.response && e.response.status === 404) {
               // set notFound state on 404
               this.setState((state) => {

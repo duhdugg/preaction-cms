@@ -435,9 +435,9 @@ const server = setupServer(
   rest.post('/api/page/13/blocks', (req, res, ctx) => {
     return res(
       ctx.json({
-        id: 14,
+        id: Math.random(),
         pageId: '13',
-        blockType: 'iframe',
+        blockType: req.body.blockType,
         ordering: 0,
         settings: {
           header: '',
@@ -448,6 +448,7 @@ const server = setupServer(
           xsWidth: 12,
           iframeSrc: 'about:blank',
         },
+        pageblockcontents: [],
         updatedAt: '2020-09-09T12:37:02.016Z',
         createdAt: '2020-09-09T12:37:02.016Z',
       })
@@ -516,6 +517,12 @@ const server = setupServer(
   rest.put('/api/page/19', (req, res, ctx) => {
     return res(ctx.json({}))
   }),
+  rest.get('/api/page/by-key/foobar/', (req, res, ctx) => {
+    return res(ctx.status(400), ctx.json({ error: 'foobar' }))
+  }),
+  rest.get('/api/page/by-key/notfound/', (req, res, ctx) => {
+    return res(ctx.status(404), ctx.json({ error: 'foobar' }))
+  }),
   rest.get(/.*/, (req, res, ctx) => {
     console.debug(req.url.toString())
   })
@@ -576,6 +583,18 @@ test('add page block', async () => {
   await waitFor(() =>
     expect(
       result.container.querySelector('.block-type-iframe')
+    ).toBeInTheDocument()
+  )
+  userEvent.click(result.container.querySelector('.add-nav-block'))
+  await waitFor(() =>
+    expect(
+      result.container.querySelector('.block-type-nav')
+    ).toBeInTheDocument()
+  )
+  userEvent.click(result.container.querySelector('.add-content-block'))
+  await waitFor(() =>
+    expect(
+      result.container.querySelector('.block-type-content')
     ).toBeInTheDocument()
   )
 })
@@ -951,10 +970,18 @@ test('getPageValueHandler', async () => {
 
 test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   let x = false
+  let headerControlCalled = false
+  let footerControlCalled = false
   const { result } = getResult({
     path: '/foo-1/abc/789/',
     emitSave: () => {
       x = !x
+    },
+    headerControl: () => {
+      headerControlCalled = true
+    },
+    footerControl: () => {
+      footerControlCalled = true
     },
   })
   expect(result.container.firstChild).toHaveClass('page')
@@ -982,4 +1009,73 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
       })
   )
   expect(x).toBe(false)
+  userEvent.click(result.getByLabelText('Show Header'))
+  expect(headerControlCalled).toBe(true)
+  userEvent.click(result.getByLabelText('Show Footer'))
+  expect(footerControlCalled).toBe(true)
+})
+
+test('onNotFound', async () => {
+  let onNotFoundCalled = false
+  const { result } = getResult({
+    path: '/notfound/',
+    onNotFound: () => {
+      onNotFoundCalled = true
+    },
+  })
+  expect(result.container.firstChild).toHaveClass('page')
+  await waitFor(() => expect(onNotFoundCalled).toBe(true))
+})
+
+test('onError', async () => {
+  let onErrorCalled = false
+  const { result } = getResult({
+    path: '/foobar/',
+    onError: () => {
+      onErrorCalled = true
+    },
+  })
+  expect(result.container.firstChild).toHaveClass('page')
+  await waitFor(() => expect(onErrorCalled).toBe(true))
+})
+
+test('path prop change', async () => {
+  const { result, rerender } = getResult({
+    path: '/foo-1/abc/456/',
+  })
+  expect(result.container.firstChild).toHaveClass('page')
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
+  expect(result.container.querySelectorAll('.block-type-content').length).toBe(
+    0
+  )
+  rerender({
+    path: '/foo-1/abc/789/',
+  })
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(0)
+  expect(result.container.querySelectorAll('.block-type-content').length).toBe(
+    1
+  )
+})
+
+test('fast path prop change', async () => {
+  const { result, rerender } = getResult({
+    path: '/foo-1/abc/456/',
+  })
+  expect(result.container.firstChild).toHaveClass('page')
+  rerender({
+    path: '/foo-1/abc/789/',
+  })
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(0)
+  expect(result.container.querySelectorAll('.block-type-content').length).toBe(
+    1
+  )
 })
