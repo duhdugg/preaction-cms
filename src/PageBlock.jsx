@@ -125,26 +125,28 @@ function PageBlock(props) {
                 <MdSettings />
               </button>
               {props.block.blockType === 'content' ? (
-                <span>
-                  <button
-                    type='button'
-                    className='btn btn-secondary btn-sm add-wysiwyg'
-                    onClick={() => {
-                      props.addContent(props.block, 'wysiwyg')
-                    }}
-                  >
-                    <MdTextFields />
-                  </button>
-                  <button
-                    type='button'
-                    className='btn btn-secondary btn-sm add-images'
-                    onClick={() => {
-                      photosInput.current.click()
-                    }}
-                  >
-                    <MdImage />
-                  </button>
-                </span>
+                <button
+                  type='button'
+                  className='btn btn-secondary btn-sm add-wysiwyg'
+                  onClick={() => {
+                    props.addContent(props.block, 'wysiwyg')
+                  }}
+                >
+                  <MdTextFields />
+                </button>
+              ) : (
+                ''
+              )}
+              {props.block.blockType === 'content' ? (
+                <button
+                  type='button'
+                  className='btn btn-secondary btn-sm add-images'
+                  onClick={() => {
+                    photosInput.current.click()
+                  }}
+                >
+                  <MdImage />
+                </button>
               ) : (
                 ''
               )}
