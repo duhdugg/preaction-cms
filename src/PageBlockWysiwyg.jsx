@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Spinner } from '@preaction/bootstrap-clips'
 import { Form, Textarea, Wysiwyg } from '@preaction/inputs'
+import env from './lib/env.js'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
 
@@ -84,8 +85,10 @@ class PageBlockWysiwyg extends React.Component {
             <Wysiwyg
               // allowDangerousFallback as the value was sanitized by server,
               // but the error message is preferred if component fails when editing
-              allowDangerousFallback={!this.props.editable}
-              fallbackMode={!this.props.editable}
+              allowDangerousFallback={
+                !this.props.editable || env.NODE_ENV === 'test'
+              }
+              fallbackMode={!this.props.editable || env.NODE_ENV === 'test'}
               loadableFallback={<Spinner />}
               theme={this.theme}
               toolbar={wysiwygToolbar}
