@@ -16,7 +16,7 @@ test('PageBlock content', async () => {
     ordering: 1,
     settings: {
       header: 'Content Block',
-      headerLevel: 0,
+      headerLevel: '1',
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
