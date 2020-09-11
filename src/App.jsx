@@ -5,6 +5,7 @@ import globalthis from 'globalthis'
 import {
   BrowserRouter,
   StaticRouter,
+  MemoryRouter,
   Route,
   Switch,
   NavLink,
@@ -26,8 +27,10 @@ import SiteSettings from './SiteSettings.jsx'
 import absoluteUrl from './lib/absoluteUrl.js'
 import getSaneKey from './lib/getSaneKey.js'
 import { menuExtensions } from './ext'
+import env from './lib/env.js'
 
 const ssr = typeof window === 'undefined'
+const test = env.NODE_ENV === 'test'
 
 // import css
 if (!ssr) {
@@ -58,6 +61,10 @@ class Router extends React.Component {
       <StaticRouter location={this.props.location} context={{}}>
         {this.props.children}
       </StaticRouter>
+    ) : test ? (
+      <MemoryRouter initialEntries={[this.props.location]}>
+        {this.props.children}
+      </MemoryRouter>
     ) : (
       <BrowserRouter basename={this.props.basename}>
         {this.props.children}
@@ -739,7 +746,7 @@ class App extends React.Component {
       <div
         className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
       >
-        <Router basename={`${this.root}/`} location={this.props.initPath}>
+        <Router basename={`${this.root}/`} location={this.state.activePathname}>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
@@ -923,84 +930,90 @@ class App extends React.Component {
           </div>
         </Router>
         {this.state.editable && this.state.show.settings ? (
-          <Modal
-            title='Site Settings'
-            closeHandler={this.toggleSettings.bind(this)}
-            footer={
-              <button
-                type='button'
-                className='btn btn-secondary'
-                onClick={this.toggleSettings.bind(this)}
-              >
-                Close
-              </button>
-            }
-          >
-            <SiteSettings
-              appRoot={this.root}
-              admin={this.state.admin}
-              emitForceReload={this.emitForceReload.bind(this)}
-              emitSave={this.emitSave.bind(this)}
-              settings={this.state.siteSettings}
-              getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
-              token={this.state.token}
-            />
-          </Modal>
+          <div className='site-settings-modal-container'>
+            <Modal
+              title='Site Settings'
+              closeHandler={this.toggleSettings.bind(this)}
+              footer={
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={this.toggleSettings.bind(this)}
+                >
+                  Close
+                </button>
+              }
+            >
+              <SiteSettings
+                appRoot={this.root}
+                admin={this.state.admin}
+                emitForceReload={this.emitForceReload.bind(this)}
+                emitSave={this.emitSave.bind(this)}
+                settings={this.state.siteSettings}
+                getSettingsValueHandler={this.getSettingsValueHandler.bind(
+                  this
+                )}
+                token={this.state.token}
+              />
+            </Modal>
+          </div>
         ) : (
           ''
         )}
         {this.state.editable && this.state.show.newPage ? (
-          <Modal
-            title='New Page'
-            hideCloseButton={true}
-            footer={
-              <div>
-                <button
-                  type='button'
-                  className='btn btn-success'
-                  onClick={() => {
-                    if (this.state.newPage.title) {
-                      this.createPage(this.state.newPage)
+          <div className='new-page-modal-container'>
+            <Modal
+              title='New Page'
+              hideCloseButton={true}
+              footer={
+                <div>
+                  <button
+                    type='button'
+                    className='btn btn-success'
+                    onClick={() => {
+                      if (this.state.newPage.title) {
+                        this.createPage(this.state.newPage)
+                        this.toggleNewPage()
+                        this.setState((state) => {
+                          state.newPage.title = ''
+                          state.newPage.key = ''
+                          return state
+                        })
+                      }
+                    }}
+                  >
+                    Save
+                  </button>{' '}
+                  <button
+                    type='button'
+                    className='btn btn-secondary'
+                    onClick={() => {
                       this.toggleNewPage()
-                      this.setState((state) => {
-                        state.newPage.title = ''
-                        state.newPage.key = ''
-                        return state
-                      })
-                    }
-                  }}
-                >
-                  Save
-                </button>{' '}
-                <button
-                  type='button'
-                  className='btn btn-secondary'
-                  onClick={() => {
-                    this.toggleNewPage()
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            }
-          >
-            <form onSubmit={(e) => e.preventDefault()}>
-              <Input
-                type='text'
-                label='Page Title'
-                value={this.state.newPage.title}
-                valueHandler={this.getNewPageValueHandler('title')}
-                required
-              />
-              <Input
-                type='text'
-                label='URL Path'
-                value={this.state.newPage.key}
-                valueHandler={this.getNewPageValueHandler('key')}
-                required
-              />
-            </form>
-          </Modal>
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              }
+            >
+              <form onSubmit={(e) => e.preventDefault()}>
+                <Input
+                  type='text'
+                  label='Page Title'
+                  value={this.state.newPage.title}
+                  valueHandler={this.getNewPageValueHandler('title')}
+                  required
+                />
+                <Input
+                  type='text'
+                  label='URL Path'
+                  value={this.state.newPage.key}
+                  valueHandler={this.getNewPageValueHandler('key')}
+                  required
+                />
+              </form>
+            </Modal>
+          </div>
         ) : (
           ''
         )}
