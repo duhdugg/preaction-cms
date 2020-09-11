@@ -159,7 +159,9 @@ function PageBlock(props) {
                   className='btn btn-secondary btn-sm add-images-by-url'
                   onClick={() => {
                     const src = window.prompt('Enter image URL')
-                    props.addContent(props.block, 'image', { src })
+                    if (src) {
+                      props.addContent(props.block, 'image', { src })
+                    }
                   }}
                 >
                   <div className='linked-image-icon'>
