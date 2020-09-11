@@ -142,8 +142,8 @@ hr {
   overflow: hidden;
 }
 
-.App.non-editable a:hover::before,
-.App.non-editable a:hover::after {
+.App.non-editable .wysiwyg a:hover::before,
+.App.non-editable .wysiwyg a:hover::after {
   display: none;
 }
 
