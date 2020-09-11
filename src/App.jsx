@@ -639,7 +639,10 @@ class App extends React.Component {
               return state
             },
             () => {
-              this.trackPageView()
+              // track navigation to login
+              if (path === '/login/') {
+                this.trackPageView()
+              }
             }
           )
         }
@@ -682,15 +685,10 @@ class App extends React.Component {
         return state
       },
       () => {
-        this.setState(
-          (state) => {
-            state.redirect = false
-            return state
-          },
-          () => {
-            this.trackPageView()
-          }
-        )
+        this.setState((state) => {
+          state.redirect = false
+          return state
+        })
       }
     )
   }
@@ -1056,7 +1054,7 @@ class App extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     // set path class on body to allow path-specific styling
     if (this.state.activePathname === '/login/') {
       document.body.className = 'path-login-'
@@ -1064,6 +1062,13 @@ class App extends React.Component {
       document.body.className = `path-${getSaneKey(
         this.state.activePage.tree.path || 'undefined'
       )}-`
+    }
+    // track page view if new activePage is set
+    if (
+      this.state.activePage &&
+      this.state.activePage !== prevState.activePage
+    ) {
+      this.trackPageView()
     }
   }
 }
