@@ -43,12 +43,13 @@ class Page extends React.Component {
     }
   }
 
-  addContent(block, contentType) {
+  addContent(block, contentType, settings = {}) {
     axios
       .post(
         `${this.props.appRoot}/api/page/blocks/${block.id}/content?token=${this.props.token}`,
         {
           contentType,
+          settings,
         }
       )
       .then((response) => {

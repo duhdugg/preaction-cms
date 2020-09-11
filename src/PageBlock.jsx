@@ -5,7 +5,7 @@ import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
 import { Card, Modal } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox, Select } from '@preaction/inputs'
-import { MdImage } from 'react-icons/md'
+import { MdImage, MdLink, MdFileUpload } from 'react-icons/md'
 import {
   MdArrowUpward,
   MdArrowDownward,
@@ -140,12 +140,32 @@ function PageBlock(props) {
               {props.block.blockType === 'content' ? (
                 <button
                   type='button'
-                  className='btn btn-secondary btn-sm add-images'
+                  className='btn btn-secondary btn-sm upload-images'
                   onClick={() => {
                     photosInput.current.click()
                   }}
                 >
-                  <MdImage />
+                  <div className='upload-images-icon'>
+                    <MdImage />
+                    <MdFileUpload />
+                  </div>
+                </button>
+              ) : (
+                ''
+              )}
+              {props.block.blockType === 'content' ? (
+                <button
+                  type='button'
+                  className='btn btn-secondary btn-sm add-images-by-url'
+                  onClick={() => {
+                    const src = window.prompt('Enter image URL')
+                    props.addContent(props.block, 'image', { src })
+                  }}
+                >
+                  <div className='linked-image-icon'>
+                    <MdImage />
+                    <MdLink />
+                  </div>
                 </button>
               ) : (
                 ''

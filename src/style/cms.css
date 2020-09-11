@@ -150,3 +150,27 @@ hr {
 .App .login {
   margin-bottom: 1rem;
 }
+
+.upload-images-icon svg:nth-child(1) {
+  font-size: 1.25rem;
+}
+
+.upload-images-icon svg:nth-child(2) {
+  font-size: 0.6rem;
+  position: absolute;
+  left: 30%;
+  top: 20%;
+  color: var(--gray);
+}
+
+.linked-image-icon svg:nth-child(1) {
+  font-size: 1.25rem;
+}
+
+.linked-image-icon svg:nth-child(2) {
+  font-size: 0.8rem;
+  position: absolute;
+  left: 30%;
+  top: 15%;
+  color: var(--gray);
+}
