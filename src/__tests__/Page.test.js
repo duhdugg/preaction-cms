@@ -7,6 +7,7 @@ import { setupServer } from 'msw/node'
 import { StaticRouter } from 'react-router-dom'
 import Page from '../Page.jsx'
 
+jest.setTimeout(30000)
 window.confirm = jest.fn(() => true)
 
 const mockPage1 = {
