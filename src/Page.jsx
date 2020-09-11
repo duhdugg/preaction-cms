@@ -14,6 +14,7 @@ import {
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
 import { blockExtensions } from './ext'
+import env from './lib/env.js'
 
 const globalThis = globalthis()
 const ssr = typeof window === 'undefined'
@@ -37,7 +38,7 @@ class Page extends React.Component {
     }
     this.updateTimer = null
     // ref needed for testing
-    if (process.env.NODE_ENV === 'test') {
+    if (env.NODE_ENV === 'test') {
       this.ref = React.createRef()
     }
   }
@@ -186,11 +187,15 @@ class Page extends React.Component {
           `Are you sure you wish to delete the page, "${this.state.page.title}"?`
         )
       ) {
-        this.props.deletePage(this.state.page)
-        this.setState((state) => {
-          state.showSettings = false
-          return state
-        })
+        this.setState(
+          (state) => {
+            state.showSettings = false
+            return state
+          },
+          () => {
+            this.props.deletePage(this.state.page)
+          }
+        )
       }
     }
   }
@@ -642,7 +647,7 @@ class Page extends React.Component {
             )
           })
           .catch((e) => {
-            if (process.env.NODE_ENV !== 'test') {
+            if (env.NODE_ENV !== 'test') {
               console.error(e)
             }
             if (e.response && e.response.status === 404) {
@@ -744,43 +749,45 @@ class Page extends React.Component {
               ''
             )}
             {this.props.editable && this.state.showSettings ? (
-              <Modal
-                title='Page Settings'
-                closeHandler={this.toggleSettings.bind(this)}
-                footer={
-                  <button
-                    type='button'
-                    className='btn btn-secondary'
-                    onClick={this.toggleSettings.bind(this)}
-                  >
-                    Close
-                  </button>
-                }
-              >
-                <PageSettings
-                  appRoot={this.props.appRoot}
-                  admin={this.props.editable}
-                  navigate={(path) => {
-                    this.setState({ showSettings: false }, () => {
-                      this.props.navigate(path)
-                    })
-                  }}
-                  pageId={this.state.page.id}
-                  page={this.state.page}
-                  path={this.props.path}
-                  settings={this.settings}
-                  token={this.props.token}
-                  deletePage={this.deletePage.bind(this)}
-                  getPageValueHandler={this.getPageValueHandler.bind(this)}
-                  getResetter={this.getPageSettingsResetter.bind(this)}
-                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                    this
-                  )}
-                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                    this
-                  )}
-                />
-              </Modal>
+              <div className='page-settings-modal-container'>
+                <Modal
+                  title='Page Settings'
+                  closeHandler={this.toggleSettings.bind(this)}
+                  footer={
+                    <button
+                      type='button'
+                      className='btn btn-secondary'
+                      onClick={this.toggleSettings.bind(this)}
+                    >
+                      Close
+                    </button>
+                  }
+                >
+                  <PageSettings
+                    appRoot={this.props.appRoot}
+                    admin={this.props.editable}
+                    navigate={(path) => {
+                      this.setState({ showSettings: false }, () => {
+                        this.props.navigate(path)
+                      })
+                    }}
+                    pageId={this.state.page.id}
+                    page={this.state.page}
+                    path={this.props.path}
+                    settings={this.settings}
+                    token={this.props.token}
+                    deletePage={this.deletePage.bind(this)}
+                    getPageValueHandler={this.getPageValueHandler.bind(this)}
+                    getResetter={this.getPageSettingsResetter.bind(this)}
+                    getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                      this
+                    )}
+                    getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                      this
+                    )}
+                  />
+                </Modal>
+              </div>
             ) : (
               ''
             )}
@@ -809,7 +816,7 @@ class Page extends React.Component {
     if (!this.state.page) {
       this.loadPage(this.props.path)
     }
-    if (process.env.NODE_ENV === 'test') {
+    if (env.NODE_ENV === 'test') {
       this.ref.current.blockControl = this.blockControl.bind(this)
       this.ref.current.deletePage = this.deletePage.bind(this)
       this.ref.current.toggleSettings = this.toggleSettings.bind(this)
