@@ -37,7 +37,6 @@ const mockBlock = {
     {
       id: 3,
       contentType: 'wysiwyg',
-      filename: null,
       ordering: 0,
       settings: {
         header: '',
@@ -58,7 +57,6 @@ const mockBlock = {
 const mockContent = {
   id: 3,
   contentType: 'wysiwyg',
-  filename: null,
   ordering: 0,
   settings: {
     header: '',

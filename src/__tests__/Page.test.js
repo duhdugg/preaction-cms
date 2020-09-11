@@ -279,14 +279,14 @@ const mockPage3 = {
         {
           id: 28,
           contentType: 'image',
-          filename:
-            '0a14f83599ddabac762593a6ca1e410a4281a6a50acd3182cae46fa005bd0df1.png',
           ordering: 2,
           settings: {
             altText: 'tux3',
             header: '',
             headerLevel: 0,
             linkUrl: '',
+            src:
+              '/uploads/0a14f83599ddabac762593a6ca1e410a4281a6a50acd3182cae46fa005bd0df1.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -300,14 +300,14 @@ const mockPage3 = {
         {
           id: 27,
           contentType: 'image',
-          filename:
-            '6976a933427176ede8ffd276b29a0527d68ab553aaaa9b8e7d05a43cfaad6bd9.png',
           ordering: 1,
           settings: {
             altText: 'tux2',
             header: '',
             headerLevel: 0,
             linkUrl: '',
+            src:
+              '/uploads/6976a933427176ede8ffd276b29a0527d68ab553aaaa9b8e7d05a43cfaad6bd9.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -321,14 +321,14 @@ const mockPage3 = {
         {
           id: 26,
           contentType: 'image',
-          filename:
-            '6dec3e94a22c3f67c6bfb867114a11310cbef2398b00b86e1b5842648e1a2afb.png',
           ordering: 0,
           settings: {
             altText: 'tux1',
             header: '',
             headerLevel: 0,
             linkUrl: '',
+            src:
+              '/uploads/6dec3e94a22c3f67c6bfb867114a11310cbef2398b00b86e1b5842648e1a2afb.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',

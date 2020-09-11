@@ -37,9 +37,9 @@ function PageBlockImage(props) {
         navigate={props.navigate}
       >
         <img
-          src={`${props.appRoot}/uploads/${props.content.filename}`}
           style={{ width: '100%' }}
           alt={props.content.settings.altText || ''}
+          src={props.content.settings.src}
           title={props.content.settings.altText || ''}
         />
       </ImgContainer>

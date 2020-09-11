@@ -8,14 +8,14 @@ test('PageBlockImage basic', async () => {
   const mockContent = {
     id: 4,
     contentType: 'image',
-    filename:
-      '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
     ordering: 1,
     settings: {
       altText: 'test-image',
       header: '',
       headerLevel: 0,
       linkUrl: '',
+      src:
+        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -39,14 +39,14 @@ test('PageBlockImage with link', async () => {
   const mockContent = {
     id: 4,
     contentType: 'image',
-    filename:
-      '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
     ordering: 1,
     settings: {
       altText: 'test-image',
       header: '',
       headerLevel: 0,
       linkUrl: '/test/',
+      src:
+        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,

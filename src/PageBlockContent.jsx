@@ -246,6 +246,13 @@ function PageBlockContent(props) {
               </div>
               {props.content.contentType === 'image' ? (
                 <div>
+                  <div className='img-src-field'>
+                    <Input
+                      label='Image Source'
+                      value={props.content.settings.src}
+                      valueHandler={props.getContentSettingsValueHandler('src')}
+                    />
+                  </div>
                   <div className='alt-text-field'>
                     <Input
                       label='Alt Text'

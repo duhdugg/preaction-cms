@@ -24,7 +24,6 @@ test('PageBlockContent wysiwyg', () => {
       {
         id: 3,
         contentType: 'wysiwyg',
-        filename: null,
         ordering: 0,
         settings: {
           header: 'Wysiwyg Content',
@@ -42,14 +41,14 @@ test('PageBlockContent wysiwyg', () => {
       {
         id: 5,
         contentType: 'image',
-        filename:
-          '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
         ordering: 1,
         settings: {
           altText: '',
           header: 'Image Content',
           headerLevel: '',
           linkUrl: '',
+          src:
+            '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -65,7 +64,6 @@ test('PageBlockContent wysiwyg', () => {
   const mockContent = {
     id: 3,
     contentType: 'wysiwyg',
-    filename: null,
     ordering: 0,
     settings: {
       header: 'Wysiwyg Content',
@@ -140,7 +138,6 @@ test('PageBlockContent image', async () => {
       {
         id: 3,
         contentType: 'wysiwyg',
-        filename: null,
         ordering: 0,
         settings: {
           header: 'Wysiwyg Content',
@@ -158,14 +155,14 @@ test('PageBlockContent image', async () => {
       {
         id: 5,
         contentType: 'image',
-        filename:
-          '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
         ordering: 1,
         settings: {
           altText: '',
           header: 'Image Content',
           headerLevel: '',
           linkUrl: '',
+          src:
+            '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -181,14 +178,14 @@ test('PageBlockContent image', async () => {
   const mockContent = {
     id: 5,
     contentType: 'image',
-    filename:
-      '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
     ordering: 1,
     settings: {
       altText: '',
       header: 'Image Content',
       headerLevel: '',
       linkUrl: '',
+      src:
+        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: '3',
       mdWidth: '3',
       smWidth: '4',

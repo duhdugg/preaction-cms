@@ -29,14 +29,14 @@ test('PageBlock content', async () => {
       {
         id: 9,
         contentType: 'image',
-        filename:
-          '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
         ordering: 0,
         settings: {
           altText: '',
           header: '',
           headerLevel: 0,
           linkUrl: '',
+          src:
+            '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
           lgWidth: '3',
           mdWidth: '4',
           smWidth: '5',
@@ -50,14 +50,14 @@ test('PageBlock content', async () => {
       {
         id: 10,
         contentType: 'image',
-        filename:
-          'f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
         ordering: 1,
         settings: {
           altText: '',
           header: '',
           headerLevel: 0,
           linkUrl: '',
+          src:
+            '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
           lgWidth: '3',
           mdWidth: '4',
           smWidth: '5',
@@ -135,14 +135,14 @@ test('PageBlock content', async () => {
           {
             id: 9,
             contentType: 'image',
-            filename:
-              '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
             ordering: 0,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -156,14 +156,14 @@ test('PageBlock content', async () => {
           {
             id: 10,
             contentType: 'image',
-            filename:
-              'f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
             ordering: 1,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -441,14 +441,14 @@ test('PageBlock nav', async () => {
           {
             id: 9,
             contentType: 'image',
-            filename:
-              '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
             ordering: 0,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -462,14 +462,14 @@ test('PageBlock nav', async () => {
           {
             id: 10,
             contentType: 'image',
-            filename:
-              'f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
             ordering: 1,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -726,14 +726,14 @@ test('PageBlock iframe', async () => {
           {
             id: 9,
             contentType: 'image',
-            filename:
-              '948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
             ordering: 0,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -747,14 +747,14 @@ test('PageBlock iframe', async () => {
           {
             id: 10,
             contentType: 'image',
-            filename:
-              'f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
             ordering: 1,
             settings: {
               altText: '',
               header: '',
               headerLevel: 0,
               linkUrl: '',
+              src:
+                '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',

@@ -36,7 +36,6 @@ const mockHomeHeader = {
         {
           id: 1,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 0,
           settings: {
             header: '',
@@ -85,7 +84,6 @@ const mockHomeFooter = {
         {
           id: 2,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 0,
           settings: {
             header: '',
@@ -134,7 +132,6 @@ const mockHomePage = {
         {
           id: 7,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 0,
           settings: {
             header: '',
@@ -152,7 +149,6 @@ const mockHomePage = {
         {
           id: 31,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 1,
           settings: {
             header: '',
@@ -171,7 +167,6 @@ const mockHomePage = {
         {
           id: 33,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 2,
           settings: {
             header: '',
@@ -329,7 +324,6 @@ const mockTestPage = {
         {
           id: 32,
           contentType: 'wysiwyg',
-          filename: null,
           ordering: 0,
           settings: {
             header: '',
