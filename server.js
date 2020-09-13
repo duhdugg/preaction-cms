@@ -35,6 +35,7 @@ const session = require('./lib/session.js')
 const slash = require('./lib/slash.js')
 const ua = require('./lib/ua.js')
 const uploads = require('./lib/uploads.js')
+const warm = require('./lib/warm.js')
 
 // <== http and socket.io setup ==>
 // socket.io events needs to verify session
@@ -253,12 +254,17 @@ const sync = async () => {
   await redirects.sync()
 }
 
+// circular dependencies workaround
+warm.setServerHttp(http)
+warm.setPageModule(pages)
+
 const load = async () => {
   if (require.main === module) {
     await sync()
     // http.listen instead of app.listen so that socket.io events work
     http.listen(env.port, () => {
       console.log(`@preaction/cms app listening on port ${env.port}`)
+      warm.upCache()
     })
   }
 }

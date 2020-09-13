@@ -17,6 +17,8 @@
     "react-dom-server": "^0.0.5",
     "sanitize-html": "^1.27.4",
     "sequelize": "^6.3.5",
+    "superagent": "^6.1.0",
+    "supertest": "^4.0.2",
     "sitemap": "^6.2.0",
     "socket.io": "^2.3.0",
     "sqlite3": "^5.0.0"
@@ -50,8 +52,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "source-map-explorer": "^2.5.0",
-    "superagent": "^6.1.0",
-    "supertest": "^4.0.2",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "^2.5.2"
   },
