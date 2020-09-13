@@ -5,6 +5,9 @@ import { NavLink } from 'react-router-dom'
 
 const getMenu = (props) => {
   const m = []
+  if (!props.page.tree) {
+    return []
+  }
   props.page.tree.children.forEach((page) => {
     if (!page.settings.includeInNav) {
       return
