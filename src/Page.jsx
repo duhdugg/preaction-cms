@@ -488,7 +488,9 @@ class Page extends React.Component {
             },
           },
           {
-            className: 'add-nav-block',
+            className: `add-nav-block ${
+              this.state.page.userCreated ? 'd-block' : 'd-none'
+            }`,
             name: (
               <span>
                 <FaSitemap /> Navigation
