@@ -1035,6 +1035,19 @@ class App extends React.Component {
                   valueHandler={this.getNewPageValueHandler('key')}
                   required
                 />
+                {this.state.newPage.key ? (
+                  <Input
+                    type='text'
+                    label='Full Path'
+                    value={`${this.state.activePathname.replace(
+                      /^\/home\//,
+                      '/'
+                    )}${this.state.newPage.key}/`}
+                    readOnly
+                  />
+                ) : (
+                  ''
+                )}
               </form>
             </Modal>
           </div>
