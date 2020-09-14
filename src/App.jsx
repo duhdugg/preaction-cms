@@ -151,6 +151,18 @@ class App extends React.Component {
         })
         .then(() => {
           this.emitSave({ action: 'add-page' })
+          if (this.state.activePage) {
+            let hasNavBlock = false
+            for (let block of this.state.activePage.pageblocks) {
+              if (block.blockType === 'nav') {
+                hasNavBlock = true
+                break
+              }
+            }
+            if (hasNavBlock) {
+              this.activePage.current.reload()
+            }
+          }
         })
     }
   }
