@@ -40,7 +40,7 @@ if (!ssr) {
 const globalThis = globalthis()
 
 // this is needed so relative links in WYSIWYG content will navigate correctly
-function setGlobalRelativeLinkHandler(relativeLinkHandler = (url) => {}) {
+function setGlobalRelativeLinkHandler(relativeLinkHandler) {
   if (typeof document !== 'undefined') {
     document.onclick = (event) => {
       const element = event.target
@@ -160,9 +160,6 @@ class App extends React.Component {
 
   // hydrates values of a new page object before calling addPage
   createPage(newPage) {
-    if (!newPage.title) {
-      return
-    }
     let key = newPage.key
     if (!key.replace(/-/gi, '')) {
       return
@@ -696,36 +693,51 @@ class App extends React.Component {
     )
   }
 
-  reload(data) {
+  reload(data = { action: 'all' }) {
     switch (data.action) {
+      case 'all':
+        this.loadSettings()
+        this.reloadRef('activePage')
+        this.reloadRef('header')
+        this.reloadRef('footer')
+        break
       case 'add-page':
-        this.activePage.current.reload()
+        this.reloadRef('activePage')
         break
       case 'delete-page':
-        this.activePage.current.reload()
+        this.reloadRef('activePage')
         break
       case 'update-settings':
         this.loadSettings()
-        this.activePage.current.reload()
+        this.reloadRef('activePage')
         break
       default:
         if (
+          this.activePage.current &&
           this.activePage.current.state.page &&
           data.pageId === this.activePage.current.state.page.id
         ) {
-          this.activePage.current.reload()
+          this.reloadRef('activePage')
         } else if (
+          this.header.current &&
           this.header.current.page.current.state.page &&
           data.pageId === this.header.current.page.current.state.page.id
         ) {
-          this.header.current.reload()
+          this.reloadRef('header')
         } else if (
+          this.footer.current &&
           this.footer.current.page.current.state.page &&
           data.pageId === this.footer.current.page.current.state.page.id
         ) {
-          this.footer.current.reload()
+          this.reloadRef('footer')
         }
         break
+    }
+  }
+
+  reloadRef(key) {
+    if (this[key].current) {
+      this[key].current.reload()
     }
   }
 

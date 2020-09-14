@@ -477,6 +477,9 @@ const server = setupServer(
   rest.get('/api/page/by-key/notfound/', (req, res, ctx) => {
     return res(ctx.status(404), ctx.json({ error: 'not found' }))
   }),
+  rest.get('/api/page/by-key/failbar/', (req, res, ctx) => {
+    return res(ctx.status(500), ctx.json({ error: 'failbar' }))
+  }),
   rest.get('/api/page/settings/by-key/notfound/', (req, res, ctx) => {
     return res(ctx.json(mockSettings))
   }),
@@ -563,6 +566,24 @@ test('404 renders NotFound', async () => {
         )
       })
     ).toBe(true)
+  )
+})
+
+test('/home renders NotFound', async () => {
+  const result = render(<App initPath='/home/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  await waitFor(() =>
+    expect(result.container.querySelector('.not-found')).toBeInTheDocument()
+  )
+})
+
+test('5xx renders ErrorMessage', async () => {
+  const result = render(<App initPath='/failbar/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  await waitFor(() =>
+    expect(
+      result.container.querySelector('.page-error-message')
+    ).toBeInTheDocument()
   )
 })
 
@@ -673,6 +694,13 @@ test('edit site settings', async () => {
       '.site-settings-modal-container .btn-secondary'
     )
   )
+  userEvent.click(result.container.querySelector('.nav-page-home'))
+  await waitFor(
+    () =>
+      new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000)
+      })
+  )
 })
 
 test('delete page', async () => {
@@ -704,4 +732,44 @@ test('delete page', async () => {
     ).toBe(true)
   )
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
+})
+
+test('globalThis.preaction.reload', async () => {
+  const result = render(<App initPath='/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  await waitFor(() =>
+    expect(result.container.querySelector('.page')).toBeInTheDocument()
+  )
+
+  window.preaction.reload()
+  expect(
+    result.container.querySelector('.spinner-container')
+  ).toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+
+  window.preaction.reload({ action: 'add-page' })
+  expect(
+    result.container.querySelector('.spinner-container')
+  ).toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+
+  window.preaction.reload({ action: 'delete-page' })
+  expect(
+    result.container.querySelector('.spinner-container')
+  ).toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
+
+  window.preaction.reload({ action: 'update-settings' })
+  expect(
+    result.container.querySelector('.spinner-container')
+  ).toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.container.querySelector('.row')).toBeInTheDocument()
+  )
 })
