@@ -54,7 +54,12 @@ class PageBlockWysiwyg extends React.Component {
                     state.savingWysiwyg = false
                     return state
                   })
-                  this.props.emitSave()
+                  this.props.emitSave({
+                    action: 'update-content',
+                    contentId: this.props.content.id,
+                    blockId: this.props.block.id,
+                    pageId: this.props.block.pageId,
+                  })
                 })
             }
           }, 1000)

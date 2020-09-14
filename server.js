@@ -228,14 +228,18 @@ app
 // env.socketMode determines whether socket.io events are configured
 if (env.socketMode || env.nodeEnv === 'test') {
   io.on('connection', (socket) => {
-    socket.on('save', (fn) => {
-      fn()
+    socket.on('save', (data, fn) => {
+      if (fn) {
+        fn()
+      }
       if (socket.conn.request.session.admin) {
-        io.emit('load')
+        io.emit('load', data)
       }
     })
     socket.on('force-reload', (fn) => {
-      fn()
+      if (fn) {
+        fn()
+      }
       if (socket.conn.request.session.admin) {
         io.emit('reload-app')
       }

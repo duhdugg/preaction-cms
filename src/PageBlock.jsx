@@ -56,7 +56,6 @@ function PageBlock(props) {
 
   const refreshBlock = () => {
     props.blockControl(props.block.id, 'refresh')
-    props.emitSave()
   }
 
   const toggleSettings = () => {

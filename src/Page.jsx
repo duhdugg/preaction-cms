@@ -64,7 +64,11 @@ class Page extends React.Component {
           })
           return state
         })
-        this.props.emitSave()
+        this.props.emitSave({
+          action: 'add-content',
+          blockId: block.id,
+          pageId: block.pageId,
+        })
       })
   }
 
@@ -82,7 +86,10 @@ class Page extends React.Component {
           state.page.pageblocks.push(response.data)
           return state
         })
-        this.props.emitSave()
+        this.props.emitSave({
+          action: 'add-pageblock',
+          pageId: this.state.page.id,
+        })
       })
   }
 
@@ -109,7 +116,11 @@ class Page extends React.Component {
             block
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-pageblock',
+              blockId: block.id,
+              pageId: block.pageId,
+            })
           })
         axios
           .put(
@@ -117,7 +128,11 @@ class Page extends React.Component {
             prevBlock
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-pageblock',
+              blockId: prevBlock.id,
+              pageId: prevBlock.pageId,
+            })
           })
         blocks[index] = block
         blocks[index - 1] = prevBlock
@@ -131,7 +146,11 @@ class Page extends React.Component {
             block
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-pageblock',
+              blockId: block.id,
+              pageId: block.pageId,
+            })
           })
         axios
           .put(
@@ -139,7 +158,11 @@ class Page extends React.Component {
             nextBlock
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-pageblock',
+              blockId: nextBlock.id,
+              pageId: nextBlock.pageId,
+            })
           })
         blocks[index] = block
         blocks[index + 1] = nextBlock
@@ -150,7 +173,11 @@ class Page extends React.Component {
               `${this.props.appRoot}/api/page/blocks/${blockId}?token=${this.props.token}`
             )
             .then(() => {
-              this.props.emitSave()
+              this.props.emitSave({
+                action: 'delete-pageblock',
+                blockId: blockId,
+                pageId: state.page.id,
+              })
             })
           let ordering = block.ordering
           blocks.splice(index, 1)
@@ -290,7 +317,12 @@ class Page extends React.Component {
                         contentObj
                       )
                       .then(() => {
-                        this.props.emitSave()
+                        this.props.emitSave({
+                          action: 'update-content',
+                          contentId: contentId,
+                          blockId: pageblock.id,
+                          pageId: this.state.page.id,
+                        })
                       })
                   }, 1000)
                 }
@@ -335,7 +367,11 @@ class Page extends React.Component {
                     pageblock
                   )
                   .then(() => {
-                    this.props.emitSave()
+                    this.props.emitSave({
+                      action: 'update-pageblock',
+                      blockId: pageblockId,
+                      pageId: this.state.page.id,
+                    })
                   })
               }, 1000)
             }
@@ -362,7 +398,10 @@ class Page extends React.Component {
               )
               .then(() => {
                 this.loadSettings()
-                this.props.emitSave()
+                this.props.emitSave({
+                  action: 'update-pageSettings',
+                  pageId: this.state.page.id,
+                })
               })
           }, 1000)
         }
@@ -394,7 +433,10 @@ class Page extends React.Component {
                 this.state.page
               )
               .then(() => {
-                this.props.emitSave()
+                this.props.emitSave({
+                  action: 'update-page',
+                  pageId: this.state.page.id,
+                })
               })
           }, 1000)
         }
@@ -422,7 +464,10 @@ class Page extends React.Component {
                 this.state.page
               )
               .then(() => {
-                this.props.emitSave()
+                this.props.emitSave({
+                  action: 'update-page',
+                  pageId: this.state.page.id,
+                })
               })
           }, 1000)
         }
@@ -518,26 +563,36 @@ class Page extends React.Component {
       let content = contents[index]
       if (action === 'previous') {
         content.ordering--
-        let prevUpload = contents[index - 1]
-        prevUpload.ordering++
+        let prevContent = contents[index - 1]
+        prevContent.ordering++
         axios
           .put(
             `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
             content
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-content',
+              contentId: content.id,
+              blockId: pageBlock.id,
+              pageId: pageBlock.pageId,
+            })
           })
         axios
           .put(
-            `${this.props.appRoot}/api/page/blocks/content/${prevUpload.id}?token=${this.props.token}`,
-            prevUpload
+            `${this.props.appRoot}/api/page/blocks/content/${prevContent.id}?token=${this.props.token}`,
+            prevContent
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-content',
+              contentId: prevContent.id,
+              blockId: prevContent.pageblockId,
+              pageId: state.page.id,
+            })
           })
         contents[index] = content
-        contents[index - 1] = prevUpload
+        contents[index - 1] = prevContent
       } else if (action === 'next') {
         content.ordering++
         let nextContent = contents[index + 1]
@@ -548,7 +603,12 @@ class Page extends React.Component {
             content
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-content',
+              contentId: content.id,
+              blockId: content.pageblockId,
+              pageId: state.page.id,
+            })
           })
         axios
           .put(
@@ -556,7 +616,12 @@ class Page extends React.Component {
             nextContent
           )
           .then(() => {
-            this.props.emitSave()
+            this.props.emitSave({
+              action: 'update-content',
+              contentId: nextContent.id,
+              blockId: nextContent.pageblockId,
+              pageId: state.page.id,
+            })
           })
         contents[index] = content
         contents[index + 1] = nextContent
@@ -567,7 +632,12 @@ class Page extends React.Component {
               `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`
             )
             .then(() => {
-              this.props.emitSave()
+              this.props.emitSave({
+                action: 'delete-content',
+                contentId: content.id,
+                blockId: content.pageBlockId,
+                pageId: state.page.id,
+              })
             })
           let x = pageBlock.pageblockcontents.indexOf(content)
           let ordering = content.ordering

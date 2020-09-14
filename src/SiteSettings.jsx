@@ -27,7 +27,6 @@ function SiteSettings(props) {
         `${props.appRoot}/api/redirect/${redirect.id}?token=${props.token}`
       )
       .then((response) => {
-        props.emitSave()
         getRedirects()
       })
   }
@@ -382,7 +381,6 @@ SiteSettings.propTypes = {
   admin: PropTypes.bool,
   appRoot: PropTypes.string.isRequired,
   emitForceReload: PropTypes.func.isRequired,
-  emitSave: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   token: PropTypes.string,

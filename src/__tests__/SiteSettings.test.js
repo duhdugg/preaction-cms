@@ -59,7 +59,6 @@ function getResults() {
   const mockEmitForceReload = () => {
     state.forceReloadCalled = true
   }
-  const mockEmitSave = () => {}
   const mockGetSettingsValueHandler = (key) => (value) => {
     mockSettings[key] = value
   }
@@ -83,7 +82,6 @@ function getResults() {
       admin
       appRoot=''
       emitForceReload={mockEmitForceReload}
-      emitSave={mockEmitSave}
       getSettingsValueHandler={mockGetSettingsValueHandler}
       settings={mockSettings}
       token='foobar'
@@ -95,7 +93,6 @@ function getResults() {
         admin
         appRoot=''
         emitForceReload={mockEmitForceReload}
-        emitSave={mockEmitSave}
         getSettingsValueHandler={mockGetSettingsValueHandler}
         settings={mockSettings}
         token='foobar'

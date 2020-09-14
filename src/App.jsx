@@ -150,7 +150,7 @@ class App extends React.Component {
           }
         })
         .then(() => {
-          this.emitSave()
+          this.emitSave({ action: 'add-page' })
         })
     }
   }
@@ -192,7 +192,7 @@ class App extends React.Component {
               },
               () => {
                 this.redirect('..')
-                this.emitSave()
+                this.emitSave({ action: 'delete-page', pageId: page.id })
               }
             )
           }
@@ -216,9 +216,9 @@ class App extends React.Component {
   }
 
   // tell the server that an edit was made
-  emitSave(callback = () => {}) {
+  emitSave(data = {}, callback = () => {}) {
     if (this.props.socketMode) {
-      this.socket.emit('save', () => {
+      this.socket.emit('save', data, () => {
         this.loadSiteMap()
         callback()
       })
@@ -488,7 +488,7 @@ class App extends React.Component {
                 this.state.siteSettings
               )
               .then(() => {
-                this.emitSave(() => {
+                this.emitSave({ action: 'update-settings' }, () => {
                   if (this.settingsUpdateTimer !== undefined) {
                     this.loadSettings()
                   }
@@ -693,12 +693,36 @@ class App extends React.Component {
     )
   }
 
-  reload() {
-    this.loadSettings()
-    if (this.activePage.current) {
-      this.header.current.reload()
-      this.activePage.current.reload()
-      this.footer.current.reload()
+  reload(data) {
+    switch (data.action) {
+      case 'add-page':
+        this.activePage.current.reload()
+        break
+      case 'delete-page':
+        this.activePage.current.reload()
+        break
+      case 'update-settings':
+        this.loadSettings()
+        this.activePage.current.reload()
+        break
+      default:
+        if (
+          this.activePage.current.state.page &&
+          data.pageId === this.activePage.current.state.page.id
+        ) {
+          this.activePage.current.reload()
+        } else if (
+          this.header.current.page.current.state.page &&
+          data.pageId === this.header.current.page.current.state.page.id
+        ) {
+          this.header.current.reload()
+        } else if (
+          this.footer.current.page.current.state.page &&
+          data.pageId === this.footer.current.page.current.state.page.id
+        ) {
+          this.footer.current.reload()
+        }
+        break
     }
   }
 
@@ -946,7 +970,6 @@ class App extends React.Component {
                 appRoot={this.root}
                 admin={this.state.admin}
                 emitForceReload={this.emitForceReload.bind(this)}
-                emitSave={this.emitSave.bind(this)}
                 settings={this.state.siteSettings}
                 getSettingsValueHandler={this.getSettingsValueHandler.bind(
                   this
@@ -1029,9 +1052,9 @@ class App extends React.Component {
     // set up socket.io-enabled features
     if (this.props.socketMode && globalThis.io) {
       this.socket = globalThis.io({ path: `${this.root}/socket.io` })
-      this.socket.on('load', () => {
+      this.socket.on('load', (data) => {
         if (!this.state.editable) {
-          this.reload()
+          this.reload(data)
         }
       })
       this.socket.on('reload-app', () => {
