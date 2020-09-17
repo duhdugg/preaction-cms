@@ -39,7 +39,7 @@ function PageBlockImage(props) {
         <img
           style={{ width: '100%' }}
           alt={props.content.settings.altText || ''}
-          src={props.content.settings.src}
+          src={props.appRoot + props.content.settings.src}
           title={props.content.settings.altText || ''}
         />
       </ImgContainer>
