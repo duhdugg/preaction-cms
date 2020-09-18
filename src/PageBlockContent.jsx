@@ -152,11 +152,7 @@ function PageBlockContent(props) {
         ''
       )}
       {props.content.contentType === 'image' ? (
-        <PageBlockImage
-          appRoot={props.appRoot}
-          content={props.content}
-          navigate={props.navigate}
-        />
+        <PageBlockImage content={props.content} navigate={props.navigate} />
       ) : (
         ''
       )}
