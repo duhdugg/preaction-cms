@@ -1,3 +1,8 @@
+.App.nav-position-above-header header .nav,
+.App.nav-position-below-header header .nav {
+  margin-bottom: 1em;
+}
+
 hr {
   margin: 0;
 }

@@ -782,7 +782,9 @@ class App extends React.Component {
   render() {
     return (
       <div
-        className={`App ${this.state.editable ? 'editable' : 'non-editable'}`}
+        className={`App ${
+          this.state.editable ? 'editable' : 'non-editable'
+        } nav-position-${this.settings.navPosition}`}
       >
         <Router basename={`${this.root}/`} location={this.state.activePathname}>
           <div>
