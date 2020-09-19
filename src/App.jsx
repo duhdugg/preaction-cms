@@ -249,6 +249,7 @@ class App extends React.Component {
         component: Link,
         order: -100,
         active:
+          this.state.activePathname === '/' ||
           this.state.activePathname === '/home/' ||
           this.state.activePathname === `/${this.siteMap.path}/`,
         onClick: (e) => {
