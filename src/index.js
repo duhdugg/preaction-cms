@@ -35,9 +35,12 @@ const initialize = () => {
     settings.socketMode = globalThis.socketMode === true
   }
   if (globalThis.location) {
-    settings.initPath = globalThis.location.pathname
+    settings.initPath = globalThis.location.pathname.replace(
+      new RegExp(`^${settings.root}`),
+      ''
+    )
   } else {
-    settings.initPath = `${settings.root}/`
+    settings.initPath = `/`
   }
 
   const render = !!module.hot ? ReactDOM.render : ReactDOM.hydrate
