@@ -236,7 +236,10 @@ class App extends React.Component {
   // when a page doesn't have an override for it
   get fallbackSettings() {
     let s = Object.assign({}, this.state.siteSettings)
-    if (this.state.fallbackSettings && this.state.activePathname !== '/home/') {
+    if (
+      this.state.fallbackSettings &&
+      !['/', '/home/'].includes(this.state.activePathname)
+    ) {
       Object.assign(s, this.state.fallbackSettings)
     }
     return s
