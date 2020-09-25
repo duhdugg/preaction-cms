@@ -502,6 +502,191 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
+                  {props.settings.showJumbo ? (
+                    <div className='jumbo-position-field'>
+                      <Select
+                        label='Jumbotron Position'
+                        value={props.settings.jumboPosition}
+                        valueHandler={props.getSettingsValueHandler(
+                          'jumboPosition'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'jumboPosition'
+                        )}
+                        onClick={(e) => {
+                          overrideSetting('jumboPosition')
+                        }}
+                      >
+                        <option value='above-header'>Above Header</option>
+                        <option value='below-header'>Below Header</option>
+                      </Select>
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='jumboPosition'
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                </Card>
+                <Card
+                  header='Width'
+                  headerTheme='dark'
+                  className={{ card: 'width' }}
+                >
+                  {props.settings.navPosition === 'fixed-top' ? (
+                    <div className='top-nav-maxwidth-field'>
+                      <Checkbox
+                        label='Max Width on Navigation Bar'
+                        checked={props.settings.maxWidthNav}
+                        valueHandler={props.getSettingsValueHandler(
+                          'maxWidthNav'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'maxWidthNav'
+                        )}
+                        onClick={(e) => {
+                          overrideSetting('maxWidthNav')
+                        }}
+                      />
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='maxWidthNav'
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  {props.settings.showJumbo ? (
+                    <div>
+                      <div className='jumbo-maxwidth-field'>
+                        <Checkbox
+                          label='Max Width on Jumbotron'
+                          checked={props.settings.maxWidthJumbo}
+                          valueHandler={props.getSettingsValueHandler(
+                            'maxWidthJumbo'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'maxWidthJumbo'
+                          )}
+                          onClick={(e) => {
+                            overrideSetting('maxWidthJumbo')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='maxWidthJumbo'
+                        />
+                      </div>
+                      <div className='jumbo-container-maxwidth-field'>
+                        <Checkbox
+                          label='Max Width on Jumbotron Container'
+                          checked={props.settings.maxWidthJumboContainer}
+                          valueHandler={props.getSettingsValueHandler(
+                            'maxWidthJumboContainer'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'maxWidthJumboContainer'
+                          )}
+                          onClick={(e) => {
+                            overrideSetting('maxWidthJumboContainer')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='maxWidthJumboContainer'
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  {props.settings.showHeader ? (
+                    <div className='header-container-maxwidth-field'>
+                      <Checkbox
+                        label='Max Width on Header Container'
+                        checked={props.settings.maxWidthHeaderContainer}
+                        valueHandler={props.getSettingsValueHandler(
+                          'maxWidthHeaderContainer'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'maxWidthHeaderContainer'
+                        )}
+                        onClick={(e) => {
+                          overrideSetting('maxWidthHeaderContainer')
+                        }}
+                      />
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='maxWidthHeaderContainer'
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <div className='main-container-maxwidth-field'>
+                    <Checkbox
+                      label='Max Width on Main Container'
+                      checked={props.settings.maxWidthMainContainer}
+                      valueHandler={props.getSettingsValueHandler(
+                        'maxWidthMainContainer'
+                      )}
+                      readOnly={props.getPageSettingIsUndefined(
+                        'maxWidthMainContainer'
+                      )}
+                      onClick={(e) => {
+                        overrideSetting('maxWidthMainContainer')
+                      }}
+                    />
+                    <ResetButton
+                      getPageSettingIsUndefined={
+                        props.getPageSettingIsUndefined
+                      }
+                      resetSetting={resetSetting}
+                      settingsKey='maxWidthMainContainer'
+                    />
+                  </div>
+                  {props.settings.showFooter ? (
+                    <div className='footer-container-maxwidth-field'>
+                      <Checkbox
+                        label='Max Width on Footer Container'
+                        checked={props.settings.maxWidthFooterContainer}
+                        valueHandler={props.getSettingsValueHandler(
+                          'maxWidthFooterContainer'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'maxWidthFooterContainer'
+                        )}
+                        onClick={(e) => {
+                          overrideSetting('maxWidthFooterContainer')
+                        }}
+                      />
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='maxWidthFooterContainer'
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </Card>
               </div>
             </div>

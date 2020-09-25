@@ -826,6 +826,7 @@ class App extends React.Component {
               navBar={
                 this.settings.navPosition === 'fixed-top' ? (
                   <NavBar
+                    noContain={this.settings.maxWidthNav}
                     fixedTo='top'
                     theme='dark'
                     brand={{
@@ -928,6 +929,13 @@ class App extends React.Component {
                 header: {
                   marginTop: getHeaderMarginTop(),
                 },
+              }}
+              noContain={{
+                footerContainer: this.settings.maxWidthFooterContainer,
+                headerContainer: this.settings.maxWidthHeaderContainer,
+                jumbotron: this.settings.maxWidthJumbo,
+                jumbotronContainer: this.settings.maxWidthJumboContainer,
+                mainContainer: this.settings.maxWidthMainContainer,
               }}
             >
               {this.state.editable ? <hr /> : ''}

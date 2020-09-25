@@ -259,6 +259,82 @@ function SiteSettings(props) {
               </div>
             </div>
             <Card
+              header='Width'
+              headerTheme='dark'
+              className={{ card: 'width' }}
+            >
+              {props.settings.navPosition === 'fixed-top' ? (
+                <div className='top-nav-maxwidth-field'>
+                  <Checkbox
+                    label='Max Width on Navigation Bar'
+                    checked={props.settings.maxWidthNav}
+                    valueHandler={props.getSettingsValueHandler('maxWidthNav')}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+              {props.settings.showJumbo ? (
+                <div>
+                  <div className='jumbo-maxwidth-field'>
+                    <Checkbox
+                      label='Max Width on Jumbotron'
+                      checked={props.settings.maxWidthJumbo}
+                      valueHandler={props.getSettingsValueHandler(
+                        'maxWidthJumbo'
+                      )}
+                    />
+                  </div>
+                  <div className='jumbo-container-maxwidth-field'>
+                    <Checkbox
+                      label='Max Width on Jumbotron Container'
+                      checked={props.settings.maxWidthJumboContainer}
+                      valueHandler={props.getSettingsValueHandler(
+                        'maxWidthJumboContainer'
+                      )}
+                    />
+                  </div>
+                </div>
+              ) : (
+                ''
+              )}
+              {props.settings.showHeader ? (
+                <div className='header-container-maxwidth-field'>
+                  <Checkbox
+                    label='Max Width on Header Container'
+                    checked={props.settings.maxWidthHeaderContainer}
+                    valueHandler={props.getSettingsValueHandler(
+                      'maxWidthHeaderContainer'
+                    )}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+              <div className='main-container-maxwidth-field'>
+                <Checkbox
+                  label='Max Width on Main Container'
+                  checked={props.settings.maxWidthMainContainer}
+                  valueHandler={props.getSettingsValueHandler(
+                    'maxWidthMainContainer'
+                  )}
+                />
+              </div>
+              {props.settings.showFooter ? (
+                <div className='footer-container-maxwidth-field'>
+                  <Checkbox
+                    label='Max Width on Footer Container'
+                    checked={props.settings.maxWidthFooterContainer}
+                    valueHandler={props.getSettingsValueHandler(
+                      'maxWidthFooterContainer'
+                    )}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+            </Card>
+            <Card
               header='Redirects'
               headerTheme='dark'
               className={{ card: 'redirects' }}
