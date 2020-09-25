@@ -613,7 +613,8 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
-                  {props.settings.showHeader ? (
+                  {props.settings.showHeader ||
+                  props.settings.navPosition !== 'fixed-top' ? (
                     <div className='header-container-maxwidth-field'>
                       <Checkbox
                         label='Max Width on Header Container'
