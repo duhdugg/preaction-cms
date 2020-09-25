@@ -65,6 +65,12 @@ function PageBlockContent(props) {
       header={header}
       headerTheme='dark'
       footerTheme='dark'
+      style={{
+        body: {
+          padding: header ? '1em' : 0,
+          border: `1px solid ${header ? 'var(--dark)' : 'rgba(0,0,0,0)'}`,
+        },
+      }}
       footer={
         props.editable ? (
           <div className='btn-group d-block'>

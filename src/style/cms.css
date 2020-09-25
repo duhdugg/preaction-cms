@@ -67,23 +67,27 @@ hr {
   padding: 0;
 }
 
-.block-type-ext .page-block-inner > .card-body {
-  padding: 1em;
-}
-
 .page-block-inner > .card-footer {
   padding: 0;
 }
 
 .page-block-content,
-.block-type-ext,
-.block-type-iframe,
-.block-type-nav {
-  border: 1px solid var(--dark);
+.page-block-inner {
+  border: 1px solid rgba(0, 0, 0, 0);
+  background-color: rgba(255, 255, 255, 0);
   margin-bottom: 1em;
 }
 
-.page-block-content > .card-footer {
+.block-type-content
+  .page-block-inner
+  > .card-body
+  > .row
+  > div:last-child
+  > .page-block-content {
+  margin-bottom: 0;
+}
+
+.block-type-content .page-block-content > .card-footer {
   padding: 0;
 }
 
