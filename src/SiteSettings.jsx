@@ -216,7 +216,7 @@ function SiteSettings(props) {
                 <Card
                   header='Header/Footer/Jumbotron'
                   headerTheme='dark'
-                  className={{ card: 'header-footer-jubmo' }}
+                  className={{ card: 'header-footer-jumbo' }}
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -242,7 +242,7 @@ function SiteSettings(props) {
                   {props.settings.showJumbo ? (
                     <div className='jumbo-position-field'>
                       <Select
-                        label='Show Jumbotron'
+                        label='Jumbotron Position'
                         value={props.settings.jumboPosition}
                         valueHandler={props.getSettingsValueHandler(
                           'jumboPosition'
