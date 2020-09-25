@@ -369,9 +369,9 @@ function PageSettings(props) {
                   </div>
                 </Card>
                 <Card
-                  header='Header/Footer'
+                  header='Header/Footer/Jumbotron'
                   headerTheme='dark'
-                  className={{ card: 'header-footer' }}
+                  className={{ card: 'header-footer-jumbo' }}
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -454,6 +454,49 @@ function PageSettings(props) {
                         }
                         resetSetting={resetSetting}
                         settingsKey='footerPath'
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <div className='show-jumbo-field'>
+                    <Checkbox
+                      label='Show Jumbotron'
+                      checked={props.settings.showJumbo}
+                      valueHandler={props.getSettingsValueHandler('showJumbo')}
+                      readOnly={props.getPageSettingIsUndefined('showJumbo')}
+                      onClick={(e) => {
+                        overrideSetting('showJumbo')
+                      }}
+                    />
+                    <ResetButton
+                      getPageSettingIsUndefined={
+                        props.getPageSettingIsUndefined
+                      }
+                      resetSetting={resetSetting}
+                      settingsKey='showJumbo'
+                    />
+                  </div>
+                  {props.settings.showJumbo ? (
+                    <div className='jumbo-path-field'>
+                      <Input
+                        label='Jumbotron Path'
+                        info={`By default, every page has a jumbotron subpage automatically created. In order to use the jumbotron specific to this page, enter: ${props.path}jumbo/`}
+                        value={props.settings.jumboPath}
+                        valueHandler={props.getSettingsValueHandler(
+                          'jumboPath'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined('jumboPath')}
+                        onClick={(e) => {
+                          overrideSetting('jumboPath')
+                        }}
+                      />
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='jumboPath'
                       />
                     </div>
                   ) : (

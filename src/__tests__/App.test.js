@@ -102,6 +102,54 @@ const mockHomeFooter = {
     },
   ],
 }
+const mockHomeJumbo = {
+  id: 6,
+  key: 'jumbo',
+  title: null,
+  pageType: 'content',
+  userCreated: false,
+  settings: {},
+  parentId: 1,
+  createdAt: '2020-09-07T21:48:42.994Z',
+  updatedAt: '2020-09-07T21:48:42.994Z',
+  pageblocks: [
+    {
+      id: 2,
+      blockType: 'content',
+      ordering: 0,
+      settings: {
+        header: '',
+        headerLevel: 0,
+        lgWidth: 12,
+        mdWidth: 12,
+        smWidth: 12,
+        xsWidth: 12,
+      },
+      createdAt: '2020-09-07T21:49:05.788Z',
+      updatedAt: '2020-09-07T21:49:05.788Z',
+      pageId: 3,
+      pageblockcontents: [
+        {
+          id: 2,
+          contentType: 'wysiwyg',
+          ordering: 0,
+          settings: {
+            header: '',
+            headerLevel: 0,
+            lgWidth: 12,
+            mdWidth: 12,
+            smWidth: 12,
+            xsWidth: 12,
+          },
+          wysiwyg: '<p>bar-jumbo</p>',
+          createdAt: '2020-09-07T21:49:05.838Z',
+          updatedAt: '2020-09-07T21:49:15.347Z',
+          pageblockId: 2,
+        },
+      ],
+    },
+  ],
+}
 const mockHomePage = {
   id: 1,
   key: 'home',
@@ -188,6 +236,7 @@ const mockHomePage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -195,6 +244,7 @@ const mockHomePage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -274,6 +324,7 @@ const mockHomePage = {
 const mockSettings = {
   footerPath: '/home/footer/',
   headerPath: '/home/header/',
+  jumboPath: '/home/jumbo/',
   init: true,
   isNavParent: false,
   navAlignment: 'left',
@@ -283,6 +334,7 @@ const mockSettings = {
   navType: 'basic',
   showFooter: true,
   showHeader: true,
+  showJumbo: true,
   siteTitle: 'Preaction CMS',
 }
 const mockSession = {
@@ -344,6 +396,7 @@ const mockTestPage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -351,6 +404,7 @@ const mockTestPage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -468,6 +522,9 @@ const server = setupServer(
   rest.get('/api/page/by-key/home/footer/', (req, res, ctx) => {
     return res(ctx.json(mockHomeFooter))
   }),
+  rest.get('/api/page/by-key/home/jumbo/', (req, res, ctx) => {
+    return res(ctx.json(mockHomeJumbo))
+  }),
   rest.get('/api/page/by-key/home/', (req, res, ctx) => {
     return res(ctx.json(mockHomePage))
   }),
@@ -536,6 +593,7 @@ test('server-side rendering', () => {
   const mockPage = Object.assign({}, mockHomePage, {
     header: mockHomeHeader,
     footer: mockHomeFooter,
+    jumbo: mockHomeJumbo,
   })
   const result = render(
     <App initPath='/' initPage={mockPage} initSettings={mockSettings} />

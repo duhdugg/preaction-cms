@@ -65,6 +65,7 @@ function getResults() {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -72,6 +73,7 @@ function getResults() {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,

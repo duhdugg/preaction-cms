@@ -85,6 +85,7 @@ test('PageBlockContent wysiwyg', () => {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -92,6 +93,7 @@ test('PageBlockContent wysiwyg', () => {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     isNavParent: false,
@@ -210,6 +212,7 @@ test('PageBlockContent image', async () => {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -217,6 +220,7 @@ test('PageBlockContent image', async () => {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     isNavParent: false,

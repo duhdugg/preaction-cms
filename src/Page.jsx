@@ -418,6 +418,8 @@ class Page extends React.Component {
             this.props.headerControl(value)
           } else if (key === 'showFooter') {
             this.props.footerControl(value)
+          } else if (key === 'showJumbo') {
+            this.props.jumboControl(value)
           }
           return state
         },
@@ -706,8 +708,8 @@ class Page extends React.Component {
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
-                // set the title if page is not header nor footer
-                if (path.match(/\/(header|footer)\/$/g) === null) {
+                // set the title if page is not header, footer, nor jumbo
+                if (path.match(/\/(header|footer|jumbo)\/$/g) === null) {
                   let title = ''
                   if (this.topLevelPageKey === 'home') {
                     title = this.settings.siteTitle
@@ -744,12 +746,14 @@ class Page extends React.Component {
   }
 
   loadSettings() {
-    // control showing header/footer in parent App.jsx component
-    if (!['header', 'footer'].includes(this.state.page.key)) {
+    // control showing header/footer/jumbo in parent App.jsx component
+    if (!['header', 'footer', 'jumbo'].includes(this.state.page.key)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
+      let showJumbo = this.settings.showJumbo !== false
       this.props.headerControl(showHeader)
       this.props.footerControl(showFooter)
+      this.props.jumboControl(showJumbo)
     }
   }
 
@@ -913,6 +917,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
+  jumboControl: PropTypes.func,
   init404: PropTypes.bool,
   initPage: PropTypes.object,
   navigate: PropTypes.func.isRequired,

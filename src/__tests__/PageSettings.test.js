@@ -138,6 +138,7 @@ function getResults() {
     fallbackSettings: {
       footerPath: '/home/footer/',
       headerPath: '/home/header/',
+      jumboPath: '/home/jumbo/',
       navAlignment: 'left',
       navCollapsible: true,
       navPosition: 'above-header',
@@ -145,6 +146,7 @@ function getResults() {
       navType: 'basic',
       showFooter: true,
       showHeader: true,
+      showJumbo: true,
       siteTitle: 'Preaction CMS',
       init: true,
       includeInNav: true,
@@ -240,6 +242,7 @@ function getResults() {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -247,6 +250,7 @@ function getResults() {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -324,6 +328,12 @@ test('Override Show Footer', () => {
   expect(mockPage.settings.showFooter).toBe(false)
 })
 
+test('Override Show Jumbotron', () => {
+  const { result, mockPage } = getResults()
+  userEvent.click(result.getByText('Show Jumbotron'))
+  expect(mockPage.settings.showJumbo).toBe(false)
+})
+
 test('Click to confirm delete', () => {
   const { result, state } = getResults()
   userEvent.click(result.container.querySelector('.btn-danger'))
@@ -369,6 +379,22 @@ test('Override Footer Path', () => {
     '/'
   )
   expect(mockPage.settings.footerPath).toBe('/foo-1/abc/footer/')
+})
+
+test('Override Jumbotron Path', () => {
+  const { result, rerender, mockPage } = getResults()
+  expect(
+    result.container.querySelector('.jumbo-path-field input')
+  ).toHaveAttribute('readOnly')
+  userEvent.click(result.container.querySelector('.jumbo-path-field input'))
+  rerender()
+  expect(
+    result.container.querySelector('.jumbo-path-field input')
+  ).not.toHaveAttribute('readOnly')
+  result.container.querySelector('.jumbo-path-field input').value =
+    '/foo-1/abc/jumbo'
+  userEvent.type(result.container.querySelector('.jumbo-path-field input'), '/')
+  expect(mockPage.settings.jumboPath).toBe('/foo-1/abc/jumbo/')
 })
 
 test('Override Nav Position', () => {

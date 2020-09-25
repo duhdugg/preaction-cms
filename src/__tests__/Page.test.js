@@ -24,6 +24,7 @@ const mockPage1 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -31,6 +32,7 @@ const mockPage1 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -171,6 +173,7 @@ const mockPage2 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -178,6 +181,7 @@ const mockPage2 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -345,6 +349,7 @@ const mockPage3 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
+    jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -352,6 +357,7 @@ const mockPage3 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
+    showJumbo: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -542,6 +548,7 @@ function getResult(overrideProps = {}) {
     fallbackSettings: {},
     footerControl: () => {},
     headerControl: () => {},
+    jumboControl: () => {},
     navigate: () => {},
     onError: () => {},
     onNotFound: () => {},
@@ -973,6 +980,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   let x = false
   let headerControlCalled = false
   let footerControlCalled = false
+  let jumboControlCalled = false
   const { result } = getResult({
     path: '/foo-1/abc/789/',
     emitSave: () => {
@@ -983,6 +991,9 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     },
     footerControl: () => {
       footerControlCalled = true
+    },
+    jumboControl: () => {
+      jumboControlCalled = true
     },
   })
   expect(result.container.firstChild).toHaveClass('page')
@@ -1014,6 +1025,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   expect(headerControlCalled).toBe(true)
   userEvent.click(result.getByLabelText('Show Footer'))
   expect(footerControlCalled).toBe(true)
+  userEvent.click(result.getByLabelText('Show Jumbotron'))
+  expect(jumboControlCalled).toBe(true)
 })
 
 test('onNotFound', async () => {

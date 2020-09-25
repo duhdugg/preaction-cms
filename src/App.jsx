@@ -19,6 +19,7 @@ import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 import Footer from './Footer.jsx'
 import Header from './Header.jsx'
+import Jumbo from './Jumbo.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
@@ -97,6 +98,7 @@ class App extends React.Component {
       show: {
         header: true,
         footer: true,
+        jumbo: false,
         newPage: false, // for rendering the new page modal
         settings: false, // for rendering the settings modal
       },
@@ -104,6 +106,7 @@ class App extends React.Component {
       siteSettings: {
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
+        jumboPath: '/home/jumbo/',
         siteTitle: '',
         navPosition: 'fixed-top',
       },
@@ -114,6 +117,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
+    this.jumbo = React.createRef()
     setGlobalRelativeLinkHandler((href) => {
       if (!this.state.editable) {
         this.navigate(href)
@@ -501,7 +505,7 @@ class App extends React.Component {
     }
   }
 
-  // so page components can control showing the header and footer
+  // so page components can control showing the header, footer, and jumbo
   getShowPropertyValueHandler(key) {
     return (value) => {
       this.setState((state) => {
@@ -701,6 +705,7 @@ class App extends React.Component {
         this.reloadRef('activePage')
         this.reloadRef('header')
         this.reloadRef('footer')
+        this.reloadRef('jumbo')
         break
       case 'add-page':
         this.reloadRef('activePage')
@@ -731,6 +736,12 @@ class App extends React.Component {
           data.pageId === this.footer.current.page.current.state.page.id
         ) {
           this.reloadRef('footer')
+        } else if (
+          this.jumbo.current &&
+          this.jumbo.current.page.current.state.page &&
+          data.pageId === this.jumbo.current.page.current.state.page.id
+        ) {
+          this.reloadRef('jumbo')
         }
         break
     }
@@ -780,6 +791,20 @@ class App extends React.Component {
   }
 
   render() {
+    const getHeaderMarginTop = () => {
+      let retval
+      if (this.settings.navPosition === 'fixed-top') {
+        retval = '4em'
+        if (
+          (this.settings.showJumbo &&
+            this.settings.jumboPosition === 'above-header') ||
+          (this.settings.showJumbo && !this.settings.showHeader)
+        ) {
+          retval = '3.5em'
+        }
+      }
+      return retval
+    }
     return (
       <div
         className={`App ${
@@ -856,11 +881,31 @@ class App extends React.Component {
                       fill={this.settings.navSpacing === 'fill'}
                       collapsible={this.settings.navCollapsible}
                     />
-                  ) : (
-                    ''
-                  )}
+                  ) : undefined}
                 </div>
               }
+              jumbotron={
+                this.settings.showJumbo ? (
+                  <Jumbo
+                    appRoot={this.root}
+                    editable={this.state.editable}
+                    emitSave={this.emitSave.bind(this)}
+                    navigate={this.navigate.bind(this)}
+                    settings={this.settings}
+                    ref={this.jumbo}
+                    show={this.settings.showJumbo}
+                    token={this.state.token}
+                    initPage={
+                      this.props.initPage
+                        ? this.props.initPage.jumbo
+                        : undefined
+                    }
+                  />
+                ) : (
+                  ''
+                )
+              }
+              jumbotronPosition={this.settings.jumboPosition}
               footer={
                 <Footer
                   appRoot={this.root}
@@ -878,10 +923,7 @@ class App extends React.Component {
               }
               style={{
                 header: {
-                  marginTop:
-                    this.settings.navPosition === 'fixed-top'
-                      ? '4em'
-                      : undefined,
+                  marginTop: getHeaderMarginTop(),
                 },
               }}
             >
@@ -902,6 +944,7 @@ class App extends React.Component {
                     ref={this.activePage}
                     headerControl={this.getShowPropertyValueHandler('header')}
                     footerControl={this.getShowPropertyValueHandler('footer')}
+                    jumboControl={this.getShowPropertyValueHandler('jumbo')}
                     navigate={this.navigate.bind(this)}
                     setActivePathname={this.setActivePathname.bind(this)}
                     setActivePage={this.setActivePage.bind(this)}
@@ -933,6 +976,7 @@ class App extends React.Component {
                       case 'home':
                       case 'header':
                       case 'footer':
+                      case 'jumbo':
                         return <NotFound />
                       default:
                         return (
@@ -948,6 +992,9 @@ class App extends React.Component {
                             )}
                             footerControl={this.getShowPropertyValueHandler(
                               'footer'
+                            )}
+                            jumboControl={this.getShowPropertyValueHandler(
+                              'jumbo'
                             )}
                             navigate={this.navigate.bind(this)}
                             onError={this.handlePageError.bind(this)}
