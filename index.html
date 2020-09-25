@@ -2,25 +2,20 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>@preaction/cms 3.0.0-beta.1 | Documentation</title>
+  <title>@preaction/cms 3.0.0-beta.3 | Documentation</title>
   <meta name='description' content='Preaction CMS is a barebones, extendable Content Management System built on top of simple JavaScript libraries.'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
   <link href='assets/style.css' rel='stylesheet'>
   <link href='assets/github.css' rel='stylesheet'>
   <link href='assets/split.css' rel='stylesheet'>
-<style>
-.py1 {
-  cursor: pointer;
-}
-</style>
 </head>
 <body class='documentation m0'>
     <div class='flex'>
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>@preaction/cms</h3>
-          <div class='mb1'><code>3.0.0-beta.1</code></div>
+          <div class='mb1'><code>3.0.0-beta.3</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -7113,7 +7108,7 @@ the newly copied children
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getFullPageById(pageId, depth, excludeHeaderFooter)</span>
+            <span class='code strong strong truncate'>getFullPageById(pageId, depth, excludeHeaderFooterJumbo)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -7123,7 +7118,7 @@ the newly copied children
 
   <p>depth should be specified in most cases to improve performance.</p>
 
-    <div class='pre p1 fill-light mt0'>getFullPageById(pageId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, depth: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, excludeHeaderFooter: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+    <div class='pre p1 fill-light mt0'>getFullPageById(pageId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, depth: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, excludeHeaderFooterJumbo: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -7160,9 +7155,9 @@ if depth is less than 1 (default), no limit is applied to child page depth
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>excludeHeaderFooter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
+            <span class='code bold'>excludeHeaderFooterJumbo</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
             = <code>true</code>)</code>
-	    if true, the header and footer will be excluded from the tree
+	    if true, the header, footer, and jumbo pages will be excluded from the tree
 
           </div>
           
@@ -7529,7 +7524,7 @@ tree, and sitemap included
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         <code>Object</code>
- with default home, header, and footer pages
+ with default home, header, footer, and jumbo pages
 
       
     
@@ -8836,6 +8831,18 @@ passed in the third argument</p>
 
 
   
+    <tr>
+  <td class='break-word'><span class='code bold'>options.page.settings.jumboPath</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>will defer to 
+<code>options.page.fallbackSettings.jumboPath</code>
+ if 
+<code>undefined</code>
+</span></td>
+</tr>
+
+
+  
 
 
   
@@ -8863,6 +8870,18 @@ passed in the third argument</p>
   </td>
   <td class='break-word'><span>will defer to 
 <code>'/home/footer/'</code>
+ if 
+<code>undefined</code>
+</span></td>
+</tr>
+
+
+  
+    <tr>
+  <td class='break-word'><span class='code bold'>options.page.fallbackSettings.jumboPath</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>will defer to 
+<code>'/home/jumbo/'</code>
  if 
 <code>undefined</code>
 </span></td>
@@ -9816,8 +9835,15 @@ using bcrypt to compare the password</p>
       <pre class='p1 overflow-auto round fill-light'>{
   <span class="hljs-attr">footerPath</span>: <span class="hljs-string">'/home/footer/'</span>,
   <span class="hljs-attr">headerPath</span>: <span class="hljs-string">'/home/header/'</span>,
+  <span class="hljs-attr">jumbopath</span>: <span class="hljs-string">'/home/jumbo/'</span>,
   <span class="hljs-attr">init</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// used to determine that the frontend has loaded settings from server</span>
   <span class="hljs-attr">isNavParent</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// not used directly. inherited and overridden by pages</span>
+  <span class="hljs-attr">maxWidthFooterContainer</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">maxWidthHeaderContainer</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">maxWidthJumbo</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">maxWidthJumboContainer</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">maxWidthMainContainer</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">maxWidthNav</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">navAlignment</span>: <span class="hljs-string">'left'</span>,
   <span class="hljs-attr">navCollapsible</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">navPosition</span>: <span class="hljs-string">'fixed-top'</span>,
@@ -9825,6 +9851,8 @@ using bcrypt to compare the password</p>
   <span class="hljs-attr">navType</span>: <span class="hljs-string">'basic'</span>,
   <span class="hljs-attr">showFooter</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">showHeader</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">showJumbo</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">jumboPosition</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">siteTitle</span>: <span class="hljs-string">'Preaction CMS'</span>,
 }</pre>
     
