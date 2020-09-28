@@ -5,7 +5,7 @@ import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
 import { Card, Modal } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox, Select } from '@preaction/inputs'
-import { MdImage, MdLink, MdFileUpload } from 'react-icons/md'
+import { MdImage, MdLink, MdFileUpload, MdSpaceBar } from 'react-icons/md'
 import {
   MdArrowUpward,
   MdArrowDownward,
@@ -90,6 +90,9 @@ function PageBlock(props) {
           border: `1px solid ${
             header || props.block.settings.pad ? 'var(--dark)' : 'rgba(0,0,0,0)'
           }`,
+        },
+        card: {
+          marginBottom: props.block.blockType === 'spacer' ? 0 : undefined,
         },
       }}
       footer={
@@ -179,6 +182,19 @@ function PageBlock(props) {
             ) : (
               ''
             )}
+            {props.block.blockType === 'content' ? (
+              <button
+                type='button'
+                className='btn btn-secondary btn-sm add-images-by-url'
+                onClick={() => {
+                  props.addContent(props.block, 'spacer')
+                }}
+              >
+                <MdSpaceBar />
+              </button>
+            ) : (
+              ''
+            )}
             <span style={{ display: 'inline-block', paddingLeft: '0.5rem' }}>
               block type: {props.block.blockType}
               {props.block.blockType === 'ext'
@@ -262,6 +278,15 @@ function PageBlock(props) {
       ) : (
         ''
       )}
+      {props.block.blockType === 'spacer' ? (
+        <div
+          style={{
+            height: `${props.block.settings.spacerHeight || '0.8'}em`,
+          }}
+        ></div>
+      ) : (
+        ''
+      )}
       {props.editable && showSettings ? (
         <Modal
           title={`Block Type "${props.block.blockType}${
@@ -289,14 +314,18 @@ function PageBlock(props) {
                 e.prevenDefault()
               }}
             >
-              <div className='header-field'>
-                <Input
-                  type='text'
-                  label='Header'
-                  value={props.block.settings.header}
-                  valueHandler={getPageBlockSettingsValueHandler('header')}
-                />
-              </div>
+              {props.block.blockType !== 'spacer' ? (
+                <div className='header-field'>
+                  <Input
+                    type='text'
+                    label='Header'
+                    value={props.block.settings.header}
+                    valueHandler={getPageBlockSettingsValueHandler('header')}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
               {props.block.settings.header ? (
                 <div className='header-level-field'>
                   <Input
@@ -313,7 +342,8 @@ function PageBlock(props) {
               ) : (
                 ''
               )}
-              {!props.block.settings.header ? (
+              {!props.block.settings.header &&
+              props.block.blockType !== 'spacer' ? (
                 <div className='pad-field'>
                   <Checkbox
                     label='Pad'
@@ -476,6 +506,23 @@ function PageBlock(props) {
                     }
                     propsData={props.block.settings.propsData}
                   />
+                </div>
+              ) : (
+                ''
+              )}
+              {props.block.blockType === 'spacer' ? (
+                <div>
+                  <div className='spacer-height-field'>
+                    <Input
+                      type='number'
+                      step='0.01'
+                      label='Spacer Height'
+                      value={props.block.settings.spacerHeight}
+                      valueHandler={getPageBlockSettingsValueHandler(
+                        'spacerHeight'
+                      )}
+                    />
+                  </div>
                 </div>
               ) : (
                 ''

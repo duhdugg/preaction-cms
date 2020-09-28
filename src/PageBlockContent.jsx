@@ -79,6 +79,9 @@ function PageBlockContent(props) {
               : 'rgba(0,0,0,0)'
           }`,
         },
+        card: {
+          marginBottom: props.content.contentType === 'spacer' ? 0 : undefined,
+        },
       }}
       footer={
         props.editable ? (
@@ -171,6 +174,15 @@ function PageBlockContent(props) {
       ) : (
         ''
       )}
+      {props.content.contentType === 'spacer' ? (
+        <div
+          style={{
+            height: `${props.content.settings.spacerHeight || '0.8'}em`,
+          }}
+        ></div>
+      ) : (
+        ''
+      )}
       {showSettings ? (
         <Modal
           title={`Content Type "${props.content.contentType}" Settings`}
@@ -194,14 +206,20 @@ function PageBlockContent(props) {
                 e.prevenDefault()
               }}
             >
-              <div className='header-field'>
-                <Input
-                  type='text'
-                  label='Header'
-                  value={props.content.settings.header}
-                  valueHandler={props.getContentSettingsValueHandler('header')}
-                />
-              </div>
+              {props.content.contentType !== 'spacer' ? (
+                <div className='header-field'>
+                  <Input
+                    type='text'
+                    label='Header'
+                    value={props.content.settings.header}
+                    valueHandler={props.getContentSettingsValueHandler(
+                      'header'
+                    )}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
               {props.content.settings.header ? (
                 <div className='header-level-field'>
                   <Input
@@ -218,7 +236,8 @@ function PageBlockContent(props) {
               ) : (
                 ''
               )}
-              {!props.content.settings.header ? (
+              {!props.content.settings.header &&
+              props.content.contentType !== 'spacer' ? (
                 <div className='pad-field'>
                   <Checkbox
                     label='Pad'
@@ -347,6 +366,23 @@ function PageBlockContent(props) {
                       value={props.content.settings.linkUrl}
                       valueHandler={props.getContentSettingsValueHandler(
                         'linkUrl'
+                      )}
+                    />
+                  </div>
+                </div>
+              ) : (
+                ''
+              )}
+              {props.content.contentType === 'spacer' ? (
+                <div>
+                  <div className='spacer-height-field'>
+                    <Input
+                      type='number'
+                      step='0.01'
+                      label='Spacer Height'
+                      value={props.content.settings.spacerHeight}
+                      valueHandler={props.getContentSettingsValueHandler(
+                        'spacerHeight'
                       )}
                     />
                   </div>

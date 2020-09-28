@@ -10,6 +10,7 @@ import {
   MdCreate,
   MdFilterFrames,
   MdSettingsInputComponent,
+  MdSpaceBar,
 } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
@@ -546,6 +547,18 @@ class Page extends React.Component {
             onClick: (e) => {
               e.preventDefault()
               this.addPageBlock({ blockType: 'nav' })
+            },
+          },
+          {
+            className: 'add-spacer-block',
+            name: (
+              <span>
+                <MdSpaceBar /> Spacer
+              </span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              this.addPageBlock({ blockType: 'spacer' })
             },
           },
           ...extensionBlockMenuItems,
