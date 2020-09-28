@@ -193,18 +193,22 @@ function PageBlockContent(props) {
                   valueHandler={props.getContentSettingsValueHandler('header')}
                 />
               </div>
-              <div className='header-level-field'>
-                <Input
-                  type='range'
-                  label={`Header Level: ${props.content.settings.headerLevel}`}
-                  min='0'
-                  max='6'
-                  value={props.content.settings.headerLevel}
-                  valueHandler={props.getContentSettingsValueHandler(
-                    'headerLevel'
-                  )}
-                />
-              </div>
+              {props.content.settings.header ? (
+                <div className='header-level-field'>
+                  <Input
+                    type='range'
+                    label={`Header Level: ${props.content.settings.headerLevel}`}
+                    min='0'
+                    max='6'
+                    value={props.content.settings.headerLevel}
+                    valueHandler={props.getContentSettingsValueHandler(
+                      'headerLevel'
+                    )}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
               <div className='width-field desktop-width-field'>
                 <Input
                   label={`Desktop Width: ${props.content.settings.lgWidth} / 12`}
