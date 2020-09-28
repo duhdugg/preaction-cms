@@ -69,7 +69,7 @@ function PageBlockContent(props) {
   const border =
     props.content.contentType !== 'spacer'
       ? `1px solid ${
-          header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
+          header || props.content.settings.pad ? borderColor : 'rgba(0,0,0,0)'
         }`
       : 0
 
@@ -300,6 +300,26 @@ function PageBlockContent(props) {
                       value={props.content.settings.bodyTheme || 'transparent'}
                       valueHandler={props.getContentSettingsValueHandler(
                         'bodyTheme'
+                      )}
+                    >
+                      <option>danger</option>
+                      <option>dark</option>
+                      <option>info</option>
+                      <option>light</option>
+                      <option>primary</option>
+                      <option>secondary</option>
+                      <option>success</option>
+                      <option>transparent</option>
+                      <option>warning</option>
+                      <option>white</option>
+                    </Select>
+                  </div>
+                  <div className='border-theme'>
+                    <Select
+                      label='Border Theme'
+                      value={props.content.settings.borderTheme || 'dark'}
+                      valueHandler={props.getContentSettingsValueHandler(
+                        'borderTheme'
                       )}
                     >
                       <option>danger</option>
