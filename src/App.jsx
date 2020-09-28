@@ -12,7 +12,13 @@ import {
   Link,
   Redirect,
 } from 'react-router-dom'
-import { Boilerplate, Modal, NavBar, Nav } from '@preaction/bootstrap-clips'
+import {
+  Boilerplate,
+  Modal,
+  NavBar,
+  Nav,
+  getClassesForTheme,
+} from '@preaction/bootstrap-clips'
 import { Input } from '@preaction/inputs'
 import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
@@ -108,6 +114,7 @@ class App extends React.Component {
         headerPath: '/home/header/',
         jumboPath: '/home/jumbo/',
         siteTitle: '',
+        navbarTheme: 'dark',
         navPosition: 'fixed-top',
       },
       token: '',
@@ -794,25 +801,16 @@ class App extends React.Component {
   }
 
   render() {
-    const getHeaderMarginTop = () => {
-      let retval
-      if (this.settings.navPosition === 'fixed-top') {
-        retval = '4em'
-        if (
-          (this.settings.showJumbo &&
-            this.settings.jumboPosition === 'above-header') ||
-          (this.settings.showJumbo && !this.settings.showHeader)
-        ) {
-          retval = '3.5em'
-        }
-      }
-      return retval
-    }
+    const navPositionClassName = {
+      'fixed-top': 'nav-position-fixed-top',
+      'above-header': 'nav-position-above-header',
+      'below-header': 'nav-position-below-header',
+    }[this.settings.navPosition]
     return (
       <div
         className={`App ${
           this.state.editable ? 'editable' : 'non-editable'
-        } nav-position-${this.settings.navPosition}`}
+        } ${navPositionClassName}`}
       >
         <Router basename={`${this.root}/`} location={this.state.activePathname}>
           <div>
@@ -828,7 +826,7 @@ class App extends React.Component {
                   <NavBar
                     noContain={this.settings.maxWidthNav}
                     fixedTo='top'
-                    theme='dark'
+                    theme={this.settings.navbarTheme}
                     brand={{
                       name: this.settings.siteTitle,
                       href: `${this.root}/${this.siteMap.path}${
@@ -910,6 +908,10 @@ class App extends React.Component {
                 )
               }
               jumbotronPosition={this.settings.jumboPosition}
+              jumbotronTheme={this.settings.jumboTheme}
+              headerTheme={this.settings.headerTheme}
+              mainTheme={this.settings.mainTheme}
+              footerTheme={this.settings.footerTheme}
               footer={
                 <Footer
                   appRoot={this.root}
@@ -925,11 +927,6 @@ class App extends React.Component {
                   }
                 />
               }
-              style={{
-                header: {
-                  marginTop: getHeaderMarginTop(),
-                },
-              }}
               noContain={{
                 footerContainer: this.settings.maxWidthFooterContainer,
                 headerContainer: this.settings.maxWidthHeaderContainer,
@@ -1032,6 +1029,9 @@ class App extends React.Component {
             <Modal
               title='Site Settings'
               closeHandler={this.toggleSettings.bind(this)}
+              headerTheme='primary'
+              bodyTheme='white'
+              footerTheme='dark'
               footer={
                 <button
                   type='button'
@@ -1061,6 +1061,9 @@ class App extends React.Component {
           <div className='new-page-modal-container'>
             <Modal
               title='New Page'
+              headerTheme='success'
+              bodyTheme='white'
+              footerTheme='dark'
               hideCloseButton={true}
               footer={
                 <div>
@@ -1167,14 +1170,19 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const bodyClasses = []
     // set path class on body to allow path-specific styling
     if (this.state.activePathname === '/login/') {
-      document.body.className = 'path-login-'
+      bodyClasses.push('path-login-')
     } else if (this.state.activePage) {
-      document.body.className = `path-${getSaneKey(
-        this.state.activePage.tree.path || 'undefined'
-      )}-`
+      bodyClasses.push(
+        `path-${getSaneKey(this.state.activePage.tree.path || 'undefined')}-`
+      )
     }
+    if (this.settings.bodyTheme) {
+      bodyClasses.push(...getClassesForTheme(this.settings.bodyTheme))
+    }
+    document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set
     if (
       this.state.activePage &&

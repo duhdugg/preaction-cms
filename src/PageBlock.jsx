@@ -67,7 +67,7 @@ function PageBlock(props) {
   return (
     <Card
       className={{
-        card: `page-block page-block-outer block-type-${props.block.blockType}`,
+        card: `page-block block-type-${props.block.blockType}`,
       }}
       column
       width={{
@@ -76,191 +76,185 @@ function PageBlock(props) {
         sm: props.block.settings.smWidth / 12,
         xs: props.block.settings.xsWidth / 12,
       }}
-    >
-      <Card
-        className={{
-          card: 'page-block-inner',
-        }}
-        header={header}
-        headerTheme='dark'
-        footerTheme='dark'
-        style={{
-          body: {
-            padding: header ? '1em' : 0,
-            border: `1px solid ${header ? 'var(--dark)' : 'rgba(0,0,0,0)'}`,
-          },
-        }}
-        footer={
-          props.editable ? (
-            <div className='btn-group d-block'>
+      header={header}
+      headerTheme='dark'
+      footerTheme='dark'
+      style={{
+        body: {
+          padding: header ? '1em' : 0,
+          border: `1px solid ${header ? 'var(--dark)' : 'rgba(0,0,0,0)'}`,
+        },
+      }}
+      footer={
+        props.editable ? (
+          <div className='btn-group d-block'>
+            <button
+              type='button'
+              className='btn btn-secondary btn-sm move-block previous'
+              disabled={props.first}
+              onClick={() => {
+                props.blockControl(props.block.id, 'previous')
+              }}
+            >
+              <MdArrowUpward />
+            </button>
+            <button
+              type='button'
+              className='btn btn-secondary btn-sm move-block next'
+              disabled={props.last}
+              onClick={() => {
+                props.blockControl(props.block.id, 'next')
+              }}
+            >
+              <MdArrowDownward />
+            </button>
+            <button
+              type='button'
+              className='btn btn-danger btn-sm delete-block'
+              onClick={() => {
+                props.blockControl(props.block.id, 'delete')
+              }}
+            >
+              <MdDelete />
+            </button>
+            <button
+              type='button'
+              className='btn btn-secondary btn-sm block-settings'
+              onClick={toggleSettings}
+            >
+              <MdSettings />
+            </button>
+            {props.block.blockType === 'content' ? (
               <button
                 type='button'
-                className='btn btn-secondary btn-sm move-block previous'
-                disabled={props.first}
+                className='btn btn-secondary btn-sm add-wysiwyg'
                 onClick={() => {
-                  props.blockControl(props.block.id, 'previous')
+                  props.addContent(props.block, 'wysiwyg')
                 }}
               >
-                <MdArrowUpward />
+                <MdTextFields />
               </button>
+            ) : (
+              ''
+            )}
+            {props.block.blockType === 'content' ? (
               <button
                 type='button'
-                className='btn btn-secondary btn-sm move-block next'
-                disabled={props.last}
+                className='btn btn-secondary btn-sm upload-images'
                 onClick={() => {
-                  props.blockControl(props.block.id, 'next')
+                  photosInput.current.click()
                 }}
               >
-                <MdArrowDownward />
+                <div className='upload-images-icon'>
+                  <MdImage />
+                  <MdFileUpload />
+                </div>
               </button>
+            ) : (
+              ''
+            )}
+            {props.block.blockType === 'content' ? (
               <button
                 type='button'
-                className='btn btn-danger btn-sm delete-block'
+                className='btn btn-secondary btn-sm add-images-by-url'
                 onClick={() => {
-                  props.blockControl(props.block.id, 'delete')
+                  const src = window.prompt('Enter image URL')
+                  if (src) {
+                    props.addContent(props.block, 'image', { src })
+                  }
                 }}
               >
-                <MdDelete />
+                <div className='linked-image-icon'>
+                  <MdImage />
+                  <MdLink />
+                </div>
               </button>
-              <button
-                type='button'
-                className='btn btn-secondary btn-sm block-settings'
-                onClick={toggleSettings}
-              >
-                <MdSettings />
-              </button>
-              {props.block.blockType === 'content' ? (
-                <button
-                  type='button'
-                  className='btn btn-secondary btn-sm add-wysiwyg'
-                  onClick={() => {
-                    props.addContent(props.block, 'wysiwyg')
-                  }}
-                >
-                  <MdTextFields />
-                </button>
-              ) : (
-                ''
-              )}
-              {props.block.blockType === 'content' ? (
-                <button
-                  type='button'
-                  className='btn btn-secondary btn-sm upload-images'
-                  onClick={() => {
-                    photosInput.current.click()
-                  }}
-                >
-                  <div className='upload-images-icon'>
-                    <MdImage />
-                    <MdFileUpload />
-                  </div>
-                </button>
-              ) : (
-                ''
-              )}
-              {props.block.blockType === 'content' ? (
-                <button
-                  type='button'
-                  className='btn btn-secondary btn-sm add-images-by-url'
-                  onClick={() => {
-                    const src = window.prompt('Enter image URL')
-                    if (src) {
-                      props.addContent(props.block, 'image', { src })
-                    }
-                  }}
-                >
-                  <div className='linked-image-icon'>
-                    <MdImage />
-                    <MdLink />
-                  </div>
-                </button>
-              ) : (
-                ''
-              )}
-              <span style={{ display: 'inline-block', paddingLeft: '0.5rem' }}>
-                block type: {props.block.blockType}
-                {props.block.blockType === 'ext'
-                  ? `/${props.block.settings.extKey}`
-                  : ''}
-              </span>
-            </div>
-          ) : (
-            ''
-          )
-        }
-      >
-        {props.block.blockType === 'content' ? (
-          <div className='row'>
-            {props
-              .getContents(props.block.pageblockcontents)
-              .map((content, key) => (
-                <PageBlockContent
-                  key={content.id}
-                  appRoot={props.appRoot}
-                  block={props.block}
-                  width={{
-                    lg: content.settings.lgWidth / 12,
-                    md: content.settings.mdWidth / 12,
-                    sm: content.settings.smWidth / 12,
-                    xs: content.settings.xsWidth / 12,
-                  }}
-                  content={content}
-                  contentControl={props.contentControl}
-                  first={key === 0}
-                  last={key === props.block.pageblockcontents.length - 1}
-                  index={key}
-                  getContentSettingsValueHandler={getContentSettingsValueHandler(
-                    content.id
-                  )}
-                  editable={props.editable}
-                  emitSave={props.emitSave}
-                  navigate={props.navigate}
-                  settings={props.settings}
-                  token={props.token}
-                />
-              ))}
+            ) : (
+              ''
+            )}
+            <span style={{ display: 'inline-block', paddingLeft: '0.5rem' }}>
+              block type: {props.block.blockType}
+              {props.block.blockType === 'ext'
+                ? `/${props.block.settings.extKey}`
+                : ''}
+            </span>
           </div>
         ) : (
           ''
-        )}
-        {props.block.blockType === 'nav' ? (
-          <PageBlockNav
-            block={props.block}
-            navigate={props.navigate}
-            page={props.page}
-          />
-        ) : (
-          ''
-        )}
-        {props.block.blockType === 'iframe' ? (
-          <PageBlockIframe block={props.block} />
-        ) : (
-          ''
-        )}
-        {props.block.blockType === 'ext' ? (
-          <PageBlockExtension
-            extBlockIndex={blockExtensions}
-            extKey={props.block.settings.extKey}
-            propsData={{
-              ...props.block.settings.propsData,
-              preaction: {
-                appRoot: props.appRoot,
-                block: props.block,
-                editable: props.editable,
-                emitSave: props.emitSave,
-                getPageBlockSettingsValueHandler:
-                  props.getPageBlockSettingsValueHandler,
-                navigate: props.navigate,
-                page: props.page,
-                settings: props.settings,
-                token: props.token,
-              },
-            }}
-          />
-        ) : (
-          ''
-        )}
-      </Card>
+        )
+      }
+    >
+      {props.block.blockType === 'content' ? (
+        <div className='row'>
+          {props
+            .getContents(props.block.pageblockcontents)
+            .map((content, key) => (
+              <PageBlockContent
+                key={content.id}
+                appRoot={props.appRoot}
+                block={props.block}
+                width={{
+                  lg: content.settings.lgWidth / 12,
+                  md: content.settings.mdWidth / 12,
+                  sm: content.settings.smWidth / 12,
+                  xs: content.settings.xsWidth / 12,
+                }}
+                content={content}
+                contentControl={props.contentControl}
+                first={key === 0}
+                last={key === props.block.pageblockcontents.length - 1}
+                index={key}
+                getContentSettingsValueHandler={getContentSettingsValueHandler(
+                  content.id
+                )}
+                editable={props.editable}
+                emitSave={props.emitSave}
+                navigate={props.navigate}
+                settings={props.settings}
+                token={props.token}
+              />
+            ))}
+        </div>
+      ) : (
+        ''
+      )}
+      {props.block.blockType === 'nav' ? (
+        <PageBlockNav
+          block={props.block}
+          navigate={props.navigate}
+          page={props.page}
+        />
+      ) : (
+        ''
+      )}
+      {props.block.blockType === 'iframe' ? (
+        <PageBlockIframe block={props.block} />
+      ) : (
+        ''
+      )}
+      {props.block.blockType === 'ext' ? (
+        <PageBlockExtension
+          extBlockIndex={blockExtensions}
+          extKey={props.block.settings.extKey}
+          propsData={{
+            ...props.block.settings.propsData,
+            preaction: {
+              appRoot: props.appRoot,
+              block: props.block,
+              editable: props.editable,
+              emitSave: props.emitSave,
+              getPageBlockSettingsValueHandler:
+                props.getPageBlockSettingsValueHandler,
+              navigate: props.navigate,
+              page: props.page,
+              settings: props.settings,
+              token: props.token,
+            },
+          }}
+        />
+      ) : (
+        ''
+      )}
       {props.editable && showSettings ? (
         <Modal
           title={`Block Type "${props.block.blockType}${
@@ -269,6 +263,9 @@ function PageBlock(props) {
               : ''
           }" Settings`}
           closeHandler={toggleSettings}
+          headerTheme='info'
+          bodyTheme='white'
+          footerTheme='dark'
           footer={
             <button
               type='button'

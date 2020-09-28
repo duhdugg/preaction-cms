@@ -166,6 +166,9 @@ function PageBlockContent(props) {
         <Modal
           title={`Content Type "${props.content.contentType}" Settings`}
           closeHandler={toggleSettings}
+          headerTheme='warning'
+          bodyTheme='white'
+          footerTheme='dark'
           footer={
             <button
               type='button'

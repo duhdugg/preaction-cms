@@ -366,6 +366,43 @@ function PageSettings(props) {
                     ) : (
                       ''
                     )}
+                    {['fixed-top'].includes(props.settings.navPosition) ? (
+                      <div className='col-sm-6 navbar-theme-field'>
+                        <Select
+                          label='NavBar Theme'
+                          value={props.settings.navbarTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navbarTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'navbarTheme'
+                          )}
+                          onClick={(e) => {
+                            overrideSetting('navbarTheme')
+                          }}
+                        >
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='navbarTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </div>
                 </Card>
                 <Card
@@ -531,6 +568,232 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
+                </Card>
+                <Card
+                  header='Theme'
+                  headerTheme='dark'
+                  className={{
+                    card: 'theme-settings',
+                  }}
+                >
+                  <div className='row'>
+                    <div className='col-sm-6'>
+                      <Select
+                        label='Body Theme'
+                        value={props.settings.bodyTheme}
+                        valueHandler={props.getSettingsValueHandler(
+                          'bodyTheme'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined('bodyTheme')}
+                        onClick={() => {
+                          overrideSetting('bodyTheme')
+                        }}
+                      >
+                        <option value=''>Default</option>
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>light</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>transparent</option>
+                        <option>warning</option>
+                        <option>white</option>
+                      </Select>
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='bodyTheme'
+                      />
+                    </div>
+                    <div className='col-sm-6'>
+                      <Select
+                        label='Main Theme'
+                        value={props.settings.mainTheme}
+                        valueHandler={props.getSettingsValueHandler(
+                          'mainTheme'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined('mainTheme')}
+                        onClick={() => {
+                          overrideSetting('mainTheme')
+                        }}
+                      >
+                        <option value=''>Default</option>
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>light</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>transparent</option>
+                        <option>warning</option>
+                        <option>white</option>
+                      </Select>
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='mainTheme'
+                      />
+                    </div>
+                    {['fixed-top'].includes(props.settings.navPosition) ? (
+                      <div className='col-sm-6 navbar-theme-field'>
+                        <Select
+                          label='NavBar Theme'
+                          value={props.settings.navbarTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navbarTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'navbarTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('navbarTheme')
+                          }}
+                        >
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='navbarTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showHeader ||
+                    props.settings.navPosition !== 'fixed-top' ? (
+                      <div className='col-sm-6 header-theme-field'>
+                        <Select
+                          label='Header Theme'
+                          value={props.settings.headerTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'headerTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'headerTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('headerTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='headerTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showJumbo ? (
+                      <div className='col-sm-6 jumbo-theme-field'>
+                        <Select
+                          label='Jumbotron Theme'
+                          value={props.settings.jumboTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'jumboTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'jumboTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('jumboTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='jumboTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showFooter ? (
+                      <div className='col-sm-6 footer-theme-field'>
+                        <Select
+                          label='Footer Theme'
+                          value={props.settings.footerTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'footerTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'footerTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('footerTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='footerTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 </Card>
                 <Card
                   header='Width'

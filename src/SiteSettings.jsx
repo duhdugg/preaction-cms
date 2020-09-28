@@ -232,29 +232,183 @@ function SiteSettings(props) {
                       valueHandler={props.getSettingsValueHandler('showFooter')}
                     />
                   </div>
-                  <div className='show-jumbo-field'>
-                    <Checkbox
-                      label='Show Jumbotron'
-                      checked={props.settings.showJumbo}
-                      valueHandler={props.getSettingsValueHandler('showJumbo')}
-                    />
-                  </div>
-                  {props.settings.showJumbo ? (
-                    <div className='jumbo-position-field'>
-                      <Select
-                        label='Jumbotron Position'
-                        value={props.settings.jumboPosition}
+                  <div className='row'>
+                    <div className='show-jumbo-field col-sm-6'>
+                      <Checkbox
+                        label='Show Jumbotron'
+                        checked={props.settings.showJumbo}
                         valueHandler={props.getSettingsValueHandler(
-                          'jumboPosition'
+                          'showJumbo'
+                        )}
+                      />
+                    </div>
+                    {props.settings.showJumbo ? (
+                      <div className='col-sm-6 jumbo-position-field'>
+                        <Select
+                          label='Jumbotron Position'
+                          value={props.settings.jumboPosition}
+                          valueHandler={props.getSettingsValueHandler(
+                            'jumboPosition'
+                          )}
+                        >
+                          <option value='above-header'>Above Header</option>
+                          <option value='below-header'>Below Header</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                </Card>
+                <Card
+                  header='Theme'
+                  headerTheme='dark'
+                  className={{ card: 'theme-settings' }}
+                >
+                  <div className='row'>
+                    <div className='col-sm-6'>
+                      <Select
+                        label='Body Theme'
+                        value={props.settings.bodyTheme}
+                        valueHandler={props.getSettingsValueHandler(
+                          'bodyTheme'
                         )}
                       >
-                        <option value='above-header'>Above Header</option>
-                        <option value='below-header'>Below Header</option>
+                        <option value=''>Default</option>
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>light</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>transparent</option>
+                        <option>warning</option>
+                        <option>white</option>
                       </Select>
                     </div>
-                  ) : (
-                    ''
-                  )}
+                    <div className='col-sm-6'>
+                      <Select
+                        label='Main Theme'
+                        value={props.settings.mainTheme}
+                        valueHandler={props.getSettingsValueHandler(
+                          'mainTheme'
+                        )}
+                      >
+                        <option value=''>Default</option>
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>light</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>transparent</option>
+                        <option>warning</option>
+                        <option>white</option>
+                      </Select>
+                    </div>
+                    {['fixed-top'].includes(props.settings.navPosition) ? (
+                      <div className='col-sm-6 navbar-theme-field'>
+                        <Select
+                          label='NavBar Theme'
+                          value={props.settings.navbarTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navbarTheme'
+                          )}
+                        >
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showHeader ||
+                    props.settings.navPosition !== 'fixed-top' ? (
+                      <div className='col-sm-6 header-theme-field'>
+                        <Select
+                          label='Header Theme'
+                          value={props.settings.headerTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'headerTheme'
+                          )}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showJumbo ? (
+                      <div className='col-sm-6 jumbo-theme-field'>
+                        <Select
+                          label='Jumbotron Theme'
+                          value={props.settings.jumboTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'jumboTheme'
+                          )}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {props.settings.showFooter ? (
+                      <div className='col-sm-6 footer-theme-field'>
+                        <Select
+                          label='Footer Theme'
+                          value={props.settings.footerTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'footerTheme'
+                          )}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 </Card>
               </div>
             </div>

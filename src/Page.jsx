@@ -830,6 +830,9 @@ class Page extends React.Component {
                 <Modal
                   title='Page Settings'
                   closeHandler={this.toggleSettings.bind(this)}
+                  headerTheme='secondary'
+                  bodyTheme='white'
+                  footerTheme='dark'
                   footer={
                     <button
                       type='button'
