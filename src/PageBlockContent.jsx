@@ -54,6 +54,24 @@ function PageBlockContent(props) {
   }
 
   const header = getHeader()
+  const borderColor = {
+    danger: 'var(--danger)',
+    dark: 'var(--dark)',
+    info: 'var(--info)',
+    light: 'var(--light)',
+    primary: 'var(--primary)',
+    secondary: 'var(--secondary)',
+    success: 'var(--success)',
+    transparent: 'transparent',
+    warning: 'var(--warning)',
+    white: 'var(--white)',
+  }[props.content.settings.borderTheme || 'dark']
+  const border =
+    props.content.contentType !== 'spacer'
+      ? `1px solid ${
+          header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
+        }`
+      : 0
 
   return (
     <Card
@@ -73,13 +91,10 @@ function PageBlockContent(props) {
       style={{
         body: {
           padding: header || props.content.settings.pad ? '1em' : 0,
-          border: `1px solid ${
-            header || props.content.settings.pad
-              ? 'var(--dark)'
-              : 'rgba(0,0,0,0)'
-          }`,
+          border: 0,
         },
         card: {
+          border,
           marginBottom: props.content.contentType === 'spacer' ? 0 : undefined,
         },
       }}
@@ -183,7 +198,7 @@ function PageBlockContent(props) {
       {props.content.contentType === 'spacer' ? (
         <div
           style={{
-            height: `${props.content.settings.spacerHeight || '0.8'}em`,
+            height: `${props.content.settings.spacerHeight || '1'}em`,
           }}
         ></div>
       ) : (

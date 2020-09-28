@@ -63,6 +63,24 @@ function PageBlock(props) {
   }
 
   const header = getHeader()
+  const borderColor = {
+    danger: 'var(--danger)',
+    dark: 'var(--dark)',
+    info: 'var(--info)',
+    light: 'var(--light)',
+    primary: 'var(--primary)',
+    secondary: 'var(--secondary)',
+    success: 'var(--success)',
+    transparent: 'transparent',
+    warning: 'var(--warning)',
+    white: 'var(--white)',
+  }[props.block.settings.borderTheme || 'dark']
+  const border =
+    props.block.blockType !== 'spacer'
+      ? `1px solid ${
+          header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
+        }`
+      : 0
 
   return (
     <Card
@@ -87,11 +105,10 @@ function PageBlock(props) {
       style={{
         body: {
           padding: header || props.block.settings.pad ? '1em' : 0,
-          border: `1px solid ${
-            header || props.block.settings.pad ? 'var(--dark)' : 'rgba(0,0,0,0)'
-          }`,
+          border: 0,
         },
         card: {
+          border,
           marginBottom: props.block.blockType === 'spacer' ? 0 : undefined,
         },
       }}
@@ -393,6 +410,26 @@ function PageBlock(props) {
                       value={props.block.settings.bodyTheme || 'transparent'}
                       valueHandler={getPageBlockSettingsValueHandler(
                         'bodyTheme'
+                      )}
+                    >
+                      <option>danger</option>
+                      <option>dark</option>
+                      <option>info</option>
+                      <option>light</option>
+                      <option>primary</option>
+                      <option>secondary</option>
+                      <option>success</option>
+                      <option>transparent</option>
+                      <option>warning</option>
+                      <option>white</option>
+                    </Select>
+                  </div>
+                  <div className='border-theme'>
+                    <Select
+                      label='Border Theme'
+                      value={props.block.settings.borderTheme || 'dark'}
+                      valueHandler={getPageBlockSettingsValueHandler(
+                        'borderTheme'
                       )}
                     >
                       <option>danger</option>
