@@ -930,7 +930,7 @@ class App extends React.Component {
               noContain={{
                 footerContainer: this.settings.maxWidthFooterContainer,
                 headerContainer: this.settings.maxWidthHeaderContainer,
-                jumbotron: this.settings.maxWidthJumbo,
+                jumbotron: true,
                 jumbotronContainer: this.settings.maxWidthJumboContainer,
                 mainContainer: this.settings.maxWidthMainContainer,
               }}

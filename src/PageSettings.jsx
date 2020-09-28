@@ -828,28 +828,6 @@ function PageSettings(props) {
                   )}
                   {props.settings.showJumbo ? (
                     <div>
-                      <div className='jumbo-maxwidth-field'>
-                        <Checkbox
-                          label='Max Width on Jumbotron'
-                          checked={props.settings.maxWidthJumbo}
-                          valueHandler={props.getSettingsValueHandler(
-                            'maxWidthJumbo'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'maxWidthJumbo'
-                          )}
-                          onClick={(e) => {
-                            overrideSetting('maxWidthJumbo')
-                          }}
-                        />
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='maxWidthJumbo'
-                        />
-                      </div>
                       <div className='jumbo-container-maxwidth-field'>
                         <Checkbox
                           label='Max Width on Jumbotron Container'
