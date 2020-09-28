@@ -77,12 +77,19 @@ function PageBlock(props) {
         xs: props.block.settings.xsWidth / 12,
       }}
       header={header}
-      headerTheme='dark'
-      footerTheme='dark'
+      headerTheme={props.block.settings.headerTheme || 'dark'}
+      bodyTheme={
+        props.block.settings.header || props.block.settings.pad
+          ? props.block.settings.bodyTheme || 'transparent'
+          : ''
+      }
+      footerTheme={props.block.settings.headerTheme || 'dark'}
       style={{
         body: {
-          padding: header ? '1em' : 0,
-          border: `1px solid ${header ? 'var(--dark)' : 'rgba(0,0,0,0)'}`,
+          padding: header || props.block.settings.pad ? '1em' : 0,
+          border: `1px solid ${
+            header || props.block.settings.pad ? 'var(--dark)' : 'rgba(0,0,0,0)'
+          }`,
         },
       }}
       footer={
@@ -302,6 +309,66 @@ function PageBlock(props) {
                       'headerLevel'
                     )}
                   />
+                </div>
+              ) : (
+                ''
+              )}
+              {!props.block.settings.header ? (
+                <div className='pad-field'>
+                  <Checkbox
+                    label='Pad'
+                    checked={props.block.settings.pad}
+                    valueHandler={getPageBlockSettingsValueHandler('pad')}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+              {props.block.settings.header ? (
+                <div className='card-header-theme'>
+                  <Select
+                    label='Header Theme'
+                    value={props.block.settings.headerTheme || 'dark'}
+                    valueHandler={getPageBlockSettingsValueHandler(
+                      'headerTheme'
+                    )}
+                  >
+                    <option>danger</option>
+                    <option>dark</option>
+                    <option>info</option>
+                    <option>light</option>
+                    <option>primary</option>
+                    <option>secondary</option>
+                    <option>success</option>
+                    <option>warning</option>
+                    <option>white</option>
+                  </Select>
+                </div>
+              ) : (
+                ''
+              )}
+              {props.block.settings.header || props.block.settings.pad ? (
+                <div>
+                  <div className='body-theme'>
+                    <Select
+                      label='Body Theme'
+                      value={props.block.settings.bodyTheme || 'transparent'}
+                      valueHandler={getPageBlockSettingsValueHandler(
+                        'bodyTheme'
+                      )}
+                    >
+                      <option>danger</option>
+                      <option>dark</option>
+                      <option>info</option>
+                      <option>light</option>
+                      <option>primary</option>
+                      <option>secondary</option>
+                      <option>success</option>
+                      <option>transparent</option>
+                      <option>warning</option>
+                      <option>white</option>
+                    </Select>
+                  </div>
                 </div>
               ) : (
                 ''

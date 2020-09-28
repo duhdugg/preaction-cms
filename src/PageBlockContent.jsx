@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Card, Modal } from '@preaction/bootstrap-clips'
-import { Form, Input } from '@preaction/inputs'
+import { Form, Input, Checkbox, Select } from '@preaction/inputs'
 import PageBlockImage from './PageBlockImage.jsx'
 import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
 import {
@@ -63,12 +63,21 @@ function PageBlockContent(props) {
       noMargin
       column
       header={header}
-      headerTheme='dark'
-      footerTheme='dark'
+      headerTheme={props.content.settings.headerTheme || 'dark'}
+      bodyTheme={
+        props.content.settings.header || props.content.settings.pad
+          ? props.content.settings.bodyTheme || 'transparent'
+          : ''
+      }
+      footerTheme={props.content.settings.headerTheme || 'dark'}
       style={{
         body: {
-          padding: header ? '1em' : 0,
-          border: `1px solid ${header ? 'var(--dark)' : 'rgba(0,0,0,0)'}`,
+          padding: header || props.content.settings.pad ? '1em' : 0,
+          border: `1px solid ${
+            header || props.content.settings.pad
+              ? 'var(--dark)'
+              : 'rgba(0,0,0,0)'
+          }`,
         },
       }}
       footer={
@@ -205,6 +214,66 @@ function PageBlockContent(props) {
                       'headerLevel'
                     )}
                   />
+                </div>
+              ) : (
+                ''
+              )}
+              {!props.content.settings.header ? (
+                <div className='pad-field'>
+                  <Checkbox
+                    label='Pad'
+                    checked={props.content.settings.pad}
+                    valueHandler={props.getContentSettingsValueHandler('pad')}
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+              {props.content.settings.header ? (
+                <div className='card-header-theme'>
+                  <Select
+                    label='Header Theme'
+                    value={props.content.settings.headerTheme || 'dark'}
+                    valueHandler={props.getContentSettingsValueHandler(
+                      'headerTheme'
+                    )}
+                  >
+                    <option>danger</option>
+                    <option>dark</option>
+                    <option>info</option>
+                    <option>light</option>
+                    <option>primary</option>
+                    <option>secondary</option>
+                    <option>success</option>
+                    <option>warning</option>
+                    <option>white</option>
+                  </Select>
+                </div>
+              ) : (
+                ''
+              )}
+              {props.content.settings.header || props.content.settings.pad ? (
+                <div>
+                  <div className='body-theme'>
+                    <Select
+                      label='Body Theme'
+                      value={props.block.settings.bodyTheme || 'transparent'}
+                      valueHandler={props.getContentSettingsValueHandler(
+                        'bodyTheme'
+                      )}
+                    >
+                      <option>danger</option>
+                      <option>dark</option>
+                      <option>info</option>
+                      <option>light</option>
+                      <option>primary</option>
+                      <option>secondary</option>
+                      <option>success</option>
+                      <option>transparent</option>
+                      <option>warning</option>
+                      <option>white</option>
+                    </Select>
+                  </div>
                 </div>
               ) : (
                 ''
