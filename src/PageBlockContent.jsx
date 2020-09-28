@@ -399,7 +399,8 @@ function PageBlockContent(props) {
                   <div className='spacer-height-field'>
                     <Input
                       type='number'
-                      step='0.01'
+                      min='0.0625'
+                      step='0.0625'
                       label='Spacer Height'
                       value={props.content.settings.spacerHeight}
                       valueHandler={props.getContentSettingsValueHandler(
