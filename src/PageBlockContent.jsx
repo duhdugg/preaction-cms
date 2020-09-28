@@ -67,7 +67,7 @@ function PageBlockContent(props) {
       bodyTheme={
         props.content.settings.header || props.content.settings.pad
           ? props.content.settings.bodyTheme || 'transparent'
-          : ''
+          : undefined
       }
       footerTheme={props.content.settings.headerTheme || 'dark'}
       style={{
@@ -282,7 +282,7 @@ function PageBlockContent(props) {
                   <div className='body-theme'>
                     <Select
                       label='Body Theme'
-                      value={props.block.settings.bodyTheme || 'transparent'}
+                      value={props.content.settings.bodyTheme || 'transparent'}
                       valueHandler={props.getContentSettingsValueHandler(
                         'bodyTheme'
                       )}

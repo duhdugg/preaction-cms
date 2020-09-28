@@ -81,7 +81,7 @@ function PageBlock(props) {
       bodyTheme={
         props.block.settings.header || props.block.settings.pad
           ? props.block.settings.bodyTheme || 'transparent'
-          : ''
+          : undefined
       }
       footerTheme={props.block.settings.headerTheme || 'dark'}
       style={{

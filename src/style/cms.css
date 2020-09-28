@@ -167,3 +167,123 @@ hr {
   top: 15%;
   color: var(--gray);
 }
+
+/* link colors */
+
+.page-block a {
+  color: var(--primary);
+}
+
+.text-dark:not(.bg-warning) .page-block a {
+  color: var(--primary);
+}
+
+.bg-warning .page-block a {
+  color: var(--dark);
+}
+
+.page-controls > .nav > .nav-item > a.nav-link {
+  color: var(--dark);
+}
+
+.text-light .page-block a {
+  color: var(--light);
+}
+
+.text-light .page-controls > .nav > .nav-item > a.nav-link {
+  color: var(--light);
+}
+
+.text-dark .page-controls > .nav > .nav-item > a.nav-link {
+  color: var(--dark);
+}
+
+.text-dark .text-light .page-controls > .nav > .nav-item > a.nav-link {
+  color: var(--light);
+}
+
+.text-dark
+  .text-light
+  .text-dark
+  .page-controls
+  > .nav
+  > .nav-item
+  > a.nav-link {
+  color: var(--dark);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent) {
+  color: var(--dark);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent) .page-block a {
+  color: var(--primary);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-controls
+  > .nav
+  > .nav-item
+  > a.nav-link {
+  color: var(--dark);
+}
+
+.page-block > .text-dark a,
+.page-block-content > .text-dark a {
+  color: var(--primary);
+}
+
+.page-block > .text-light a,
+.page-block-content > .text-light a {
+  color: var(--light);
+}
+
+.page-block > .bg-warning a,
+.page-block-content > .bg-warning a {
+  color: var(--dark);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block
+  > .text-light
+  a,
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block-content
+  > .text-light
+  a {
+  color: var(--light);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block
+  > .text-dark
+  a,
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block-content
+  > .text-dark
+  a {
+  color: var(--primary);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block
+  > .bg-warning
+  a,
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block-content
+  > .bg-warning
+  a {
+  color: var(--dark);
+}
+
+.page-block > .text-light .page-block-content > .text-dark:not(.bg-warning) a {
+  color: var(--primary);
+}
+
+.page-block > .bg-warning .page-block-content > .text-dark:not(.bg-warning) a {
+  color: var(--primary);
+}
+
+.page-block > .bg-warning .page-block-content > .text-light a {
+  color: var(--light);
+}

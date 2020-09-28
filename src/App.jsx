@@ -908,10 +908,10 @@ class App extends React.Component {
                 )
               }
               jumbotronPosition={this.settings.jumboPosition}
-              jumbotronTheme={this.settings.jumboTheme}
-              headerTheme={this.settings.headerTheme}
-              mainTheme={this.settings.mainTheme}
-              footerTheme={this.settings.footerTheme}
+              jumbotronTheme={this.settings.jumboTheme || undefined}
+              headerTheme={this.settings.headerTheme || undefined}
+              mainTheme={this.settings.mainTheme || undefined}
+              footerTheme={this.settings.footerTheme || undefined}
               footer={
                 <Footer
                   appRoot={this.root}
