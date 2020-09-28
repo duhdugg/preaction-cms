@@ -224,7 +224,7 @@ function PageBlockContent(props) {
           <div className='content-settings'>
             <Form
               onSubmit={(e) => {
-                e.prevenDefault()
+                e.preventDefault()
               }}
             >
               {props.content.contentType !== 'spacer' ? (

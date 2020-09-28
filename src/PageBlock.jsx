@@ -336,7 +336,7 @@ function PageBlock(props) {
           <div className='block-settings'>
             <Form
               onSubmit={(e) => {
-                e.prevenDefault()
+                e.preventDefault()
               }}
             >
               {props.block.blockType !== 'spacer' ? (
