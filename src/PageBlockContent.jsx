@@ -93,6 +93,7 @@ function PageBlockContent(props) {
               onClick={() => {
                 props.contentControl(props.block, props.index, 'previous')
               }}
+              title='Move Content: Previous'
             >
               <MdArrowBack />
             </button>
@@ -103,6 +104,7 @@ function PageBlockContent(props) {
               onClick={() => {
                 props.contentControl(props.block, props.index, 'next')
               }}
+              title='Move Content: Next'
             >
               <MdArrowForward />
             </button>
@@ -113,6 +115,7 @@ function PageBlockContent(props) {
               onClick={() => {
                 props.contentControl(props.block, props.index, 'delete')
               }}
+              title='Delete Content'
             >
               <MdDelete />
             </button>
@@ -120,6 +123,7 @@ function PageBlockContent(props) {
               type='button'
               className='btn btn-sm btn-secondary content-settings'
               onClick={toggleSettings}
+              title='Content Settings'
             >
               <MdSettings />
             </button>
@@ -128,6 +132,7 @@ function PageBlockContent(props) {
                 type='button'
                 className='btn btn-sm btn-secondary toggle-wysiwyg-html'
                 onClick={toggleSourceMode}
+                title='Toggle HTML Source Mode'
               >
                 <FaHtml5 />
               </button>
@@ -139,6 +144,7 @@ function PageBlockContent(props) {
                 type='button'
                 className='btn btn-sm btn-secondary toggle-wysiwyg-theme'
                 onClick={toggleTheme}
+                title='Toggle Toolbar'
               >
                 <MdLineStyle />
               </button>

@@ -105,6 +105,7 @@ function PageBlock(props) {
               onClick={() => {
                 props.blockControl(props.block.id, 'previous')
               }}
+              title='Move Block: Previous'
             >
               <MdArrowUpward />
             </button>
@@ -115,6 +116,7 @@ function PageBlock(props) {
               onClick={() => {
                 props.blockControl(props.block.id, 'next')
               }}
+              title='Move Block: Next'
             >
               <MdArrowDownward />
             </button>
@@ -124,6 +126,7 @@ function PageBlock(props) {
               onClick={() => {
                 props.blockControl(props.block.id, 'delete')
               }}
+              title='Delete Block'
             >
               <MdDelete />
             </button>
@@ -131,6 +134,7 @@ function PageBlock(props) {
               type='button'
               className='btn btn-secondary btn-sm block-settings'
               onClick={toggleSettings}
+              title='Block Settings'
             >
               <MdSettings />
             </button>
@@ -141,6 +145,7 @@ function PageBlock(props) {
                 onClick={() => {
                   props.addContent(props.block, 'wysiwyg')
                 }}
+                title='Add WYSIWYG'
               >
                 <MdTextFields />
               </button>
@@ -154,6 +159,7 @@ function PageBlock(props) {
                 onClick={() => {
                   photosInput.current.click()
                 }}
+                title='Upload Image(s)'
               >
                 <div className='upload-images-icon'>
                   <MdImage />
@@ -173,6 +179,7 @@ function PageBlock(props) {
                     props.addContent(props.block, 'image', { src })
                   }
                 }}
+                title='Add Image by URL'
               >
                 <div className='linked-image-icon'>
                   <MdImage />
@@ -189,6 +196,7 @@ function PageBlock(props) {
                 onClick={() => {
                   props.addContent(props.block, 'spacer')
                 }}
+                title='Add Spacer Content'
               >
                 <MdSpaceBar />
               </button>
