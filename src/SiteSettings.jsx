@@ -266,7 +266,7 @@ function SiteSettings(props) {
                   className={{ card: 'theme-settings' }}
                 >
                   <div className='row'>
-                    <div className='col-sm-6'>
+                    <div className='col-sm-6 body-theme-field'>
                       <Select
                         label='Body Theme'
                         value={props.settings.bodyTheme}
@@ -287,7 +287,7 @@ function SiteSettings(props) {
                         <option>white</option>
                       </Select>
                     </div>
-                    <div className='col-sm-6'>
+                    <div className='col-sm-6 main-theme-field'>
                       <Select
                         label='Main Theme'
                         value={props.settings.mainTheme}

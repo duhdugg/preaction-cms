@@ -270,7 +270,7 @@ function PageBlockContent(props) {
                 ''
               )}
               {props.content.settings.header ? (
-                <div className='card-header-theme'>
+                <div className='header-theme-field'>
                   <Select
                     label='Header Theme'
                     value={props.content.settings.headerTheme || 'dark'}
@@ -294,7 +294,7 @@ function PageBlockContent(props) {
               )}
               {props.content.settings.header || props.content.settings.pad ? (
                 <div>
-                  <div className='body-theme'>
+                  <div className='body-theme-field'>
                     <Select
                       label='Body Theme'
                       value={props.content.settings.bodyTheme || 'transparent'}
@@ -314,7 +314,7 @@ function PageBlockContent(props) {
                       <option>white</option>
                     </Select>
                   </div>
-                  <div className='border-theme'>
+                  <div className='border-theme-field'>
                     <Select
                       label='Border Theme'
                       value={props.content.settings.borderTheme || 'dark'}
