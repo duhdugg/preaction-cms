@@ -629,6 +629,11 @@ function PageBlock(props) {
                     /api\/upload-img/g
                   )
                 ) {
+                  props.emitSave({
+                    action: 'add-content',
+                    blockId: props.block.id,
+                    pageId: props.page.id,
+                  })
                   refreshBlock()
                 }
               } catch {}
