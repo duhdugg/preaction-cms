@@ -70,7 +70,7 @@ function PageBlockNav(props) {
   return (
     <Nav
       align={props.block.settings.navAlignment}
-      type={props.block.settings.navType || 'basic'}
+      type='basic'
       collapsible={props.block.settings.navCollapsible}
       menu={getMenu(props)}
     />
