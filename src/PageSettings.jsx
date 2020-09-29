@@ -366,43 +366,6 @@ function PageSettings(props) {
                     ) : (
                       ''
                     )}
-                    {['fixed-top'].includes(props.settings.navPosition) ? (
-                      <div className='col-sm-6 navbar-theme-field'>
-                        <Select
-                          label='NavBar Theme'
-                          value={props.settings.navbarTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'navbarTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'navbarTheme'
-                          )}
-                          onClick={(e) => {
-                            overrideSetting('navbarTheme')
-                          }}
-                        >
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='navbarTheme'
-                        />
-                      </div>
-                    ) : (
-                      ''
-                    )}
                   </div>
                 </Card>
                 <Card

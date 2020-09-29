@@ -641,40 +641,28 @@ test('blockControl:next', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   expect(
-    result.container.querySelectorAll('.block-type-iframe .page-block-inner')
-      .length
+    result.container.querySelectorAll('.block-type-iframe iframe').length
   ).toBe(3)
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[0].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=1')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[1].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[1].src
   ).toBe('about:blank?test=2')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[2].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
   userEvent.click(result.container.querySelectorAll('.move-block.next')[0])
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[0].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=2')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[1].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[1].src
   ).toBe('about:blank?test=1')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[2].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
   await waitFor(() => expect(emitSaveCalled).toBe(true))
 })
@@ -691,40 +679,25 @@ test('blockControl:previous', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   expect(
-    result.container.querySelectorAll('.block-type-iframe .page-block-inner')
-      .length
-  ).toBe(3)
-  expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[0].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=1')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[1].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[1].src
   ).toBe('about:blank?test=2')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[2].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
   userEvent.click(result.container.querySelectorAll('.move-block.previous')[2])
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[0].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=1')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[1].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[1].src
   ).toBe('about:blank?test=3')
   expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[2].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=2')
   await waitFor(() => expect(emitSaveCalled).toBe(true))
 })
@@ -737,21 +710,14 @@ test('blockControl:refresh', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   expect(
-    result.container.querySelectorAll('.block-type-iframe .page-block-inner')
-      .length
-  ).toBe(3)
-  expect(
-    result.container.querySelectorAll(
-      '.block-type-iframe .page-block-inner iframe'
-    )[2].src
+    result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
   result.container.firstChild.blockControl(18, 'refresh') // FIXME not best practice
   await waitFor(() =>
     expect(
-      result.container.querySelectorAll(
-        '.block-type-iframe .page-block-inner iframe'
-      )[2].src
+      result.container.querySelectorAll('.block-type-iframe iframe')[2].src
     ).toBe('about:blank?test=foobar')
   )
 })

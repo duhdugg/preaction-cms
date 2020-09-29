@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import PageSettings from '../PageSettings.jsx'
 
-function getResults() {
+function getResults(options = {}) {
   const state = {
     deletePageCalled: false,
     latestNavigatePath: undefined,
@@ -141,12 +141,26 @@ function getResults() {
       jumboPath: '/home/jumbo/',
       navAlignment: 'left',
       navCollapsible: true,
-      navPosition: 'above-header',
+      navPosition: options.navPosition || 'above-header',
       navSpacing: 'normal',
-      navType: 'basic',
+      navType: 'tabs',
       showFooter: true,
       showHeader: true,
       showJumbo: true,
+      bodyTheme: '',
+      mainTheme: '',
+      maxWidthNav: false,
+      maxWidthJumboContainer: false,
+      maxWidthHeaderContainer: false,
+      maxWidthMainContainer: false,
+      maxWidthFooterContainer: false,
+      navActiveSubmenuTheme: 'primary',
+      navActiveTabTheme: 'white',
+      navbarTheme: 'dark',
+      headerTheme: '',
+      jumboTheme: '',
+      footerTheme: '',
+      jumboPosition: 'above-header',
       siteTitle: 'Preaction CMS',
       init: true,
       includeInNav: true,
@@ -245,12 +259,26 @@ function getResults() {
     jumboPath: '/home/jumbo/',
     navAlignment: 'left',
     navCollapsible: true,
-    navPosition: 'above-header',
+    navPosition: options.navPosition || 'above-header',
     navSpacing: 'normal',
-    navType: 'basic',
+    navType: 'tabs',
     showFooter: true,
     showHeader: true,
     showJumbo: true,
+    bodyTheme: '',
+    mainTheme: '',
+    maxWidthNav: false,
+    maxWidthJumboContainer: false,
+    maxWidthHeaderContainer: false,
+    maxWidthMainContainer: false,
+    maxWidthFooterContainer: false,
+    navActiveSubmenuTheme: 'white',
+    navActiveTabTheme: 'primary',
+    navbarTheme: 'dark',
+    headerTheme: '',
+    jumboTheme: '',
+    footerTheme: '',
+    jumboPosition: 'above-header',
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -397,6 +425,23 @@ test('Override Jumbotron Path', () => {
   expect(mockPage.settings.jumboPath).toBe('/foo-1/abc/jumbo/')
 })
 
+test('Override Jumbotron Position', () => {
+  const { result, rerender, mockPage } = getResults()
+  expect(result.getByLabelText('Jumbotron Position')).toHaveAttribute(
+    'readOnly'
+  )
+  userEvent.click(result.getByLabelText('Jumbotron Position'))
+  rerender()
+  expect(result.getByLabelText('Jumbotron Position')).not.toHaveAttribute(
+    'readOnly'
+  )
+  userEvent.selectOptions(
+    result.getByLabelText('Jumbotron Position'),
+    'below-header'
+  )
+  expect(mockPage.settings.jumboPosition).toBe('below-header')
+})
+
 test('Override Nav Position', () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Nav Position')).toHaveAttribute('readOnly')
@@ -441,6 +486,116 @@ test('Override Collapse Nav', () => {
   const { result, mockPage } = getResults()
   userEvent.click(result.getByLabelText('Collapse nav for smaller screens'))
   expect(mockPage.settings.navCollapsible).toBe(false)
+})
+
+test('Override NavBar Theme', () => {
+  const { rerender, result, mockPage } = getResults({
+    navPosition: 'fixed-top',
+  })
+  userEvent.click(result.getByLabelText('NavBar Theme'))
+  rerender()
+  expect(result.getByLabelText('NavBar Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('NavBar Theme'), 'danger')
+  expect(mockPage.settings.navbarTheme).toBe('danger')
+})
+
+test('Override Body Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Body Theme'))
+  rerender()
+  expect(result.getByLabelText('Body Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('Body Theme'), 'dark')
+  expect(mockPage.settings.bodyTheme).toBe('dark')
+})
+
+test('Override Main Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Main Theme'))
+  rerender()
+  expect(result.getByLabelText('Main Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('Main Theme'), 'dark')
+  expect(mockPage.settings.mainTheme).toBe('dark')
+})
+
+test('Override Active Nav Tab Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Active Nav Tab Theme'))
+  rerender()
+  expect(result.getByLabelText('Active Nav Tab Theme')).not.toHaveAttribute(
+    'readOnly'
+  )
+  userEvent.selectOptions(result.getByLabelText('Active Nav Tab Theme'), 'dark')
+  expect(mockPage.settings.navActiveTabTheme).toBe('dark')
+})
+
+test('Override Active Submenu Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Active Submenu Theme'))
+  rerender()
+  expect(result.getByLabelText('Active Submenu Theme')).not.toHaveAttribute(
+    'readOnly'
+  )
+  userEvent.selectOptions(result.getByLabelText('Active Submenu Theme'), 'dark')
+  expect(mockPage.settings.navActiveSubmenuTheme).toBe('dark')
+})
+
+test('Override Header Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Header Theme'))
+  rerender()
+  expect(result.getByLabelText('Header Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('Header Theme'), 'dark')
+  expect(mockPage.settings.headerTheme).toBe('dark')
+})
+
+test('Override Jumbotron Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Jumbotron Theme'))
+  rerender()
+  expect(result.getByLabelText('Jumbotron Theme')).not.toHaveAttribute(
+    'readOnly'
+  )
+  userEvent.selectOptions(result.getByLabelText('Jumbotron Theme'), 'dark')
+  expect(mockPage.settings.jumboTheme).toBe('dark')
+})
+
+test('Override Footer Theme', () => {
+  const { rerender, result, mockPage } = getResults()
+  userEvent.click(result.getByLabelText('Footer Theme'))
+  rerender()
+  expect(result.getByLabelText('Footer Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('Footer Theme'), 'dark')
+  expect(mockPage.settings.footerTheme).toBe('dark')
+})
+
+test('Override Max Width on Navigation Bar', () => {
+  const { result, mockPage } = getResults({ navPosition: 'fixed-top' })
+  userEvent.click(result.getByText('Max Width on Navigation Bar'))
+  expect(mockPage.settings.maxWidthNav).toBe(true)
+})
+
+test('Override Max Width on Jumbotron Container', () => {
+  const { result, mockPage } = getResults()
+  userEvent.click(result.getByText('Max Width on Jumbotron Container'))
+  expect(mockPage.settings.maxWidthJumboContainer).toBe(true)
+})
+
+test('Override Max Width on Header Container', () => {
+  const { result, mockPage } = getResults()
+  userEvent.click(result.getByText('Max Width on Header Container'))
+  expect(mockPage.settings.maxWidthHeaderContainer).toBe(true)
+})
+
+test('Override Max Width on Main Container', () => {
+  const { result, mockPage } = getResults()
+  userEvent.click(result.getByText('Max Width on Main Container'))
+  expect(mockPage.settings.maxWidthMainContainer).toBe(true)
+})
+
+test('Override Max Width on Footer Container', () => {
+  const { result, mockPage } = getResults()
+  userEvent.click(result.getByText('Max Width on Footer Container'))
+  expect(mockPage.settings.maxWidthFooterContainer).toBe(true)
 })
 
 test('Test navigation', () => {
