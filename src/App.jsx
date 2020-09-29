@@ -802,11 +802,31 @@ class App extends React.Component {
       'above-header': 'nav-position-above-header',
       'below-header': 'nav-position-below-header',
     }[this.settings.navPosition]
+    const navActiveSubmenuThemeClassName = {
+      danger: 'nav-active-submenu-theme-danger',
+      dark: 'nav-active-submenu-theme-dark',
+      info: 'nav-active-submenu-theme-info',
+      primary: 'nav-active-submenu-theme-primary',
+      secondary: 'nav-active-submenu-theme-secondary',
+      success: 'nav-active-submenu-theme-success',
+      warning: 'nav-active-submenu-theme-warning',
+    }[this.settings.navActiveSubmenuTheme]
+    const navActiveTabThemeClassName = {
+      danger: 'nav-active-tab-theme-danger',
+      dark: 'nav-active-tab-theme-dark',
+      info: 'nav-active-tab-theme-info',
+      light: 'nav-active-tab-theme-light',
+      primary: 'nav-active-tab-theme-primary',
+      secondary: 'nav-active-tab-theme-secondary',
+      success: 'nav-active-tab-theme-success',
+      warning: 'nav-active-tab-theme-warning',
+      white: 'nav-active-tab-theme-white',
+    }[this.settings.navActiveTabTheme]
     return (
       <div
         className={`App ${
           this.state.editable ? 'editable' : 'non-editable'
-        } ${navPositionClassName}`}
+        } ${navPositionClassName} ${navActiveSubmenuThemeClassName} ${navActiveTabThemeClassName}`}
       >
         <Router basename={`${this.root}/`} location={this.state.activePathname}>
           <div>

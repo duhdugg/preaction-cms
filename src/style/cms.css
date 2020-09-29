@@ -168,6 +168,10 @@ hr {
   color: var(--gray);
 }
 
+.nav-tabs {
+  border-bottom: 0;
+}
+
 /* link colors */
 
 .page-block a {
@@ -239,6 +243,123 @@ body.bg-warning
 }
 
 ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  color: var(--dark);
+}
+
+.nav-active-tab-theme-danger ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  background-color: var(--danger);
+  border-color: var(--danger);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-dark ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  background-color: var(--dark);
+  border-color: var(--dark);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-info ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  background-color: var(--info);
+  border-color: var(--info);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-light ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  background-color: var(--light);
+  border-color: var(--light);
+  color: var(--dark);
+}
+
+.nav-active-tab-theme-primary
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-secondary
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-success
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: var(--light);
+}
+
+.nav-active-tab-theme-warning
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--warning);
+  border-color: var(--warning);
+  color: var(--dark);
+}
+
+.nav-active-submenu-theme-danger ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-danger ul.nav .dropdown-menu > .dropdown-item:active {
+  background-color: var(--danger);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-dark ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-dark ul.nav .dropdown-menu > .dropdown-item:active {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-info ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-info ul.nav .dropdown-menu > .dropdown-item:active {
+  background-color: var(--info);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-primary ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-primary
+  ul.nav
+  .dropdown-menu
+  > .dropdown-item:active {
+  background-color: var(--primary);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-secondary
+  ul.nav
+  .dropdown-menu
+  > .dropdown-item.active,
+.nav-active-submenu-theme-secondary
+  ul.nav
+  .dropdown-menu
+  > .dropdown-item:active {
+  background-color: var(--secondary);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-success ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-success
+  ul.nav
+  .dropdown-menu
+  > .dropdown-item:active {
+  background-color: var(--success);
+  color: var(--light);
+}
+
+.nav-active-submenu-theme-warning ul.nav .dropdown-menu > .dropdown-item.active,
+.nav-active-submenu-theme-warning
+  ul.nav
+  .dropdown-menu
+  > .dropdown-item:active {
+  background-color: var(--warning);
   color: var(--dark);
 }
 

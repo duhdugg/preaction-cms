@@ -332,6 +332,50 @@ function SiteSettings(props) {
                     ) : (
                       ''
                     )}
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) && props.settings.navType === 'tabs' ? (
+                      <div className='col-sm-6 nav-active-tab-theme-field'>
+                        <Select
+                          label='Active Nav Tab Theme'
+                          value={props.settings.navActiveTabTheme || 'white'}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navActiveTabTheme'
+                          )}
+                        >
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    <div className='col-sm-6 nav-active-submenu-theme-field'>
+                      <Select
+                        label='Active Submenu Theme'
+                        value={
+                          props.settings.navActiveSubmenuTheme || 'primary'
+                        }
+                        valueHandler={props.getSettingsValueHandler(
+                          'navActiveSubmenuTheme'
+                        )}
+                      >
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>warning</option>
+                      </Select>
+                    </div>
                     {props.settings.showHeader ||
                     props.settings.navPosition !== 'fixed-top' ? (
                       <div className='col-sm-6 header-theme-field'>

@@ -678,6 +678,76 @@ function PageSettings(props) {
                     ) : (
                       ''
                     )}
+                    {['above-header', 'below-header'].includes(
+                      props.settings.navPosition
+                    ) && props.settings.navType === 'tabs' ? (
+                      <div className='col-sm-6 nav-active-tab-theme-field'>
+                        <Select
+                          label='Active Nav Tab Theme'
+                          value={props.settings.navActiveTabTheme || 'white'}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navActiveTabTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'navActiveTabTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('navActiveTabTheme')
+                          }}
+                        >
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='navActiveTabTheme'
+                        />
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    <div className='col-sm-6 nav-active-submenu-theme-field'>
+                      <Select
+                        label='Active Submenu Theme'
+                        value={
+                          props.settings.navActiveSubmenuTheme || 'primary'
+                        }
+                        valueHandler={props.getSettingsValueHandler(
+                          'navActiveSubmenuTheme'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'navActiveSubmenuTheme'
+                        )}
+                        onClick={() => {
+                          overrideSetting('navActiveSubmenuTheme')
+                        }}
+                      >
+                        <option>danger</option>
+                        <option>dark</option>
+                        <option>info</option>
+                        <option>primary</option>
+                        <option>secondary</option>
+                        <option>success</option>
+                        <option>warning</option>
+                      </Select>
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='navActiveSubmenuTheme'
+                      />
+                    </div>
                     {props.settings.showHeader ||
                     props.settings.navPosition !== 'fixed-top' ? (
                       <div className='col-sm-6 header-theme-field'>
