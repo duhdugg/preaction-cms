@@ -15,6 +15,10 @@ hr {
   text-decoration: underline !important;
 }
 
+.theme-examples .badge {
+  margin-right: 1em;
+}
+
 .spinner-container {
   padding-top: 1em;
   padding-bottom: 1em;

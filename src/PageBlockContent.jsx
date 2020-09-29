@@ -334,6 +334,20 @@ function PageBlockContent(props) {
                       <option>white</option>
                     </Select>
                   </div>
+                  <div className='theme-examples mb-2'>
+                    <div>Theme Examples</div>
+                    <div className='badge bg-danger text-light'>danger</div>
+                    <div className='badge bg-dark text-light'>dark</div>
+                    <div className='badge bg-info text-light'>info</div>
+                    <div className='badge bg-light text-dark'>light</div>
+                    <div className='badge bg-primary text-light'>primary</div>
+                    <div className='badge bg-secondary text-light'>
+                      secondary
+                    </div>
+                    <div className='badge bg-success text-light'>success</div>
+                    <div className='badge bg-warning text-dark'>warning</div>
+                    <div className='badge bg-white text-dark'>white</div>
+                  </div>
                 </div>
               ) : (
                 ''
