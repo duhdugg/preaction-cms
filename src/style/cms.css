@@ -186,6 +186,70 @@ hr {
   color: var(--dark);
 }
 
+body.text-light
+  header:not(.text-light):not(.text-dark)
+  ul.nav
+  > li.nav-item
+  > a.nav-link {
+  color: var(--light);
+}
+
+body.bg-warning
+  header:not(.text-light):not(.text-dark)
+  ul.nav
+  > li.nav-item
+  > a.nav-link {
+  color: var(--dark);
+}
+
+header.text-light ul.nav > li.nav-item > a.nav-link {
+  color: var(--light);
+}
+
+header.bg-warning ul.nav > li.nav-item > a.nav-link {
+  color: var(--dark);
+}
+
+header.text-light ul.nav.nav-pills > li.nav-item > a.nav-link.active {
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+header.bg-warning ul.nav.nav-pills > li.nav-item > a.nav-link.active {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+body.text-light
+  header:not(.text-light):not(.text-dark)
+  ul.nav.nav-pills
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+body.bg-warning
+  header:not(.text-light):not(.text-dark)
+  ul.nav.nav-pills
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  color: var(--dark);
+}
+
+body.text-light
+  header:not(.text-light):not(.text-dark)
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  color: var(--dark);
+}
+
 .text-light .page-block a {
   color: var(--light);
 }
