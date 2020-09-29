@@ -27,7 +27,11 @@ class Header extends React.Component {
           ''
         ) : (
           <div>
-            {this.props.editable ? <h3>Header</h3> : ''}
+            {this.props.editable ? (
+              <div className='font-weight-bold'>Header: {this.cleanPath}</div>
+            ) : (
+              ''
+            )}
             <Page
               appRoot={this.props.appRoot}
               editable={this.props.editable}

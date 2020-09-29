@@ -27,7 +27,11 @@ class Footer extends React.Component {
           ''
         ) : (
           <div>
-            {this.props.editable ? <h3>Footer</h3> : ''}
+            {this.props.editable ? (
+              <div className='font-weight-bold'>Footer: {this.cleanPath}</div>
+            ) : (
+              ''
+            )}
             <Page
               appRoot={this.props.appRoot}
               editable={this.props.editable}

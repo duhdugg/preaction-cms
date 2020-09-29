@@ -953,7 +953,9 @@ class App extends React.Component {
             >
               {this.state.editable ? <hr /> : ''}
               {this.state.editable ? (
-                <h3>Page: {this.state.activePathname}</h3>
+                <div className='font-weight-bold'>
+                  Main: {this.state.activePathname}
+                </div>
               ) : (
                 ''
               )}

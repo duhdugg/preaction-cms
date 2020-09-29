@@ -23,7 +23,11 @@ class Jumbo extends React.Component {
   render() {
     return (
       <div>
-        {this.props.editable ? <h3>Jumbotron</h3> : ''}
+        {this.props.editable ? (
+          <div className='font-weight-bold'>Jumbotron: {this.cleanPath}</div>
+        ) : (
+          ''
+        )}
         <Page
           appRoot={this.props.appRoot}
           editable={this.props.editable}
