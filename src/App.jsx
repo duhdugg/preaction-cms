@@ -503,11 +503,7 @@ class App extends React.Component {
                 this.state.siteSettings
               )
               .then(() => {
-                this.emitSave({ action: 'update-settings' }, () => {
-                  if (this.settingsUpdateTimer !== undefined) {
-                    this.loadSettings()
-                  }
-                })
+                this.emitSave({ action: 'update-settings' })
               })
           }, 1000)
         }
