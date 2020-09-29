@@ -457,6 +457,9 @@ body.text-light
 .page-block > .text-light .page-block-content > .text-dark:not(.bg-warning) a {
   color: var(--primary);
 }
+.text-dark .page-block > .text-light a {
+  color: var(--light);
+}
 
 .page-block > .bg-warning .page-block-content > .text-dark:not(.bg-warning) a {
   color: var(--primary);
