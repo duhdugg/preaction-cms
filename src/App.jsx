@@ -65,7 +65,11 @@ function setGlobalRelativeLinkHandler(relativeLinkHandler) {
 class Router extends React.Component {
   render() {
     return ssr ? (
-      <StaticRouter location={this.props.location} context={{}}>
+      <StaticRouter
+        basename={this.props.basename}
+        location={this.props.location}
+        context={{}}
+      >
         {this.props.children}
       </StaticRouter>
     ) : test ? (
@@ -828,7 +832,7 @@ class App extends React.Component {
           this.state.editable ? 'editable' : 'non-editable'
         } ${navPositionClassName} ${navActiveSubmenuThemeClassName} ${navActiveTabThemeClassName}`}
       >
-        <Router basename={`${this.root}/`} location={this.state.activePathname}>
+        <Router basename={this.root} location={this.state.activePathname}>
           <div>
             {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
             {this.state.navigate ? (
@@ -845,7 +849,7 @@ class App extends React.Component {
                     theme={this.settings.navbarTheme}
                     brand={{
                       name: this.settings.siteTitle,
-                      href: `${this.root}/${this.siteMap.path}${
+                      href: `/${this.siteMap.path}${
                         this.siteMap.key === 'home' ? '' : '/'
                       }`,
                       onClick: (e) => {
