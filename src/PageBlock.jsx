@@ -543,12 +543,27 @@ function PageBlock(props) {
                 ''
               )}
               {props.block.blockType === 'iframe' ? (
-                <div className='iframe-src-field'>
-                  <Input
-                    label='URL'
-                    value={props.block.settings.iframeSrc}
-                    valueHandler={getPageBlockSettingsValueHandler('iframeSrc')}
-                  />
+                <div>
+                  <div className='iframe-height-field'>
+                    <Input
+                      type='number'
+                      label='Height'
+                      info='If the URL is of the same origin, the frame will be automatically resized to the height of its contents.'
+                      min='0.0625'
+                      step='0.0625'
+                      value={props.block.settings.height || '32'}
+                      valueHandler={getPageBlockSettingsValueHandler('height')}
+                    />
+                  </div>
+                  <div className='iframe-src-field'>
+                    <Input
+                      label='URL'
+                      value={props.block.settings.iframeSrc}
+                      valueHandler={getPageBlockSettingsValueHandler(
+                        'iframeSrc'
+                      )}
+                    />
+                  </div>
                 </div>
               ) : (
                 ''

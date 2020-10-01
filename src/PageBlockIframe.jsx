@@ -10,7 +10,7 @@ function PageBlockIframe(props) {
     if (firstRender.current) {
       firstRender.current = false
       iframeResizeInterval.current = setInterval(() => {
-        let h = '10em'
+        let h = `${props.block.settings.height || 32}em`
         try {
           h = iframe.current.contentWindow.document.body.clientHeight + 'px'
         } catch {}
@@ -23,7 +23,7 @@ function PageBlockIframe(props) {
       clearInterval(iframeResizeInterval)
       iframeResizeInterval.current = null
     }
-  }, [iframeResizeInterval, iframe, height, firstRender])
+  }, [iframeResizeInterval, iframe, height, firstRender, props])
   return (
     <iframe
       src={props.block.settings.iframeSrc}
