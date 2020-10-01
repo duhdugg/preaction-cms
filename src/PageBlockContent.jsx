@@ -82,7 +82,7 @@ function PageBlockContent(props) {
       column
       header={header}
       headerTheme={props.content.settings.headerTheme || 'dark'}
-      bodyTheme={
+      theme={
         props.content.settings.header || props.content.settings.pad
           ? props.content.settings.bodyTheme || 'transparent'
           : undefined

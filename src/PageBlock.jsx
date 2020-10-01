@@ -96,7 +96,7 @@ function PageBlock(props) {
       }}
       header={header}
       headerTheme={props.block.settings.headerTheme || 'dark'}
-      bodyTheme={
+      theme={
         props.block.settings.header || props.block.settings.pad
           ? props.block.settings.bodyTheme || 'transparent'
           : undefined
