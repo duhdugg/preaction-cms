@@ -186,6 +186,10 @@ hr {
   color: var(--primary);
 }
 
+.text-dark:not(.bg-warning) .page-block .bg-warning a {
+  color: var(--dark);
+}
+
 .bg-warning .page-block a {
   color: var(--dark);
 }
@@ -454,11 +458,32 @@ body.text-light
   color: var(--dark);
 }
 
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block
+  > .bg-warning
+  .text-light
+  a {
+  color: var(--light);
+}
+
+.jumbotron:not(.text-light):not(.text-dark):not(.bg-transparent)
+  .page-block
+  > .bg-warning
+  .text-dark:not(.bg-warning)
+  a {
+  color: var(--primary);
+}
+
 .page-block > .text-light .page-block-content > .text-dark:not(.bg-warning) a {
   color: var(--primary);
 }
+
 .text-dark .page-block > .text-light a {
   color: var(--light);
+}
+
+.text-dark .page-block > .text-light .bg-warning a {
+  color: var(--dark);
 }
 
 .page-block > .bg-warning .page-block-content > .text-dark:not(.bg-warning) a {
