@@ -122,6 +122,7 @@ class App extends React.Component {
         navPosition: 'fixed-top',
       },
       token: '',
+      windowId: `${+new Date()}:${Math.random()}`,
     }
     this.settingsUpdateTimer = null // used to set a delay on settings updates
     this.socket = null // for socket.io-enabled features
@@ -233,10 +234,14 @@ class App extends React.Component {
   // tell the server that an edit was made
   emitSave(data = {}, callback = () => {}) {
     if (this.props.socketMode) {
-      this.socket.emit('save', data, () => {
-        this.loadSiteMap()
-        callback()
-      })
+      this.socket.emit(
+        'save',
+        Object.assign({}, data, { windowId: this.state.windowId }),
+        () => {
+          this.loadSiteMap()
+          callback()
+        }
+      )
     } else {
       this.loadSiteMap()
       callback()
@@ -1167,7 +1172,7 @@ class App extends React.Component {
     if (this.props.socketMode && globalThis.io) {
       this.socket = globalThis.io({ path: `${this.root}/socket.io` })
       this.socket.on('load', (data) => {
-        if (!this.state.editable) {
+        if (this.state.windowId !== data.windowId) {
           this.reload(data)
         }
       })
