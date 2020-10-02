@@ -172,6 +172,13 @@ hr {
   .page-block a {
     color: var(--primary);
   }
+  ul.nav > li.nav-item > a.nav-link {
+    color: var(--primary);
+  }
+  ul.nav.nav-pills > li.nav-item > a.nav-link.active {
+    background-color: var(--primary);
+    color: var(--light);
+  }
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--dark);
   }
@@ -181,6 +188,13 @@ hr {
   .page-block a {
     color: var(--light);
   }
+  ul.nav > li.nav-item > a.nav-link {
+    color: var(--light);
+  }
+  ul.nav.nav-pills > li.nav-item > a.nav-link.active {
+    background-color: var(--light);
+    color: var(--dark);
+  }
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--light);
   }
@@ -189,6 +203,13 @@ hr {
 @mixin section-warning-bg-links {
   .page-block a {
     color: var(--dark);
+  }
+  ul.nav > li.nav-item > a.nav-link {
+    color: var(--dark);
+  }
+  ul.nav.nav-pills > li.nav-item > a.nav-link.active {
+    background-color: var(--dark);
+    color: var(--light);
   }
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--dark);
@@ -287,5 +308,137 @@ hr {
   .text-light {
     @include section-dark-bg-links;
     @include page-block-and-content-rules;
+  }
+}
+
+ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
+  border: 1px solid transparent;
+}
+
+.App.nav-active-tab-theme-danger
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--danger);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-dark
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-info
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--info);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-light
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+.App.nav-active-tab-theme-primary
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--primary);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-secondary
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--secondary);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-success
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--success);
+  color: var(--light);
+}
+
+.App.nav-active-tab-theme-warning
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--warning);
+  color: var(--dark);
+}
+
+.App.nav-active-tab-theme-white
+  ul.nav.nav-tabs
+  > li.nav-item
+  > a.nav-link.active {
+  background-color: var(--white);
+  color: var(--dark);
+}
+
+.App.nav-active-submenu-theme-danger ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--danger);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-dark ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--dark);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-info ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--info);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-primary ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--primary);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-secondary ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--secondary);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-success ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--success);
+    color: var(--light);
+  }
+}
+
+.App.nav-active-submenu-theme-warning ul.nav .dropdown-menu {
+  a.dropdown-item.active,
+  a.dropdown-item:active {
+    background-color: var(--warning);
+    color: var(--dark);
   }
 }
