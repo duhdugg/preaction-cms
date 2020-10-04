@@ -888,13 +888,7 @@ class Page extends React.Component {
         ) : (
           ''
         )}
-        {this.state.status === 'loading' ? (
-          <div className='spinner-container'>
-            <Spinner size='3.25' />
-          </div>
-        ) : (
-          ''
-        )}
+        {this.state.status === 'loading' ? <Spinner size='3.25' /> : ''}
         {this.state.status === 'error' ? (
           <ErrorMessage errorMessage={this.state.errorMessage} />
         ) : (
