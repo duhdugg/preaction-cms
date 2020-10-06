@@ -614,6 +614,8 @@ class Page extends React.Component {
         content.ordering++
         let nextContent = contents[index + 1]
         nextContent.ordering--
+        delete content.wysiwyg
+        delete nextContent.wysiwyg
         axios
           .put(
             `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
