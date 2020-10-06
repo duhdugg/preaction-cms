@@ -580,6 +580,8 @@ class Page extends React.Component {
         content.ordering--
         let prevContent = contents[index - 1]
         prevContent.ordering++
+        delete content.wysiwyg
+        delete prevContent.wysiwyg
         axios
           .put(
             `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
