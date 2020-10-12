@@ -1041,6 +1041,7 @@ class App extends React.Component {
                             token={this.state.token}
                             initPage={this.props.initPage}
                             init404={this.props.init404}
+                            initError={this.props.initError}
                           />
                         )
                     }
@@ -1222,6 +1223,7 @@ class App extends React.Component {
 
 App.propTypes = {
   init404: PropTypes.bool,
+  initError: PropTypes.string,
   initPage: PropTypes.object,
   initPath: PropTypes.string.isRequired,
   initSettings: PropTypes.object,

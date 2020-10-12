@@ -31,7 +31,13 @@ class Page extends React.Component {
       showSettings: false,
       status: undefined,
     }
-    if (this.props.init404) {
+    if (this.props.initError) {
+      this.state.status = 'error'
+      this.state.errorMessage = this.props.initError
+      if (!ssr) {
+        this.onError(this.props.initError)
+      }
+    } else if (this.props.init404) {
       this.state.status = 'notFound'
       if (!ssr) {
         this.onNotFound()
@@ -933,6 +939,7 @@ Page.propTypes = {
   headerControl: PropTypes.func,
   jumboControl: PropTypes.func,
   init404: PropTypes.bool,
+  initError: PropTypes.string,
   initPage: PropTypes.object,
   navigate: PropTypes.func.isRequired,
   onError: PropTypes.func,
