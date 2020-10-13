@@ -11,6 +11,7 @@ import {
   MdFilterFrames,
   MdSettingsInputComponent,
   MdSpaceBar,
+  MdViewCarousel,
 } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
@@ -517,6 +518,18 @@ class Page extends React.Component {
         ),
         icon: 'arrow-dropdown',
         subMenu: [
+          {
+            className: 'add-carousel-block',
+            name: (
+              <span>
+                <MdViewCarousel /> Carousel
+              </span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              this.addPageBlock({ blockType: 'carousel' })
+            },
+          },
           {
             className: 'add-content-block',
             name: (

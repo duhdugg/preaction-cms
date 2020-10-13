@@ -1,11 +1,19 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import PageBlockCarousel from './PageBlockCarousel.jsx'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
-import { Card, Modal } from '@preaction/bootstrap-clips'
+import { Alert, Card, Modal } from '@preaction/bootstrap-clips'
 import { Form, Input, Checkbox, Select } from '@preaction/inputs'
-import { MdImage, MdLink, MdFileUpload, MdSpaceBar } from 'react-icons/md'
+import {
+  MdArrowBack,
+  MdArrowForward,
+  MdImage,
+  MdLink,
+  MdFileUpload,
+  MdSpaceBar,
+} from 'react-icons/md'
 import {
   MdArrowUpward,
   MdArrowDownward,
@@ -81,6 +89,23 @@ function PageBlock(props) {
           header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
         }`
       : 0
+  let bodyPadding = header || props.block.settings.pad ? '1em' : 0
+  if (bodyPadding) {
+    if (props.block.blockType === 'carousel') {
+      let top = '1em'
+      let right = '1em'
+      let bottom = '1em'
+      let left = '1em'
+      if (props.block.settings.arrows || props.block.settings.arrows2) {
+        right = '2em'
+        left = '2em'
+      }
+      if (props.block.settings.paginationDots) {
+        bottom = '2em'
+      }
+      bodyPadding = `${top} ${right} ${bottom} ${left}`
+    }
+  }
 
   return (
     <Card
@@ -104,7 +129,7 @@ function PageBlock(props) {
       footerTheme={props.block.settings.headerTheme || 'dark'}
       style={{
         body: {
-          padding: header || props.block.settings.pad ? '1em' : 0,
+          padding: bodyPadding,
           border: 0,
         },
         card: {
@@ -169,7 +194,7 @@ function PageBlock(props) {
             ) : (
               ''
             )}
-            {props.block.blockType === 'content' ? (
+            {['carousel', 'content'].includes(props.block.blockType) ? (
               <button
                 type='button'
                 className='btn btn-secondary btn-sm upload-images'
@@ -186,7 +211,7 @@ function PageBlock(props) {
             ) : (
               ''
             )}
-            {props.block.blockType === 'content' ? (
+            {['carousel', 'content'].includes(props.block.blockType) ? (
               <button
                 type='button'
                 className='btn btn-secondary btn-sm add-images-by-url'
@@ -232,6 +257,14 @@ function PageBlock(props) {
         )
       }
     >
+      {props.block.blockType === 'carousel' ? (
+        <PageBlockCarousel
+          block={props.block}
+          getContents={props.getContents}
+        />
+      ) : (
+        ''
+      )}
       {props.block.blockType === 'content' ? (
         <div className='row'>
           {props
@@ -506,6 +539,413 @@ function PageBlock(props) {
                   valueHandler={getPageBlockSettingsValueHandler('xsWidth')}
                 />
               </div>
+              {props.block.blockType === 'carousel' ? (
+                <div>
+                  <div className='carousel-primary row'>
+                    <Card
+                      header='Animation'
+                      headerTheme='dark'
+                      className={{ card: 'carousel-animation-settings mb-3' }}
+                      column
+                      width={{ sm: 1 / 2 }}
+                    >
+                      <div className='carousel-speed-field'>
+                        <Input
+                          type='number'
+                          label='Animation Speed (in milliseconds)'
+                          placeholder='300'
+                          value={props.block.settings.speed || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'speed'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-fade-field'>
+                        <Checkbox
+                          label='Fade Animation (instead of slide)'
+                          checked={props.block.settings.fade || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'fade'
+                          )}
+                        />
+                      </div>
+                    </Card>
+                    <Card
+                      className={{ card: 'carousel-autoplay-settings mb-3' }}
+                      header='Autoplay'
+                      headerTheme='dark'
+                      column
+                      width={{ sm: 1 / 2 }}
+                    >
+                      <div className='carousel-autoplay-field'>
+                        <Checkbox
+                          label='Autoplay'
+                          checked={props.block.settings.autoplay || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'autoplay'
+                          )}
+                        />
+                      </div>
+                      {props.block.settings.autoplay ? (
+                        <div className='carousel-autoplay-speed-field'>
+                          <Input
+                            type='number'
+                            step='1'
+                            min='1'
+                            placeholder='3000'
+                            label='Autoplay Speed (in milliseconds)'
+                            value={props.block.settings.autoplaySpeed || ''}
+                            valueHandler={getPageBlockSettingsValueHandler(
+                              'autoplaySpeed'
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {props.block.settings.autoplay ? (
+                        <div className='carousel-autoplay-pause-on-hover-field'>
+                          <Checkbox
+                            label='Pause Autoplay on Hover'
+                            checked={
+                              props.block.settings.autoplayPauseOnHover || false
+                            }
+                            valueHandler={getPageBlockSettingsValueHandler(
+                              'autoplayPauseOnHover'
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </Card>
+                    <Card
+                      className={{ card: 'carousel-layout-settings mb-3' }}
+                      header='Layout'
+                      headerTheme='dark'
+                      column
+                      width={{ sm: 1 / 2 }}
+                    >
+                      <div className='carousel-rows-field'>
+                        <Input
+                          type='number'
+                          min='1'
+                          step='1'
+                          label='Rows'
+                          placeholder='1'
+                          value={props.block.settings.rows || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'rows'
+                          )}
+                        />
+                        {props.block.settings.thumbnailPagination ? (
+                          <Alert>
+                            The <strong>Rows</strong> setting is ignored when{' '}
+                            <strong>Thumbnail Pagination</strong> is enabled.
+                          </Alert>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <div className='carousel-slides-per-row-field'>
+                        <Input
+                          type='number'
+                          min='1'
+                          step='1'
+                          label='Slides per Row'
+                          placeholder='1'
+                          value={props.block.settings.slidesPerRow || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'slidesPerRow'
+                          )}
+                        />
+                        {props.block.settings.thumbnailPagination ? (
+                          <Alert>
+                            The <strong>Slides per Row</strong> setting is
+                            ignored when <strong>Thumbnail Pagination</strong>{' '}
+                            is enabled.
+                          </Alert>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <div className='carousel-slides-to-show-field'>
+                        <Input
+                          type='number'
+                          min='1'
+                          step='1'
+                          label='Slides to Show'
+                          placeholder='1'
+                          value={props.block.settings.slidesToShow || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'slidesToShow'
+                          )}
+                        />
+                        {props.block.settings.fade ? (
+                          <Alert>
+                            The <strong>Slides to Show</strong> setting is
+                            ignored when <strong>Fade Animation</strong> is
+                            enabled.
+                          </Alert>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <div className='carousel-slides-to-scroll-field'>
+                        <Input
+                          type='number'
+                          min='1'
+                          step='1'
+                          label='Slides to Scroll'
+                          placeholder='1'
+                          value={props.block.settings.slidesToScroll || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'slidesToScroll'
+                          )}
+                        />
+                        {props.block.settings.fade ||
+                        props.block.settings.centerMode ||
+                        props.block.settings.thumbnailPagination ? (
+                          <Alert>
+                            The <strong>Slides to Scroll</strong> setting is
+                            ignored when <strong>Fade Animation</strong>,{' '}
+                            <strong>Center Mode</strong>, and/or{' '}
+                            <strong>Thumbnail Pagination</strong> are enabled.
+                          </Alert>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                    </Card>
+                    <Card
+                      className={{ card: 'carousel-behavior-settings mb-3' }}
+                      header='Behavior'
+                      headerTheme='dark'
+                      column
+                      width={{ sm: 1 / 2 }}
+                    >
+                      <div className='carousel-arrows-field'>
+                        <Checkbox
+                          label='Arrows'
+                          checked={props.block.settings.arrows || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'arrows'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-pagination-dots-field'>
+                        <Checkbox
+                          label='Pagination Dots'
+                          checked={props.block.settings.paginationDots || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'paginationDots'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-thumbnail-pagination-field'>
+                        <Checkbox
+                          label='Thumbnail Pagination'
+                          checked={
+                            props.block.settings.thumbnailPagination || false
+                          }
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'thumbnailPagination'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-swipe-field'>
+                        <Checkbox
+                          label='Swipe'
+                          checked={props.block.settings.swipe || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'swipe'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-focus-on-select-field'>
+                        <Checkbox
+                          label='Focus on Select'
+                          checked={props.block.settings.focusOnSelect || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'focusOnSelect'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-keyboard-navigation-field'>
+                        <Checkbox
+                          label='Keyboard Navigation'
+                          checked={
+                            props.block.settings.keyboardNavigation || false
+                          }
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'keyboardNavigation'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-center-mode-field'>
+                        <Checkbox
+                          label='Center Mode'
+                          checked={props.block.settings.centerMode || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'centerMode'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-infinite-field'>
+                        <Checkbox
+                          label='Infinite'
+                          checked={props.block.settings.infinite || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'infinite'
+                          )}
+                        />
+                      </div>
+                    </Card>
+                  </div>
+                  {props.block.settings.thumbnailPagination ? (
+                    <Card
+                      header='Thumbnail Pagination Options'
+                      theme='secondary'
+                      className={{ card: 'mb-3 carousel-secondary' }}
+                    >
+                      <div className='carousel-speed-field'>
+                        <Input
+                          type='number'
+                          label='Animation Speed (in milliseconds)'
+                          placeholder='300'
+                          value={props.block.settings.speed2 || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'speed2'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-slides-to-show-field'>
+                        <Input
+                          type='number'
+                          min='1'
+                          step='1'
+                          label='Slides to Show'
+                          placeholder='3'
+                          value={props.block.settings.slidesToShow2 || ''}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'slidesToShow2'
+                          )}
+                        />
+                      </div>
+                      <div className='carousel-arrows-field'>
+                        <Checkbox
+                          label='Arrows'
+                          checked={props.block.settings.arrows2 || false}
+                          valueHandler={getPageBlockSettingsValueHandler(
+                            'arrows2'
+                          )}
+                        />
+                      </div>
+                    </Card>
+                  ) : (
+                    ''
+                  )}
+                  <Card header='Images' headerTheme='dark'>
+                    <div className='row'>
+                      {props
+                        .getContents(props.block.pageblockcontents || [])
+                        .map((content, index) => (
+                          <Card
+                            className={{ card: 'mb-3', footer: 'p-0' }}
+                            key={content.id}
+                            headerTheme='white'
+                            footerTheme='dark'
+                            column
+                            width={{
+                              xs: 1,
+                              md: 1 / 2,
+                            }}
+                            header={
+                              <img
+                                width='100%'
+                                src={content.settings.src}
+                                alt={content.settings.altText}
+                                title={content.settings.altText}
+                              />
+                            }
+                            footer={
+                              <div className='btn-group d-block'>
+                                <button
+                                  type='button'
+                                  className='btn btn-sm btn-secondary move-content previous'
+                                  disabled={index === 0}
+                                  onClick={() => {
+                                    props.contentControl(
+                                      props.block,
+                                      index,
+                                      'previous'
+                                    )
+                                  }}
+                                  title='Move Content: Previous'
+                                >
+                                  <MdArrowBack />
+                                </button>
+                                <button
+                                  type='button'
+                                  disabled={
+                                    index ===
+                                    props.block.pageblockcontents.length - 1
+                                  }
+                                  className='btn btn-sm btn-secondary move-content next'
+                                  onClick={() => {
+                                    props.contentControl(
+                                      props.block,
+                                      index,
+                                      'next'
+                                    )
+                                  }}
+                                  title='Move Content: Next'
+                                >
+                                  <MdArrowForward />
+                                </button>
+                                <button
+                                  type='button'
+                                  className='btn btn-sm btn-danger delete-content'
+                                  onClick={() => {
+                                    props.contentControl(
+                                      props.block,
+                                      index,
+                                      'delete'
+                                    )
+                                  }}
+                                  title='Delete Content'
+                                >
+                                  <MdDelete />
+                                </button>
+                              </div>
+                            }
+                          >
+                            <div className='img-src-field'>
+                              <Input
+                                label='Image Source'
+                                value={content.settings.src}
+                                valueHandler={getContentSettingsValueHandler(
+                                  content.id
+                                )('src')}
+                              />
+                            </div>
+                            <div className='alt-text-field'>
+                              <Input
+                                label='Alt Text'
+                                value={content.settings.altText || ''}
+                                valueHandler={getContentSettingsValueHandler(
+                                  content.id
+                                )('altText')}
+                              />
+                            </div>
+                          </Card>
+                        ))}
+                    </div>
+                  </Card>
+                </div>
+              ) : (
+                ''
+              )}
               {props.block.blockType === 'nav' ? (
                 <div>
                   <div className='nav-alignment-field'>
@@ -608,7 +1048,8 @@ function PageBlock(props) {
       ) : (
         ''
       )}
-      {props.editable && props.block.blockType === 'content' ? (
+      {props.editable &&
+      ['carousel', 'content'].includes(props.block.blockType) ? (
         <div>
           <form
             method='POST'

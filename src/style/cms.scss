@@ -65,6 +65,34 @@ hr {
   margin-bottom: 1em;
 }
 
+.block-type-carousel {
+  .slick-slide > div {
+    font-size: 0;
+  }
+}
+
+.block-type-carousel {
+  .carousel-center-mode,
+  .thumbnail-pagination {
+    .slick-slide {
+      opacity: 0.7;
+      transition: opacity 300ms linear;
+      &:hover {
+        opacity: 0.85;
+      }
+      &.slick-center {
+        opacity: 1;
+      }
+    }
+  }
+  .thumbnail-pagination,
+  .carousel-focus-on-select {
+    .slick-slide img {
+      cursor: pointer;
+    }
+  }
+}
+
 .block-type-content {
   > .card-body > .row > div:last-child > .page-block-content {
     margin-bottom: 0;
@@ -168,6 +196,22 @@ hr {
 
 /* link colors */
 
+@mixin carousel-light-bg-controls {
+  button.slick-arrow:before,
+  .slick-dots > li > button:before,
+  .slick-dots > li.slick-active > button:before {
+    color: var(--dark);
+  }
+}
+
+@mixin carousel-dark-bg-controls {
+  button.slick-arrow:before,
+  .slick-dots > li > button:before,
+  .slick-dots > li.slick-active > button:before {
+    color: var(--light);
+  }
+}
+
 @mixin section-light-bg-links {
   .page-block a {
     color: var(--primary);
@@ -182,6 +226,7 @@ hr {
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--dark);
   }
+  @include carousel-light-bg-controls;
 }
 
 @mixin section-dark-bg-links {
@@ -198,6 +243,7 @@ hr {
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--light);
   }
+  @include carousel-dark-bg-controls;
 }
 
 @mixin section-warning-bg-links {
@@ -214,6 +260,7 @@ hr {
   .page-controls > .nav > .nav-item > a.nav-link {
     color: var(--dark);
   }
+  @include carousel-light-bg-controls;
 }
 
 @mixin page-block-and-content-rules {
@@ -223,17 +270,20 @@ hr {
       a {
         color: var(--light);
       }
+      @include carousel-dark-bg-controls;
     }
     &.bg-light,
     &.bg-white {
       a {
         color: var(--primary);
       }
+      @include carousel-light-bg-controls;
     }
     &.bg-warning {
       a {
         color: var(--dark);
       }
+      @include carousel-light-bg-controls;
     }
   }
   .page-block.text-light,
@@ -245,17 +295,20 @@ hr {
         a {
           color: var(--light);
         }
+        @include carousel-dark-bg-controls;
       }
       &.bg-light,
       &.bg-white {
         a {
           color: var(--primary);
         }
+        @include carousel-light-bg-controls;
       }
       &.bg-warning {
         a {
           color: var(--dark);
         }
+        @include carousel-light-bg-controls;
       }
     }
   }
