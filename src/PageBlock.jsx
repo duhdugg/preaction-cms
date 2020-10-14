@@ -846,6 +846,14 @@ function PageBlock(props) {
                     ''
                   )}
                   <Card header='Images' headerTheme='dark'>
+                    <Alert>
+                      For best results, images should be the same dimensions, or
+                      at least have the same width:height ratio. Also, the total
+                      number of images should equal a multiple of{' '}
+                      <strong>Rows</strong> &times;{' '}
+                      <strong>Slides per Row</strong> &times;{' '}
+                      <strong>Slides to Show</strong>.
+                    </Alert>
                     <div className='row'>
                       {props
                         .getContents(props.block.pageblockcontents || [])
