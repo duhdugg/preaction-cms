@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import globalthis from 'globalthis'
+import loadable from '@loadable/component'
 import {
   BrowserRouter,
   StaticRouter,
@@ -17,9 +18,9 @@ import {
   Modal,
   NavBar,
   Nav,
+  Spinner,
   getClassesForTheme,
 } from '@preaction/bootstrap-clips'
-import { Input } from '@preaction/inputs'
 import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
@@ -29,12 +30,20 @@ import Jumbo from './Jumbo.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
-import SiteSettings from './SiteSettings.jsx'
 
 import absoluteUrl from './lib/absoluteUrl.js'
 import getSaneKey from './lib/getSaneKey.js'
 import { menuExtensions } from './ext'
 import env from './lib/env.js'
+
+const NewPage = loadable(() => import('./settingsModules.js'), {
+  fallback: <Spinner size='3.25' />,
+  resolveComponent: (module) => module.NewPage,
+})
+const SiteSettings = loadable(() => import('./settingsModules.js'), {
+  fallback: <Spinner size='3.25' />,
+  resolveComponent: (module) => module.SiteSettings,
+})
 
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
@@ -130,6 +139,7 @@ class App extends React.Component {
     this.header = React.createRef()
     this.footer = React.createRef()
     this.jumbo = React.createRef()
+
     setGlobalRelativeLinkHandler((href) => {
       if (!this.state.editable) {
         this.navigate(href)
@@ -797,6 +807,16 @@ class App extends React.Component {
     this.setState({ token })
   }
 
+  submitNewPage() {
+    this.createPage(this.state.newPage)
+    this.toggleNewPage()
+    this.setState((state) => {
+      state.newPage.title = ''
+      state.newPage.key = ''
+      return state
+    })
+  }
+
   trackPageView() {
     if (globalThis.gtag && globalThis.gtagId) {
       globalThis.gtag('config', globalThis.gtagId, {
@@ -1099,14 +1119,11 @@ class App extends React.Component {
                     type='button'
                     className='btn btn-success'
                     onClick={() => {
-                      if (this.state.newPage.title) {
-                        this.createPage(this.state.newPage)
-                        this.toggleNewPage()
-                        this.setState((state) => {
-                          state.newPage.title = ''
-                          state.newPage.key = ''
-                          return state
-                        })
+                      const form = document.querySelector(
+                        '.new-page-modal-container form'
+                      )
+                      if (form && form.checkValidity()) {
+                        this.submitNewPage()
                       }
                     }}
                   >
@@ -1124,35 +1141,12 @@ class App extends React.Component {
                 </div>
               }
             >
-              <form onSubmit={(e) => e.preventDefault()}>
-                <Input
-                  type='text'
-                  label='Page Title'
-                  value={this.state.newPage.title}
-                  valueHandler={this.getNewPageValueHandler('title')}
-                  required
-                />
-                <Input
-                  type='text'
-                  label='URL Path'
-                  value={this.state.newPage.key}
-                  valueHandler={this.getNewPageValueHandler('key')}
-                  required
-                />
-                {this.state.newPage.key ? (
-                  <Input
-                    type='text'
-                    label='Full Path'
-                    value={`${this.state.activePathname.replace(
-                      /^\/home\//,
-                      '/'
-                    )}${this.state.newPage.key}/`}
-                    readOnly
-                  />
-                ) : (
-                  ''
-                )}
-              </form>
+              <NewPage
+                activePathname={this.state.activePathname}
+                getValueHandler={this.getNewPageValueHandler.bind(this)}
+                newPage={this.state.newPage}
+                submit={this.submitNewPage.bind(this)}
+              />
             </Modal>
           </div>
         ) : (

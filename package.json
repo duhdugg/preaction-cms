@@ -26,6 +26,7 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
+    "@loadable/component": "5.13.1",
     "@preaction/bootstrap-clips": "^3.0.0-beta.5",
     "@preaction/inputs": "^3.0.0-beta.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -57,6 +58,7 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js' --html stats.html && xdg-open stats.html",
+    "analyze-gzip": "source-map-explorer 'build/static/js/*.js' --html stats.html --gzip && xdg-open stats.html",
     "backup-db": "node scripts/backup-db.js",
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",

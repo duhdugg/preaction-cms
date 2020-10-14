@@ -1,11 +1,11 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
+import loadable from '@loadable/component'
 import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
 import PageBlock from './PageBlock.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
-import PageSettings from './PageSettings.jsx'
 import {
   MdCreate,
   MdFilterFrames,
@@ -17,6 +17,11 @@ import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import globalthis from 'globalthis'
 import { blockExtensions } from './ext'
 import env from './lib/env.js'
+
+const PageSettings = loadable(() => import('./settingsModules.js'), {
+  fallback: <Spinner size='3.25' />,
+  resolveComponent: (module) => module.PageSettings,
+})
 
 const globalThis = globalthis()
 const ssr = typeof window === 'undefined'

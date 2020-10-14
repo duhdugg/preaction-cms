@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import loadable from '@loadable/component'
-import { timeout } from 'promise-timeout'
-
-const Slider = loadable(() => timeout(import('react-slick'), 5000))
+import Slider from 'react-slick'
 
 const parseIntFallback = (x, fallback) => {
   let retval = parseInt(x)
@@ -95,11 +92,27 @@ function PageBlockCarousel(props) {
   return (
     <div
       className={[
+        'carousel-container',
         props.block.settings.centerMode ? 'carousel-center-mode' : '',
         props.block.settings.focusOnSelect ? 'carousel-focus-on-select' : '',
       ]
         .filter((x) => !!x.length)
         .join(' ')}
+      style={{
+        paddingLeft:
+          props.block.settings.arrows ||
+          (props.block.settings.thumbnailPagination &&
+            props.block.settings.arrows2)
+            ? '1em'
+            : 0,
+        paddingRight:
+          props.block.settings.arrows ||
+          (props.block.settings.thumbnailPagination &&
+            props.block.settings.arrows2)
+            ? '1em'
+            : 0,
+        paddingBottom: props.block.settings.paginationDots ? '1em' : 0,
+      }}
       onMouseEnter={
         props.block.settings.autoplay &&
         props.block.settings.autoplayPauseOnHover
