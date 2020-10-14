@@ -5,6 +5,14 @@ import { timeout } from 'promise-timeout'
 
 const Slider = loadable(() => timeout(import('react-slick'), 5000))
 
+const parseIntFallback = (x, fallback) => {
+  let retval = parseInt(x)
+  if (isNaN(retval)) {
+    retval = fallback
+  }
+  return retval
+}
+
 function PageBlockCarousel(props) {
   const [primarySlider, setPrimarySlider] = React.useState(null)
   const [secondarySlider, setSecondarySlider] = React.useState(null)
@@ -18,7 +26,7 @@ function PageBlockCarousel(props) {
     arrows: props.block.settings.arrows || false,
     asNavFor: secondarySlider,
     autoplay: props.block.settings.autoplay || false,
-    autoplaySpeed: parseInt(props.block.settings.autoplaySpeed || 3000),
+    autoplaySpeed: parseIntFallback(props.block.settings.autoplaySpeed, 3000),
     centerMode: props.block.settings.centerMode || false,
     dots:
       (props.block.settings.paginationDots &&
@@ -34,20 +42,20 @@ function PageBlockCarousel(props) {
     ref: (slider) => setPrimarySlider(slider),
     rows: props.block.settings.thumbnailPagination
       ? 1
-      : parseInt(props.block.settings.rows || 1),
+      : parseIntFallback(props.block.settings.rows, 1),
     slidesPerRow: props.block.settings.thumbnailPagination
       ? 1
-      : parseInt(props.block.settings.slidesPerRow || 1),
+      : parseIntFallback(props.block.settings.slidesPerRow, 1),
     slidesToScroll:
       props.block.settings.fade ||
       props.block.settings.centerMode ||
       props.block.settings.thumbnailPagination
         ? 1
-        : parseInt(props.block.settings.slidesToScroll || 1),
+        : parseIntFallback(props.block.settings.slidesToScroll, 1),
     slidesToShow: props.block.settings.fade
       ? 1
-      : parseInt(props.block.settings.slidesToShow || 1),
-    speed: parseInt(props.block.settings.speed || 300),
+      : parseIntFallback(props.block.settings.slidesToShow, 1),
+    speed: parseIntFallback(props.block.settings.speed, 300),
     swipe: props.block.settings.swipe || false,
     swipeToSlide: props.block.settings.swipe || false,
     waitForAnimate: false,
@@ -68,8 +76,8 @@ function PageBlockCarousel(props) {
     rows: 1,
     slidesPerRow: 1,
     slidesToScroll: 1,
-    slidesToShow: parseInt(props.block.settings.slidesToShow2 || 3),
-    speed: parseInt(props.block.settings.speed2 || 300),
+    slidesToShow: parseIntFallback(props.block.settings.slidesToShow2 || 3),
+    speed: parseIntFallback(props.block.settings.speed2 || 300),
     swipe: true,
     swipeToSlide: true,
     waitForAnimate: false,
