@@ -1119,12 +1119,10 @@ class App extends React.Component {
                     type='button'
                     className='btn btn-success'
                     onClick={() => {
-                      const form = document.querySelector(
-                        '.new-page-modal-container form'
+                      const btn = document.querySelector(
+                        '.new-page-modal-container form .btn.d-none'
                       )
-                      if (form && form.checkValidity()) {
-                        this.submitNewPage()
-                      }
+                      btn.click()
                     }}
                   >
                     Save
