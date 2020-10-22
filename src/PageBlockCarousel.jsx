@@ -11,6 +11,8 @@ const parseIntFallback = (x, fallback) => {
 }
 
 function PageBlockCarousel(props) {
+  const [carouselContainer, setCarouselContainer] = React.useState(null)
+  const [containerWidth, setContainerWidth] = React.useState(0)
   const [primarySlider, setPrimarySlider] = React.useState(null)
   const [secondarySlider, setSecondarySlider] = React.useState(null)
 
@@ -19,7 +21,7 @@ function PageBlockCarousel(props) {
       props.block.settings.keyboardNavigation !== undefined
         ? props.block.settings.keyboardNavigation
         : true,
-    adaptiveHeight: true,
+    adaptiveHeight: false,
     arrows: props.block.settings.arrows || false,
     asNavFor: secondarySlider,
     autoplay: props.block.settings.autoplay || false,
@@ -60,7 +62,7 @@ function PageBlockCarousel(props) {
 
   const secondarySliderProps = {
     accessibility: true,
-    adaptiveHeight: true,
+    adaptiveHeight: false,
     arrows: props.block.settings.arrows2 || false,
     asNavFor: primarySlider,
     centerMode: true,
@@ -73,8 +75,8 @@ function PageBlockCarousel(props) {
     rows: 1,
     slidesPerRow: 1,
     slidesToScroll: 1,
-    slidesToShow: parseIntFallback(props.block.settings.slidesToShow2 || 3),
-    speed: parseIntFallback(props.block.settings.speed2 || 300),
+    slidesToShow: parseIntFallback(props.block.settings.slidesToShow2, 3),
+    speed: parseIntFallback(props.block.settings.speed2, 300),
     swipe: true,
     swipeToSlide: true,
     waitForAnimate: false,
@@ -88,6 +90,48 @@ function PageBlockCarousel(props) {
       primarySlider.slickPlay()
     }
   }, [props.block.settings.autoplay, primarySlider])
+
+  // resize appropriately
+  React.useEffect(() => {
+    function handleResize() {
+      if (carouselContainer) {
+        setContainerWidth(carouselContainer.clientWidth)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  })
+
+  if (carouselContainer && containerWidth !== carouselContainer.clientWidth) {
+    setContainerWidth(carouselContainer.clientWidth)
+  }
+
+  const ratio =
+    Number(props.block.settings.ratioHeight || 9) /
+    Number(props.block.settings.ratioWidth || 16)
+  let width = 0
+  let previewWidth = 0
+  if (containerWidth) {
+    let dividend = 1
+    if (!props.block.settings.thumbnailPagination) {
+      dividend = parseIntFallback(props.block.settings.slidesPerRow, 1)
+    }
+    if (!props.block.settings.fade) {
+      dividend =
+        dividend * parseIntFallback(props.block.settings.slidesToShow, 1)
+    }
+    width =
+      (containerWidth - (props.block.settings.centerMode ? 100 : 0)) / dividend
+    let previewDividend = parseIntFallback(
+      props.block.settings.slidesToShow2,
+      3
+    )
+    previewWidth = (containerWidth - 100) / previewDividend
+  }
+  const height = width * ratio
+  const previewHeight = previewWidth * ratio
 
   return (
     <div
@@ -126,24 +170,27 @@ function PageBlockCarousel(props) {
           : () => {}
       }
     >
-      <Slider {...primarySliderProps}>
-        {props
-          .getContents(props.block.pageblockcontents || [])
-          .map((content) => (
-            <div key={content.id}>
-              <img
-                style={{
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  width: '100%',
-                }}
-                src={content.settings.src}
-                alt={content.settings.altText || ''}
-                title={content.settings.altText || ''}
-              />
-            </div>
-          ))}
-      </Slider>
+      <div ref={(carousel) => setCarouselContainer(carousel)}>
+        <Slider {...primarySliderProps}>
+          {props
+            .getContents(props.block.pageblockcontents || [])
+            .map((content) => (
+              <div key={content.id}>
+                <div
+                  className='img'
+                  style={{
+                    backgroundImage: `url("${content.settings.src}")`,
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
+                    fontSize: '1rem',
+                    height: `${height}px`,
+                  }}
+                ></div>
+              </div>
+            ))}
+        </Slider>
+      </div>
       {props.block.settings.thumbnailPagination ? (
         <div className='thumbnail-pagination'>
           <Slider {...secondarySliderProps}>
@@ -151,16 +198,17 @@ function PageBlockCarousel(props) {
               .getContents(props.block.pageblockcontents || [])
               .map((content) => (
                 <div key={content.id}>
-                  <img
+                  <div
+                    className='img'
                     style={{
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                      width: '100%',
+                      backgroundImage: `url("${content.settings.src}")`,
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: 'contain',
+                      fontSize: '1rem',
+                      height: `${previewHeight}px`,
                     }}
-                    src={content.settings.src}
-                    alt={content.settings.altText || ''}
-                    title={content.settings.altText || ''}
-                  />
+                  ></div>
                 </div>
               ))}
           </Slider>

@@ -284,12 +284,41 @@ function PageBlockCarouselSettings(props) {
       ) : (
         ''
       )}
+      <Card header='Image Width:Height Ratio' headerTheme='dark'>
+        <div className='row'>
+          <div className='col-md-6'>
+            <Input
+              type='number'
+              min='0.01'
+              step='0.01'
+              label='Ratio Width'
+              placeholder='16'
+              value={props.block.settings.ratioWidth}
+              valueHandler={props.getPageBlockSettingsValueHandler(
+                'ratioWidth'
+              )}
+            />
+          </div>
+          <div className='col-md-6'>
+            <Input
+              type='number'
+              min='0.01'
+              step='0.01'
+              label='Ratio Height'
+              placeholder='9'
+              value={props.block.settings.ratioHeight}
+              valueHandler={props.getPageBlockSettingsValueHandler(
+                'ratioHeight'
+              )}
+            />
+          </div>
+        </div>
+      </Card>
       <Card header='Images' headerTheme='dark'>
         <Alert>
-          For best results, images should be the same dimensions, or at least
-          have the same width:height ratio. Also, the total number of images
-          should equal a multiple of <strong>Rows</strong> &times;{' '}
-          <strong>Slides per Row</strong> &times;{' '}
+          For best results, image dimensions should match the specified ratio
+          Also, the total number of images should equal a multiple of{' '}
+          <strong>Rows</strong> &times; <strong>Slides per Row</strong> &times;{' '}
           <strong>Slides to Show</strong>.
         </Alert>
         <div className='row'>
