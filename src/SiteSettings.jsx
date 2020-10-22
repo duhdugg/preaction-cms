@@ -120,6 +120,17 @@ function SiteSettings(props) {
                     valueHandler={props.getSettingsValueHandler('siteTitle')}
                   />
                 </div>
+                <div className='meta-description-field'>
+                  <Input
+                    label='Meta Description'
+                    type='text'
+                    maxLength='160'
+                    value={props.settings.metaDescription}
+                    valueHandler={props.getSettingsValueHandler(
+                      'metaDescription'
+                    )}
+                  />
+                </div>
                 <Card
                   header='Navigation'
                   headerTheme='dark'

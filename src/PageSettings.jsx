@@ -170,6 +170,28 @@ function PageSettings(props) {
                     settingsKey='siteTitle'
                   />
                 </div>
+                <div className='meta-description-field'>
+                  <Input
+                    label='Meta Description'
+                    type='text'
+                    maxLength='160'
+                    value={props.settings.metaDescription}
+                    valueHandler={props.getSettingsValueHandler(
+                      'metaDescription'
+                    )}
+                    readOnly={props.getPageSettingIsUndefined(
+                      'metaDescription'
+                    )}
+                    onClick={() => {
+                      overrideSetting('metaDescription')
+                    }}
+                  />
+                  <ResetButton
+                    getPageSettingIsUndefined={props.getPageSettingIsUndefined}
+                    resetSetting={resetSetting}
+                    settingsKey='metaDescription'
+                  />
+                </div>
                 <Card
                   header='Navigation'
                   headerTheme='dark'

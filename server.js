@@ -9,8 +9,6 @@ const cookieParser = require('cookie-parser')
 const express = require('express')
 // path is needed to generate static build path later
 const path = require('path')
-// excerptHtml is used to generate descriptions from content
-const excerptHtml = require('excerpt-html')
 // sitemap is used to generate sitemaps
 const { SitemapStream } = require('sitemap')
 // zlib is used to gzip sitemap
@@ -120,32 +118,11 @@ if (env.sitemapHostname || env.nodeEnv === 'test') {
   })
 }
 
-// root route should generate description metadata from home page blocks
 app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
   const siteSettings = await settings.getSettings()
   try {
     const page = await pages.getFullPageByPath('/home/', 3)
-    let description = ''
-    const pageblocks = page ? page.pageblocks : []
-    pageblocks.sort((a, b) =>
-      a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
-    )
-    for (const pageblock of pageblocks) {
-      if (pageblock.pageblockcontents) {
-        const contents = pageblock.pageblockcontents
-        contents.sort((a, b) =>
-          a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
-        )
-        for (const pbc of pageblock.pageblockcontents) {
-          if (pbc.wysiwyg) {
-            description += pbc.wysiwyg
-          }
-        }
-      }
-    }
-    // remove line-break paragraphs
-    description = description.replace(/<p><br><\/p>/g, '')
-    description = excerptHtml(description, { pruneLength: 300 })
+    const description = siteSettings.metaDescription
     renderClient(req, res.status(200), { description, page, siteSettings })
   } catch (error) {
     renderClient(req, res.status(404), { init404: true, siteSettings })
@@ -156,8 +133,6 @@ app.route('/').get(ua.middleware, cache.middleware, async (req, res) => {
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 // all other routes should be caught here, served the appropriate page
-// description metadata generated from pageblocks
-// and titles from page+site settings
 app
   .route('*')
   .get(
@@ -184,33 +159,10 @@ app
       }
       try {
         const page = await pages.getFullPageByPath(req.path, 3)
-        // build the description from sorted contents of sort pageblocks
-        let description = ''
-        const pageblocks = page ? page.pageblocks : []
-        // sort pageblocks by ordering attribute
-        pageblocks.sort((a, b) =>
-          a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
-        )
-        for (const pageblock of pageblocks) {
-          if (pageblock.pageblockcontents) {
-            const contents = pageblock.pageblockcontents
-            // sort contents by ordering attribute
-            contents.sort((a, b) =>
-              a.ordering < b.ordering ? -1 : a.ordering > b.ordering ? 1 : 0
-            )
-            for (const pbc of contents) {
-              if (pbc.wysiwyg) {
-                description += pbc.wysiwyg
-              }
-            }
-          }
-        }
-        // remove line-break paragraphs
-        description = description.replace(/<p><br><\/p>/g, '')
-        description = excerptHtml(description, { pruneLength: 300 })
         const appliedSettings = await pages.getAppliedPageSettings(page.id)
         const siteTitle = appliedSettings.siteTitle
         const pageTitle = page.title
+        const description = appliedSettings.metaDescription
         renderClient(req, res.status(200), {
           description,
           siteSettings,
