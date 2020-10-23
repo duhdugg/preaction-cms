@@ -1187,6 +1187,16 @@ class App extends React.Component {
       toggleNewPage: this.toggleNewPage.bind(this),
       toggleSettings: this.toggleSettings.bind(this),
     }
+    if (test) {
+      // provide interface for testing functionality which cannot be reached due to @loadable/component
+      Object.assign(globalThis.preaction, {
+        deletePage: this.deletePage.bind(this),
+        getSettingsValueHandler: this.getSettingsValueHandler.bind(this),
+        getState: () => this.state,
+        setState: this.setState.bind(this),
+        submitNewPage: this.submitNewPage.bind(this),
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

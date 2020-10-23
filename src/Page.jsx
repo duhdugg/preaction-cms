@@ -25,6 +25,7 @@ const PageSettings = loadable(() => import('./settingsModules.js'), {
 
 const globalThis = globalthis()
 const ssr = typeof window === 'undefined'
+const test = env.NODE_ENV === 'test'
 
 class Page extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class Page extends React.Component {
     }
     this.updateTimer = null
     // ref needed for testing
-    if (env.NODE_ENV === 'test') {
+    if (test) {
       this.ref = React.createRef()
     }
   }
@@ -763,7 +764,7 @@ class Page extends React.Component {
             )
           })
           .catch((e) => {
-            if (env.NODE_ENV !== 'test') {
+            if (!test) {
               console.error(e)
             }
             if (e.response && e.response.status === 404) {
@@ -931,10 +932,23 @@ class Page extends React.Component {
     if (!this.state.page) {
       this.loadPage(this.props.path)
     }
-    if (env.NODE_ENV === 'test') {
-      this.ref.current.blockControl = this.blockControl.bind(this)
-      this.ref.current.deletePage = this.deletePage.bind(this)
-      this.ref.current.toggleSettings = this.toggleSettings.bind(this)
+    if (test) {
+      Object.assign(this.ref.current, {
+        getContentSettingsValueHandler: this.getContentSettingsValueHandler.bind(
+          this
+        ),
+        getPageBlockSettingsValueHandler: this.getPageBlockSettingsValueHandler.bind(
+          this
+        ),
+        getPageSettingsResetter: this.getPageSettingsResetter.bind(this),
+        getPageSettingsValueHandler: this.getPageSettingsValueHandler.bind(
+          this
+        ),
+        getPageValueHandler: this.getPageValueHandler.bind(this),
+        blockControl: this.blockControl.bind(this),
+        deletePage: this.deletePage.bind(this),
+        toggleSettings: this.toggleSettings.bind(this),
+      })
     }
   }
 

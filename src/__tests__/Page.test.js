@@ -734,10 +734,12 @@ test('getContentSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  userEvent.click(result.container.querySelectorAll('.btn.content-settings')[0])
-  expect(result.getByText('Content Type "image" Settings')).toBeInTheDocument()
-  expect(result.getByLabelText('Alt Text')).toBeInTheDocument()
-  userEvent.type(result.getByLabelText('Alt Text'), '!')
+  // because the settings modal is behind @loadable/component
+  result.container.firstChild.getContentSettingsValueHandler(
+    19,
+    28,
+    'altText'
+  )('tux3!')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -759,10 +761,11 @@ test('getPageBlockSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  userEvent.click(result.container.querySelectorAll('.btn.block-settings')[0])
-  expect(result.getByText('Block Type "iframe" Settings')).toBeInTheDocument()
-  expect(result.getByLabelText('URL')).toBeInTheDocument()
-  userEvent.type(result.getByLabelText('URL'), '!')
+  // because the settings modal is behind @loadable/component
+  result.container.firstChild.getPageBlockSettingsValueHandler(
+    16,
+    'iframe'
+  )('about:blank')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -929,10 +932,8 @@ test('getPageValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  result.container.firstChild.toggleSettings()
-  expect(result.getByText('Page Settings')).toBeInTheDocument()
-  expect(result.getByLabelText('Page Title')).toBeInTheDocument()
-  userEvent.type(result.getByLabelText('Page Title'), '!')
+  // because the settings modal is behind @loadable/component
+  result.container.firstChild.getPageValueHandler('title')('789!')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -966,12 +967,11 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  result.container.firstChild.toggleSettings()
-  expect(result.getByText('Page Settings')).toBeInTheDocument()
-  expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
   expect(x).toBe(false)
-  userEvent.click(result.getByLabelText('Nav Position'))
-  userEvent.selectOptions(result.getByLabelText('Nav Position'), 'below-header')
+  // because the settings modal is behind @loadable/component
+  result.container.firstChild.getPageSettingsValueHandler('navPosition')(
+    'below-header'
+  )
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -979,7 +979,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
       })
   )
   expect(x).toBe(true)
-  userEvent.click(result.container.querySelector('.nav-position-field button'))
+  result.container.firstChild.getPageSettingsResetter('navPosition')()
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -987,11 +987,11 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
       })
   )
   expect(x).toBe(false)
-  userEvent.click(result.getByLabelText('Show Header'))
+  result.container.firstChild.getPageSettingsValueHandler('showHeader')(true)
   expect(headerControlCalled).toBe(true)
-  userEvent.click(result.getByLabelText('Show Footer'))
+  result.container.firstChild.getPageSettingsValueHandler('showFooter')(true)
   expect(footerControlCalled).toBe(true)
-  userEvent.click(result.getByLabelText('Show Jumbotron'))
+  result.container.firstChild.getPageSettingsValueHandler('showJumbo')(true)
   expect(jumboControlCalled).toBe(true)
 })
 

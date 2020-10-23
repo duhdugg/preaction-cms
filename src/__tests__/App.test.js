@@ -673,13 +673,9 @@ test('create new page', async () => {
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-new-page')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-new-page a'))
-  expect(result.getByLabelText('Page Title')).toBeInTheDocument()
-  expect(result.getByLabelText('URL Path')).toBeInTheDocument()
-  userEvent.type(result.getByLabelText('Page Title'), 'FooBar')
-  userEvent.click(
-    result.container.querySelector('.new-page-modal-container .btn-success')
-  )
+  // because the new page modal is behind @loadable/component
+  window.preaction.setState({ newPage: { key: 'foobar', title: 'FooBar' } })
+  window.preaction.submitNewPage()
   await waitFor(() =>
     expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(2)
   )
@@ -705,18 +701,9 @@ test('edit site settings', async () => {
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
-  expect(result.container.querySelector('.nav-new-page')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-settings a'))
-  expect(result.getByText('Site Settings')).toBeInTheDocument()
-  expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
-  await waitFor(
-    () =>
-      new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000)
-      })
-  )
-  userEvent.selectOptions(result.getByLabelText('Nav Position'), 'above-header')
-  expect(result.getByLabelText('Nav Type')).toBeInTheDocument()
+  expect(result.container.querySelector('.nav-settings a')).toBeInTheDocument()
+  // because the settings modal is behind @loadable/component
+  window.preaction.getSettingsValueHandler('navPosition')('above-header')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -730,34 +717,6 @@ test('edit site settings', async () => {
           call.method === 'POST' && call.url.match(new RegExp('/api/settings'))
       )
     )
-  )
-  await waitFor(() =>
-    expect(
-      serverCalls.some(
-        (call) =>
-          call.method === 'GET' && call.url.match(new RegExp('/api/backups'))
-      )
-    )
-  )
-  await waitFor(() =>
-    expect(
-      serverCalls.some(
-        (call) =>
-          call.method === 'GET' && call.url.match(new RegExp('/api/redirect'))
-      )
-    )
-  )
-  userEvent.click(
-    result.container.querySelector(
-      '.site-settings-modal-container .btn-secondary'
-    )
-  )
-  userEvent.click(result.container.querySelector('.nav-page-home'))
-  await waitFor(
-    () =>
-      new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000)
-      })
   )
 })
 
@@ -777,10 +736,8 @@ test('delete page', async () => {
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-settings a'))
-  expect(result.getByText('Page Settings')).toBeInTheDocument()
-  userEvent.click(result.getByLabelText('Confirm to delete this page'))
-  userEvent.click(result.container.querySelector('.delete-page .btn-danger'))
+  // because the settings modal is behind @loadable/component
+  window.preaction.deletePage(window.preaction.getState().activePage)
   await waitFor(() =>
     expect(
       serverCalls.some(
