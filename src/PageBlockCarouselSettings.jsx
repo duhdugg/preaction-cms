@@ -316,7 +316,7 @@ function PageBlockCarouselSettings(props) {
       </Card>
       <Card header='Images' headerTheme='dark'>
         <Alert>
-          For best results, image dimensions should match the specified ratio
+          For best results, image dimensions should match the specified ratio.
           Also, the total number of images should equal a multiple of{' '}
           <strong>Rows</strong> &times; <strong>Slides per Row</strong> &times;{' '}
           <strong>Slides to Show</strong>.
