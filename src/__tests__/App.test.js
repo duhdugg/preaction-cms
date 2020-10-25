@@ -553,6 +553,12 @@ const server = setupServer(
     mockSession.authenticated = true
     return res(ctx.json(mockSession))
   }),
+  rest.get('/api/logout', (req, res, ctx) => {
+    mockSession.admin = false
+    mockSession.authenticated = false
+    mockSession.userId = undefined
+    return res(ctx.json(true))
+  }),
   rest.post('/api/page', (req, res, ctx) => {
     mockHomePage.siteMap.children.push(
       Object.assign({}, mockNewPage, { children: [] })
@@ -657,6 +663,25 @@ test('login', async () => {
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
+})
+
+test('logout', async () => {
+  const result = render(<App initPath='/login/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.getByLabelText('Username')).toBeInTheDocument()
+  )
+  userEvent.type(result.getByLabelText('Username'), 'admin')
+  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.click(result.getByText('Log In'))
+  await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
+  expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
+  expect(result.container.querySelector('.nav-logout')).toBeInTheDocument()
+  userEvent.click(result.container.querySelectorAll('.nav-logout')[0])
+  await waitFor(() =>
+    expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
+  )
 })
 
 test('create new page', async () => {
