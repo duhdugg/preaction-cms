@@ -335,7 +335,7 @@ function PageBlockCarouselSettings(props) {
                   xs: 1,
                   md: 1 / 2,
                 }}
-                header={<img width='100%' src={content.settings.src} />}
+                header={<img width='100%' src={content.settings.src} alt='' />}
                 footer={
                   <div className='btn-group d-block'>
                     <button
