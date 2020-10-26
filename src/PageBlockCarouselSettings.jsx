@@ -335,14 +335,7 @@ function PageBlockCarouselSettings(props) {
                   xs: 1,
                   md: 1 / 2,
                 }}
-                header={
-                  <img
-                    width='100%'
-                    src={content.settings.src}
-                    alt={content.settings.altText}
-                    title={content.settings.altText}
-                  />
-                }
+                header={<img width='100%' src={content.settings.src} />}
                 footer={
                   <div className='btn-group d-block'>
                     <button
@@ -389,15 +382,6 @@ function PageBlockCarouselSettings(props) {
                     valueHandler={props.getContentSettingsValueHandler(
                       content.id
                     )('src')}
-                  />
-                </div>
-                <div className='alt-text-field'>
-                  <Input
-                    label='Alt Text'
-                    value={content.settings.altText || ''}
-                    valueHandler={props.getContentSettingsValueHandler(
-                      content.id
-                    )('altText')}
                   />
                 </div>
               </Card>
