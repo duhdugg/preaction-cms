@@ -58,16 +58,22 @@ const globalThis = globalthis()
 // this is needed so relative links in WYSIWYG content will navigate correctly
 function setGlobalRelativeLinkHandler(relativeLinkHandler) {
   if (typeof document !== 'undefined') {
-    document.onclick = (event) => {
+    document.addEventListener('click', (event) => {
       const element = event.target
       if (element.tagName === 'A') {
         const href = element.attributes.href.value
-        if (href && !absoluteUrl(href)) {
+        if (
+          href &&
+          !absoluteUrl(href) &&
+          !event.shiftKey &&
+          !event.ctrlKey &&
+          !event.altKey
+        ) {
           event.preventDefault()
           relativeLinkHandler(element.attributes.href.value)
         }
       }
-    }
+    })
   }
 }
 
@@ -286,10 +292,12 @@ class App extends React.Component {
           this.state.activePathname === '/home/' ||
           this.state.activePathname === `/${this.siteMap.path}/`,
         onClick: (e) => {
-          e.preventDefault()
-          this.navigate(
-            `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
-          )
+          if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+            e.preventDefault()
+            this.navigate(
+              `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
+            )
+          }
         },
       })
     }
@@ -305,8 +313,10 @@ class App extends React.Component {
               component: NavLink,
               order: Number(pg.settings.navOrdering || 0),
               onClick: (e) => {
-                e.preventDefault()
-                this.navigate(`/${pg.path}/`)
+                if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                  e.preventDefault()
+                  this.navigate(`/${pg.path}/`)
+                }
               },
             })
           }
@@ -340,8 +350,10 @@ class App extends React.Component {
           component: NavLink,
           order: Number(page.settings.navOrdering || 0),
           onClick: (e) => {
-            e.preventDefault()
-            this.navigate(`/${page.path}/`)
+            if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+              e.preventDefault()
+              this.navigate(`/${page.path}/`)
+            }
           },
           subMenu: subMenu.length ? subMenu : null,
         })
@@ -878,12 +890,14 @@ class App extends React.Component {
                         this.siteMap.key === 'home' ? '' : '/'
                       }`,
                       onClick: (e) => {
-                        e.preventDefault()
-                        this.navigate(
-                          `/${this.siteMap.path}${
-                            this.siteMap.key === 'home' ? '' : '/'
-                          }`
-                        )
+                        if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                          e.preventDefault()
+                          this.navigate(
+                            `/${this.siteMap.path}${
+                              this.siteMap.key === 'home' ? '' : '/'
+                            }`
+                          )
+                        }
                       },
                     }}
                     menu={this.menu}

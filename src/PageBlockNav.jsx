@@ -22,8 +22,10 @@ const getMenu = (props) => {
             component: NavLink,
             order: Number(pg.settings.navOrdering || 0),
             onClick: (e) => {
-              e.preventDefault()
-              props.navigate(`/${pg.path}/`)
+              if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                e.preventDefault()
+                props.navigate(`/${pg.path}/`)
+              }
             },
           })
         }
@@ -35,8 +37,10 @@ const getMenu = (props) => {
       component: NavLink,
       order: Number(page.settings.navOrdering || 0),
       onClick: (e) => {
-        e.preventDefault()
-        props.navigate(`/${page.path}/`)
+        if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault()
+          props.navigate(`/${page.path}/`)
+        }
       },
       subMenu: subMenu.length ? subMenu : null,
     })

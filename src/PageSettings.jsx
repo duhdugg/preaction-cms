@@ -89,8 +89,10 @@ function PageSettings(props) {
                     <a
                       href={`${props.appRoot}/`}
                       onClick={(e) => {
-                        e.preventDefault()
-                        props.navigate('/')
+                        if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                          e.preventDefault()
+                          props.navigate('/')
+                        }
                       }}
                     >
                       root page
@@ -106,8 +108,10 @@ function PageSettings(props) {
                         <a
                           href={`${props.appRoot}/`}
                           onClick={(e) => {
-                            e.preventDefault()
-                            props.navigate(props.appRoot + '/')
+                            if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                              e.preventDefault()
+                              props.navigate(props.appRoot + '/')
+                            }
                           }}
                         >
                           (root page)
@@ -118,8 +122,10 @@ function PageSettings(props) {
                           <a
                             href={`${props.appRoot}${path}`}
                             onClick={(e) => {
-                              e.preventDefault()
-                              props.navigate(path)
+                              if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                                e.preventDefault()
+                                props.navigate(path)
+                              }
                             }}
                           >
                             {path}
