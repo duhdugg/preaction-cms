@@ -217,6 +217,13 @@ warm.setPageModule(pages)
 
 const load = async () => {
   if (require.main === module) {
+    if (env.removeExif) {
+      const child_process = require('child_process')
+      const { stdout } = child_process.spawnSync(
+        path.join(__dirname, './scripts/check-exiftool.sh')
+      )
+      console.log(stdout.toString())
+    }
     await sync()
     // http.listen instead of app.listen so that socket.io events work
     http.listen(env.port, () => {
