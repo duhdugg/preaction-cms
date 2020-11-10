@@ -1,0 +1,16 @@
+# assume domain example.com and preaction-cms directory is /var/www/example.com
+# see https://caddyserver.com/docs/
+example.com
+
+route {
+  file_server /icon/* {
+    root /var/www/example.com/build
+  }
+  file_server /static/* {
+    root /var/www/example.com/build
+  }
+  file_server /uploads/* {
+    root /var/www/example.com
+  }
+  reverse_proxy localhost:8999
+}
