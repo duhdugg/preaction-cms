@@ -8,7 +8,6 @@ import { StaticRouter } from 'react-router-dom'
 import Page from '../Page.jsx'
 
 jest.setTimeout(30000)
-window.confirm = jest.fn(() => true)
 
 const mockPage1 = {
   id: 13,
@@ -621,12 +620,14 @@ test('blockControl:delete', async () => {
   )
   expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   userEvent.click(result.container.querySelectorAll('.delete-block')[0])
-  await waitFor(() =>
-    expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(
-      2
-    )
+  await waitFor(
+    () =>
+      expect(
+        result.container.querySelectorAll('.block-type-iframe').length
+      ).toBe(2),
+    { timeout: 1200 }
   )
-  await waitFor(() => expect(emitSaveCalled).toBe(true))
+  await waitFor(() => expect(emitSaveCalled).toBe(true), { timeout: 1000 })
 })
 
 test('blockControl:next', async () => {
@@ -744,7 +745,8 @@ test('getContentSettingsValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -770,7 +772,8 @@ test('getPageBlockSettingsValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -797,6 +800,7 @@ test('deletePage', async () => {
     path: '/foo-1/abc/789/',
     deletePage: () => {
       deletePageCalled = true
+      return true
     },
   })
   expect(result.container.firstChild).toHaveClass('page')
@@ -938,7 +942,8 @@ test('getPageValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -976,7 +981,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(x).toBe(true)
   result.container.firstChild.getPageSettingsResetter('navPosition')()
@@ -984,7 +990,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(x).toBe(false)
   result.container.firstChild.getPageSettingsValueHandler('showHeader')(true)

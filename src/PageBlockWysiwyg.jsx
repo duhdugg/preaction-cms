@@ -8,6 +8,7 @@ import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
 
 const globalThis = globalthis()
+const test = env.NODE_ENV === 'test'
 
 class PageBlockWysiwyg extends React.Component {
   constructor(props) {
@@ -90,10 +91,8 @@ class PageBlockWysiwyg extends React.Component {
             <Wysiwyg
               // allowDangerousFallback as the value was sanitized by server,
               // but the error message is preferred if component fails when editing
-              allowDangerousFallback={
-                !this.props.editable || env.NODE_ENV === 'test'
-              }
-              fallbackMode={!this.props.editable || env.NODE_ENV === 'test'}
+              allowDangerousFallback={!this.props.editable || test}
+              fallbackMode={!this.props.editable || test}
               loadableFallback={<Spinner />}
               theme={this.theme}
               toolbar={wysiwygToolbar}

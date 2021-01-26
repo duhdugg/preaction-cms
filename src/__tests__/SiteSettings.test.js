@@ -114,7 +114,8 @@ test('SiteSettings renders without crashing', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 2000 }
   )
 })
 
@@ -124,7 +125,8 @@ test('restore backup', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 1050 }
   )
   userEvent.selectOptions(
     result.getByLabelText('Restore File'),
@@ -142,7 +144,8 @@ test('edit redirect', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 1050 }
   )
   userEvent.click(result.container.querySelector('.redirects .btn-light'))
   rerender()
@@ -162,7 +165,8 @@ test('create redirect', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 1050 }
   )
   userEvent.click(result.container.querySelector('.redirects .btn-primary'))
   rerender()
@@ -192,7 +196,8 @@ test('delete redirect', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 1050 }
   )
   userEvent.click(result.container.querySelector('.redirects .btn-danger'))
   await waitFor(() => expect(deleteRedirect).toBe('1'))

@@ -145,7 +145,8 @@ test('PageBlockWysiwyg basic editable sourceMode', async () => {
         setTimeout(() => {
           resolve(expect(foo).toBe('<p>test</p>'))
         }, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(saved).toBe(true)
 })
