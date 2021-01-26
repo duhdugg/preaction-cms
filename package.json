@@ -77,7 +77,7 @@
     "test-server": "jest",
     "test-server-coverage": "jest --verbose --coverage --coveragePathIgnorePatterns ext\\.js --coveragePathIgnorePatterns client\\.cjs\\.js",
     "test": "yarn prettier-check && yarn eslint-check && yarn test-server-coverage && yarn test-client-coverage",
-    "eject": "craco eject",
+    "eject": "react-scripts eject",
     "eslint-check": "eslint --max-warnings 0 ./*.js src/*.j* src/ext/index.template.js src/lib/* lib/*.js lib/__tests__/*.js __tests__/*.js src/__tests__/*.js scripts/*.js",
     "dev-server": "nodemon -i src -i scripts -i uploads server.js",
     "prettier-check": "prettier -c ./*.json ./*.js src/*.j* src/ext/index.template.js src/lib/* lib/*.js lib/__tests__/*.js __tests__/*.js src/__tests__/*.js scripts/*.js",
