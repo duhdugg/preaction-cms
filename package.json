@@ -4,7 +4,7 @@
   "version": "3.0.0",
   "proxy": "http://localhost:8999",
   "dependencies": {
-    "@craco/craco": "^6.0.0",
+    "@craco/craco": "^6.1.0",
     "@preaction/validation": "^2.0.5",
     "bcryptjs": "^2.4.3",
     "connect-session-sequelize": "^7.1.0",
@@ -15,7 +15,7 @@
     "jpeg-autorotate": "^7.1.1",
     "multer": "^1.4.2",
     "sanitize-html": "^2.3.2",
-    "sequelize": "^6.4.0",
+    "sequelize": "^6.5.0",
     "sitemap": "^6.3.5",
     "socket.io": "^3.1.0",
     "sqlite3": "^5.0.1",

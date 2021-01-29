@@ -1124,10 +1124,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@craco/craco@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-6.0.0.tgz#f4e66e82f5bc77671dc0a5e839c3269e2414fe0f"
-  integrity sha512-NSgcGqTlQ+XTBJ/AhE0ngdfab5xIyx/06yrRPkvDH02V90ejrL6bSM54k3+h3OjGE/SO7nmF1MqfFwemPo8kVw==
+"@craco/craco@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-6.1.0.tgz#9b7d9d1afe0edb4c8d2725676464e6a3d7d0ce6b"
+  integrity sha512-JD09kzTJCfz8XjsH6iGn+Qu/8LBWOc4ed2K8MYoZTgd49oIbD+XwHwViToi2vyO4V72DZmrp0gQQvgFM7bw0Jw==
   dependencies:
     cross-spawn "^7.0.0"
     lodash "^4.17.15"
@@ -11420,10 +11420,10 @@ sequelize-pool@^6.0.0:
   resolved "https://registry.yarnpkg.com/sequelize-pool/-/sequelize-pool-6.1.0.tgz#caaa0c1e324d3c2c3a399fed2c7998970925d668"
   integrity sha512-4YwEw3ZgK/tY/so+GfnSgXkdwIJJ1I32uZJztIEgZeAO6HMgj64OzySbWLgxj+tXhZCJnzRfkY9gINw8Ft8ZMg==
 
-sequelize@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.4.0.tgz#02c7e06aa7371488c23f110cdd7e4c2666d92142"
-  integrity sha512-XiSAaYMidgLHgOFz0d0rMlSXP07YoL3GwuG0KTtXR6moR+lfdAA93vhLaN9K6f1ElLMutNTx2f7bNK6mACYfIA==
+sequelize@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.5.0.tgz#c968a03f6fbbcda40717f73edb39fadf27b85e96"
+  integrity sha512-owBt8fnzVy8E1OvyCyfCdVk7OOLyPVrBCMEf+CvRReC5oCyo+UqeXCtwaex9L6LM9ifZ1i3TG3sFeM5MgLK0CQ==
   dependencies:
     debug "^4.1.1"
     dottie "^2.0.0"
