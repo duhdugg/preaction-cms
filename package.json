@@ -66,6 +66,8 @@
     "doc": "documentation serve --sort-order alpha --config ./documentation.yml --watch lib/*.js",
     "doc-build": "documentation build --sort-order alpha --config ./documentation.yml lib/*.js -o documentation -f html",
     "doc-lint": "documentation lint lib/*js",
+    "get-path-by-block-id": "node scripts/get-path-by-block-id.js",
+    "get-path-by-content-id": "node scripts/get-path-by-content-id.js",
     "init-client": "node scripts/init-client.js",
     "build": "bash scripts/build.sh",
     "build-csr": "craco build",
@@ -86,7 +88,8 @@
     "start-inspect": "node --inspect server.js",
     "start-profile": "node --prof server.js",
     "start": "bash scripts/start.sh",
-    "package": "bash scripts/package.sh"
+    "package": "bash scripts/package.sh",
+    "query-content": "node scripts/query-content.js"
   },
   "eslintConfig": {
     "extends": [
