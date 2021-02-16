@@ -6,12 +6,11 @@ Preaction CMS is a barebones, extendable Content Management System built on top 
 
 ### Documentation
 
-- [Preaction CMS Wiki](https://github.com/duhdugg/preaction-cms/wiki)
-- [Preaction CMS API Reference](https://duhdugg.github.io/preaction-cms/)
+- [Preaction CMS Documentation](https://duhdugg.github.io/preaction-cms/)
 
 ### LICENSE
 
-> Copyright (c) 2018-2020 Doug Elkin
+> Copyright (c) 2018-2021 Doug Elkin
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
