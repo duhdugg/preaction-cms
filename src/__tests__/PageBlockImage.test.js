@@ -14,8 +14,7 @@ test('PageBlockImage basic', async () => {
       header: '',
       headerLevel: 0,
       linkUrl: '',
-      src:
-        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+      src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -45,8 +44,7 @@ test('PageBlockImage with link', async () => {
       header: '',
       headerLevel: 0,
       linkUrl: '/test/',
-      src:
-        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+      src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,

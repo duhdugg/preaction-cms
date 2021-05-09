@@ -935,16 +935,13 @@ class Page extends React.Component {
     }
     if (test) {
       Object.assign(this.ref.current, {
-        getContentSettingsValueHandler: this.getContentSettingsValueHandler.bind(
-          this
-        ),
-        getPageBlockSettingsValueHandler: this.getPageBlockSettingsValueHandler.bind(
-          this
-        ),
+        getContentSettingsValueHandler:
+          this.getContentSettingsValueHandler.bind(this),
+        getPageBlockSettingsValueHandler:
+          this.getPageBlockSettingsValueHandler.bind(this),
         getPageSettingsResetter: this.getPageSettingsResetter.bind(this),
-        getPageSettingsValueHandler: this.getPageSettingsValueHandler.bind(
-          this
-        ),
+        getPageSettingsValueHandler:
+          this.getPageSettingsValueHandler.bind(this),
         getPageValueHandler: this.getPageValueHandler.bind(this),
         blockControl: this.blockControl.bind(this),
         deletePage: this.deletePage.bind(this),
