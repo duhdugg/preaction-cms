@@ -720,7 +720,8 @@ test('edit site settings', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1200)
-      })
+      }),
+    { timeout: 1250 }
   )
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
@@ -733,7 +734,8 @@ test('edit site settings', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1000)
-      })
+      }),
+    { timeout: 1050 }
   )
   await waitFor(() =>
     expect(

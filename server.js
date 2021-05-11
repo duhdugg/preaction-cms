@@ -31,25 +31,27 @@ const redirects = require('./lib/redirects.js')
 const renderClient = require('./lib/render.js').renderClient
 const session = require('./lib/session.js')
 const slash = require('./lib/slash.js')
+const socket = require('./lib/socket.js')
 const ua = require('./lib/ua.js')
 const uploads = require('./lib/uploads.js')
 const warm = require('./lib/warm.js')
 
 // <== http and socket.io setup ==>
-// socket.io events needs to verify session
-// which requires the app be put into an http.Server instance
-// and the http.Server instance to be called into the socket.io instance
 const http = require('http').Server(app)
-const io = require('socket.io')(http)
+if (env.socketMode || env.nodeEnv === 'test') {
+  socket.setHttp(http)
+}
 
 // <== express setup and module loading ==>
 app.use(settings.middleware)
 app.use(cookieParser())
 app.use(session.session)
 // connect socket.io to session
-io.use((socket, next) => {
-  session.session(socket.request, socket.request.res, next)
-})
+if (env.socketMode || env.nodeEnv === 'test') {
+  socket.io.use((sock, next) => {
+    session.session(sock.request, sock.request.res, next)
+  })
+}
 // enable JSON requests and limit them to 50 megabytes in size
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(ext.middleware)
@@ -176,30 +178,6 @@ app
     }
   )
 
-// <== SOCKET.IO EVENT CONFIG ==>
-
-// env.socketMode determines whether socket.io events are configured
-if (env.socketMode || env.nodeEnv === 'test') {
-  io.on('connection', (socket) => {
-    socket.on('save', (data, fn) => {
-      if (fn) {
-        fn()
-      }
-      if (socket.conn.request.session.admin) {
-        io.emit('load', data)
-      }
-    })
-    socket.on('force-reload', (fn) => {
-      if (fn) {
-        fn()
-      }
-      if (socket.conn.request.session.admin) {
-        io.emit('reload-app')
-      }
-    })
-  })
-}
-
 // <== SERVER SETUP ==>
 
 // sync all the things and run the server
@@ -237,6 +215,5 @@ load()
 module.exports = {
   app,
   http,
-  io,
   sync,
 }

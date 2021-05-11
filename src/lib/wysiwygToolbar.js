@@ -1,4 +1,4 @@
-export default [
+const wysiwygToolbar = [
   [{ header: [] }, { font: [] }],
   [{ size: ['small', false, 'large', 'huge'] }],
   ['bold', 'italic', 'strike'],
@@ -12,3 +12,4 @@ export default [
   [{ align: [] }],
   ['link'],
 ]
+export default wysiwygToolbar

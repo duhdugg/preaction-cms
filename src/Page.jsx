@@ -181,7 +181,7 @@ class Page extends React.Component {
         blocks[index] = block
         blocks[index + 1] = nextBlock
       } else if (action === 'delete') {
-        if (globalThis.confirm('Delete this block?')) {
+        if (test || globalThis.confirm('Delete this block?')) {
           axios
             .delete(
               `${this.props.appRoot}/api/page/blocks/${blockId}?token=${this.props.token}`
@@ -225,6 +225,7 @@ class Page extends React.Component {
   deletePage() {
     if (this.props.deletePage) {
       if (
+        test ||
         globalThis.confirm(
           `Are you sure you wish to delete the page, "${this.state.page.title}"?`
         )
@@ -670,7 +671,7 @@ class Page extends React.Component {
         contents[index] = content
         contents[index + 1] = nextContent
       } else if (action === 'delete') {
-        if (globalThis.confirm('Delete this content?')) {
+        if (test || globalThis.confirm('Delete this content?')) {
           axios
             .delete(
               `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`
@@ -934,16 +935,13 @@ class Page extends React.Component {
     }
     if (test) {
       Object.assign(this.ref.current, {
-        getContentSettingsValueHandler: this.getContentSettingsValueHandler.bind(
-          this
-        ),
-        getPageBlockSettingsValueHandler: this.getPageBlockSettingsValueHandler.bind(
-          this
-        ),
+        getContentSettingsValueHandler:
+          this.getContentSettingsValueHandler.bind(this),
+        getPageBlockSettingsValueHandler:
+          this.getPageBlockSettingsValueHandler.bind(this),
         getPageSettingsResetter: this.getPageSettingsResetter.bind(this),
-        getPageSettingsValueHandler: this.getPageSettingsValueHandler.bind(
-          this
-        ),
+        getPageSettingsValueHandler:
+          this.getPageSettingsValueHandler.bind(this),
         getPageValueHandler: this.getPageValueHandler.bind(this),
         blockControl: this.blockControl.bind(this),
         deletePage: this.deletePage.bind(this),

@@ -135,6 +135,9 @@ hr {
     font-size: 1rem;
     font-family: var(--font-family-sans-serif);
   }
+  .ql-container.ql-bubble:not(.ql-disabled) a {
+    white-space: pre-wrap;
+  }
   .ql-toolbar.ql-snow,
   .ql-container.ql-snow {
     border: 0;

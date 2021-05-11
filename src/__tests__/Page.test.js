@@ -8,7 +8,6 @@ import { StaticRouter } from 'react-router-dom'
 import Page from '../Page.jsx'
 
 jest.setTimeout(30000)
-window.confirm = jest.fn(() => true)
 
 const mockPage1 = {
   id: 13,
@@ -289,8 +288,7 @@ const mockPage3 = {
             header: '',
             headerLevel: 0,
             linkUrl: '',
-            src:
-              '/uploads/0a14f83599ddabac762593a6ca1e410a4281a6a50acd3182cae46fa005bd0df1.png',
+            src: '/uploads/0a14f83599ddabac762593a6ca1e410a4281a6a50acd3182cae46fa005bd0df1.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -310,8 +308,7 @@ const mockPage3 = {
             header: '',
             headerLevel: 0,
             linkUrl: '',
-            src:
-              '/uploads/6976a933427176ede8ffd276b29a0527d68ab553aaaa9b8e7d05a43cfaad6bd9.png',
+            src: '/uploads/6976a933427176ede8ffd276b29a0527d68ab553aaaa9b8e7d05a43cfaad6bd9.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -331,8 +328,7 @@ const mockPage3 = {
             header: '',
             headerLevel: 0,
             linkUrl: '',
-            src:
-              '/uploads/6dec3e94a22c3f67c6bfb867114a11310cbef2398b00b86e1b5842648e1a2afb.png',
+            src: '/uploads/6dec3e94a22c3f67c6bfb867114a11310cbef2398b00b86e1b5842648e1a2afb.png',
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -621,12 +617,14 @@ test('blockControl:delete', async () => {
   )
   expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   userEvent.click(result.container.querySelectorAll('.delete-block')[0])
-  await waitFor(() =>
-    expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(
-      2
-    )
+  await waitFor(
+    () =>
+      expect(
+        result.container.querySelectorAll('.block-type-iframe').length
+      ).toBe(2),
+    { timeout: 1200 }
   )
-  await waitFor(() => expect(emitSaveCalled).toBe(true))
+  await waitFor(() => expect(emitSaveCalled).toBe(true), { timeout: 1000 })
 })
 
 test('blockControl:next', async () => {
@@ -744,7 +742,8 @@ test('getContentSettingsValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -770,7 +769,8 @@ test('getPageBlockSettingsValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -797,6 +797,7 @@ test('deletePage', async () => {
     path: '/foo-1/abc/789/',
     deletePage: () => {
       deletePageCalled = true
+      return true
     },
   })
   expect(result.container.firstChild).toHaveClass('page')
@@ -938,7 +939,8 @@ test('getPageValueHandler', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(emitSaveCalled).toBe(true)
 })
@@ -976,7 +978,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(x).toBe(true)
   result.container.firstChild.getPageSettingsResetter('navPosition')()
@@ -984,7 +987,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     () =>
       new Promise((resolve, reject) => {
         setTimeout(resolve, 1250)
-      })
+      }),
+    { timeout: 1300 }
   )
   expect(x).toBe(false)
   result.container.firstChild.getPageSettingsValueHandler('showHeader')(true)

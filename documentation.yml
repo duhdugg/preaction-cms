@@ -1,19 +1,40 @@
 toc:
-  - lib/adminRequired
-  - lib/cache
-  - lib/csrf
-  - lib/db
-  - lib/env
-  - lib/ext
-  - lib/icon
-  - lib/pages
-  - lib/processImg
-  - lib/randomString
-  - lib/redirects
-  - lib/renameUpload
-  - lib/render
-  - lib/session
-  - lib/settings
-  - lib/slash
-  - lib/ua
-  - lib/uploads
+  - name: About Preaction CMS
+    file: wiki/Home.md
+  - name: Installation
+    file: wiki/Installation.md
+  - name: Administration
+    file: wiki/Administration.md
+  - name: Development
+    file: wiki/Development.md
+  - name: How to Style
+    file: wiki/How-to-Customize-Style.md
+  - name: How to Extend
+    file: wiki/How-to-Develop-Extensions.md
+  - name: Running in Production
+    file: wiki/Running-in-Production.md
+  - name: Running on Systemd
+    file: wiki/Running-on-Systemd.md
+  - name: NGINX Configuration
+    file: wiki/NGINX-Configuration.md
+  - name: Server-Side API
+    children:
+      - lib/adminRequired
+      - lib/cache
+      - lib/csrf
+      - lib/db
+      - lib/env
+      - lib/ext
+      - lib/icon
+      - lib/pages
+      - lib/processImg
+      - lib/randomString
+      - lib/redirects
+      - lib/renameUpload
+      - lib/render
+      - lib/session
+      - lib/settings
+      - lib/slash
+      - lib/ua
+      - lib/uploads
+      - lib/warm

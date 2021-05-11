@@ -47,8 +47,7 @@ test('PageBlockContent wysiwyg', () => {
           header: 'Image Content',
           headerLevel: '',
           linkUrl: '',
-          src:
-            '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+          src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -163,8 +162,7 @@ test('PageBlockContent image', async () => {
           header: 'Image Content',
           headerLevel: '',
           linkUrl: '',
-          src:
-            '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+          src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -186,8 +184,7 @@ test('PageBlockContent image', async () => {
       header: 'Image Content',
       headerLevel: '',
       linkUrl: '',
-      src:
-        '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+      src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
       lgWidth: '3',
       mdWidth: '3',
       smWidth: '4',
