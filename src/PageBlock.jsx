@@ -4,7 +4,12 @@ import loadable from '@loadable/component'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
-import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
+import {
+  joinClassNames,
+  Card,
+  Modal,
+  Spinner,
+} from '@preaction/bootstrap-clips'
 import { MdImage, MdLink, MdFileUpload, MdSpaceBar } from 'react-icons/md'
 import {
   MdArrowUpward,
@@ -86,9 +91,18 @@ function PageBlock(props) {
 
   return (
     <Card
-      className={{
-        card: `page-block block-type-${props.block.blockType}`,
-      }}
+      className={joinClassNames(
+        'page-block',
+        `block-type-${props.block.blockType.replace(/\s/g, '')}`,
+        `block-id-${props.block.id}`,
+        header || props.block.settings.pad ? '' : 'nopad-body',
+        header || props.block.settings.pad
+          ? `card-border-${(props.block.settings.borderTheme || 'dark').replace(
+              /\s/g,
+              ''
+            )}`
+          : 'card-border-transparent'
+      )}
       column
       width={{
         lg: props.block.settings.lgWidth / 12,
@@ -322,40 +336,38 @@ function PageBlock(props) {
       ) : (
         ''
       )}
-      {props.editable && showSettings ? (
-        <Modal
-          title={`Block Type "${props.block.blockType}${
-            props.block.blockType === 'ext'
-              ? `/${props.block.settings.extKey}`
-              : ''
-          }" Settings`}
-          closeHandler={toggleSettings}
-          headerTheme='info'
-          bodyTheme='white'
-          footerTheme='dark'
-          footer={
-            <button
-              type='button'
-              className='btn btn-secondary'
-              onClick={toggleSettings}
-            >
-              Close
-            </button>
+      <Modal
+        title={`Block Type "${props.block.blockType}${
+          props.block.blockType === 'ext'
+            ? `/${props.block.settings.extKey}`
+            : ''
+        }" Settings`}
+        show={props.editable && showSettings}
+        setShow={setShowSettings}
+        closeHandler={toggleSettings}
+        headerTheme='info'
+        bodyTheme='white'
+        footerTheme='dark'
+        footer={
+          <button
+            type='button'
+            className='btn btn-secondary'
+            onClick={toggleSettings}
+          >
+            Close
+          </button>
+        }
+      >
+        <PageBlockSettings
+          block={props.block}
+          contentControl={props.contentControl}
+          getContents={props.getContents}
+          getContentSettingsValueHandler={getContentSettingsValueHandler}
+          getPageBlockSettingsValueHandler={
+            props.getPageBlockSettingsValueHandler
           }
-        >
-          <PageBlockSettings
-            block={props.block}
-            contentControl={props.contentControl}
-            getContents={props.getContents}
-            getContentSettingsValueHandler={getContentSettingsValueHandler}
-            getPageBlockSettingsValueHandler={
-              props.getPageBlockSettingsValueHandler
-            }
-          />
-        </Modal>
-      ) : (
-        ''
-      )}
+        />
+      </Modal>
       {props.editable &&
       ['carousel', 'content'].includes(props.block.blockType) ? (
         <div>

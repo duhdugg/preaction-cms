@@ -7,8 +7,15 @@ hr {
 }
 
 .settings-component {
+  .pxn-input {
+    margin-bottom: 1rem;
+  }
   .card {
     margin-bottom: 1em;
+    .card-header {
+      background-color: var(--bs-dark);
+      color: var(--bs-light);
+    }
   }
   .alert a {
     color: var(--dark) !important;
@@ -50,11 +57,70 @@ hr {
   }
 }
 
+.nopad-body {
+  > .card {
+    > .card-body {
+      padding: 0;
+    }
+  }
+}
+
+.card-border-danger {
+  > .card {
+    border: 1px solid var(--bs-danger);
+  }
+}
+.card-border-dark {
+  > .card {
+    border: 1px solid var(--bs-dark);
+  }
+}
+.card-border-info {
+  > .card {
+    border: 1px solid var(--bs-info);
+  }
+}
+.card-border-light {
+  > .card {
+    border: 1px solid var(--bs-light);
+  }
+}
+.card-border-primary {
+  > .card {
+    border: 1px solid var(--bs-primary);
+  }
+}
+.card-border-secondary {
+  > .card {
+    border: 1px solid var(--bs-secondary);
+  }
+}
+.card-border-success {
+  > .card {
+    border: 1px solid var(--bs-success);
+  }
+}
+.card-border-transparent {
+  > .card {
+    border: 1px solid var(--bs-transparent);
+  }
+}
+.card-border-warning {
+  > .card {
+    border: 1px solid var(--bs-warning);
+  }
+}
+
 .page-block {
   background-color: transparent;
   border: 0;
-  > .card-footer {
-    padding: 0;
+  > .card {
+    > .card-body {
+      border: 0;
+    }
+    > .card-footer {
+      padding: 0;
+    }
   }
 }
 
@@ -63,6 +129,11 @@ hr {
   border: 1px solid rgba(0, 0, 0, 0);
   background-color: rgba(255, 255, 255, 0);
   margin-bottom: 1em;
+}
+
+.page-block-content:last-child,
+.page-block:last-child {
+  margin-bottom: 0;
 }
 
 .block-type-carousel {
@@ -100,8 +171,15 @@ hr {
   > .card-body > .row > div:last-child > .page-block-content {
     margin-bottom: 0;
   }
-  .page-block-content > .card-footer {
+  .page-block-content > .card > .card-footer {
     padding: 0;
+  }
+}
+
+.block-type-spacer,
+.content-type-spacer {
+  > .card {
+    border: 0;
   }
 }
 
@@ -113,7 +191,7 @@ hr {
   }
 }
 
-.page .page-block .preaction.wysiwyg {
+.page .page-block .pxn-input-wysiwyg {
   margin-bottom: 0 !important;
 }
 
@@ -166,6 +244,9 @@ hr {
 
 .App .login {
   margin-bottom: 1rem;
+  .pxn-input {
+    margin-bottom: 1rem;
+  }
 }
 
 .upload-images-icon {

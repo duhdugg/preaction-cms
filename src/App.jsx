@@ -1,3 +1,4 @@
+import './style'
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
@@ -19,7 +20,6 @@ import {
   NavBar,
   Nav,
   Spinner,
-  getClassesForTheme,
 } from '@preaction/bootstrap-clips'
 import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
@@ -49,9 +49,9 @@ const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
 // import css
-if (!ssr) {
-  require('./style')
-}
+// if (!ssr) {
+//   require('./style')
+// }
 
 const globalThis = globalthis()
 
@@ -881,7 +881,7 @@ class App extends React.Component {
               navBar={
                 this.settings.navPosition === 'fixed-top' ? (
                   <NavBar
-                    noContain={this.settings.maxWidthNav}
+                    fluid={this.settings.maxWidthNav}
                     fixedTo='top'
                     theme={this.settings.navbarTheme}
                     brand={{
@@ -945,7 +945,7 @@ class App extends React.Component {
                   ) : undefined}
                 </div>
               }
-              jumbotron={
+              hero={
                 this.settings.showJumbo ? (
                   <Jumbo
                     appRoot={this.root}
@@ -966,8 +966,8 @@ class App extends React.Component {
                   ''
                 )
               }
-              jumbotronPosition={this.settings.jumboPosition}
-              jumbotronTheme={this.settings.jumboTheme || undefined}
+              heroPosition={this.settings.jumboPosition}
+              heroTheme={this.settings.jumboTheme || undefined}
               headerTheme={this.settings.headerTheme || undefined}
               mainTheme={this.settings.mainTheme || undefined}
               footerTheme={this.settings.footerTheme || undefined}
@@ -986,11 +986,10 @@ class App extends React.Component {
                   }
                 />
               }
-              noContain={{
+              fluid={{
                 footerContainer: this.settings.maxWidthFooterContainer,
                 headerContainer: this.settings.maxWidthHeaderContainer,
-                jumbotron: true,
-                jumbotronContainer: this.settings.maxWidthJumboContainer,
+                heroContainer: this.settings.maxWidthJumboContainer,
                 mainContainer: this.settings.maxWidthMainContainer,
               }}
             >
@@ -1086,84 +1085,83 @@ class App extends React.Component {
             </Boilerplate>
           </div>
         </Router>
-        {this.state.editable && this.state.show.settings ? (
-          <div className='site-settings-modal-container'>
-            <Modal
-              title='Site Settings'
-              closeHandler={this.toggleSettings.bind(this)}
-              headerTheme='primary'
-              bodyTheme='white'
-              footerTheme='dark'
-              footer={
+        <div className='site-settings-modal-container'>
+          <Modal
+            title='Site Settings'
+            show={this.state.editable && this.state.show.settings}
+            setShow={(value) => {
+              this.setState((state) => {
+                state.show.settings = value
+                return state
+              })
+            }}
+            size='lg'
+            headerTheme='primary'
+            bodyTheme='white'
+            footerTheme='dark'
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={this.toggleSettings.bind(this)}
+              >
+                Close
+              </button>
+            }
+          >
+            <SiteSettings
+              appRoot={this.root}
+              admin={this.state.admin}
+              emitForceReload={this.emitForceReload.bind(this)}
+              settings={this.state.siteSettings}
+              getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
+              token={this.state.token}
+            />
+          </Modal>
+        </div>
+        <div className='new-page-modal-container'>
+          <Modal
+            title='New Page'
+            show={this.state.editable && this.state.show.newPage}
+            setShow={() => {}}
+            headerTheme='success'
+            bodyTheme='white'
+            footerTheme='dark'
+            hideCloseButton={true}
+            footer={
+              <div>
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  onClick={() => {
+                    const btn = document.querySelector(
+                      '.new-page-modal-container form .btn.d-none'
+                    )
+                    btn.click()
+                  }}
+                >
+                  Save
+                </button>{' '}
                 <button
                   type='button'
                   className='btn btn-secondary'
-                  onClick={this.toggleSettings.bind(this)}
+                  onClick={() => {
+                    this.toggleNewPage()
+                  }}
                 >
-                  Close
+                  Cancel
                 </button>
-              }
-            >
-              <SiteSettings
-                appRoot={this.root}
-                admin={this.state.admin}
-                emitForceReload={this.emitForceReload.bind(this)}
-                settings={this.state.siteSettings}
-                getSettingsValueHandler={this.getSettingsValueHandler.bind(
-                  this
-                )}
-                token={this.state.token}
-              />
-            </Modal>
-          </div>
-        ) : (
-          ''
-        )}
-        {this.state.editable && this.state.show.newPage ? (
-          <div className='new-page-modal-container'>
-            <Modal
-              title='New Page'
-              headerTheme='success'
-              bodyTheme='white'
-              footerTheme='dark'
-              hideCloseButton={true}
-              footer={
-                <div>
-                  <button
-                    type='button'
-                    className='btn btn-success'
-                    onClick={() => {
-                      const btn = document.querySelector(
-                        '.new-page-modal-container form .btn.d-none'
-                      )
-                      btn.click()
-                    }}
-                  >
-                    Save
-                  </button>{' '}
-                  <button
-                    type='button'
-                    className='btn btn-secondary'
-                    onClick={() => {
-                      this.toggleNewPage()
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              }
-            >
-              <NewPage
-                activePathname={this.state.activePathname}
-                getValueHandler={this.getNewPageValueHandler.bind(this)}
-                newPage={this.state.newPage}
-                submit={this.submitNewPage.bind(this)}
-              />
-            </Modal>
-          </div>
-        ) : (
-          ''
-        )}
+              </div>
+            }
+          >
+            <NewPage
+              activePathname={this.state.activePathname}
+              getValueHandler={this.getNewPageValueHandler.bind(this)}
+              newPage={this.state.newPage}
+              submit={this.submitNewPage.bind(this)}
+            />
+          </Modal>
+        </div>
       </div>
     )
   }
@@ -1224,7 +1222,7 @@ class App extends React.Component {
       )
     }
     if (this.settings.bodyTheme) {
-      bodyClasses.push(...getClassesForTheme(this.settings.bodyTheme))
+      bodyClasses.push(`pxn-theme-${this.settings.bodyTheme}`)
     }
     document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set

@@ -134,7 +134,7 @@ function SiteSettings(props) {
                 <Card
                   header='Navigation'
                   headerTheme='dark'
-                  className={{ card: 'navigation' }}
+                  className='navigation'
                 >
                   <div className='row'>
                     <div className='col-sm-6 nav-position-field'>
@@ -227,7 +227,7 @@ function SiteSettings(props) {
                 <Card
                   header='Header/Footer/Jumbotron'
                   headerTheme='dark'
-                  className={{ card: 'header-footer-jumbo' }}
+                  className='header-footer-jumbo'
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -274,7 +274,7 @@ function SiteSettings(props) {
                 <Card
                   header='Theme'
                   headerTheme='dark'
-                  className={{ card: 'theme-settings' }}
+                  className='theme-settings'
                 >
                   <div className='row'>
                     <div className='col-sm-6 body-theme-field'>
@@ -481,11 +481,7 @@ function SiteSettings(props) {
                 </Card>
               </div>
             </div>
-            <Card
-              header='Width'
-              headerTheme='dark'
-              className={{ card: 'width' }}
-            >
+            <Card header='Width' headerTheme='dark' className='width'>
               {props.settings.navPosition === 'fixed-top' ? (
                 <div className='top-nav-maxwidth-field'>
                   <Checkbox
@@ -549,11 +545,7 @@ function SiteSettings(props) {
                 ''
               )}
             </Card>
-            <Card
-              header='Redirects'
-              headerTheme='dark'
-              className={{ card: 'redirects' }}
-            >
+            <Card header='Redirects' headerTheme='dark' className='redirects'>
               <div className='row'>
                 <table className='redirects'>
                   <thead>
@@ -649,11 +641,7 @@ function SiteSettings(props) {
                 </table>
               </div>
             </Card>
-            <Card
-              header='Backups'
-              headerTheme='red'
-              className={{ card: 'backups' }}
-            >
+            <Card header='Backups' headerTheme='red' className='backups'>
               <div>
                 <Select
                   label='Restore File'

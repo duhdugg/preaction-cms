@@ -201,7 +201,7 @@ function PageSettings(props) {
                 <Card
                   header='Navigation'
                   headerTheme='dark'
-                  className={{ card: 'navigation' }}
+                  className='navigation'
                 >
                   <div className='parent-site-field'>
                     <Checkbox
@@ -399,7 +399,7 @@ function PageSettings(props) {
                 <Card
                   header='Header/Footer/Jumbotron'
                   headerTheme='dark'
-                  className={{ card: 'header-footer-jumbo' }}
+                  className='header-footer-jumbo'
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -563,9 +563,7 @@ function PageSettings(props) {
                 <Card
                   header='Theme'
                   headerTheme='dark'
-                  className={{
-                    card: 'theme-settings',
-                  }}
+                  className='theme-settings'
                 >
                   <div className='row'>
                     <div className='col-sm-6 body-theme-field'>
@@ -870,11 +868,7 @@ function PageSettings(props) {
                     <div className='badge bg-white text-dark'>white</div>
                   </div>
                 </Card>
-                <Card
-                  header='Width'
-                  headerTheme='dark'
-                  className={{ card: 'width' }}
-                >
+                <Card header='Width' headerTheme='dark' className='width'>
                   {props.settings.navPosition === 'fixed-top' ? (
                     <div className='top-nav-maxwidth-field'>
                       <Checkbox
@@ -1010,7 +1004,7 @@ function PageSettings(props) {
             <Card
               header='Delete Page'
               headerTheme='red'
-              className={{ card: 'delete-page' }}
+              className='delete-page'
             >
               <Checkbox
                 label='Confirm to delete this page'
