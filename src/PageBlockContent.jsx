@@ -17,6 +17,7 @@ import {
   MdSettings,
 } from 'react-icons/md'
 import { FaHtml5 } from 'react-icons/fa'
+import getLinkClassName from './lib/getLinkClassName.js'
 
 const PageBlockContentSettings = loadable(
   () => import('./settingsModules.js'),
@@ -80,7 +81,8 @@ function PageBlockContent(props) {
               props.content.settings.borderTheme || 'dark'
             ).replace(/\s/g, '')}`
           : 'card-border-transparent',
-        props.content.contentType === 'spacer' ? 'mb-0' : ''
+        props.content.contentType === 'spacer' ? 'mb-0' : '',
+        getLinkClassName(props.content.settings.bodyTheme)
       )}
       column
       header={header}
@@ -88,7 +90,7 @@ function PageBlockContent(props) {
       theme={
         props.content.settings.header || props.content.settings.pad
           ? props.content.settings.bodyTheme || 'transparent'
-          : undefined
+          : 'transparent'
       }
       footerTheme={props.content.settings.headerTheme || 'dark'}
       footer={

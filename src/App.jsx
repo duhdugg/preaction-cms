@@ -15,6 +15,8 @@ import {
   Redirect,
 } from 'react-router-dom'
 import {
+  getThemeClassName,
+  joinClassNames,
   Boilerplate,
   Modal,
   NavBar,
@@ -32,6 +34,7 @@ import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 
 import absoluteUrl from './lib/absoluteUrl.js'
+import getLinkClassName from './lib/getLinkClassName.js'
 import getSaneKey from './lib/getSaneKey.js'
 import { menuExtensions } from './ext'
 import env from './lib/env.js'
@@ -60,7 +63,12 @@ function setGlobalRelativeLinkHandler(relativeLinkHandler) {
   if (typeof document !== 'undefined') {
     document.addEventListener('click', (event) => {
       const element = event.target
-      if (element.tagName === 'A') {
+      const classList = new Array(...element.classList)
+      if (
+        element.tagName === 'A' &&
+        !classList.includes('nav-link') &&
+        !classList.includes('dropdown-item')
+      ) {
         const href = element.attributes.href.value
         if (
           href &&
@@ -311,6 +319,7 @@ class App extends React.Component {
               className: `nav-page-${page.key}-subpage-${pg.key}`,
               href: `/${pg.path}/`,
               component: NavLink,
+              // active: this.state.activePathname.indexOf(`/${pg.path}/`) === 0,
               order: Number(pg.settings.navOrdering || 0),
               onClick: (e) => {
                 if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
@@ -348,6 +357,9 @@ class App extends React.Component {
           className: `nav-page-${page.key}`,
           href: `/${page.path}/`,
           component: NavLink,
+          // active:
+          //   this.state.activePathname === `/${page.path}/` ||
+          //   this.state.activePathname.indexOf(`/${page.path}/`) === 0,
           order: Number(page.settings.navOrdering || 0),
           onClick: (e) => {
             if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
@@ -865,9 +877,13 @@ class App extends React.Component {
     }[this.settings.navActiveTabTheme]
     return (
       <div
-        className={`App ${
-          this.state.editable ? 'editable' : 'non-editable'
-        } ${navPositionClassName} ${navActiveSubmenuThemeClassName} ${navActiveTabThemeClassName}`}
+        className={joinClassNames(
+          'App',
+          this.state.editable ? 'editable' : 'non-editable',
+          navPositionClassName,
+          navActiveSubmenuThemeClassName,
+          navActiveTabThemeClassName
+        )}
       >
         <Router basename={this.root} location={this.state.activePathname}>
           <div>
@@ -905,7 +921,7 @@ class App extends React.Component {
                 ) : undefined
               }
               header={
-                <div>
+                <div className={getLinkClassName(this.settings.headerTheme)}>
                   {this.settings.navPosition === 'above-header' ? (
                     <Nav
                       menu={this.menu}
@@ -947,21 +963,27 @@ class App extends React.Component {
               }
               hero={
                 this.settings.showJumbo ? (
-                  <Jumbo
-                    appRoot={this.root}
-                    editable={this.state.editable}
-                    emitSave={this.emitSave.bind(this)}
-                    navigate={this.navigate.bind(this)}
-                    settings={this.settings}
-                    ref={this.jumbo}
-                    show={this.settings.showJumbo}
-                    token={this.state.token}
-                    initPage={
-                      this.props.initPage
-                        ? this.props.initPage.jumbo
-                        : undefined
-                    }
-                  />
+                  <div
+                    className={getLinkClassName(
+                      this.settings.jumboTheme || this.settings.headerTheme
+                    )}
+                  >
+                    <Jumbo
+                      appRoot={this.root}
+                      editable={this.state.editable}
+                      emitSave={this.emitSave.bind(this)}
+                      navigate={this.navigate.bind(this)}
+                      settings={this.settings}
+                      ref={this.jumbo}
+                      show={this.settings.showJumbo}
+                      token={this.state.token}
+                      initPage={
+                        this.props.initPage
+                          ? this.props.initPage.jumbo
+                          : undefined
+                      }
+                    />
+                  </div>
                 ) : (
                   ''
                 )
@@ -972,19 +994,23 @@ class App extends React.Component {
               mainTheme={this.settings.mainTheme || undefined}
               footerTheme={this.settings.footerTheme || undefined}
               footer={
-                <Footer
-                  appRoot={this.root}
-                  editable={this.state.editable}
-                  emitSave={this.emitSave.bind(this)}
-                  navigate={this.navigate.bind(this)}
-                  settings={this.settings}
-                  ref={this.footer}
-                  show={this.settings.showFooter}
-                  token={this.state.token}
-                  initPage={
-                    this.props.initPage ? this.props.initPage.footer : undefined
-                  }
-                />
+                <div className={getLinkClassName(this.settings.footerTheme)}>
+                  <Footer
+                    appRoot={this.root}
+                    editable={this.state.editable}
+                    emitSave={this.emitSave.bind(this)}
+                    navigate={this.navigate.bind(this)}
+                    settings={this.settings}
+                    ref={this.footer}
+                    show={this.settings.showFooter}
+                    token={this.state.token}
+                    initPage={
+                      this.props.initPage
+                        ? this.props.initPage.footer
+                        : undefined
+                    }
+                  />
+                </div>
               }
               fluid={{
                 footerContainer: this.settings.maxWidthFooterContainer,
@@ -1222,7 +1248,11 @@ class App extends React.Component {
       )
     }
     if (this.settings.bodyTheme) {
-      bodyClasses.push(`pxn-theme-${this.settings.bodyTheme}`)
+      bodyClasses.push(getThemeClassName(this.settings.bodyTheme))
+      const linkClass = getLinkClassName(this.settings.bodyTheme)
+      if (linkClass) {
+        bodyClasses.push(linkClass)
+      }
     }
     document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set

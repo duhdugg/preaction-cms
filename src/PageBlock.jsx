@@ -20,6 +20,7 @@ import {
 } from 'react-icons/md'
 import { PageBlockExtension } from './PageBlockExtension.jsx'
 import { blockExtensions } from './ext'
+import getLinkClassName from './lib/getLinkClassName.js'
 const PageBlockCarousel = loadable(() => import('./PageBlockCarousel.jsx'), {
   fallback: <Spinner size='3.25' />,
 })
@@ -101,7 +102,8 @@ function PageBlock(props) {
               /\s/g,
               ''
             )}`
-          : 'card-border-transparent'
+          : 'card-border-transparent',
+        getLinkClassName(props.block.settings.bodyTheme)
       )}
       column
       width={{
@@ -115,7 +117,7 @@ function PageBlock(props) {
       theme={
         props.block.settings.header || props.block.settings.pad
           ? props.block.settings.bodyTheme || 'transparent'
-          : undefined
+          : 'transparent'
       }
       footerTheme={props.block.settings.headerTheme || 'dark'}
       style={{

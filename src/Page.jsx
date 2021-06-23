@@ -868,55 +868,59 @@ class Page extends React.Component {
             ) : (
               ''
             )}
-            <div className='page-settings-modal-container'>
-              <Modal
-                title='Page Settings'
-                show={this.props.editable && this.state.showSettings}
-                setShow={(value) => {
-                  this.setState((state) => {
-                    state.showSettings = value
-                    return state
+          </div>
+        ) : (
+          ''
+        )}
+        {this.state.page ? (
+          <div className='page-settings-modal-container'>
+            <Modal
+              title='Page Settings'
+              show={this.props.editable && this.state.showSettings}
+              setShow={(value) => {
+                this.setState((state) => {
+                  state.showSettings = value
+                  return state
+                })
+              }}
+              size='lg'
+              headerTheme='secondary'
+              bodyTheme='white'
+              footerTheme='dark'
+              footer={
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={this.toggleSettings.bind(this)}
+                >
+                  Close
+                </button>
+              }
+            >
+              <PageSettings
+                appRoot={this.props.appRoot}
+                admin={this.props.editable}
+                navigate={(path) => {
+                  this.setState({ showSettings: false }, () => {
+                    this.props.navigate(path)
                   })
                 }}
-                size='lg'
-                headerTheme='secondary'
-                bodyTheme='white'
-                footerTheme='dark'
-                footer={
-                  <button
-                    type='button'
-                    className='btn btn-secondary'
-                    onClick={this.toggleSettings.bind(this)}
-                  >
-                    Close
-                  </button>
-                }
-              >
-                <PageSettings
-                  appRoot={this.props.appRoot}
-                  admin={this.props.editable}
-                  navigate={(path) => {
-                    this.setState({ showSettings: false }, () => {
-                      this.props.navigate(path)
-                    })
-                  }}
-                  pageId={this.state.page.id}
-                  page={this.state.page}
-                  path={this.props.path}
-                  settings={this.settings}
-                  token={this.props.token}
-                  deletePage={this.deletePage.bind(this)}
-                  getPageValueHandler={this.getPageValueHandler.bind(this)}
-                  getResetter={this.getPageSettingsResetter.bind(this)}
-                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                    this
-                  )}
-                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                    this
-                  )}
-                />
-              </Modal>
-            </div>
+                pageId={this.state.page.id}
+                page={this.state.page}
+                path={this.props.path}
+                settings={this.settings}
+                token={this.props.token}
+                deletePage={this.deletePage.bind(this)}
+                getPageValueHandler={this.getPageValueHandler.bind(this)}
+                getResetter={this.getPageSettingsResetter.bind(this)}
+                getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                  this
+                )}
+                getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                  this
+                )}
+              />
+            </Modal>
           </div>
         ) : (
           ''
