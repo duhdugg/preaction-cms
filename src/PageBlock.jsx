@@ -71,16 +71,16 @@ function PageBlock(props) {
 
   const header = getHeader()
   const borderColor = {
-    danger: 'var(--danger)',
-    dark: 'var(--dark)',
-    info: 'var(--info)',
-    light: 'var(--light)',
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    success: 'var(--success)',
+    danger: 'var(--bs-danger)',
+    dark: 'var(--bs-dark)',
+    info: 'var(--bs-info)',
+    light: 'var(--bs-light)',
+    primary: 'var(--bs-primary)',
+    secondary: 'var(--bs-secondary)',
+    success: 'var(--bs-success)',
     transparent: 'transparent',
-    warning: 'var(--warning)',
-    white: 'var(--white)',
+    warning: 'var(--bs-warning)',
+    white: 'var(--bs-white)',
   }[props.block.settings.borderTheme || 'dark']
   const border =
     props.block.blockType !== 'spacer'
