@@ -27,7 +27,7 @@
     "@babel/preset-react": "^7.14.5",
     "@loadable/component": "^5.14.1",
     "@popperjs/core": "^2.9.2",
-    "@preaction/bootstrap-clips": "^5.0.0-alpha.1",
+    "@preaction/bootstrap-clips": "^5.0.0-alpha.3",
     "@preaction/inputs": "^5.0.0-alpha.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
