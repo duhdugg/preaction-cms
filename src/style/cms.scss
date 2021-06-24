@@ -8,74 +8,77 @@
 }
 @include default-overrides;
 
-.page {
-  .page-block,
-  .page-block-content {
-    &.nopad-body > .card > .card-body {
-      padding: 0;
-    }
-    > .card > .card-footer {
-      padding: 0;
-    }
-    margin-bottom: 1rem;
-  }
-  .page-block {
-    .pxn-input-wysiwyg {
-      margin-bottom: 0 !important;
-    }
+@mixin page-rules {
+  .page {
+    .page-block,
     .page-block-content {
-      .pxn-input-wysiwyg label {
-        display: none;
-      }
-      .ql-container {
-        font-size: 1rem;
-        font-family: var(--bs-font-sans-serif);
-      }
-      .ql-editor {
-        overflow: hidden;
+      &.nopad-body > .card > .card-body {
         padding: 0;
       }
-      .ql-font-monospace {
-        font-family: var(--bs-font-monospace);
+      > .card > .card-footer {
+        padding: 0;
       }
-      .ql-toolbar.ql-snow,
-      .ql-container.ql-snow {
-        border: 0;
+      margin-bottom: 1rem;
+    }
+    .page-block {
+      .pxn-input-wysiwyg {
+        margin-bottom: 0 !important;
       }
-      .ql-toolbar.ql-snow {
-        background-color: var(--bs-white);
-      }
-      .ql-tooltip {
-        z-index: 99999;
+      .page-block-content {
+        .pxn-input-wysiwyg label {
+          display: none;
+        }
+        .ql-container {
+          font-size: 1rem;
+          font-family: var(--bs-font-sans-serif);
+        }
+        .ql-editor {
+          overflow: hidden;
+          padding: 0;
+        }
+        .ql-font-monospace {
+          font-family: var(--bs-font-monospace);
+        }
+        .ql-toolbar.ql-snow,
+        .ql-container.ql-snow {
+          border: 0;
+        }
+        .ql-toolbar.ql-snow {
+          background-color: var(--bs-white);
+        }
+        .ql-tooltip {
+          z-index: 99999;
+        }
       }
     }
-  }
-  .page-block:last-child {
-    margin-bottom: 0;
-  }
-  .page-block-content:last-child {
-    margin-bottom: 0;
-  }
-  .page-block.block-type-spacer {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-  .page-controls {
-    margin-bottom: 1rem;
-    button {
-      margin-left: 1rem;
-      margin-top: 1rem;
+    .page-block:last-child {
+      margin-bottom: 0;
     }
-    .dropdown-menu {
-      a {
-        color: var(--bs-dark);
+    .page-block-content:last-child {
+      margin-bottom: 0;
+    }
+    .page-block.block-type-spacer {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .page-controls {
+      margin-bottom: 1rem;
+      button {
+        margin-left: 1rem;
+        margin-top: 1rem;
       }
-      a:active {
-        color: var(--bs-light);
+      .dropdown-menu {
+        a {
+          color: var(--bs-dark);
+        }
+        a:active {
+          color: var(--bs-light);
+        }
       }
     }
   }
 }
+@include page-rules;
 
 @mixin blue-links {
   a,
