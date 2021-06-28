@@ -668,10 +668,10 @@ test('login', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -682,10 +682,10 @@ test('logout', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -701,10 +701,10 @@ test('create new page', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -714,7 +714,7 @@ test('create new page', async () => {
   window.preaction.setState({ newPage: { key: 'foobar', title: 'FooBar' } })
   window.preaction.submitNewPage()
   await waitFor(() =>
-    expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(2)
+    expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(1)
   )
 })
 
@@ -724,10 +724,10 @@ test('edit site settings', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -764,10 +764,10 @@ test('delete page', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -797,7 +797,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload()
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -805,7 +805,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'add-page' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -813,7 +813,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'delete-page' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -821,7 +821,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'update-settings' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()

@@ -507,6 +507,7 @@ const server = setupServer(
     return res(
       ctx.json({
         id: -1,
+        contentType: 'wysiwyg',
         settings: {},
       })
     )
