@@ -72,6 +72,9 @@ function PageBlock(props) {
 
   const header = getHeader()
   const padded = !!header || props.block.settings.pad
+  const customClassName = (props.block.settings.customClassName || '')
+    .toLowerCase()
+    .replace(/[^a-z-]/g, '')
 
   return (
     <Card
@@ -86,7 +89,8 @@ function PageBlock(props) {
               ''
             )}`
           : 'card-border-transparent',
-        getLinkClassName(padded ? props.block.settings.bodyTheme : '')
+        getLinkClassName(padded ? props.block.settings.bodyTheme : ''),
+        customClassName ? `custom-${customClassName}` : ''
       )}
       column
       width={{

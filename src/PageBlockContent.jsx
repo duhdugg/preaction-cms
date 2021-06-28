@@ -69,6 +69,9 @@ function PageBlockContent(props) {
 
   const header = getHeader()
   const padded = !!header || props.content.settings.pad
+  const customClassName = (props.content.settings.customClassName || '')
+    .toLowerCase()
+    .replace(/[^a-z-]/g, '')
 
   return (
     <Card
@@ -83,7 +86,8 @@ function PageBlockContent(props) {
             ).replace(/\s/g, '')}`
           : 'card-border-transparent',
         props.content.contentType === 'spacer' ? 'mb-0' : '',
-        getLinkClassName(props.content.settings.bodyTheme)
+        getLinkClassName(props.content.settings.bodyTheme),
+        customClassName ? `custom-${customClassName}` : ''
       )}
       column
       header={header}

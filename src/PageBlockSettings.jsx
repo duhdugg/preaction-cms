@@ -17,6 +17,17 @@ function PageBlockSettings(props) {
           e.preventDefault()
         }}
       >
+        <div className='custom-class-name-field'>
+          <Input
+            label='Custom Style Class Name'
+            labelFloat
+            value={props.block.settings.customClassName}
+            valueHandler={(value) => {
+              value = value.toLowerCase().replace(/[^a-z-]/g, '')
+              getPageBlockSettingsValueHandler('customClassName')(value)
+            }}
+          />
+        </div>
         {props.block.blockType !== 'spacer' ? (
           <div className='header-field'>
             <Input
