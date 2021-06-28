@@ -25,6 +25,7 @@ const mockBlock = {
   settings: {
     header: '',
     headerLevel: 0,
+    xxlWidth: 12,
     lgWidth: 12,
     mdWidth: 12,
     smWidth: 12,
@@ -41,6 +42,7 @@ const mockBlock = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -61,6 +63,7 @@ const mockContent = {
   settings: {
     header: '',
     headerLevel: 0,
+    xxlWidth: 12,
     lgWidth: 12,
     mdWidth: 12,
     smWidth: 12,

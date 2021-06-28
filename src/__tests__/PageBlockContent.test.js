@@ -12,6 +12,7 @@ test('PageBlockContent wysiwyg', () => {
     settings: {
       header: '',
       headerLevel: 0,
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -28,6 +29,7 @@ test('PageBlockContent wysiwyg', () => {
         settings: {
           header: 'Wysiwyg Content',
           headerLevel: '2',
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -48,6 +50,7 @@ test('PageBlockContent wysiwyg', () => {
           headerLevel: '',
           linkUrl: '',
           src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+          xxlWidth: 12,
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -67,6 +70,7 @@ test('PageBlockContent wysiwyg', () => {
     settings: {
       header: 'Wysiwyg Content',
       headerLevel: '2',
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -127,6 +131,7 @@ test('PageBlockContent image', async () => {
     settings: {
       header: '',
       headerLevel: 0,
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -143,6 +148,7 @@ test('PageBlockContent image', async () => {
         settings: {
           header: 'Wysiwyg Content',
           headerLevel: '2',
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -163,6 +169,7 @@ test('PageBlockContent image', async () => {
           headerLevel: '',
           linkUrl: '',
           src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+          xxlWidth: 12,
           lgWidth: '3',
           mdWidth: '3',
           smWidth: '4',
@@ -185,6 +192,7 @@ test('PageBlockContent image', async () => {
       headerLevel: '',
       linkUrl: '',
       src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+      xxlWidth: 12,
       lgWidth: '3',
       mdWidth: '3',
       smWidth: '4',

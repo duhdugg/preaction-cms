@@ -24,6 +24,7 @@ const mockHomeHeader = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -40,6 +41,7 @@ const mockHomeHeader = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -72,6 +74,7 @@ const mockHomeFooter = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -88,6 +91,7 @@ const mockHomeFooter = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -120,6 +124,7 @@ const mockHomeJumbo = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -136,6 +141,7 @@ const mockHomeJumbo = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -168,6 +174,7 @@ const mockHomePage = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -184,6 +191,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -201,6 +209,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -219,6 +228,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -364,6 +374,7 @@ const mockTestPage = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -380,6 +391,7 @@ const mockTestPage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,

@@ -17,6 +17,7 @@ test('PageBlock content', async () => {
     settings: {
       header: 'Content Block',
       headerLevel: '1',
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -36,6 +37,7 @@ test('PageBlock content', async () => {
           headerLevel: 0,
           linkUrl: '',
           src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+          xxlWidth: 12,
           lgWidth: '3',
           mdWidth: '4',
           smWidth: '5',
@@ -56,6 +58,7 @@ test('PageBlock content', async () => {
           headerLevel: 0,
           linkUrl: '',
           src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+          xxlWidth: 12,
           lgWidth: '3',
           mdWidth: '4',
           smWidth: '5',
@@ -100,6 +103,7 @@ test('PageBlock content', async () => {
         settings: {
           header: 'Nav Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -120,6 +124,7 @@ test('PageBlock content', async () => {
         settings: {
           header: 'Content Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -139,6 +144,7 @@ test('PageBlock content', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -159,6 +165,7 @@ test('PageBlock content', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -178,6 +185,7 @@ test('PageBlock content', async () => {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -367,6 +375,7 @@ test('PageBlock nav', async () => {
     settings: {
       header: 'Nav Block',
       headerLevel: 0,
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -409,6 +418,7 @@ test('PageBlock nav', async () => {
         settings: {
           header: 'Nav Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -429,6 +439,7 @@ test('PageBlock nav', async () => {
         settings: {
           header: 'Content Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -448,6 +459,7 @@ test('PageBlock nav', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -468,6 +480,7 @@ test('PageBlock nav', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -487,6 +500,7 @@ test('PageBlock nav', async () => {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -655,6 +669,7 @@ test('PageBlock iframe', async () => {
     settings: {
       header: 'Iframe Block',
       headerLevel: 0,
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -695,6 +710,7 @@ test('PageBlock iframe', async () => {
         settings: {
           header: 'Nav Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -715,6 +731,7 @@ test('PageBlock iframe', async () => {
         settings: {
           header: 'Content Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -734,6 +751,7 @@ test('PageBlock iframe', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -754,6 +772,7 @@ test('PageBlock iframe', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -773,6 +792,7 @@ test('PageBlock iframe', async () => {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -943,6 +963,7 @@ test('PageBlock spacer', async () => {
     blockType: 'spacer',
     ordering: 3,
     settings: {
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -982,6 +1003,7 @@ test('PageBlock spacer', async () => {
         settings: {
           header: 'Nav Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -1002,6 +1024,7 @@ test('PageBlock spacer', async () => {
         settings: {
           header: 'Content Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -1021,6 +1044,7 @@ test('PageBlock spacer', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -1041,6 +1065,7 @@ test('PageBlock spacer', async () => {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -1060,6 +1085,7 @@ test('PageBlock spacer', async () => {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -1078,6 +1104,7 @@ test('PageBlock spacer', async () => {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,

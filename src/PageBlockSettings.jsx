@@ -129,6 +129,17 @@ function PageBlockSettings(props) {
         ) : (
           ''
         )}
+        <div className='width-field large-monitor-width-field'>
+          <Input
+            label={`Large Monitor Width: ${props.block.settings.xxlWidth} / 12`}
+            type='range'
+            min='0'
+            max='12'
+            step='1'
+            value={props.block.settings.xxlWidth}
+            valueHandler={getPageBlockSettingsValueHandler('xxlWidth')}
+          />
+        </div>
         <div className='width-field desktop-width-field'>
           <Input
             label={`Desktop Width: ${props.block.settings.lgWidth} / 12`}

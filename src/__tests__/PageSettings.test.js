@@ -42,6 +42,7 @@ function getResults(options = {}) {
         settings: {
           header: 'Nav Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -63,6 +64,7 @@ function getResults(options = {}) {
         settings: {
           header: 'Content Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -82,6 +84,7 @@ function getResults(options = {}) {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/948b1fb4a2e0f6331c59817fea9cfbc5afebe9af5e6d293f2ec4736c3c418297.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -102,6 +105,7 @@ function getResults(options = {}) {
               headerLevel: 0,
               linkUrl: '',
               src: '/uploads/f5c09490c5ff4e6b5d144ffd442e112eb74057a4adfafea1de69dc31a95b2b21.png',
+              xxlWidth: 12,
               lgWidth: '3',
               mdWidth: '4',
               smWidth: '5',
@@ -121,6 +125,7 @@ function getResults(options = {}) {
         settings: {
           header: 'Iframe Block',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,

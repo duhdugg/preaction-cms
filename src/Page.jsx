@@ -302,7 +302,13 @@ class Page extends React.Component {
               pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
                   if (
-                    ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].includes(key)
+                    [
+                      'smWidth',
+                      'mdWidth',
+                      'lgWidth',
+                      'xsWidth',
+                      'xxlWidth',
+                    ].includes(key)
                   ) {
                     // minimum value for width attribute is here
                     // to allow the correct visual spacing on the sliders
@@ -359,7 +365,15 @@ class Page extends React.Component {
         (state) => {
           this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
-              if (['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].includes(key)) {
+              if (
+                [
+                  'smWidth',
+                  'mdWidth',
+                  'lgWidth',
+                  'xsWidth',
+                  'xxlWidth',
+                ].includes(key)
+              ) {
                 // minimum value for width attribute is here
                 // to allow the correct visual spacing on the sliders
                 if (value < 1) {

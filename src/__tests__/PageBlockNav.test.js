@@ -13,6 +13,7 @@ test('PageBlockNav basic', async () => {
     settings: {
       header: '',
       headerLevel: 0,
+      xxlWidth: 12,
       lgWidth: 12,
       mdWidth: 12,
       smWidth: 12,
@@ -45,6 +46,7 @@ test('PageBlockNav basic', async () => {
         settings: {
           header: '',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,

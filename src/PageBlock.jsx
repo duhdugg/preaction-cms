@@ -108,6 +108,7 @@ function PageBlock(props) {
       )}
       column
       width={{
+        xxl: props.block.settings.xxlWidth / 12,
         lg: props.block.settings.lgWidth / 12,
         md: props.block.settings.mdWidth / 12,
         sm: props.block.settings.smWidth / 12,
@@ -267,6 +268,7 @@ function PageBlock(props) {
                 appRoot={props.appRoot}
                 block={props.block}
                 width={{
+                  xxl: content.settings.xxlWidth / 12,
                   lg: content.settings.lgWidth / 12,
                   md: content.settings.mdWidth / 12,
                   sm: content.settings.smWidth / 12,
