@@ -210,7 +210,7 @@ function PageSettings(props) {
                       valueHandler={props.getSettingsValueHandler('site')}
                     />
                     {props.settings.site ? (
-                      <Alert level='info'>
+                      <Alert>
                         <strong>Notice:</strong> This setting will cause the
                         navigation menu to behave as if the current page were a
                         top-level site.
