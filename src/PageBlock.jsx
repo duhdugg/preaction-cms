@@ -120,16 +120,6 @@ function PageBlock(props) {
         padded ? props.block.settings.bodyTheme || 'transparent' : 'transparent'
       }
       footerTheme={props.block.settings.headerTheme || 'dark'}
-      style={{
-        body: {
-          padding: padded ? '1em' : 0,
-          border: 0,
-        },
-        card: {
-          border,
-          marginBottom: props.block.blockType === 'spacer' ? 0 : undefined,
-        },
-      }}
       footer={
         props.editable ? (
           <div className='btn-group d-block'>
