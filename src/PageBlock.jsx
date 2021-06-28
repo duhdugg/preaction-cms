@@ -71,24 +71,6 @@ function PageBlock(props) {
   }
 
   const header = getHeader()
-  const borderColor = {
-    danger: 'var(--bs-danger)',
-    dark: 'var(--bs-dark)',
-    info: 'var(--bs-info)',
-    light: 'var(--bs-light)',
-    primary: 'var(--bs-primary)',
-    secondary: 'var(--bs-secondary)',
-    success: 'var(--bs-success)',
-    transparent: 'transparent',
-    warning: 'var(--bs-warning)',
-    white: 'var(--bs-white)',
-  }[props.block.settings.borderTheme || 'dark']
-  const border =
-    props.block.blockType !== 'spacer'
-      ? `1px solid ${
-          header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
-        }`
-      : 0
   const padded = !!header || props.block.settings.pad
 
   return (
