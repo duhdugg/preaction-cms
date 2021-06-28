@@ -22,6 +22,7 @@ function PageBlockSettings(props) {
             <Input
               type='text'
               label='Header'
+              labelFloat
               value={props.block.settings.header}
               valueHandler={getPageBlockSettingsValueHandler('header')}
             />
@@ -59,6 +60,7 @@ function PageBlockSettings(props) {
             <div className='header-theme-field'>
               <Select
                 label='Header Theme'
+                labelFloat
                 value={props.block.settings.headerTheme || 'dark'}
                 valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
               >
@@ -91,6 +93,7 @@ function PageBlockSettings(props) {
             <div className='body-theme-field'>
               <Select
                 label='Body Theme'
+                labelFloat
                 value={props.block.settings.bodyTheme || 'transparent'}
                 valueHandler={getPageBlockSettingsValueHandler('bodyTheme')}
               >
@@ -116,6 +119,7 @@ function PageBlockSettings(props) {
             <div className='border-theme-field'>
               <Select
                 label='Border Theme'
+                labelFloat
                 value={props.block.settings.borderTheme || 'dark'}
                 valueHandler={getPageBlockSettingsValueHandler('borderTheme')}
               >
@@ -220,6 +224,7 @@ function PageBlockSettings(props) {
             <div className='nav-alignment-field'>
               <Select
                 label='Alignment'
+                labelFloat
                 value={props.block.settings.navAlignment}
                 valueHandler={getPageBlockSettingsValueHandler('navAlignment')}
               >
@@ -232,6 +237,7 @@ function PageBlockSettings(props) {
             <div className='nav-collapsible-field'>
               <Checkbox
                 label='Collabsible'
+                labelFloat
                 checked={props.block.settings.navCollapsible}
                 valueHandler={getPageBlockSettingsValueHandler(
                   'navCollapsible'
@@ -255,6 +261,7 @@ function PageBlockSettings(props) {
               <Input
                 type='number'
                 label='Height'
+                labelFloat
                 info='If the URL is of the same origin, the frame will be automatically resized to the height of its contents.'
                 min='0.0625'
                 step='0.0625'
@@ -265,6 +272,7 @@ function PageBlockSettings(props) {
             <div className='iframe-src-field'>
               <Input
                 label='URL'
+                labelFloat
                 value={props.block.settings.iframeSrc}
                 valueHandler={getPageBlockSettingsValueHandler('iframeSrc')}
               />
@@ -297,6 +305,7 @@ function PageBlockSettings(props) {
                 min='0.0625'
                 step='0.0625'
                 label='Spacer Height'
+                labelFloat
                 value={props.block.settings.spacerHeight}
                 valueHandler={getPageBlockSettingsValueHandler('spacerHeight')}
               />

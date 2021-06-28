@@ -15,6 +15,7 @@ function PageBlockContentSettings(props) {
             <Input
               type='text'
               label='Header'
+              labelFloat
               value={props.content.settings.header}
               valueHandler={props.getContentSettingsValueHandler('header')}
             />
@@ -53,6 +54,7 @@ function PageBlockContentSettings(props) {
             <div className='header-theme-field'>
               <Select
                 label='Header Theme'
+                labelFloat
                 value={props.content.settings.headerTheme || 'dark'}
                 valueHandler={props.getContentSettingsValueHandler(
                   'headerTheme'
@@ -87,6 +89,7 @@ function PageBlockContentSettings(props) {
             <div className='body-theme-field'>
               <Select
                 label='Body Theme'
+                labelFloat
                 value={props.content.settings.bodyTheme || 'transparent'}
                 valueHandler={props.getContentSettingsValueHandler('bodyTheme')}
               >
@@ -114,6 +117,7 @@ function PageBlockContentSettings(props) {
             <div className='border-theme-field'>
               <Select
                 label='Border Theme'
+                labelFloat
                 value={props.content.settings.borderTheme || 'dark'}
                 valueHandler={props.getContentSettingsValueHandler(
                   'borderTheme'
@@ -207,6 +211,7 @@ function PageBlockContentSettings(props) {
             <div className='img-src-field'>
               <Input
                 label='Image Source'
+                labelFloat
                 value={props.content.settings.src}
                 valueHandler={props.getContentSettingsValueHandler('src')}
               />
@@ -214,6 +219,7 @@ function PageBlockContentSettings(props) {
             <div className='alt-text-field'>
               <Input
                 label='Alt Text'
+                labelFloat
                 value={props.content.settings.altText}
                 valueHandler={props.getContentSettingsValueHandler('altText')}
               />
@@ -221,6 +227,7 @@ function PageBlockContentSettings(props) {
             <div className='link-url-field'>
               <Input
                 label='Link URL'
+                labelFloat
                 type='url'
                 value={props.content.settings.linkUrl}
                 valueHandler={props.getContentSettingsValueHandler('linkUrl')}
@@ -238,6 +245,7 @@ function PageBlockContentSettings(props) {
                 min='0.0625'
                 step='0.0625'
                 label='Spacer Height'
+                labelFloat
                 value={props.content.settings.spacerHeight}
                 valueHandler={props.getContentSettingsValueHandler(
                   'spacerHeight'

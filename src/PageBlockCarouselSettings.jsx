@@ -90,6 +90,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Rows'
+              labelFloat
               placeholder='1'
               value={props.block.settings.rows || ''}
               valueHandler={props.getPageBlockSettingsValueHandler('rows')}
@@ -109,6 +110,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides per Row'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesPerRow || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
@@ -130,6 +132,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides to Show'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesToShow || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
@@ -151,6 +154,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides to Scroll'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesToScroll || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
