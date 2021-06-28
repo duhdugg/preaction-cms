@@ -8,15 +8,54 @@
   .pxn-modal .pxn-input {
     margin-bottom: 1rem;
   }
+  .App.non-editable .ql-bubble a {
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
 }
 @include default-overrides;
 
+@mixin login-page {
+  .App .login {
+    margin-top: 1rem;
+    .pxn-input {
+      margin-bottom: 1rem;
+    }
+  }
+}
+@include login-page;
 @mixin page-rules {
   .page {
     .page-block,
     .page-block-content {
       &.nopad-body > .card > .card-body {
         padding: 0;
+      }
+      > .card > .card-header {
+        h6,
+        h5,
+        h4,
+        h3,
+        h2,
+        h1 {
+          margin-bottom: 0;
+        }
+        h6,
+        h5,
+        h4 {
+          font-size: 1em;
+        }
+        h3 {
+          font-size: 1.17em;
+        }
+        h2 {
+          font-size: 1.5em;
+        }
+        h1 {
+          font-size: 2em;
+        }
       }
       > .card > .card-footer {
         padding: 0;
@@ -34,6 +73,9 @@
         .ql-container {
           font-size: 1rem;
           font-family: var(--bs-font-sans-serif);
+          &.ql-bubble:not(.ql-disabled) a {
+            white-space: pre-wrap;
+          }
         }
         .ql-editor {
           overflow: hidden;
@@ -60,6 +102,59 @@
     .page-block-content:last-child {
       margin-bottom: 0;
     }
+    .page-block.block-type-carousel {
+      .slick-slide > div {
+        font-size: 0;
+      }
+      .slick-list {
+        background-color: #000000;
+      }
+      .carousel-center-mode,
+      .thumbnail-pagination {
+        .slick-slide {
+          opacity: 0.5;
+          transition: opacity 300ms linear;
+          &:hover {
+            opacity: 0.75;
+          }
+          &.slick-center {
+            opacity: 1;
+          }
+        }
+      }
+      .thumbnail-pagination,
+      .carousel-focus-on-select {
+        .slick-slide .img {
+          cursor: pointer;
+        }
+      }
+    }
+    .page-block.block-type-content {
+      .upload-images-icon {
+        svg:nth-child(1) {
+          font-size: 1.25rem;
+        }
+        svg:nth-child(2) {
+          font-size: 0.6rem;
+          position: absolute;
+          left: 30%;
+          top: 20%;
+          color: var(--bs-gray);
+        }
+      }
+      .linked-image-icon {
+        svg:nth-child(1) {
+          font-size: 1.25rem;
+        }
+        svg:nth-child(2) {
+          font-size: 0.8rem;
+          position: absolute;
+          left: 30%;
+          top: 15%;
+          color: var(--bs-gray);
+        }
+      }
+    }
     .page-block.block-type-spacer {
       margin-top: 0;
       margin-bottom: 0;
@@ -83,7 +178,23 @@
 }
 @include page-rules;
 
+@mixin carousel-dark-controls {
+  button.slick-arrow:before,
+  .slick-dots > li > button:before,
+  .slick-dots > li.slick-active > button:before {
+    color: var(--bs-dark);
+  }
+}
+@include carousel-dark-controls;
+@mixin carousel-light-controls {
+  button.slick-arrow:before,
+  .slick-dots > li > button:before,
+  .slick-dots > li.slick-active > button:before {
+    color: var(--bs-light);
+  }
+}
 @mixin blue-links {
+  @include carousel-dark-controls;
   a,
   a:hover,
   a:active,
@@ -92,6 +203,7 @@
   }
 }
 @mixin light-links {
+  @include carousel-light-controls;
   a,
   a:hover,
   a:active,
@@ -100,6 +212,7 @@
   }
 }
 @mixin dark-links {
+  @include carousel-dark-controls;
   a,
   a:hover,
   a:active,
