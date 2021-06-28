@@ -1025,95 +1025,102 @@ class App extends React.Component {
                 mainContainer: this.settings.maxWidthMainContainer,
               }}
             >
-              {this.state.editable ? <hr /> : ''}
-              {this.state.editable ? (
-                <div className='font-weight-bold'>
-                  Main: {this.state.activePathname}
-                </div>
-              ) : (
-                ''
-              )}
-              <Switch>
-                <Route exact path='/'>
-                  <Page
-                    appRoot={this.root}
-                    editable={this.state.editable}
-                    emitSave={this.emitSave.bind(this)}
-                    fallbackSettings={this.fallbackSettings}
-                    path='/home/'
-                    ref={this.activePage}
-                    headerControl={this.getShowPropertyValueHandler('header')}
-                    footerControl={this.getShowPropertyValueHandler('footer')}
-                    jumboControl={this.getShowPropertyValueHandler('jumbo')}
-                    navigate={this.navigate.bind(this)}
-                    setActivePathname={this.setActivePathname.bind(this)}
-                    setActivePage={this.setActivePage.bind(this)}
-                    token={this.state.token}
-                    initPage={this.props.initPage}
-                  />
-                </Route>
-                <Route exact path='/login'>
-                  <div className='login'>
-                    <Login
-                      appRoot={this.root}
-                      loadSession={this.loadSession.bind(this)}
-                      navigate={this.navigate.bind(this)}
-                      settings={this.state.siteSettings}
-                      setToken={this.setToken.bind(this)}
-                      token={this.state.token}
-                    />
+              <div
+                className={joinClassNames(
+                  'main-body',
+                  getLinkClassName(this.settings.mainTheme || '')
+                )}
+              >
+                {this.state.editable ? <hr /> : ''}
+                {this.state.editable ? (
+                  <div className='font-weight-bold'>
+                    Main: {this.state.activePathname}
                   </div>
-                </Route>
-                <Route
-                  render={({ location }) => {
-                    const root = new RegExp(`^${this.root}`)
-                    const pathname = location.pathname.replace(root, '')
-                    const splitPath = pathname
-                      .replace(/(^\/|\/$)/g, '')
-                      .split('/')
-                    const key = splitPath[splitPath.length - 1]
-                    switch (key) {
-                      case 'home':
-                      case 'header':
-                      case 'footer':
-                      case 'jumbo':
-                        return <NotFound />
-                      default:
-                        return (
-                          <Page
-                            appRoot={this.root}
-                            editable={this.state.editable}
-                            path={pathname}
-                            deletePage={this.deletePage.bind(this)}
-                            emitSave={this.emitSave.bind(this)}
-                            ref={this.activePage}
-                            headerControl={this.getShowPropertyValueHandler(
-                              'header'
-                            )}
-                            footerControl={this.getShowPropertyValueHandler(
-                              'footer'
-                            )}
-                            jumboControl={this.getShowPropertyValueHandler(
-                              'jumbo'
-                            )}
-                            navigate={this.navigate.bind(this)}
-                            onError={this.handlePageError.bind(this)}
-                            onNotFound={this.handleNotFound.bind(this)}
-                            setActivePathname={this.setActivePathname.bind(
-                              this
-                            )}
-                            setActivePage={this.setActivePage.bind(this)}
-                            token={this.state.token}
-                            initPage={this.props.initPage}
-                            init404={this.props.init404}
-                            initError={this.props.initError}
-                          />
-                        )
-                    }
-                  }}
-                />
-              </Switch>
-              {this.state.editable ? <hr /> : ''}
+                ) : (
+                  ''
+                )}
+                <Switch>
+                  <Route exact path='/'>
+                    <Page
+                      appRoot={this.root}
+                      editable={this.state.editable}
+                      emitSave={this.emitSave.bind(this)}
+                      fallbackSettings={this.fallbackSettings}
+                      path='/home/'
+                      ref={this.activePage}
+                      headerControl={this.getShowPropertyValueHandler('header')}
+                      footerControl={this.getShowPropertyValueHandler('footer')}
+                      jumboControl={this.getShowPropertyValueHandler('jumbo')}
+                      navigate={this.navigate.bind(this)}
+                      setActivePathname={this.setActivePathname.bind(this)}
+                      setActivePage={this.setActivePage.bind(this)}
+                      token={this.state.token}
+                      initPage={this.props.initPage}
+                    />
+                  </Route>
+                  <Route exact path='/login'>
+                    <div className='login'>
+                      <Login
+                        appRoot={this.root}
+                        loadSession={this.loadSession.bind(this)}
+                        navigate={this.navigate.bind(this)}
+                        settings={this.state.siteSettings}
+                        setToken={this.setToken.bind(this)}
+                        token={this.state.token}
+                      />
+                    </div>
+                  </Route>
+                  <Route
+                    render={({ location }) => {
+                      const root = new RegExp(`^${this.root}`)
+                      const pathname = location.pathname.replace(root, '')
+                      const splitPath = pathname
+                        .replace(/(^\/|\/$)/g, '')
+                        .split('/')
+                      const key = splitPath[splitPath.length - 1]
+                      switch (key) {
+                        case 'home':
+                        case 'header':
+                        case 'footer':
+                        case 'jumbo':
+                          return <NotFound />
+                        default:
+                          return (
+                            <Page
+                              appRoot={this.root}
+                              editable={this.state.editable}
+                              path={pathname}
+                              deletePage={this.deletePage.bind(this)}
+                              emitSave={this.emitSave.bind(this)}
+                              ref={this.activePage}
+                              headerControl={this.getShowPropertyValueHandler(
+                                'header'
+                              )}
+                              footerControl={this.getShowPropertyValueHandler(
+                                'footer'
+                              )}
+                              jumboControl={this.getShowPropertyValueHandler(
+                                'jumbo'
+                              )}
+                              navigate={this.navigate.bind(this)}
+                              onError={this.handlePageError.bind(this)}
+                              onNotFound={this.handleNotFound.bind(this)}
+                              setActivePathname={this.setActivePathname.bind(
+                                this
+                              )}
+                              setActivePage={this.setActivePage.bind(this)}
+                              token={this.state.token}
+                              initPage={this.props.initPage}
+                              init404={this.props.init404}
+                              initError={this.props.initError}
+                            />
+                          )
+                      }
+                    }}
+                  />
+                </Switch>
+                {this.state.editable ? <hr /> : ''}
+              </div>
             </Boilerplate>
           </div>
         </Router>
