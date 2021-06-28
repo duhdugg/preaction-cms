@@ -98,10 +98,13 @@ function PageBlock(props) {
       }}
       header={header}
       headerTheme={props.block.settings.headerTheme || 'dark'}
+      headerGradient={props.block.settings.headerGradient}
       theme={
         padded ? props.block.settings.bodyTheme || 'transparent' : 'transparent'
       }
+      gradient={padded ? props.block.settings.bodyGradient : false}
       footerTheme={props.block.settings.headerTheme || 'dark'}
+      footerGradient={props.block.settings.headerGradient}
       footer={
         props.editable ? (
           <div className='btn-group d-block'>

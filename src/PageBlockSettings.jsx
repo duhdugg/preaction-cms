@@ -55,22 +55,33 @@ function PageBlockSettings(props) {
           ''
         )}
         {props.block.settings.header ? (
-          <div className='header-theme-field'>
-            <Select
-              label='Header Theme'
-              value={props.block.settings.headerTheme || 'dark'}
-              valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
-            >
-              <option>danger</option>
-              <option>dark</option>
-              <option>info</option>
-              <option>light</option>
-              <option>primary</option>
-              <option>secondary</option>
-              <option>success</option>
-              <option>warning</option>
-              <option>white</option>
-            </Select>
+          <div>
+            <div className='header-theme-field'>
+              <Select
+                label='Header Theme'
+                value={props.block.settings.headerTheme || 'dark'}
+                valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
+              >
+                <option>danger</option>
+                <option>dark</option>
+                <option>info</option>
+                <option>light</option>
+                <option>primary</option>
+                <option>secondary</option>
+                <option>success</option>
+                <option>warning</option>
+                <option>white</option>
+              </Select>
+            </div>
+            <div className='header-gradient-field'>
+              <Checkbox
+                label='Header Gradient'
+                checked={props.block.settings.headerGradient || false}
+                valueHandler={getPageBlockSettingsValueHandler(
+                  'headerGradient'
+                )}
+              />
+            </div>
           </div>
         ) : (
           ''
@@ -94,6 +105,13 @@ function PageBlockSettings(props) {
                 <option>warning</option>
                 <option>white</option>
               </Select>
+            </div>
+            <div className='body-gradient-field'>
+              <Checkbox
+                label='Body Gradient'
+                checked={props.block.settings.bodyGradient || false}
+                valueHandler={getPageBlockSettingsValueHandler('bodyGradient')}
+              />
             </div>
             <div className='border-theme-field'>
               <Select
