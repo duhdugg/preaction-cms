@@ -277,47 +277,69 @@ function SiteSettings(props) {
                   className='theme-settings'
                 >
                   <div className='row'>
-                    <div className='col-sm-6 body-theme-field'>
-                      <Select
-                        label='Body Theme'
-                        value={props.settings.bodyTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'bodyTheme'
-                        )}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
+                    <div className='col-sm-6 body-theme-field-group'>
+                      <div className='body-theme-field'>
+                        <Select
+                          label='Body Theme'
+                          value={props.settings.bodyTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyTheme'
+                          )}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                      <div className='body-gradient-field'>
+                        <Checkbox
+                          label='Body Gradient'
+                          checked={props.settings.bodyGradient}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyGradient'
+                          )}
+                        />
+                      </div>
                     </div>
-                    <div className='col-sm-6 main-theme-field'>
-                      <Select
-                        label='Main Theme'
-                        value={props.settings.mainTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'mainTheme'
-                        )}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
+                    <div className='col-sm-6 main-theme-field-group'>
+                      <div className='main-theme-field'>
+                        <Select
+                          label='Main Theme'
+                          value={props.settings.mainTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainTheme'
+                          )}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                      </div>
+                      <div className='main-gradient-field'>
+                        <Checkbox
+                          label='Main Gradient'
+                          checked={props.settings.mainGradient}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainGradient'
+                          )}
+                        />
+                      </div>
                     </div>
                     {['fixed-top'].includes(props.settings.navPosition) ? (
                       <div className='col-sm-6 navbar-theme-field'>
@@ -389,76 +411,109 @@ function SiteSettings(props) {
                     </div>
                     {props.settings.showHeader ||
                     props.settings.navPosition !== 'fixed-top' ? (
-                      <div className='col-sm-6 header-theme-field'>
-                        <Select
-                          label='Header Theme'
-                          value={props.settings.headerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'headerTheme'
-                          )}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
+                      <div className='col-sm-6 header-theme-field-group'>
+                        <div className='header-theme-field'>
+                          <Select
+                            label='Header Theme'
+                            value={props.settings.headerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerTheme'
+                            )}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                        </div>
+                        <div className='header-gradient-field'>
+                          <Checkbox
+                            label='Header Gradient'
+                            checked={props.settings.headerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerGradient'
+                            )}
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
                     {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-theme-field'>
-                        <Select
-                          label='Jumbotron Theme'
-                          value={props.settings.jumboTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'jumboTheme'
-                          )}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
+                      <div className='col-sm-6 jumbo-theme-field-group'>
+                        <div className='jumbo-theme-field'>
+                          <Select
+                            label='Jumbotron Theme'
+                            value={props.settings.jumboTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'jumboTheme'
+                            )}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                        </div>
+                        <div className='jumbo-gradient-field'>
+                          <Checkbox
+                            label='Jumbotron Gradient'
+                            checked={props.settings.jumboGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'jumboGradient'
+                            )}
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
                     {props.settings.showFooter ? (
-                      <div className='col-sm-6 footer-theme-field'>
-                        <Select
-                          label='Footer Theme'
-                          value={props.settings.footerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'footerTheme'
-                          )}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
+                      <div className='col-sm-6 footer-theme-field-group'>
+                        <div className='footer-theme-field'>
+                          <Select
+                            label='Footer Theme'
+                            value={props.settings.footerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerTheme'
+                            )}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                        </div>
+                        <div className='footer-gradient-field'>
+                          <Checkbox
+                            label='Footer Gradient'
+                            value={props.settings.footerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerGradient'
+                            )}
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''

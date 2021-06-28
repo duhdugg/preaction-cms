@@ -15,6 +15,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import {
+  getGradientClassName,
   getThemeClassName,
   joinClassNames,
   Boilerplate,
@@ -991,9 +992,13 @@ class App extends React.Component {
               }
               heroPosition={this.settings.jumboPosition}
               heroTheme={this.settings.jumboTheme || undefined}
+              heroGradient={this.settings.jumboGradient || false}
               headerTheme={this.settings.headerTheme || undefined}
+              headerGradient={this.settings.headerGradient || false}
               mainTheme={this.settings.mainTheme || undefined}
+              mainGradient={this.settings.mainGradient || false}
               footerTheme={this.settings.footerTheme || undefined}
+              footerGradient={this.settings.footerGradient || false}
               footer={
                 <div className={getLinkClassName(this.settings.footerTheme)}>
                   <Footer
@@ -1254,6 +1259,9 @@ class App extends React.Component {
       if (linkClass) {
         bodyClasses.push(linkClass)
       }
+    }
+    if (this.settings.bodyGradient) {
+      bodyClasses.push(getGradientClassName(true))
     }
     document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set

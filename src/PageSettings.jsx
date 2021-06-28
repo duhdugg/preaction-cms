@@ -566,69 +566,121 @@ function PageSettings(props) {
                   className='theme-settings'
                 >
                   <div className='row'>
-                    <div className='col-sm-6 body-theme-field'>
-                      <Select
-                        label='Body Theme'
-                        value={props.settings.bodyTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'bodyTheme'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('bodyTheme')}
-                        onClick={() => {
-                          overrideSetting('bodyTheme')
-                        }}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
-                      <ResetButton
-                        getPageSettingIsUndefined={
-                          props.getPageSettingIsUndefined
-                        }
-                        resetSetting={resetSetting}
-                        settingsKey='bodyTheme'
-                      />
+                    <div className='col-sm-6 body-theme-field-group'>
+                      <div className='body-theme-field'>
+                        <Select
+                          label='Body Theme'
+                          value={props.settings.bodyTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'bodyTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('bodyTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='bodyTheme'
+                        />
+                      </div>
+                      <div className='body-gradient-field'>
+                        <Checkbox
+                          label='Body Gradient'
+                          checked={props.settings.bodyGradient || false}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyGradient'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'bodyGradient'
+                          )}
+                          onClick={() => {
+                            overrideSetting('bodyGradient')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='bodyGradient'
+                        />
+                      </div>
                     </div>
-                    <div className='col-sm-6 main-theme-field'>
-                      <Select
-                        label='Main Theme'
-                        value={props.settings.mainTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'mainTheme'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('mainTheme')}
-                        onClick={() => {
-                          overrideSetting('mainTheme')
-                        }}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
-                      <ResetButton
-                        getPageSettingIsUndefined={
-                          props.getPageSettingIsUndefined
-                        }
-                        resetSetting={resetSetting}
-                        settingsKey='mainTheme'
-                      />
+                    <div className='col-sm-6 main-theme-field-group'>
+                      <div className='main-theme-field'>
+                        <Select
+                          label='Main Theme'
+                          value={props.settings.mainTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'mainTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('mainTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='mainTheme'
+                        />
+                      </div>
+                      <div className='main-gradient-field'>
+                        <Checkbox
+                          label='Main Gradient'
+                          checked={props.settings.mainGradient || false}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainGradient'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'mainGradient'
+                          )}
+                          onClick={() => {
+                            overrideSetting('mainGradient')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='mainGradient'
+                        />
+                      </div>
                     </div>
                     {['fixed-top'].includes(props.settings.navPosition) ? (
                       <div className='col-sm-6 navbar-theme-field'>
@@ -739,115 +791,187 @@ function PageSettings(props) {
                     </div>
                     {props.settings.showHeader ||
                     props.settings.navPosition !== 'fixed-top' ? (
-                      <div className='col-sm-6 header-theme-field'>
-                        <Select
-                          label='Header Theme'
-                          value={props.settings.headerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'headerTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'headerTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('headerTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='headerTheme'
-                        />
+                      <div className='col-sm-6 header-theme-field-group'>
+                        <div className='header-theme-field'>
+                          <Select
+                            label='Header Theme'
+                            value={props.settings.headerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'headerTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('headerTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='headerTheme'
+                          />
+                        </div>
+                        <div className='header-gradient-field'>
+                          <Checkbox
+                            label='Header Gradient'
+                            checked={props.settings.headerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'headerGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('headerGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='headerGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
                     {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-theme-field'>
-                        <Select
-                          label='Jumbotron Theme'
-                          value={props.settings.jumboTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'jumboTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'jumboTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('jumboTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='jumboTheme'
-                        />
+                      <div className='col-sm-6 jumbo-theme-field-group'>
+                        <div className='jumbo-theme-field'>
+                          <Select
+                            label='Jumbotron Theme'
+                            value={props.settings.jumboTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'jumboTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'jumboTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('jumboTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='jumboTheme'
+                          />
+                        </div>
+                        <div className='jumbo-gradient-field'>
+                          <Checkbox
+                            label='Jumbo Gradient'
+                            checked={props.settings.jumboGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'jumboGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'jumboGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('jumboGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='jumboGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
                     {props.settings.showFooter ? (
-                      <div className='col-sm-6 footer-theme-field'>
-                        <Select
-                          label='Footer Theme'
-                          value={props.settings.footerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'footerTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'footerTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('footerTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='footerTheme'
-                        />
+                      <div className='col-sm-6 footer-theme-field-group'>
+                        <div className='footer-theme-field'>
+                          <Select
+                            label='Footer Theme'
+                            value={props.settings.footerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'footerTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('footerTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='footerTheme'
+                          />
+                        </div>
+                        <div className='footer-gradient-field'>
+                          <Checkbox
+                            label='Footer Gradient'
+                            checked={props.settings.footerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'footerGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('footerGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='footerGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''

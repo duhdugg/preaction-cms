@@ -1,4 +1,7 @@
 @mixin default-overrides {
+  hr {
+    margin: 0;
+  }
   .pxn-boilerplate .pxn-hero {
     margin-bottom: 0;
   }
