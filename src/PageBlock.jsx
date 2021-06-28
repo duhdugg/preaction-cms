@@ -89,6 +89,7 @@ function PageBlock(props) {
           header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
         }`
       : 0
+  const padded = !!header || props.block.settings.pad
 
   return (
     <Card
@@ -96,14 +97,14 @@ function PageBlock(props) {
         'page-block',
         `block-type-${props.block.blockType.replace(/\s/g, '')}`,
         `block-id-${props.block.id}`,
-        header || props.block.settings.pad ? '' : 'nopad-body',
-        header || props.block.settings.pad
+        padded ? '' : 'nopad-body',
+        padded
           ? `card-border-${(props.block.settings.borderTheme || 'dark').replace(
               /\s/g,
               ''
             )}`
           : 'card-border-transparent',
-        getLinkClassName(props.block.settings.bodyTheme)
+        getLinkClassName(padded ? props.block.settings.bodyTheme : '')
       )}
       column
       width={{
@@ -115,14 +116,12 @@ function PageBlock(props) {
       header={header}
       headerTheme={props.block.settings.headerTheme || 'dark'}
       theme={
-        props.block.settings.header || props.block.settings.pad
-          ? props.block.settings.bodyTheme || 'transparent'
-          : 'transparent'
+        padded ? props.block.settings.bodyTheme || 'transparent' : 'transparent'
       }
       footerTheme={props.block.settings.headerTheme || 'dark'}
       style={{
         body: {
-          padding: header || props.block.settings.pad ? '1em' : 0,
+          padding: padded ? '1em' : 0,
           border: 0,
         },
         card: {

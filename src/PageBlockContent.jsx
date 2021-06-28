@@ -68,6 +68,7 @@ function PageBlockContent(props) {
   }
 
   const header = getHeader()
+  const padded = !!header || props.content.settings.pad
 
   return (
     <Card
@@ -75,8 +76,8 @@ function PageBlockContent(props) {
         'page-block-content',
         `content-type-${props.content.contentType.replace(/\s/g, '')}`,
         `content-id-${props.content.id}`,
-        header || props.content.settings.pad ? '' : 'nopad-body',
-        header || props.content.settings.pad
+        padded ? '' : 'nopad-body',
+        padded
           ? `card-border-${(
               props.content.settings.borderTheme || 'dark'
             ).replace(/\s/g, '')}`
@@ -88,7 +89,7 @@ function PageBlockContent(props) {
       header={header}
       headerTheme={props.content.settings.headerTheme || 'dark'}
       theme={
-        props.content.settings.header || props.content.settings.pad
+        padded
           ? props.content.settings.bodyTheme || 'transparent'
           : 'transparent'
       }
