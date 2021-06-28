@@ -115,6 +115,7 @@ function SiteSettings(props) {
                 <div className='site-name-field'>
                   <Input
                     label='Site Name'
+                    labelFloat
                     type='text'
                     value={props.settings.siteTitle}
                     valueHandler={props.getSettingsValueHandler('siteTitle')}
@@ -123,6 +124,7 @@ function SiteSettings(props) {
                 <div className='meta-description-field'>
                   <Input
                     label='Meta Description'
+                    labelFloat
                     type='text'
                     maxLength='160'
                     value={props.settings.metaDescription}
@@ -140,6 +142,7 @@ function SiteSettings(props) {
                     <div className='col-sm-6 nav-position-field'>
                       <Select
                         label='Nav Position'
+                        labelFloat
                         value={props.settings.navPosition}
                         valueHandler={props.getSettingsValueHandler(
                           'navPosition'
@@ -156,6 +159,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 nav-type-field'>
                         <Select
                           label='Nav Type'
+                          labelFloat
                           value={props.settings.navType}
                           valueHandler={props.getSettingsValueHandler(
                             'navType'
@@ -175,6 +179,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 nav-alignment-field'>
                         <Select
                           label='Nav Alignment'
+                          labelFloat
                           value={props.settings.navAlignment}
                           valueHandler={props.getSettingsValueHandler(
                             'navAlignment'
@@ -194,6 +199,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 nav-spacing-field'>
                         <Select
                           label='Nav Spacing'
+                          labelFloat
                           value={props.settings.navSpacing}
                           valueHandler={props.getSettingsValueHandler(
                             'navSpacing'
@@ -257,6 +263,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 jumbo-position-field'>
                         <Select
                           label='Jumbotron Position'
+                          labelFloat
                           value={props.settings.jumboPosition}
                           valueHandler={props.getSettingsValueHandler(
                             'jumboPosition'
@@ -281,6 +288,7 @@ function SiteSettings(props) {
                       <div className='body-theme-field'>
                         <Select
                           label='Body Theme'
+                          labelFloat
                           value={props.settings.bodyTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'bodyTheme'
@@ -313,6 +321,7 @@ function SiteSettings(props) {
                       <div className='main-theme-field'>
                         <Select
                           label='Main Theme'
+                          labelFloat
                           value={props.settings.mainTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'mainTheme'
@@ -345,6 +354,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 navbar-theme-field'>
                         <Select
                           label='NavBar Theme'
+                          labelFloat
                           value={props.settings.navbarTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'navbarTheme'
@@ -371,6 +381,7 @@ function SiteSettings(props) {
                       <div className='col-sm-6 nav-active-tab-theme-field'>
                         <Select
                           label='Active Nav Tab Theme'
+                          labelFloat
                           value={props.settings.navActiveTabTheme || 'white'}
                           valueHandler={props.getSettingsValueHandler(
                             'navActiveTabTheme'
@@ -393,6 +404,7 @@ function SiteSettings(props) {
                     <div className='col-sm-6 nav-active-submenu-theme-field'>
                       <Select
                         label='Active Submenu Theme'
+                        labelFloat
                         value={
                           props.settings.navActiveSubmenuTheme || 'primary'
                         }
@@ -415,6 +427,7 @@ function SiteSettings(props) {
                         <div className='header-theme-field'>
                           <Select
                             label='Header Theme'
+                            labelFloat
                             value={props.settings.headerTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'headerTheme'
@@ -451,6 +464,7 @@ function SiteSettings(props) {
                         <div className='jumbo-theme-field'>
                           <Select
                             label='Jumbotron Theme'
+                            labelFloat
                             value={props.settings.jumboTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'jumboTheme'
@@ -487,6 +501,7 @@ function SiteSettings(props) {
                         <div className='footer-theme-field'>
                           <Select
                             label='Footer Theme'
+                            labelFloat
                             value={props.settings.footerTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'footerTheme'
@@ -700,6 +715,7 @@ function SiteSettings(props) {
               <div>
                 <Select
                   label='Restore File'
+                  labelFloat
                   value={selectedRestore}
                   valueHandler={(value) => {
                     setSelectedRestore(value)

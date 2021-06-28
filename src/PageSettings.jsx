@@ -138,6 +138,7 @@ function PageSettings(props) {
                 <div className='page-title-field'>
                   <Input
                     label='Page Title'
+                    labelFloat
                     type='text'
                     value={props.page.title}
                     valueHandler={props.getPageValueHandler('title')}
@@ -146,6 +147,7 @@ function PageSettings(props) {
                 <div className='page-path-field'>
                   <Input
                     label='Page Path'
+                    labelFloat
                     type='text'
                     value={props.page.key}
                     valueHandler={props.getPageValueHandler('key')}
@@ -154,6 +156,7 @@ function PageSettings(props) {
                 <div className='full-path-field'>
                   <Input
                     label='Full Path (readonly)'
+                    labelFloat
                     type='text'
                     value={path}
                     readOnly={true}
@@ -162,6 +165,7 @@ function PageSettings(props) {
                 <div className='site-name-field'>
                   <Input
                     label='Site Name'
+                    labelFloat
                     type='text'
                     value={props.settings.siteTitle}
                     valueHandler={props.getSettingsValueHandler('siteTitle')}
@@ -179,6 +183,7 @@ function PageSettings(props) {
                 <div className='meta-description-field'>
                   <Input
                     label='Meta Description'
+                    labelFloat
                     type='text'
                     maxLength='160'
                     value={props.settings.metaDescription}
@@ -234,6 +239,7 @@ function PageSettings(props) {
                         type='number'
                         step='1'
                         label='Ordering'
+                        labelFloat
                         info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
                         placeholder='0'
                         value={props.settings.navOrdering}
@@ -249,6 +255,7 @@ function PageSettings(props) {
                     <div className='col-sm-6 nav-position-field'>
                       <Select
                         label='Nav Position'
+                        labelFloat
                         value={props.settings.navPosition}
                         valueHandler={props.getSettingsValueHandler(
                           'navPosition'
@@ -278,6 +285,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-type-field'>
                         <Select
                           label='Nav Type'
+                          labelFloat
                           value={props.settings.navType}
                           valueHandler={props.getSettingsValueHandler(
                             'navType'
@@ -308,6 +316,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-alignment-field'>
                         <Select
                           label='Nav Alignment'
+                          labelFloat
                           value={props.settings.navAlignment}
                           valueHandler={props.getSettingsValueHandler(
                             'navAlignment'
@@ -340,6 +349,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-spacing-field'>
                         <Select
                           label='Nav Spacing'
+                          labelFloat
                           value={props.settings.navSpacing}
                           valueHandler={props.getSettingsValueHandler(
                             'navSpacing'
@@ -423,6 +433,7 @@ function PageSettings(props) {
                     <div className='header-path-field'>
                       <Input
                         label='Header Path'
+                        labelFloat
                         info={`By default, every page has a header subpage automatically created. In order to use the header specific to this page, enter: ${props.path}header/`}
                         value={props.settings.headerPath}
                         valueHandler={props.getSettingsValueHandler(
@@ -466,6 +477,7 @@ function PageSettings(props) {
                     <div className='footer-path-field'>
                       <Input
                         label='Footer Path'
+                        labelFloat
                         info={`By default, every page has a footer subpage automatically created. In order to use the footer specific to this page, enter: ${props.path}footer/`}
                         value={props.settings.footerPath}
                         valueHandler={props.getSettingsValueHandler(
@@ -509,6 +521,7 @@ function PageSettings(props) {
                     <div className='jumbo-path-field'>
                       <Input
                         label='Jumbotron Path'
+                        labelFloat
                         info={`By default, every page has a jumbotron subpage automatically created. In order to use the jumbotron specific to this page, enter: ${props.path}jumbo/`}
                         value={props.settings.jumboPath}
                         valueHandler={props.getSettingsValueHandler(
@@ -534,6 +547,7 @@ function PageSettings(props) {
                     <div className='jumbo-position-field'>
                       <Select
                         label='Jumbotron Position'
+                        labelFloat
                         value={props.settings.jumboPosition}
                         valueHandler={props.getSettingsValueHandler(
                           'jumboPosition'
@@ -570,6 +584,7 @@ function PageSettings(props) {
                       <div className='body-theme-field'>
                         <Select
                           label='Body Theme'
+                          labelFloat
                           value={props.settings.bodyTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'bodyTheme'
@@ -628,6 +643,7 @@ function PageSettings(props) {
                       <div className='main-theme-field'>
                         <Select
                           label='Main Theme'
+                          labelFloat
                           value={props.settings.mainTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'mainTheme'
@@ -686,6 +702,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 navbar-theme-field'>
                         <Select
                           label='NavBar Theme'
+                          labelFloat
                           value={props.settings.navbarTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'navbarTheme'
@@ -725,6 +742,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-active-tab-theme-field'>
                         <Select
                           label='Active Nav Tab Theme'
+                          labelFloat
                           value={props.settings.navActiveTabTheme || 'white'}
                           valueHandler={props.getSettingsValueHandler(
                             'navActiveTabTheme'
@@ -760,6 +778,7 @@ function PageSettings(props) {
                     <div className='col-sm-6 nav-active-submenu-theme-field'>
                       <Select
                         label='Active Submenu Theme'
+                        labelFloat
                         value={
                           props.settings.navActiveSubmenuTheme || 'primary'
                         }
@@ -795,6 +814,7 @@ function PageSettings(props) {
                         <div className='header-theme-field'>
                           <Select
                             label='Header Theme'
+                            labelFloat
                             value={props.settings.headerTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'headerTheme'
@@ -857,6 +877,7 @@ function PageSettings(props) {
                         <div className='jumbo-theme-field'>
                           <Select
                             label='Jumbotron Theme'
+                            labelFloat
                             value={props.settings.jumboTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'jumboTheme'
@@ -919,6 +940,7 @@ function PageSettings(props) {
                         <div className='footer-theme-field'>
                           <Select
                             label='Footer Theme'
+                            labelFloat
                             value={props.settings.footerTheme}
                             valueHandler={props.getSettingsValueHandler(
                               'footerTheme'
