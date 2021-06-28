@@ -1,4 +1,4 @@
-import './style'
+import './style/base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
@@ -52,9 +52,10 @@ const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
 // import css
-// if (!ssr) {
-//   require('./style')
-// }
+if (!ssr) {
+  require('./style/cms.scss')
+  require('./style/custom')
+}
 
 const globalThis = globalthis()
 
