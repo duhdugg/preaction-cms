@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const pkg = require('./package.json')
+
 // <== LIBRARY IMPORTS ==>
 // bodyParser to handle json requests
 const bodyParser = require('body-parser')
@@ -20,7 +22,10 @@ const app = express()
 // <== LOCAL IMPORTS ==>
 const env = require('./lib/env.js')
 if (env.nodeEnv !== 'test') {
-  console.debug('Preaction CMS environment variables =', env)
+  console.log({
+    'Preaction CMS environment variables': env,
+    'Preaction CMS Version': pkg.version,
+  })
 }
 const cache = require('./lib/cache.js')
 const db = require('./lib/db.js')
