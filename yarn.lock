@@ -1709,10 +1709,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.2.tgz#adea7b6953cbb34651766b0548468e743c6a2353"
   integrity sha512-VZMYa7+fXHdwIq1TDhSXoVmSPEGM/aa+6Aiq3nVVJ9bXr24zScr+NlKFKC3iPljA7ho/GAZr+d2jOf5GIRC30Q==
 
-"@preaction/bootstrap-clips@^5.0.0-alpha.4":
-  version "5.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-5.0.0-alpha.4.tgz#8c347d86f0efcb109ce1e3ace6ba0ce453d80cb7"
-  integrity sha512-uAyL7b9K73YMP6xzt/8+VBGpWXDvIJxu2m/MXCENb7eKokNMlxlnO3151SgtUVfhpWteBTHct3XKsjVEfGSB4w==
+"@preaction/bootstrap-clips@^5.0.0-alpha.5":
+  version "5.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-5.0.0-alpha.5.tgz#1bb86bed2b2e93feed81b3c4559feb5557dad5e9"
+  integrity sha512-hgAQNuZ0+IrisPZlukSP0Gqz1wz7uN5wOOmynj4Tcn+1MHcXzxgec7RXjCxaZiTRHPr2xY+nN7PMU4jNnCs1oA==
   dependencies:
     prop-types "^15.7.2"
 
