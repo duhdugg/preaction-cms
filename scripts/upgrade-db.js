@@ -52,7 +52,7 @@ db.sync().then(async () => {
     }
     const allContents = await pages.model.PageBlockContent.findAll()
     for (const content of allContents) {
-      content.settings = Object.assign({}, content.setting, {
+      content.settings = Object.assign({}, content.settings, {
         customClassName: '',
         headerGradient: false,
         bodyGradient: false,
