@@ -4,7 +4,7 @@ import React from 'react'
 import loadable from '@loadable/component'
 import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
-import PageBlock from './PageBlock.jsx'
+import PageBlockParent from './PageBlockParent.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import {
   MdCreate,
@@ -848,7 +848,7 @@ class Page extends React.Component {
               ? this.getBlocks(this.state.page.pageblocks).map(
                   (block, index) => {
                     return (
-                      <PageBlock
+                      <PageBlockParent
                         addContent={this.addContent.bind(this)}
                         appRoot={this.props.appRoot}
                         block={block}

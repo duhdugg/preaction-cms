@@ -3,9 +3,9 @@ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { StaticRouter } from 'react-router-dom'
-import PageBlock from '../PageBlock.jsx'
+import PageBlockParent from '../PageBlockParent.jsx'
 
-test('PageBlock content', async () => {
+test('PageBlockParent content', async () => {
   let latestAddContentArgs = {}
   const mockAddContent = (block, contentType) => {
     latestAddContentArgs = { block, contentType }
@@ -320,7 +320,7 @@ test('PageBlock content', async () => {
     site: false,
   }
   const result = render(
-    <PageBlock
+    <PageBlockParent
       addContent={mockAddContent}
       appRoot=''
       block={mockBlock}
@@ -366,7 +366,7 @@ test('PageBlock content', async () => {
     ).toBeInTheDocument()
   )
 })
-test('PageBlock nav', async () => {
+test('PageBlockParent nav', async () => {
   const mockAddContent = () => {}
   const mockBlock = {
     id: 5,
@@ -636,7 +636,7 @@ test('PageBlock nav', async () => {
   }
   const result = render(
     <StaticRouter>
-      <PageBlock
+      <PageBlockParent
         addContent={mockAddContent}
         appRoot=''
         block={mockBlock}
@@ -660,7 +660,7 @@ test('PageBlock nav', async () => {
     expect(result.getByText('Block Type "nav" Settings')).toBeInTheDocument()
   )
 })
-test('PageBlock iframe', async () => {
+test('PageBlockParent iframe', async () => {
   const mockAddContent = () => {}
   const mockBlock = {
     id: 10,
@@ -927,7 +927,7 @@ test('PageBlock iframe', async () => {
     site: false,
   }
   const result = render(
-    <PageBlock
+    <PageBlockParent
       addContent={mockAddContent}
       appRoot=''
       block={mockBlock}
@@ -956,7 +956,7 @@ test('PageBlock iframe', async () => {
     expect(result.getByText('Block Type "iframe" Settings')).toBeInTheDocument()
   )
 })
-test('PageBlock spacer', async () => {
+test('PageBlockParent spacer', async () => {
   const mockAddContent = () => {}
   const mockBlock = {
     id: 20,
@@ -1239,7 +1239,7 @@ test('PageBlock spacer', async () => {
     site: false,
   }
   const result = render(
-    <PageBlock
+    <PageBlockParent
       addContent={mockAddContent}
       appRoot=''
       block={mockBlock}

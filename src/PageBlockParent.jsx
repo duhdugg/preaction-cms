@@ -28,7 +28,7 @@ const PageBlockSettings = loadable(() => import('./settingsModules.js'), {
   fallback: <Spinner size='3.25' />,
   resolveComponent: (module) => module.PageBlockSettings,
 })
-function PageBlock(props) {
+function PageBlockParent(props) {
   const [showSettings, setShowSettings] = React.useState(false)
   const imgUploadForm = React.useRef()
   const photosInput = React.useRef()
@@ -407,7 +407,7 @@ function PageBlock(props) {
   )
 }
 
-PageBlock.propTypes = {
+PageBlockParent.propTypes = {
   addContent: PropTypes.func.isRequired,
   appRoot: PropTypes.string.isRequired,
   block: PropTypes.object.isRequired,
@@ -426,4 +426,4 @@ PageBlock.propTypes = {
   token: PropTypes.string,
 }
 
-export default PageBlock
+export default PageBlockParent
