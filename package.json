@@ -87,6 +87,7 @@
     "start-inspect": "node --inspect server.js",
     "start-profile": "node --prof server.js",
     "start": "bash scripts/start.sh",
+    "upgrade-db": "NODE_ENV=upgrade-db node scripts/upgrade-db.js",
     "package": "bash scripts/package.sh",
     "query-content": "node scripts/query-content.js"
   },
