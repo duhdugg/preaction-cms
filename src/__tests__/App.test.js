@@ -106,9 +106,9 @@ const mockHomeFooter = {
     },
   ],
 }
-const mockHomeJumbo = {
+const mockHomeHero = {
   id: 6,
-  key: 'jumbo',
+  key: 'hero',
   title: null,
   pageType: 'content',
   userCreated: false,
@@ -147,7 +147,7 @@ const mockHomeJumbo = {
             smWidth: 12,
             xsWidth: 12,
           },
-          wysiwyg: '<p>bar-jumbo</p>',
+          wysiwyg: '<p>bar-hero</p>',
           createdAt: '2020-09-07T21:49:05.838Z',
           updatedAt: '2020-09-07T21:49:15.347Z',
           pageblockId: 2,
@@ -246,7 +246,7 @@ const mockHomePage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -254,7 +254,7 @@ const mockHomePage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -334,7 +334,7 @@ const mockHomePage = {
 const mockSettings = {
   footerPath: '/home/footer/',
   headerPath: '/home/header/',
-  jumboPath: '/home/jumbo/',
+  heroPath: '/home/hero/',
   init: true,
   isNavParent: false,
   navAlignment: 'left',
@@ -344,7 +344,7 @@ const mockSettings = {
   navType: 'basic',
   showFooter: true,
   showHeader: true,
-  showJumbo: true,
+  showHero: true,
   siteTitle: 'Preaction CMS',
 }
 const mockSession = {
@@ -408,7 +408,7 @@ const mockTestPage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -416,7 +416,7 @@ const mockTestPage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -534,8 +534,8 @@ const server = setupServer(
   rest.get('/api/page/by-key/home/footer/', (req, res, ctx) => {
     return res(ctx.json(mockHomeFooter))
   }),
-  rest.get('/api/page/by-key/home/jumbo/', (req, res, ctx) => {
-    return res(ctx.json(mockHomeJumbo))
+  rest.get('/api/page/by-key/home/hero/', (req, res, ctx) => {
+    return res(ctx.json(mockHomeHero))
   }),
   rest.get('/api/page/by-key/home/', (req, res, ctx) => {
     return res(ctx.json(mockHomePage))
@@ -611,7 +611,7 @@ test('server-side rendering', () => {
   const mockPage = Object.assign({}, mockHomePage, {
     header: mockHomeHeader,
     footer: mockHomeFooter,
-    jumbo: mockHomeJumbo,
+    hero: mockHomeHero,
   })
   const result = render(
     <App initPath='/' initPage={mockPage} initSettings={mockSettings} />

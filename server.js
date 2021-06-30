@@ -155,7 +155,7 @@ app
         case 'home':
         case 'header':
         case 'footer':
-        case 'jumbo':
+        case 'hero':
         case 'favicon.ico':
           renderClient(req, res.status(404), {
             init404: true,

@@ -447,8 +447,8 @@ class Page extends React.Component {
             this.props.headerControl(value)
           } else if (key === 'showFooter') {
             this.props.footerControl(value)
-          } else if (key === 'showJumbo') {
-            this.props.jumboControl(value)
+          } else if (key === 'showHero') {
+            this.props.heroControl(value)
           }
           return state
         },
@@ -765,8 +765,8 @@ class Page extends React.Component {
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
-                // set the title if page is not header, footer, nor jumbo
-                if (path.match(/\/(header|footer|jumbo)\/$/g) === null) {
+                // set the title if page is not header, footer, nor hero
+                if (path.match(/\/(header|footer|hero)\/$/g) === null) {
                   let title = ''
                   if (this.topLevelPageKey === 'home') {
                     title = this.settings.siteTitle
@@ -803,14 +803,14 @@ class Page extends React.Component {
   }
 
   loadSettings() {
-    // control showing header/footer/jumbo in parent App.jsx component
-    if (!['header', 'footer', 'jumbo'].includes(this.state.page.key)) {
+    // control showing header/footer/hero in parent App.jsx component
+    if (!['header', 'footer', 'hero'].includes(this.state.page.key)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
-      let showJumbo = this.settings.showJumbo !== false
+      let showHero = this.settings.showHero !== false
       this.props.headerControl(showHeader)
       this.props.footerControl(showFooter)
-      this.props.jumboControl(showJumbo)
+      this.props.heroControl(showHero)
     }
   }
 
@@ -988,7 +988,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
-  jumboControl: PropTypes.func,
+  heroControl: PropTypes.func,
   init404: PropTypes.bool,
   initError: PropTypes.string,
   initPage: PropTypes.object,

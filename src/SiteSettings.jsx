@@ -231,9 +231,9 @@ function SiteSettings(props) {
                   </div>
                 </Card>
                 <Card
-                  header='Header/Footer/Jumbotron'
+                  header='Header/Footer/Hero'
                   headerTheme='dark'
-                  className='header-footer-jumbo'
+                  className='header-footer-hero'
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -250,23 +250,21 @@ function SiteSettings(props) {
                     />
                   </div>
                   <div className='row'>
-                    <div className='show-jumbo-field col-sm-6'>
+                    <div className='show-hero-field col-sm-6'>
                       <Checkbox
-                        label='Show Jumbotron'
-                        checked={props.settings.showJumbo}
-                        valueHandler={props.getSettingsValueHandler(
-                          'showJumbo'
-                        )}
+                        label='Show Hero'
+                        checked={props.settings.showHero}
+                        valueHandler={props.getSettingsValueHandler('showHero')}
                       />
                     </div>
-                    {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-position-field'>
+                    {props.settings.showHero ? (
+                      <div className='col-sm-6 hero-position-field'>
                         <Select
-                          label='Jumbotron Position'
+                          label='Hero Position'
                           labelFloat
-                          value={props.settings.jumboPosition}
+                          value={props.settings.heroPosition}
                           valueHandler={props.getSettingsValueHandler(
-                            'jumboPosition'
+                            'heroPosition'
                           )}
                         >
                           <option value='above-header'>Above Header</option>
@@ -459,15 +457,15 @@ function SiteSettings(props) {
                     ) : (
                       ''
                     )}
-                    {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-theme-field-group'>
-                        <div className='jumbo-theme-field'>
+                    {props.settings.showHero ? (
+                      <div className='col-sm-6 hero-theme-field-group'>
+                        <div className='hero-theme-field'>
                           <Select
-                            label='Jumbotron Theme'
+                            label='Hero Theme'
                             labelFloat
-                            value={props.settings.jumboTheme}
+                            value={props.settings.heroTheme}
                             valueHandler={props.getSettingsValueHandler(
-                              'jumboTheme'
+                              'heroTheme'
                             )}
                           >
                             <option value=''>Default</option>
@@ -483,12 +481,12 @@ function SiteSettings(props) {
                             <option>white</option>
                           </Select>
                         </div>
-                        <div className='jumbo-gradient-field'>
+                        <div className='hero-gradient-field'>
                           <Checkbox
-                            label='Jumbotron Gradient'
-                            checked={props.settings.jumboGradient || false}
+                            label='Hero Gradient'
+                            checked={props.settings.heroGradient || false}
                             valueHandler={props.getSettingsValueHandler(
-                              'jumboGradient'
+                              'heroGradient'
                             )}
                           />
                         </div>
@@ -563,14 +561,14 @@ function SiteSettings(props) {
               ) : (
                 ''
               )}
-              {props.settings.showJumbo ? (
+              {props.settings.showHero ? (
                 <div>
-                  <div className='jumbo-container-maxwidth-field'>
+                  <div className='hero-container-maxwidth-field'>
                     <Checkbox
-                      label='Max Width on Jumbotron Container'
-                      checked={props.settings.maxWidthJumboContainer}
+                      label='Max Width on Hero Container'
+                      checked={props.settings.maxWidthHeroContainer}
                       valueHandler={props.getSettingsValueHandler(
-                        'maxWidthJumboContainer'
+                        'maxWidthHeroContainer'
                       )}
                     />
                   </div>

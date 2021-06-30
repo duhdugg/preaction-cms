@@ -29,13 +29,21 @@ db.sync().then(async () => {
   }
   if (dbMeta.value.version < '5.0') {
     for (const page of allPages) {
-      page.settings.bodyGradient = false
-      page.settings.headerGradient = false
-      page.settings.jumboGradient = false
-      page.settings.mainGradient = false
-      page.settings.footerGradient = false
+      page.settings = Object.assign({}, page.settings, {
+        // rename jumbo to hero
+        heroPath: page.settings.jumboPath,
+        heroPosition: page.settings.jumboPosition,
+        heroTheme: page.settings.jumboTheme,
+        maxWidthHeroContainer: page.settings.maxWidthJumboContainer,
+        showHero: page.settings.showJumbo,
+        // new settings
+        bodyGradient: false,
+        headerGradient: false,
+        heroGradient: false,
+        mainGradient: false,
+        footerGradient: false,
+      })
       console.log('upgrade-db', `updating page id ${page.id}`)
-      page.settings = JSON.parse(JSON.stringify(page.settings))
       await page.save()
     }
     const allPageBlocks = await pages.model.PageBlock.findAll()

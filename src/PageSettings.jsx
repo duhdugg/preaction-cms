@@ -407,9 +407,9 @@ function PageSettings(props) {
                   </div>
                 </Card>
                 <Card
-                  header='Header/Footer/Jumbotron'
+                  header='Header/Footer/Hero'
                   headerTheme='dark'
-                  className='header-footer-jumbo'
+                  className='header-footer-hero'
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -499,14 +499,14 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
-                  <div className='show-jumbo-field'>
+                  <div className='show-hero-field'>
                     <Checkbox
-                      label='Show Jumbotron'
-                      checked={props.settings.showJumbo}
-                      valueHandler={props.getSettingsValueHandler('showJumbo')}
-                      readOnly={props.getPageSettingIsUndefined('showJumbo')}
+                      label='Show Hero'
+                      checked={props.settings.showHero}
+                      valueHandler={props.getSettingsValueHandler('showHero')}
+                      readOnly={props.getPageSettingIsUndefined('showHero')}
                       onClick={(e) => {
-                        overrideSetting('showJumbo')
+                        overrideSetting('showHero')
                       }}
                     />
                     <ResetButton
@@ -514,22 +514,20 @@ function PageSettings(props) {
                         props.getPageSettingIsUndefined
                       }
                       resetSetting={resetSetting}
-                      settingsKey='showJumbo'
+                      settingsKey='showHero'
                     />
                   </div>
-                  {props.settings.showJumbo ? (
-                    <div className='jumbo-path-field'>
+                  {props.settings.showHero ? (
+                    <div className='hero-path-field'>
                       <Input
-                        label='Jumbotron Path'
+                        label='Hero Path'
                         labelFloat
-                        info={`By default, every page has a jumbotron subpage automatically created. In order to use the jumbotron specific to this page, enter: ${props.path}jumbo/`}
-                        value={props.settings.jumboPath}
-                        valueHandler={props.getSettingsValueHandler(
-                          'jumboPath'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('jumboPath')}
+                        info={`By default, every page has a hero subpage automatically created. In order to use the hero specific to this page, enter: ${props.path}hero/`}
+                        value={props.settings.heroPath}
+                        valueHandler={props.getSettingsValueHandler('heroPath')}
+                        readOnly={props.getPageSettingIsUndefined('heroPath')}
                         onClick={(e) => {
-                          overrideSetting('jumboPath')
+                          overrideSetting('heroPath')
                         }}
                       />
                       <ResetButton
@@ -537,26 +535,26 @@ function PageSettings(props) {
                           props.getPageSettingIsUndefined
                         }
                         resetSetting={resetSetting}
-                        settingsKey='jumboPath'
+                        settingsKey='heroPath'
                       />
                     </div>
                   ) : (
                     ''
                   )}
-                  {props.settings.showJumbo ? (
-                    <div className='jumbo-position-field'>
+                  {props.settings.showHero ? (
+                    <div className='hero-position-field'>
                       <Select
-                        label='Jumbotron Position'
+                        label='Hero Position'
                         labelFloat
-                        value={props.settings.jumboPosition}
+                        value={props.settings.heroPosition}
                         valueHandler={props.getSettingsValueHandler(
-                          'jumboPosition'
+                          'heroPosition'
                         )}
                         readOnly={props.getPageSettingIsUndefined(
-                          'jumboPosition'
+                          'heroPosition'
                         )}
                         onClick={(e) => {
-                          overrideSetting('jumboPosition')
+                          overrideSetting('heroPosition')
                         }}
                       >
                         <option value='above-header'>Above Header</option>
@@ -567,7 +565,7 @@ function PageSettings(props) {
                           props.getPageSettingIsUndefined
                         }
                         resetSetting={resetSetting}
-                        settingsKey='jumboPosition'
+                        settingsKey='heroPosition'
                       />
                     </div>
                   ) : (
@@ -872,21 +870,21 @@ function PageSettings(props) {
                     ) : (
                       ''
                     )}
-                    {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-theme-field-group'>
-                        <div className='jumbo-theme-field'>
+                    {props.settings.showHero ? (
+                      <div className='col-sm-6 hero-theme-field-group'>
+                        <div className='hero-theme-field'>
                           <Select
-                            label='Jumbotron Theme'
+                            label='Hero Theme'
                             labelFloat
-                            value={props.settings.jumboTheme}
+                            value={props.settings.heroTheme}
                             valueHandler={props.getSettingsValueHandler(
-                              'jumboTheme'
+                              'heroTheme'
                             )}
                             readOnly={props.getPageSettingIsUndefined(
-                              'jumboTheme'
+                              'heroTheme'
                             )}
                             onClick={() => {
-                              overrideSetting('jumboTheme')
+                              overrideSetting('heroTheme')
                             }}
                           >
                             <option value=''>Default</option>
@@ -906,21 +904,21 @@ function PageSettings(props) {
                               props.getPageSettingIsUndefined
                             }
                             resetSetting={resetSetting}
-                            settingsKey='jumboTheme'
+                            settingsKey='heroTheme'
                           />
                         </div>
-                        <div className='jumbo-gradient-field'>
+                        <div className='hero-gradient-field'>
                           <Checkbox
-                            label='Jumbo Gradient'
-                            checked={props.settings.jumboGradient || false}
+                            label='Hero Gradient'
+                            checked={props.settings.heroGradient || false}
                             valueHandler={props.getSettingsValueHandler(
-                              'jumboGradient'
+                              'heroGradient'
                             )}
                             readOnly={props.getPageSettingIsUndefined(
-                              'jumboGradient'
+                              'heroGradient'
                             )}
                             onClick={() => {
-                              overrideSetting('jumboGradient')
+                              overrideSetting('heroGradient')
                             }}
                           />
                           <ResetButton
@@ -928,7 +926,7 @@ function PageSettings(props) {
                               props.getPageSettingIsUndefined
                             }
                             resetSetting={resetSetting}
-                            settingsKey='jumboGradient'
+                            settingsKey='heroGradient'
                           />
                         </div>
                       </div>
@@ -1041,20 +1039,20 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
-                  {props.settings.showJumbo ? (
+                  {props.settings.showHero ? (
                     <div>
-                      <div className='jumbo-container-maxwidth-field'>
+                      <div className='hero-container-maxwidth-field'>
                         <Checkbox
-                          label='Max Width on Jumbotron Container'
-                          checked={props.settings.maxWidthJumboContainer}
+                          label='Max Width on Hero Container'
+                          checked={props.settings.maxWidthHeroContainer}
                           valueHandler={props.getSettingsValueHandler(
-                            'maxWidthJumboContainer'
+                            'maxWidthHeroContainer'
                           )}
                           readOnly={props.getPageSettingIsUndefined(
-                            'maxWidthJumboContainer'
+                            'maxWidthHeroContainer'
                           )}
                           onClick={(e) => {
-                            overrideSetting('maxWidthJumboContainer')
+                            overrideSetting('maxWidthHeroContainer')
                           }}
                         />
                         <ResetButton
@@ -1062,7 +1060,7 @@ function PageSettings(props) {
                             props.getPageSettingIsUndefined
                           }
                           resetSetting={resetSetting}
-                          settingsKey='maxWidthJumboContainer'
+                          settingsKey='maxWidthHeroContainer'
                         />
                       </div>
                     </div>

@@ -29,7 +29,7 @@ import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 import Footer from './Footer.jsx'
 import Header from './Header.jsx'
-import Jumbo from './Jumbo.jsx'
+import Hero from './Hero.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
@@ -133,7 +133,7 @@ class App extends React.Component {
       show: {
         header: true,
         footer: true,
-        jumbo: false,
+        hero: false,
         newPage: false, // for rendering the new page modal
         settings: false, // for rendering the settings modal
       },
@@ -141,7 +141,7 @@ class App extends React.Component {
       siteSettings: {
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
-        jumboPath: '/home/jumbo/',
+        heroPath: '/home/hero/',
         siteTitle: '',
         navbarTheme: 'dark',
         navPosition: 'fixed-top',
@@ -154,7 +154,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    this.jumbo = React.createRef()
+    this.hero = React.createRef()
 
     setGlobalRelativeLinkHandler((href) => {
       if (!this.state.editable) {
@@ -556,7 +556,7 @@ class App extends React.Component {
     }
   }
 
-  // so page components can control showing the header, footer, and jumbo
+  // so page components can control showing the header, footer, and hero
   getShowPropertyValueHandler(key) {
     return (value) => {
       this.setState((state) => {
@@ -756,7 +756,7 @@ class App extends React.Component {
         this.reloadRef('activePage')
         this.reloadRef('header')
         this.reloadRef('footer')
-        this.reloadRef('jumbo')
+        this.reloadRef('hero')
         break
       case 'add-page':
         this.reloadRef('activePage')
@@ -788,11 +788,11 @@ class App extends React.Component {
         ) {
           this.reloadRef('footer')
         } else if (
-          this.jumbo.current &&
-          this.jumbo.current.page.current.state.page &&
-          data.pageId === this.jumbo.current.page.current.state.page.id
+          this.hero.current &&
+          this.hero.current.page.current.state.page &&
+          data.pageId === this.hero.current.page.current.state.page.id
         ) {
-          this.reloadRef('jumbo')
+          this.reloadRef('hero')
         }
         break
     }
@@ -964,24 +964,24 @@ class App extends React.Component {
                 </div>
               }
               hero={
-                this.settings.showJumbo ? (
+                this.settings.showHero ? (
                   <div
                     className={getLinkClassName(
-                      this.settings.jumboTheme || this.settings.headerTheme
+                      this.settings.heroTheme || this.settings.headerTheme
                     )}
                   >
-                    <Jumbo
+                    <Hero
                       appRoot={this.root}
                       editable={this.state.editable}
                       emitSave={this.emitSave.bind(this)}
                       navigate={this.navigate.bind(this)}
                       settings={this.settings}
-                      ref={this.jumbo}
-                      show={this.settings.showJumbo}
+                      ref={this.hero}
+                      show={this.settings.showHero}
                       token={this.state.token}
                       initPage={
                         this.props.initPage
-                          ? this.props.initPage.jumbo
+                          ? this.props.initPage.hero
                           : undefined
                       }
                     />
@@ -990,9 +990,9 @@ class App extends React.Component {
                   ''
                 )
               }
-              heroPosition={this.settings.jumboPosition}
-              heroTheme={this.settings.jumboTheme || undefined}
-              heroGradient={this.settings.jumboGradient || false}
+              heroPosition={this.settings.heroPosition}
+              heroTheme={this.settings.heroTheme || undefined}
+              heroGradient={this.settings.heroGradient || false}
               headerTheme={this.settings.headerTheme || undefined}
               headerGradient={this.settings.headerGradient || false}
               mainTheme={this.settings.mainTheme || undefined}
@@ -1021,7 +1021,7 @@ class App extends React.Component {
               fluid={{
                 footerContainer: this.settings.maxWidthFooterContainer,
                 headerContainer: this.settings.maxWidthHeaderContainer,
-                heroContainer: this.settings.maxWidthJumboContainer,
+                heroContainer: this.settings.maxWidthHeroContainer,
                 mainContainer: this.settings.maxWidthMainContainer,
               }}
             >
@@ -1050,7 +1050,7 @@ class App extends React.Component {
                       ref={this.activePage}
                       headerControl={this.getShowPropertyValueHandler('header')}
                       footerControl={this.getShowPropertyValueHandler('footer')}
-                      jumboControl={this.getShowPropertyValueHandler('jumbo')}
+                      heroControl={this.getShowPropertyValueHandler('hero')}
                       navigate={this.navigate.bind(this)}
                       setActivePathname={this.setActivePathname.bind(this)}
                       setActivePage={this.setActivePage.bind(this)}
@@ -1082,7 +1082,7 @@ class App extends React.Component {
                         case 'home':
                         case 'header':
                         case 'footer':
-                        case 'jumbo':
+                        case 'hero':
                           return <NotFound />
                         default:
                           return (
@@ -1099,8 +1099,8 @@ class App extends React.Component {
                               footerControl={this.getShowPropertyValueHandler(
                                 'footer'
                               )}
-                              jumboControl={this.getShowPropertyValueHandler(
-                                'jumbo'
+                              heroControl={this.getShowPropertyValueHandler(
+                                'hero'
                               )}
                               navigate={this.navigate.bind(this)}
                               onError={this.handlePageError.bind(this)}

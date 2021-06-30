@@ -141,7 +141,7 @@ function getResults(options = {}) {
     fallbackSettings: {
       footerPath: '/home/footer/',
       headerPath: '/home/header/',
-      jumboPath: '/home/jumbo/',
+      heroPath: '/home/hero/',
       navAlignment: 'left',
       navCollapsible: true,
       navPosition: options.navPosition || 'above-header',
@@ -149,13 +149,13 @@ function getResults(options = {}) {
       navType: 'tabs',
       showFooter: true,
       showHeader: true,
-      showJumbo: true,
+      showHero: true,
       bodyTheme: '',
       bodyGradient: false,
       mainTheme: '',
       mainGradient: false,
       maxWidthNav: false,
-      maxWidthJumboContainer: false,
+      maxWidthHeroContainer: false,
       maxWidthHeaderContainer: false,
       maxWidthMainContainer: false,
       maxWidthFooterContainer: false,
@@ -164,11 +164,11 @@ function getResults(options = {}) {
       navbarTheme: 'dark',
       headerTheme: '',
       headerGradient: false,
-      jumboTheme: '',
-      jumboGradient: false,
+      heroTheme: '',
+      heroGradient: false,
       footerTheme: '',
       footerGradient: false,
-      jumboPosition: 'above-header',
+      heroPosition: 'above-header',
       siteTitle: 'Preaction CMS',
       init: true,
       includeInNav: true,
@@ -264,7 +264,7 @@ function getResults(options = {}) {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: options.navPosition || 'above-header',
@@ -272,13 +272,13 @@ function getResults(options = {}) {
     navType: 'tabs',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     bodyTheme: '',
     bodyGradient: false,
     mainTheme: '',
     mainGradient: false,
     maxWidthNav: false,
-    maxWidthJumboContainer: false,
+    maxWidthHeroContainer: false,
     maxWidthHeaderContainer: false,
     maxWidthMainContainer: false,
     maxWidthFooterContainer: false,
@@ -287,11 +287,11 @@ function getResults(options = {}) {
     navbarTheme: 'dark',
     headerTheme: '',
     headerGradient: false,
-    jumboTheme: '',
-    jumboGradient: false,
+    heroTheme: '',
+    heroGradient: false,
     footerTheme: '',
     footerGradient: false,
-    jumboPosition: 'above-header',
+    heroPosition: 'above-header',
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -369,10 +369,10 @@ test('Override Show Footer', () => {
   expect(mockPage.settings.showFooter).toBe(false)
 })
 
-test('Override Show Jumbotron', () => {
+test('Override Show Hero', () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Show Jumbotron'))
-  expect(mockPage.settings.showJumbo).toBe(false)
+  userEvent.click(result.getByText('Show Hero'))
+  expect(mockPage.settings.showHero).toBe(false)
 })
 
 test('Click to confirm delete', () => {
@@ -422,37 +422,33 @@ test('Override Footer Path', () => {
   expect(mockPage.settings.footerPath).toBe('/foo-1/abc/footer/')
 })
 
-test('Override Jumbotron Path', () => {
+test('Override Hero Path', () => {
   const { result, rerender, mockPage } = getResults()
   expect(
-    result.container.querySelector('.jumbo-path-field input')
+    result.container.querySelector('.hero-path-field input')
   ).toHaveAttribute('readOnly')
-  userEvent.click(result.container.querySelector('.jumbo-path-field input'))
+  userEvent.click(result.container.querySelector('.hero-path-field input'))
   rerender()
   expect(
-    result.container.querySelector('.jumbo-path-field input')
+    result.container.querySelector('.hero-path-field input')
   ).not.toHaveAttribute('readOnly')
-  result.container.querySelector('.jumbo-path-field input').value =
-    '/foo-1/abc/jumbo'
-  userEvent.type(result.container.querySelector('.jumbo-path-field input'), '/')
-  expect(mockPage.settings.jumboPath).toBe('/foo-1/abc/jumbo/')
+  result.container.querySelector('.hero-path-field input').value =
+    '/foo-1/abc/hero'
+  userEvent.type(result.container.querySelector('.hero-path-field input'), '/')
+  expect(mockPage.settings.heroPath).toBe('/foo-1/abc/hero/')
 })
 
-test('Override Jumbotron Position', () => {
+test('Override Hero Position', () => {
   const { result, rerender, mockPage } = getResults()
-  expect(result.getByLabelText('Jumbotron Position')).toHaveAttribute(
-    'readOnly'
-  )
-  userEvent.click(result.getByLabelText('Jumbotron Position'))
+  expect(result.getByLabelText('Hero Position')).toHaveAttribute('readOnly')
+  userEvent.click(result.getByLabelText('Hero Position'))
   rerender()
-  expect(result.getByLabelText('Jumbotron Position')).not.toHaveAttribute(
-    'readOnly'
-  )
+  expect(result.getByLabelText('Hero Position')).not.toHaveAttribute('readOnly')
   userEvent.selectOptions(
-    result.getByLabelText('Jumbotron Position'),
+    result.getByLabelText('Hero Position'),
     'below-header'
   )
-  expect(mockPage.settings.jumboPosition).toBe('below-header')
+  expect(mockPage.settings.heroPosition).toBe('below-header')
 })
 
 test('Override Nav Position', () => {
@@ -561,15 +557,13 @@ test('Override Header Theme', () => {
   expect(mockPage.settings.headerTheme).toBe('dark')
 })
 
-test('Override Jumbotron Theme', () => {
+test('Override Hero Theme', () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Jumbotron Theme'))
+  userEvent.click(result.getByLabelText('Hero Theme'))
   rerender()
-  expect(result.getByLabelText('Jumbotron Theme')).not.toHaveAttribute(
-    'readOnly'
-  )
-  userEvent.selectOptions(result.getByLabelText('Jumbotron Theme'), 'dark')
-  expect(mockPage.settings.jumboTheme).toBe('dark')
+  expect(result.getByLabelText('Hero Theme')).not.toHaveAttribute('readOnly')
+  userEvent.selectOptions(result.getByLabelText('Hero Theme'), 'dark')
+  expect(mockPage.settings.heroTheme).toBe('dark')
 })
 
 test('Override Footer Theme', () => {
@@ -587,10 +581,10 @@ test('Override Max Width on Navigation Bar', () => {
   expect(mockPage.settings.maxWidthNav).toBe(true)
 })
 
-test('Override Max Width on Jumbotron Container', () => {
+test('Override Max Width on Hero Container', () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Max Width on Jumbotron Container'))
-  expect(mockPage.settings.maxWidthJumboContainer).toBe(true)
+  userEvent.click(result.getByText('Max Width on Hero Container'))
+  expect(mockPage.settings.maxWidthHeroContainer).toBe(true)
 })
 
 test('Override Max Width on Header Container', () => {

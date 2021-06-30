@@ -64,7 +64,7 @@ test('PageBlockNav basic', async () => {
     fallbackSettings: {
       footerPath: '/home/footer/',
       headerPath: '/home/header/',
-      jumboPath: '/home/jumbo/',
+      heroPath: '/home/hero/',
       navAlignment: 'left',
       navCollapsible: true,
       navPosition: 'fixed-top',
@@ -72,7 +72,7 @@ test('PageBlockNav basic', async () => {
       navType: 'basic',
       showFooter: true,
       showHeader: true,
-      showJumbo: true,
+      showHero: true,
       siteTitle: 'Preaction CMS',
       init: true,
     },
