@@ -17,9 +17,9 @@ toc:
     file: wiki/Running-on-Systemd.md
   - name: NGINX Configuration
     file: wiki/NGINX-Configuration.md
-  - name: Server-Side API
   - name: Upgrading to v5
     file: wiki/Upgrading-to-v5.md
+  - name: Server-Side API
     children:
       - lib/adminRequired
       - lib/cache
