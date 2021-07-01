@@ -1716,10 +1716,10 @@
   dependencies:
     prop-types "^15.7.2"
 
-"@preaction/inputs@^5.0.0-alpha.3":
-  version "5.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-5.0.0-alpha.3.tgz#d0e4bed5d15c0d97445fe9c412490a24be5508e9"
-  integrity sha512-LgWunKAtgsUfe/+FJEqYK9K0nlIE9BYt/pf2mPa4IA+1UlsVxRBFmsv8D/jPNwG4MGoZvLpjGnTOQxwlx6YlhA==
+"@preaction/inputs@^5.0.0-alpha.4":
+  version "5.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-5.0.0-alpha.4.tgz#3b0a364945b5d8bdc37063eea42004c86588ad79"
+  integrity sha512-sFybSTN3Ew8NMGOjtOFe8JKi4qhk3lwhkgrK5MJh9JaHGSaLaEfcYIeTMG2VlCff1OTS3SE43azVV+Ws/YDk2g==
   dependencies:
     "@loadable/component" "^5.14.1"
     promise-timeout "^1.3.0"
