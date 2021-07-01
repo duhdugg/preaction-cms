@@ -18,6 +18,8 @@ toc:
   - name: NGINX Configuration
     file: wiki/NGINX-Configuration.md
   - name: Server-Side API
+  - name: Upgrading to v5
+    file: wiki/Upgrading-to-v5.md
     children:
       - lib/adminRequired
       - lib/cache
