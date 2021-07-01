@@ -110,6 +110,10 @@ db.sync().then(async () => {
       allSettings.maxWidthJumboContainer ||
         settings.defaultSettings.maxWidthHeroContainer
     )
+    await newSetting(
+      'showHero',
+      allSettings.showJumbo || settings.defaultSettings.showHero
+    )
     // delete retired settings
     console.log('deleting retired settings')
     await db.model.Settings.destroy({
