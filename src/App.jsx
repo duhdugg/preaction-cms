@@ -52,11 +52,9 @@ const SiteSettings = loadable(() => import('./settingsModules.js'), {
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
-// import css
-if (!ssr) {
-  require('./style/cms.scss')
-  require('./style/custom')
-}
+// import styling
+import('./style/cms.scss')
+import('./style/custom.js')
 
 const globalThis = globalthis()
 
