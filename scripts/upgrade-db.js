@@ -31,7 +31,7 @@ db.sync().then(async () => {
     for (const page of allPages) {
       page.settings = Object.assign({}, page.settings, {
         // rename jumbo to hero
-        heroPath: page.settings.jumboPath,
+        heroPath: page.settings.jumboPath.replace('/jumbo', '/hero'),
         heroPosition: page.settings.jumboPosition,
         heroTheme: page.settings.jumboTheme,
         maxWidthHeroContainer: page.settings.maxWidthJumboContainer,
