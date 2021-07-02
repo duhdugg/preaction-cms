@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+require('dotenv').config()
 const pkg = require('./package.json')
 
 // <== LIBRARY IMPORTS ==>
