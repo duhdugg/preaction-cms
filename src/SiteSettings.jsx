@@ -13,7 +13,6 @@ function SiteSettings(props) {
   const [redirect, setRedirect] = React.useState(null)
   const [redirects, setRedirects] = React.useState([])
   const [selectedRestore, setSelectedRestore] = React.useState('')
-  const firstRender = React.useRef(true)
 
   const getBackups = React.useCallback(() => {
     axios.get(`${props.appRoot}/api/backups`).then((response) => {
@@ -87,13 +86,14 @@ function SiteSettings(props) {
     setRedirect(null)
   }
 
+  const [showPrev, setShowPrev] = React.useState(false)
   React.useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
+    if (props.show && !showPrev) {
       getBackups()
       getRedirects()
     }
-  }, [firstRender, getBackups, getRedirects])
+    setShowPrev(props.show)
+  }, [props, showPrev, setShowPrev, getBackups, getRedirects])
 
   return (
     <div className='site-level settings-component'>
@@ -754,6 +754,7 @@ SiteSettings.propTypes = {
   emitForceReload: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
+  show: PropTypes.bool,
   token: PropTypes.string,
 }
 

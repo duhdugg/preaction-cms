@@ -1152,6 +1152,7 @@ class App extends React.Component {
               emitForceReload={this.emitForceReload.bind(this)}
               settings={this.state.siteSettings}
               getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
+              show={this.state.show.settings}
               token={this.state.token}
             />
           </Modal>
