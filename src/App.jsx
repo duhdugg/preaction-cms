@@ -1146,15 +1146,21 @@ class App extends React.Component {
               </button>
             }
           >
-            <SiteSettings
-              appRoot={this.root}
-              admin={this.state.admin}
-              emitForceReload={this.emitForceReload.bind(this)}
-              settings={this.state.siteSettings}
-              getSettingsValueHandler={this.getSettingsValueHandler.bind(this)}
-              show={this.state.show.settings}
-              token={this.state.token}
-            />
+            {this.state.editable && this.state.show.settings ? (
+              <SiteSettings
+                appRoot={this.root}
+                admin={this.state.admin}
+                emitForceReload={this.emitForceReload.bind(this)}
+                settings={this.state.siteSettings}
+                getSettingsValueHandler={this.getSettingsValueHandler.bind(
+                  this
+                )}
+                show={this.state.show.settings}
+                token={this.state.token}
+              />
+            ) : (
+              ''
+            )}
           </Modal>
         </div>
         <div className='new-page-modal-container'>
@@ -1192,12 +1198,16 @@ class App extends React.Component {
               </div>
             }
           >
-            <NewPage
-              activePathname={this.state.activePathname}
-              getValueHandler={this.getNewPageValueHandler.bind(this)}
-              newPage={this.state.newPage}
-              submit={this.submitNewPage.bind(this)}
-            />
+            {this.state.editable && this.state.show.newPage ? (
+              <NewPage
+                activePathname={this.state.activePathname}
+                getValueHandler={this.getNewPageValueHandler.bind(this)}
+                newPage={this.state.newPage}
+                submit={this.submitNewPage.bind(this)}
+              />
+            ) : (
+              ''
+            )}
           </Modal>
         </div>
       </div>

@@ -911,29 +911,33 @@ class Page extends React.Component {
                 </button>
               }
             >
-              <PageSettings
-                appRoot={this.props.appRoot}
-                admin={this.props.editable}
-                navigate={(path) => {
-                  this.setState({ showSettings: false }, () => {
-                    this.props.navigate(path)
-                  })
-                }}
-                pageId={this.state.page.id}
-                page={this.state.page}
-                path={this.props.path}
-                settings={this.settings}
-                token={this.props.token}
-                deletePage={this.deletePage.bind(this)}
-                getPageValueHandler={this.getPageValueHandler.bind(this)}
-                getResetter={this.getPageSettingsResetter.bind(this)}
-                getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                  this
-                )}
-                getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                  this
-                )}
-              />
+              {this.props.editable && this.state.showSettings ? (
+                <PageSettings
+                  appRoot={this.props.appRoot}
+                  admin={this.props.editable}
+                  navigate={(path) => {
+                    this.setState({ showSettings: false }, () => {
+                      this.props.navigate(path)
+                    })
+                  }}
+                  pageId={this.state.page.id}
+                  page={this.state.page}
+                  path={this.props.path}
+                  settings={this.settings}
+                  token={this.props.token}
+                  deletePage={this.deletePage.bind(this)}
+                  getPageValueHandler={this.getPageValueHandler.bind(this)}
+                  getResetter={this.getPageSettingsResetter.bind(this)}
+                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                    this
+                  )}
+                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                    this
+                  )}
+                />
+              ) : (
+                ''
+              )}
             </Modal>
           </div>
         ) : (

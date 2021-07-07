@@ -340,15 +340,19 @@ function PageBlockParent(props) {
           </button>
         }
       >
-        <PageBlockSettings
-          block={props.block}
-          contentControl={props.contentControl}
-          getContents={props.getContents}
-          getContentSettingsValueHandler={getContentSettingsValueHandler}
-          getPageBlockSettingsValueHandler={
-            props.getPageBlockSettingsValueHandler
-          }
-        />
+        {props.editable && showSettings ? (
+          <PageBlockSettings
+            block={props.block}
+            contentControl={props.contentControl}
+            getContents={props.getContents}
+            getContentSettingsValueHandler={getContentSettingsValueHandler}
+            getPageBlockSettingsValueHandler={
+              props.getPageBlockSettingsValueHandler
+            }
+          />
+        ) : (
+          ''
+        )}
       </Modal>
       {props.editable &&
       ['carousel', 'content'].includes(props.block.blockType) ? (

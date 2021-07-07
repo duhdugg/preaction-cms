@@ -225,10 +225,16 @@ function PageBlockContent(props) {
           </button>
         }
       >
-        <PageBlockContentSettings
-          content={props.content}
-          getContentSettingsValueHandler={props.getContentSettingsValueHandler}
-        />
+        {showSettings ? (
+          <PageBlockContentSettings
+            content={props.content}
+            getContentSettingsValueHandler={
+              props.getContentSettingsValueHandler
+            }
+          />
+        ) : (
+          ''
+        )}
       </Modal>
     </Card>
   )
