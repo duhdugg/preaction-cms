@@ -1639,7 +1639,7 @@
     hoist-non-react-statics "^3.3.1"
     react-is "^16.12.0"
 
-"@mswjs/cookies@^0.1.5":
+"@mswjs/cookies@^0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@mswjs/cookies/-/cookies-0.1.6.tgz#176f77034ab6d7373ae5c94bcbac36fee8869249"
   integrity sha512-A53XD5TOfwhpqAmwKdPtg1dva5wrng2gH5xMvklzbd9WLTSVU953eCRa8rtrrm6G7Cy60BOGsBRN89YQK0mlKA==
@@ -1709,10 +1709,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.2.tgz#adea7b6953cbb34651766b0548468e743c6a2353"
   integrity sha512-VZMYa7+fXHdwIq1TDhSXoVmSPEGM/aa+6Aiq3nVVJ9bXr24zScr+NlKFKC3iPljA7ho/GAZr+d2jOf5GIRC30Q==
 
-"@preaction/bootstrap-clips@^5.0.0-alpha.8":
-  version "5.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-5.0.0-alpha.8.tgz#3e04e8624495abee5ca868de71457e8cc1186b3f"
-  integrity sha512-vOvGvvTO1AGFYVruG8Jb/fZHSgrkiqajI5HR2SG3ucZerD/JoR3BX5umm1BGmQBzI3/7HxsNciIdbTHuWmFvHg==
+"@preaction/bootstrap-clips@^5.0.0-alpha.10":
+  version "5.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@preaction/bootstrap-clips/-/bootstrap-clips-5.0.0-alpha.10.tgz#f1e39be2af7281bb6d99bedaed5d553b40268b69"
+  integrity sha512-zVRpzYKQWU4XBaKMGuvXOSCfXywIuBuoAEF+NiR4rBlqZ2zsDml3GqEWATErllWo3NynWibol7F2WLI9HzN17w==
   dependencies:
     prop-types "^15.7.2"
 
@@ -8670,12 +8670,12 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-msw@^0.30.1:
-  version "0.30.1"
-  resolved "https://registry.yarnpkg.com/msw/-/msw-0.30.1.tgz#2dfae38359827c353b04bbab193cc91459894a77"
-  integrity sha512-9EiOrF5vEJ60pDtT8FqOO3bLkJO/t4rJQB92kV6lXvZZwKAeqqA6XME5HQZ9BRj9dzVfDJ26jcxJkA6SlP147A==
+msw@^0.31.0:
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/msw/-/msw-0.31.0.tgz#5d54e55a6cd9c07eb885c3df11adb13cfd9c49ba"
+  integrity sha512-uUZ8sPr14xOL2ymcr7pdNvDqzqXKrAlvMXwAb1BdYPbwsVQhz4fJKVtI4IdSQQE9A2iUaHMdS6ayqfQQ53CE3w==
   dependencies:
-    "@mswjs/cookies" "^0.1.5"
+    "@mswjs/cookies" "^0.1.6"
     "@mswjs/interceptors" "^0.11.1"
     "@open-draft/until" "^1.0.3"
     "@types/cookie" "^0.4.0"
@@ -8913,10 +8913,10 @@ node-releases@^1.1.61, node-releases@^1.1.71:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.73.tgz#dd4e81ddd5277ff846b80b52bb40c49edf7a7b20"
   integrity sha512-uW7fodD6pyW2FZNZnp/Z3hvWKeEW1Y8R1+1CnErE8cXFXzl5blBOoVB41CvMer6P6Q0S5FXDwcHgFd1Wj0U9zg==
 
-nodemon@^2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.9.tgz#f5cd550ba215da3c1081459ae2c1c8da2c353165"
-  integrity sha512-6O4k7C8f2HQArGpaPBOqGGddjzDLQAqCYmq3tKMeNIbz7Is/hOphMHy2dcY10sSq5wl3cqyn9Iz+Ep2j51JOLg==
+nodemon@^2.0.11:
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.11.tgz#957f2f28d7d255402eb46e6ec722edceb6e8e8cf"
+  integrity sha512-V9UizUMs7hM63YC+e+26FC4iTqEA1GJsrM8C7DiNyPvYBOG/QE169kMIe+sH7FSe8YteMQpaKkUDwfAF83+kEQ==
   dependencies:
     chokidar "^3.2.2"
     debug "^3.2.6"
@@ -11463,10 +11463,10 @@ sass-loader@^10.0.5:
     schema-utils "^3.0.0"
     semver "^7.3.2"
 
-sass@^1.35.1:
-  version "1.35.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.35.1.tgz#90ecf774dfe68f07b6193077e3b42fb154b9e1cd"
-  integrity sha512-oCisuQJstxMcacOPmxLNiLlj4cUyN2+8xJnG7VanRoh2GOLr9RqkvI4AxA4a6LHVg/rsu+PmxXeGhrdSF9jCiQ==
+sass@^1.35.2:
+  version "1.35.2"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.35.2.tgz#b732314fcdaf7ef8d0f1698698adc378043cb821"
+  integrity sha512-jhO5KAR+AMxCEwIH3v+4zbB2WB0z67V1X0jbapfVwQQdjHZUGUyukpnoM6+iCMfsIUC016w9OPKQ5jrNOS9uXw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
@@ -11592,10 +11592,10 @@ sequelize-pool@^6.0.0:
   resolved "https://registry.yarnpkg.com/sequelize-pool/-/sequelize-pool-6.1.0.tgz#caaa0c1e324d3c2c3a399fed2c7998970925d668"
   integrity sha512-4YwEw3ZgK/tY/so+GfnSgXkdwIJJ1I32uZJztIEgZeAO6HMgj64OzySbWLgxj+tXhZCJnzRfkY9gINw8Ft8ZMg==
 
-sequelize@^6.6.4:
-  version "6.6.4"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.6.4.tgz#616072aa5e7226db1050cc485942ee2fd04d475f"
-  integrity sha512-SOSu3tclOjHJfvuIITUlAsh2Q642gFxjpNN+IM1quFZ7jU5Pep7FIAwBK8UWgTpNc9TK9rUr1cyLB/G25CGicA==
+sequelize@^6.6.5:
+  version "6.6.5"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.6.5.tgz#6f618e99f3df1fc81f28709e8a3139cec3ef1f0c"
+  integrity sha512-QyRrJrDRiwuiILqTMHUA1yWOPIL12KlfmgZ3hnzQwbMvp2vJ6fzu9bYJQB+qPMosck4mBUggY4Cjoc6Et8FBIQ==
   dependencies:
     debug "^4.1.1"
     dottie "^2.0.0"
@@ -11608,7 +11608,7 @@ sequelize@^6.6.4:
     sequelize-pool "^6.0.0"
     toposort-class "^1.0.1"
     uuid "^8.1.0"
-    validator "^10.11.0"
+    validator "^13.6.0"
     wkx "^0.5.0"
 
 serialize-javascript@^4.0.0:
@@ -13118,10 +13118,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@^10.11.0:
-  version "10.11.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-10.11.0.tgz#003108ea6e9a9874d31ccc9e5006856ccd76b228"
-  integrity sha512-X/p3UZerAIsbBfN/IwahhYaBbY68EN/UQBWHtsbXGT5bfrH/p4NQzUCG1kF/rtKaNpnJ7jAu6NGTdSNtyNIXMw==
+validator@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.6.0.tgz#1e71899c14cdc7b2068463cb24c1cc16f6ec7059"
+  integrity sha512-gVgKbdbHgtxpRyR8K0O6oFZPhhB5tT1jeEHZR0Znr9Svg03U0+r9DXWMrnRAB+HtCStDQKlaIZm42tVsVjqtjg==
 
 value-equal@^1.0.1:
   version "1.0.1"
