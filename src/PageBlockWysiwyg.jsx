@@ -2,7 +2,7 @@ import axios from 'axios'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Spinner } from '@preaction/bootstrap-clips'
-import { Form, Textarea, Wysiwyg } from '@preaction/inputs'
+import { Textarea, Wysiwyg } from '@preaction/inputs'
 import env from './lib/env.js'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
 import globalthis from 'globalthis'
@@ -76,55 +76,49 @@ class PageBlockWysiwyg extends React.Component {
   render() {
     return (
       <div className='page-block-content-type-wysiwyg'>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          {this.props.editable && this.props.sourceMode ? (
-            <Textarea
-              value={this.state.wysiwyg}
-              valueHandler={this.handleWysiwyg.bind(this)}
-              readOnly={!this.props.editable}
-            />
-          ) : (
-            <Wysiwyg
-              // allowDangerousFallback as the value was sanitized by server,
-              // but the error message is preferred if component fails when editing
-              allowDangerousFallback={!this.props.editable || test}
-              fallbackMode={!this.props.editable || test}
-              loadableFallback={<Spinner />}
-              theme={this.theme}
-              toolbar={wysiwygToolbar}
-              value={this.state.wysiwyg}
-              valueHandler={this.handleWysiwyg.bind(this)}
-              readOnly={!this.props.editable}
-              ref={this.wysiwyg}
-            />
-          )}
-          {this.state.savingWysiwyg ? (
+        {this.props.editable && this.props.sourceMode ? (
+          <Textarea
+            value={this.state.wysiwyg}
+            valueHandler={this.handleWysiwyg.bind(this)}
+            readOnly={!this.props.editable}
+          />
+        ) : (
+          <Wysiwyg
+            // allowDangerousFallback as the value was sanitized by server,
+            // but the error message is preferred if component fails when editing
+            allowDangerousFallback={!this.props.editable || test}
+            fallbackMode={!this.props.editable || test}
+            loadableFallback={<Spinner />}
+            theme={this.theme}
+            toolbar={wysiwygToolbar}
+            value={this.state.wysiwyg}
+            valueHandler={this.handleWysiwyg.bind(this)}
+            readOnly={!this.props.editable}
+            ref={this.wysiwyg}
+          />
+        )}
+        {this.state.savingWysiwyg ? (
+          <div
+            style={{
+              position: 'relative',
+            }}
+          >
             <div
               style={{
-                position: 'relative',
+                fontSize: '0.8em',
+                fontStyle: 'italic',
+                position: 'absolute',
+                top: '-1.25em',
+                width: '100%',
+                textAlign: 'right',
               }}
             >
-              <div
-                style={{
-                  fontSize: '0.8em',
-                  fontStyle: 'italic',
-                  position: 'absolute',
-                  top: '-1.25em',
-                  width: '100%',
-                  textAlign: 'right',
-                }}
-              >
-                saving...
-              </div>
+              saving...
             </div>
-          ) : (
-            ''
-          )}
-        </Form>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     )
   }
