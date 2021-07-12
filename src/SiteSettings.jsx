@@ -100,12 +100,12 @@ function SiteSettings(props) {
       {props.admin ? (
         <div>
           <style type='text/css'>{`
-            table.redirects td {
+            .redirects table td {
               border-left: 1px solid black;
               padding-left: 0.5em;
               padding-right: 0.5em;
             }
-            table.redirects td:first-child {
+            .redirects table td:first-child {
               border-left: 0;
             }
           `}</style>
@@ -615,7 +615,7 @@ function SiteSettings(props) {
             </Card>
             <Card header='Redirects' headerTheme='dark' className='redirects'>
               <div className='row'>
-                <table className='redirects'>
+                <table>
                   <thead>
                     <tr>
                       <th />
