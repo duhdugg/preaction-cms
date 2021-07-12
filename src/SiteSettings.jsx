@@ -293,16 +293,28 @@ function SiteSettings(props) {
                           )}
                         >
                           <option value=''>Default</option>
+                          <option>blue</option>
+                          <option>cyan</option>
                           <option>danger</option>
                           <option>dark</option>
+                          <option>gray</option>
+                          <option>gray-dark</option>
+                          <option>green</option>
+                          <option>indigo</option>
                           <option>info</option>
                           <option>light</option>
+                          <option>orange</option>
+                          <option>pink</option>
                           <option>primary</option>
+                          <option>purple</option>
+                          <option>red</option>
                           <option>secondary</option>
                           <option>success</option>
+                          <option>teal</option>
                           <option>transparent</option>
                           <option>warning</option>
                           <option>white</option>
+                          <option>yellow</option>
                         </Select>
                       </div>
                       <div className='body-gradient-field'>
@@ -326,16 +338,28 @@ function SiteSettings(props) {
                           )}
                         >
                           <option value=''>Default</option>
+                          <option>blue</option>
+                          <option>cyan</option>
                           <option>danger</option>
                           <option>dark</option>
+                          <option>gray</option>
+                          <option>gray-dark</option>
+                          <option>green</option>
+                          <option>indigo</option>
                           <option>info</option>
                           <option>light</option>
+                          <option>orange</option>
+                          <option>pink</option>
                           <option>primary</option>
+                          <option>purple</option>
+                          <option>red</option>
                           <option>secondary</option>
                           <option>success</option>
+                          <option>teal</option>
                           <option>transparent</option>
                           <option>warning</option>
                           <option>white</option>
+                          <option>yellow</option>
                         </Select>
                       </div>
                       <div className='main-gradient-field'>
@@ -358,16 +382,28 @@ function SiteSettings(props) {
                             'navbarTheme'
                           )}
                         >
+                          <option>blue</option>
+                          <option>cyan</option>
                           <option>danger</option>
                           <option>dark</option>
+                          <option>gray</option>
+                          <option>gray-dark</option>
+                          <option>green</option>
+                          <option>indigo</option>
                           <option>info</option>
                           <option>light</option>
+                          <option>orange</option>
+                          <option>pink</option>
                           <option>primary</option>
+                          <option>purple</option>
+                          <option>red</option>
                           <option>secondary</option>
                           <option>success</option>
+                          <option>teal</option>
                           <option>transparent</option>
                           <option>warning</option>
                           <option>white</option>
+                          <option>yellow</option>
                         </Select>
                       </div>
                     ) : (
@@ -385,15 +421,27 @@ function SiteSettings(props) {
                             'navActiveTabTheme'
                           )}
                         >
+                          <option>blue</option>
+                          <option>cyan</option>
                           <option>danger</option>
                           <option>dark</option>
+                          <option>gray</option>
+                          <option>gray-dark</option>
+                          <option>green</option>
+                          <option>indigo</option>
                           <option>info</option>
                           <option>light</option>
+                          <option>orange</option>
+                          <option>pink</option>
                           <option>primary</option>
+                          <option>purple</option>
+                          <option>red</option>
                           <option>secondary</option>
                           <option>success</option>
+                          <option>teal</option>
                           <option>warning</option>
                           <option>white</option>
+                          <option>yellow</option>
                         </Select>
                       </div>
                     ) : (
@@ -410,13 +458,25 @@ function SiteSettings(props) {
                           'navActiveSubmenuTheme'
                         )}
                       >
+                        <option>blue</option>
+                        <option>cyan</option>
                         <option>danger</option>
                         <option>dark</option>
+                        <option>gray</option>
+                        <option>gray-dark</option>
+                        <option>green</option>
+                        <option>indigo</option>
                         <option>info</option>
+                        <option>orange</option>
+                        <option>pink</option>
                         <option>primary</option>
+                        <option>purple</option>
+                        <option>red</option>
                         <option>secondary</option>
                         <option>success</option>
+                        <option>teal</option>
                         <option>warning</option>
+                        <option>yellow</option>
                       </Select>
                     </div>
                     {props.settings.showHeader ||
@@ -432,16 +492,28 @@ function SiteSettings(props) {
                             )}
                           >
                             <option value=''>Default</option>
+                            <option>blue</option>
+                            <option>cyan</option>
                             <option>danger</option>
                             <option>dark</option>
+                            <option>gray</option>
+                            <option>gray-dark</option>
+                            <option>green</option>
+                            <option>indigo</option>
                             <option>info</option>
                             <option>light</option>
+                            <option>orange</option>
+                            <option>pink</option>
                             <option>primary</option>
+                            <option>purple</option>
+                            <option>red</option>
                             <option>secondary</option>
                             <option>success</option>
+                            <option>teal</option>
                             <option>transparent</option>
                             <option>warning</option>
                             <option>white</option>
+                            <option>yellow</option>
                           </Select>
                         </div>
                         <div className='header-gradient-field'>
@@ -469,16 +541,28 @@ function SiteSettings(props) {
                             )}
                           >
                             <option value=''>Default</option>
+                            <option>blue</option>
+                            <option>cyan</option>
                             <option>danger</option>
                             <option>dark</option>
+                            <option>gray</option>
+                            <option>gray-dark</option>
+                            <option>green</option>
+                            <option>indigo</option>
                             <option>info</option>
                             <option>light</option>
+                            <option>orange</option>
+                            <option>pink</option>
                             <option>primary</option>
+                            <option>purple</option>
+                            <option>red</option>
                             <option>secondary</option>
                             <option>success</option>
+                            <option>teal</option>
                             <option>transparent</option>
                             <option>warning</option>
                             <option>white</option>
+                            <option>yellow</option>
                           </Select>
                         </div>
                         <div className='hero-gradient-field'>
@@ -506,16 +590,28 @@ function SiteSettings(props) {
                             )}
                           >
                             <option value=''>Default</option>
+                            <option>blue</option>
+                            <option>cyan</option>
                             <option>danger</option>
                             <option>dark</option>
+                            <option>gray</option>
+                            <option>gray-dark</option>
+                            <option>green</option>
+                            <option>indigo</option>
                             <option>info</option>
                             <option>light</option>
+                            <option>orange</option>
+                            <option>pink</option>
                             <option>primary</option>
+                            <option>purple</option>
+                            <option>red</option>
                             <option>secondary</option>
                             <option>success</option>
+                            <option>teal</option>
                             <option>transparent</option>
                             <option>warning</option>
                             <option>white</option>
+                            <option>yellow</option>
                           </Select>
                         </div>
                         <div className='footer-gradient-field'>
