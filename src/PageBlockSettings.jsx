@@ -22,6 +22,7 @@ function PageBlockSettings(props) {
             <Input
               type='text'
               label='Header'
+              labelFloat
               value={props.block.settings.header}
               valueHandler={getPageBlockSettingsValueHandler('header')}
             />
@@ -55,22 +56,34 @@ function PageBlockSettings(props) {
           ''
         )}
         {props.block.settings.header ? (
-          <div className='header-theme-field'>
-            <Select
-              label='Header Theme'
-              value={props.block.settings.headerTheme || 'dark'}
-              valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
-            >
-              <option>danger</option>
-              <option>dark</option>
-              <option>info</option>
-              <option>light</option>
-              <option>primary</option>
-              <option>secondary</option>
-              <option>success</option>
-              <option>warning</option>
-              <option>white</option>
-            </Select>
+          <div>
+            <div className='header-theme-field'>
+              <Select
+                label='Header Theme'
+                labelFloat
+                value={props.block.settings.headerTheme || 'dark'}
+                valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
+              >
+                <option>danger</option>
+                <option>dark</option>
+                <option>info</option>
+                <option>light</option>
+                <option>primary</option>
+                <option>secondary</option>
+                <option>success</option>
+                <option>warning</option>
+                <option>white</option>
+              </Select>
+            </div>
+            <div className='header-gradient-field'>
+              <Checkbox
+                label='Header Gradient'
+                checked={props.block.settings.headerGradient || false}
+                valueHandler={getPageBlockSettingsValueHandler(
+                  'headerGradient'
+                )}
+              />
+            </div>
           </div>
         ) : (
           ''
@@ -80,6 +93,7 @@ function PageBlockSettings(props) {
             <div className='body-theme-field'>
               <Select
                 label='Body Theme'
+                labelFloat
                 value={props.block.settings.bodyTheme || 'transparent'}
                 valueHandler={getPageBlockSettingsValueHandler('bodyTheme')}
               >
@@ -95,9 +109,17 @@ function PageBlockSettings(props) {
                 <option>white</option>
               </Select>
             </div>
+            <div className='body-gradient-field'>
+              <Checkbox
+                label='Body Gradient'
+                checked={props.block.settings.bodyGradient || false}
+                valueHandler={getPageBlockSettingsValueHandler('bodyGradient')}
+              />
+            </div>
             <div className='border-theme-field'>
               <Select
                 label='Border Theme'
+                labelFloat
                 value={props.block.settings.borderTheme || 'dark'}
                 valueHandler={getPageBlockSettingsValueHandler('borderTheme')}
               >
@@ -129,6 +151,17 @@ function PageBlockSettings(props) {
         ) : (
           ''
         )}
+        <div className='width-field large-monitor-width-field'>
+          <Input
+            label={`Large Monitor Width: ${props.block.settings.xxlWidth} / 12`}
+            type='range'
+            min='0'
+            max='12'
+            step='1'
+            value={props.block.settings.xxlWidth}
+            valueHandler={getPageBlockSettingsValueHandler('xxlWidth')}
+          />
+        </div>
         <div className='width-field desktop-width-field'>
           <Input
             label={`Desktop Width: ${props.block.settings.lgWidth} / 12`}
@@ -191,6 +224,7 @@ function PageBlockSettings(props) {
             <div className='nav-alignment-field'>
               <Select
                 label='Alignment'
+                labelFloat
                 value={props.block.settings.navAlignment}
                 valueHandler={getPageBlockSettingsValueHandler('navAlignment')}
               >
@@ -203,6 +237,7 @@ function PageBlockSettings(props) {
             <div className='nav-collapsible-field'>
               <Checkbox
                 label='Collabsible'
+                labelFloat
                 checked={props.block.settings.navCollapsible}
                 valueHandler={getPageBlockSettingsValueHandler(
                   'navCollapsible'
@@ -226,6 +261,7 @@ function PageBlockSettings(props) {
               <Input
                 type='number'
                 label='Height'
+                labelFloat
                 info='If the URL is of the same origin, the frame will be automatically resized to the height of its contents.'
                 min='0.0625'
                 step='0.0625'
@@ -236,6 +272,7 @@ function PageBlockSettings(props) {
             <div className='iframe-src-field'>
               <Input
                 label='URL'
+                labelFloat
                 value={props.block.settings.iframeSrc}
                 valueHandler={getPageBlockSettingsValueHandler('iframeSrc')}
               />
@@ -268,6 +305,7 @@ function PageBlockSettings(props) {
                 min='0.0625'
                 step='0.0625'
                 label='Spacer Height'
+                labelFloat
                 value={props.block.settings.spacerHeight}
                 valueHandler={getPageBlockSettingsValueHandler('spacerHeight')}
               />
@@ -276,6 +314,17 @@ function PageBlockSettings(props) {
         ) : (
           ''
         )}
+        <div className='custom-class-name-field'>
+          <Input
+            label='Custom Style Class Name'
+            labelFloat
+            value={props.block.settings.customClassName}
+            valueHandler={(value) => {
+              value = value.toLowerCase().replace(/[^a-z-]/g, '')
+              getPageBlockSettingsValueHandler('customClassName')(value)
+            }}
+          />
+        </div>
       </Form>
     </div>
   )

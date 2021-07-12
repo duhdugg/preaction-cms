@@ -11,7 +11,7 @@ function PageBlockCarouselSettings(props) {
         <Card
           header='Animation'
           headerTheme='dark'
-          className={{ card: 'carousel-animation-settings mb-3' }}
+          className='carousel-animation-settings mb-3'
           column
           width={{ sm: 1 / 2 }}
         >
@@ -33,7 +33,7 @@ function PageBlockCarouselSettings(props) {
           </div>
         </Card>
         <Card
-          className={{ card: 'carousel-autoplay-settings mb-3' }}
+          className='carousel-autoplay-settings mb-3'
           header='Autoplay'
           headerTheme='dark'
           column
@@ -78,7 +78,7 @@ function PageBlockCarouselSettings(props) {
           )}
         </Card>
         <Card
-          className={{ card: 'carousel-layout-settings mb-3' }}
+          className='carousel-layout-settings mb-3'
           header='Layout'
           headerTheme='dark'
           column
@@ -90,6 +90,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Rows'
+              labelFloat
               placeholder='1'
               value={props.block.settings.rows || ''}
               valueHandler={props.getPageBlockSettingsValueHandler('rows')}
@@ -109,6 +110,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides per Row'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesPerRow || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
@@ -130,6 +132,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides to Show'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesToShow || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
@@ -151,6 +154,7 @@ function PageBlockCarouselSettings(props) {
               min='1'
               step='1'
               label='Slides to Scroll'
+              labelFloat
               placeholder='1'
               value={props.block.settings.slidesToScroll || ''}
               valueHandler={props.getPageBlockSettingsValueHandler(
@@ -171,7 +175,7 @@ function PageBlockCarouselSettings(props) {
           </div>
         </Card>
         <Card
-          className={{ card: 'carousel-behavior-settings mb-3' }}
+          className='carousel-behavior-settings mb-3'
           header='Behavior'
           headerTheme='dark'
           column
@@ -249,7 +253,7 @@ function PageBlockCarouselSettings(props) {
         <Card
           header='Thumbnail Pagination Options'
           theme='secondary'
-          className={{ card: 'mb-3 carousel-secondary' }}
+          className='mb-3 carousel-secondary'
         >
           <div className='carousel-speed-field'>
             <Input
@@ -326,7 +330,7 @@ function PageBlockCarouselSettings(props) {
             .getContents(props.block.pageblockcontents || [])
             .map((content, index) => (
               <Card
-                className={{ card: 'mb-3', footer: 'p-0' }}
+                className='carousel-contents'
                 key={content.id}
                 headerTheme='white'
                 footerTheme='dark'

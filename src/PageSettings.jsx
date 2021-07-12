@@ -138,6 +138,7 @@ function PageSettings(props) {
                 <div className='page-title-field'>
                   <Input
                     label='Page Title'
+                    labelFloat
                     type='text'
                     value={props.page.title}
                     valueHandler={props.getPageValueHandler('title')}
@@ -146,6 +147,7 @@ function PageSettings(props) {
                 <div className='page-path-field'>
                   <Input
                     label='Page Path'
+                    labelFloat
                     type='text'
                     value={props.page.key}
                     valueHandler={props.getPageValueHandler('key')}
@@ -154,6 +156,7 @@ function PageSettings(props) {
                 <div className='full-path-field'>
                   <Input
                     label='Full Path (readonly)'
+                    labelFloat
                     type='text'
                     value={path}
                     readOnly={true}
@@ -162,6 +165,7 @@ function PageSettings(props) {
                 <div className='site-name-field'>
                   <Input
                     label='Site Name'
+                    labelFloat
                     type='text'
                     value={props.settings.siteTitle}
                     valueHandler={props.getSettingsValueHandler('siteTitle')}
@@ -179,6 +183,7 @@ function PageSettings(props) {
                 <div className='meta-description-field'>
                   <Input
                     label='Meta Description'
+                    labelFloat
                     type='text'
                     maxLength='160'
                     value={props.settings.metaDescription}
@@ -201,7 +206,7 @@ function PageSettings(props) {
                 <Card
                   header='Navigation'
                   headerTheme='dark'
-                  className={{ card: 'navigation' }}
+                  className='navigation'
                 >
                   <div className='parent-site-field'>
                     <Checkbox
@@ -210,7 +215,7 @@ function PageSettings(props) {
                       valueHandler={props.getSettingsValueHandler('site')}
                     />
                     {props.settings.site ? (
-                      <Alert level='info'>
+                      <Alert>
                         <strong>Notice:</strong> This setting will cause the
                         navigation menu to behave as if the current page were a
                         top-level site.
@@ -234,6 +239,7 @@ function PageSettings(props) {
                         type='number'
                         step='1'
                         label='Ordering'
+                        labelFloat
                         info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
                         placeholder='0'
                         value={props.settings.navOrdering}
@@ -249,6 +255,7 @@ function PageSettings(props) {
                     <div className='col-sm-6 nav-position-field'>
                       <Select
                         label='Nav Position'
+                        labelFloat
                         value={props.settings.navPosition}
                         valueHandler={props.getSettingsValueHandler(
                           'navPosition'
@@ -278,6 +285,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-type-field'>
                         <Select
                           label='Nav Type'
+                          labelFloat
                           value={props.settings.navType}
                           valueHandler={props.getSettingsValueHandler(
                             'navType'
@@ -308,6 +316,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-alignment-field'>
                         <Select
                           label='Nav Alignment'
+                          labelFloat
                           value={props.settings.navAlignment}
                           valueHandler={props.getSettingsValueHandler(
                             'navAlignment'
@@ -340,6 +349,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-spacing-field'>
                         <Select
                           label='Nav Spacing'
+                          labelFloat
                           value={props.settings.navSpacing}
                           valueHandler={props.getSettingsValueHandler(
                             'navSpacing'
@@ -397,9 +407,9 @@ function PageSettings(props) {
                   </div>
                 </Card>
                 <Card
-                  header='Header/Footer/Jumbotron'
+                  header='Header/Footer/Hero'
                   headerTheme='dark'
-                  className={{ card: 'header-footer-jumbo' }}
+                  className='header-footer-hero'
                 >
                   <div className='show-header-field'>
                     <Checkbox
@@ -423,6 +433,7 @@ function PageSettings(props) {
                     <div className='header-path-field'>
                       <Input
                         label='Header Path'
+                        labelFloat
                         info={`By default, every page has a header subpage automatically created. In order to use the header specific to this page, enter: ${props.path}header/`}
                         value={props.settings.headerPath}
                         valueHandler={props.getSettingsValueHandler(
@@ -466,6 +477,7 @@ function PageSettings(props) {
                     <div className='footer-path-field'>
                       <Input
                         label='Footer Path'
+                        labelFloat
                         info={`By default, every page has a footer subpage automatically created. In order to use the footer specific to this page, enter: ${props.path}footer/`}
                         value={props.settings.footerPath}
                         valueHandler={props.getSettingsValueHandler(
@@ -487,14 +499,14 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
-                  <div className='show-jumbo-field'>
+                  <div className='show-hero-field'>
                     <Checkbox
-                      label='Show Jumbotron'
-                      checked={props.settings.showJumbo}
-                      valueHandler={props.getSettingsValueHandler('showJumbo')}
-                      readOnly={props.getPageSettingIsUndefined('showJumbo')}
+                      label='Show Hero'
+                      checked={props.settings.showHero}
+                      valueHandler={props.getSettingsValueHandler('showHero')}
+                      readOnly={props.getPageSettingIsUndefined('showHero')}
                       onClick={(e) => {
-                        overrideSetting('showJumbo')
+                        overrideSetting('showHero')
                       }}
                     />
                     <ResetButton
@@ -502,21 +514,20 @@ function PageSettings(props) {
                         props.getPageSettingIsUndefined
                       }
                       resetSetting={resetSetting}
-                      settingsKey='showJumbo'
+                      settingsKey='showHero'
                     />
                   </div>
-                  {props.settings.showJumbo ? (
-                    <div className='jumbo-path-field'>
+                  {props.settings.showHero ? (
+                    <div className='hero-path-field'>
                       <Input
-                        label='Jumbotron Path'
-                        info={`By default, every page has a jumbotron subpage automatically created. In order to use the jumbotron specific to this page, enter: ${props.path}jumbo/`}
-                        value={props.settings.jumboPath}
-                        valueHandler={props.getSettingsValueHandler(
-                          'jumboPath'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('jumboPath')}
+                        label='Hero Path'
+                        labelFloat
+                        info={`By default, every page has a hero subpage automatically created. In order to use the hero specific to this page, enter: ${props.path}hero/`}
+                        value={props.settings.heroPath}
+                        valueHandler={props.getSettingsValueHandler('heroPath')}
+                        readOnly={props.getPageSettingIsUndefined('heroPath')}
                         onClick={(e) => {
-                          overrideSetting('jumboPath')
+                          overrideSetting('heroPath')
                         }}
                       />
                       <ResetButton
@@ -524,25 +535,26 @@ function PageSettings(props) {
                           props.getPageSettingIsUndefined
                         }
                         resetSetting={resetSetting}
-                        settingsKey='jumboPath'
+                        settingsKey='heroPath'
                       />
                     </div>
                   ) : (
                     ''
                   )}
-                  {props.settings.showJumbo ? (
-                    <div className='jumbo-position-field'>
+                  {props.settings.showHero ? (
+                    <div className='hero-position-field'>
                       <Select
-                        label='Jumbotron Position'
-                        value={props.settings.jumboPosition}
+                        label='Hero Position'
+                        labelFloat
+                        value={props.settings.heroPosition}
                         valueHandler={props.getSettingsValueHandler(
-                          'jumboPosition'
+                          'heroPosition'
                         )}
                         readOnly={props.getPageSettingIsUndefined(
-                          'jumboPosition'
+                          'heroPosition'
                         )}
                         onClick={(e) => {
-                          overrideSetting('jumboPosition')
+                          overrideSetting('heroPosition')
                         }}
                       >
                         <option value='above-header'>Above Header</option>
@@ -553,7 +565,7 @@ function PageSettings(props) {
                           props.getPageSettingIsUndefined
                         }
                         resetSetting={resetSetting}
-                        settingsKey='jumboPosition'
+                        settingsKey='heroPosition'
                       />
                     </div>
                   ) : (
@@ -563,79 +575,132 @@ function PageSettings(props) {
                 <Card
                   header='Theme'
                   headerTheme='dark'
-                  className={{
-                    card: 'theme-settings',
-                  }}
+                  className='theme-settings'
                 >
                   <div className='row'>
-                    <div className='col-sm-6 body-theme-field'>
-                      <Select
-                        label='Body Theme'
-                        value={props.settings.bodyTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'bodyTheme'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('bodyTheme')}
-                        onClick={() => {
-                          overrideSetting('bodyTheme')
-                        }}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
-                      <ResetButton
-                        getPageSettingIsUndefined={
-                          props.getPageSettingIsUndefined
-                        }
-                        resetSetting={resetSetting}
-                        settingsKey='bodyTheme'
-                      />
+                    <div className='col-sm-6 body-theme-field-group'>
+                      <div className='body-theme-field'>
+                        <Select
+                          label='Body Theme'
+                          labelFloat
+                          value={props.settings.bodyTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'bodyTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('bodyTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='bodyTheme'
+                        />
+                      </div>
+                      <div className='body-gradient-field'>
+                        <Checkbox
+                          label='Body Gradient'
+                          checked={props.settings.bodyGradient || false}
+                          valueHandler={props.getSettingsValueHandler(
+                            'bodyGradient'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'bodyGradient'
+                          )}
+                          onClick={() => {
+                            overrideSetting('bodyGradient')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='bodyGradient'
+                        />
+                      </div>
                     </div>
-                    <div className='col-sm-6 main-theme-field'>
-                      <Select
-                        label='Main Theme'
-                        value={props.settings.mainTheme}
-                        valueHandler={props.getSettingsValueHandler(
-                          'mainTheme'
-                        )}
-                        readOnly={props.getPageSettingIsUndefined('mainTheme')}
-                        onClick={() => {
-                          overrideSetting('mainTheme')
-                        }}
-                      >
-                        <option value=''>Default</option>
-                        <option>danger</option>
-                        <option>dark</option>
-                        <option>info</option>
-                        <option>light</option>
-                        <option>primary</option>
-                        <option>secondary</option>
-                        <option>success</option>
-                        <option>transparent</option>
-                        <option>warning</option>
-                        <option>white</option>
-                      </Select>
-                      <ResetButton
-                        getPageSettingIsUndefined={
-                          props.getPageSettingIsUndefined
-                        }
-                        resetSetting={resetSetting}
-                        settingsKey='mainTheme'
-                      />
+                    <div className='col-sm-6 main-theme-field-group'>
+                      <div className='main-theme-field'>
+                        <Select
+                          label='Main Theme'
+                          labelFloat
+                          value={props.settings.mainTheme}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainTheme'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'mainTheme'
+                          )}
+                          onClick={() => {
+                            overrideSetting('mainTheme')
+                          }}
+                        >
+                          <option value=''>Default</option>
+                          <option>danger</option>
+                          <option>dark</option>
+                          <option>info</option>
+                          <option>light</option>
+                          <option>primary</option>
+                          <option>secondary</option>
+                          <option>success</option>
+                          <option>transparent</option>
+                          <option>warning</option>
+                          <option>white</option>
+                        </Select>
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='mainTheme'
+                        />
+                      </div>
+                      <div className='main-gradient-field'>
+                        <Checkbox
+                          label='Main Gradient'
+                          checked={props.settings.mainGradient || false}
+                          valueHandler={props.getSettingsValueHandler(
+                            'mainGradient'
+                          )}
+                          readOnly={props.getPageSettingIsUndefined(
+                            'mainGradient'
+                          )}
+                          onClick={() => {
+                            overrideSetting('mainGradient')
+                          }}
+                        />
+                        <ResetButton
+                          getPageSettingIsUndefined={
+                            props.getPageSettingIsUndefined
+                          }
+                          resetSetting={resetSetting}
+                          settingsKey='mainGradient'
+                        />
+                      </div>
                     </div>
                     {['fixed-top'].includes(props.settings.navPosition) ? (
                       <div className='col-sm-6 navbar-theme-field'>
                         <Select
                           label='NavBar Theme'
+                          labelFloat
                           value={props.settings.navbarTheme}
                           valueHandler={props.getSettingsValueHandler(
                             'navbarTheme'
@@ -675,6 +740,7 @@ function PageSettings(props) {
                       <div className='col-sm-6 nav-active-tab-theme-field'>
                         <Select
                           label='Active Nav Tab Theme'
+                          labelFloat
                           value={props.settings.navActiveTabTheme || 'white'}
                           valueHandler={props.getSettingsValueHandler(
                             'navActiveTabTheme'
@@ -710,6 +776,7 @@ function PageSettings(props) {
                     <div className='col-sm-6 nav-active-submenu-theme-field'>
                       <Select
                         label='Active Submenu Theme'
+                        labelFloat
                         value={
                           props.settings.navActiveSubmenuTheme || 'primary'
                         }
@@ -741,115 +808,190 @@ function PageSettings(props) {
                     </div>
                     {props.settings.showHeader ||
                     props.settings.navPosition !== 'fixed-top' ? (
-                      <div className='col-sm-6 header-theme-field'>
-                        <Select
-                          label='Header Theme'
-                          value={props.settings.headerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'headerTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'headerTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('headerTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='headerTheme'
-                        />
+                      <div className='col-sm-6 header-theme-field-group'>
+                        <div className='header-theme-field'>
+                          <Select
+                            label='Header Theme'
+                            labelFloat
+                            value={props.settings.headerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'headerTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('headerTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='headerTheme'
+                          />
+                        </div>
+                        <div className='header-gradient-field'>
+                          <Checkbox
+                            label='Header Gradient'
+                            checked={props.settings.headerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'headerGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'headerGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('headerGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='headerGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
-                    {props.settings.showJumbo ? (
-                      <div className='col-sm-6 jumbo-theme-field'>
-                        <Select
-                          label='Jumbotron Theme'
-                          value={props.settings.jumboTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'jumboTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'jumboTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('jumboTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='jumboTheme'
-                        />
+                    {props.settings.showHero ? (
+                      <div className='col-sm-6 hero-theme-field-group'>
+                        <div className='hero-theme-field'>
+                          <Select
+                            label='Hero Theme'
+                            labelFloat
+                            value={props.settings.heroTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'heroTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'heroTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('heroTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='heroTheme'
+                          />
+                        </div>
+                        <div className='hero-gradient-field'>
+                          <Checkbox
+                            label='Hero Gradient'
+                            checked={props.settings.heroGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'heroGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'heroGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('heroGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='heroGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
                     )}
                     {props.settings.showFooter ? (
-                      <div className='col-sm-6 footer-theme-field'>
-                        <Select
-                          label='Footer Theme'
-                          value={props.settings.footerTheme}
-                          valueHandler={props.getSettingsValueHandler(
-                            'footerTheme'
-                          )}
-                          readOnly={props.getPageSettingIsUndefined(
-                            'footerTheme'
-                          )}
-                          onClick={() => {
-                            overrideSetting('footerTheme')
-                          }}
-                        >
-                          <option value=''>Default</option>
-                          <option>danger</option>
-                          <option>dark</option>
-                          <option>info</option>
-                          <option>light</option>
-                          <option>primary</option>
-                          <option>secondary</option>
-                          <option>success</option>
-                          <option>transparent</option>
-                          <option>warning</option>
-                          <option>white</option>
-                        </Select>
-                        <ResetButton
-                          getPageSettingIsUndefined={
-                            props.getPageSettingIsUndefined
-                          }
-                          resetSetting={resetSetting}
-                          settingsKey='footerTheme'
-                        />
+                      <div className='col-sm-6 footer-theme-field-group'>
+                        <div className='footer-theme-field'>
+                          <Select
+                            label='Footer Theme'
+                            labelFloat
+                            value={props.settings.footerTheme}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerTheme'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'footerTheme'
+                            )}
+                            onClick={() => {
+                              overrideSetting('footerTheme')
+                            }}
+                          >
+                            <option value=''>Default</option>
+                            <option>danger</option>
+                            <option>dark</option>
+                            <option>info</option>
+                            <option>light</option>
+                            <option>primary</option>
+                            <option>secondary</option>
+                            <option>success</option>
+                            <option>transparent</option>
+                            <option>warning</option>
+                            <option>white</option>
+                          </Select>
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='footerTheme'
+                          />
+                        </div>
+                        <div className='footer-gradient-field'>
+                          <Checkbox
+                            label='Footer Gradient'
+                            checked={props.settings.footerGradient || false}
+                            valueHandler={props.getSettingsValueHandler(
+                              'footerGradient'
+                            )}
+                            readOnly={props.getPageSettingIsUndefined(
+                              'footerGradient'
+                            )}
+                            onClick={() => {
+                              overrideSetting('footerGradient')
+                            }}
+                          />
+                          <ResetButton
+                            getPageSettingIsUndefined={
+                              props.getPageSettingIsUndefined
+                            }
+                            resetSetting={resetSetting}
+                            settingsKey='footerGradient'
+                          />
+                        </div>
                       </div>
                     ) : (
                       ''
@@ -870,11 +1012,7 @@ function PageSettings(props) {
                     <div className='badge bg-white text-dark'>white</div>
                   </div>
                 </Card>
-                <Card
-                  header='Width'
-                  headerTheme='dark'
-                  className={{ card: 'width' }}
-                >
+                <Card header='Width' headerTheme='dark' className='width'>
                   {props.settings.navPosition === 'fixed-top' ? (
                     <div className='top-nav-maxwidth-field'>
                       <Checkbox
@@ -901,20 +1039,20 @@ function PageSettings(props) {
                   ) : (
                     ''
                   )}
-                  {props.settings.showJumbo ? (
+                  {props.settings.showHero ? (
                     <div>
-                      <div className='jumbo-container-maxwidth-field'>
+                      <div className='hero-container-maxwidth-field'>
                         <Checkbox
-                          label='Max Width on Jumbotron Container'
-                          checked={props.settings.maxWidthJumboContainer}
+                          label='Max Width on Hero Container'
+                          checked={props.settings.maxWidthHeroContainer}
                           valueHandler={props.getSettingsValueHandler(
-                            'maxWidthJumboContainer'
+                            'maxWidthHeroContainer'
                           )}
                           readOnly={props.getPageSettingIsUndefined(
-                            'maxWidthJumboContainer'
+                            'maxWidthHeroContainer'
                           )}
                           onClick={(e) => {
-                            overrideSetting('maxWidthJumboContainer')
+                            overrideSetting('maxWidthHeroContainer')
                           }}
                         />
                         <ResetButton
@@ -922,7 +1060,7 @@ function PageSettings(props) {
                             props.getPageSettingIsUndefined
                           }
                           resetSetting={resetSetting}
-                          settingsKey='maxWidthJumboContainer'
+                          settingsKey='maxWidthHeroContainer'
                         />
                       </div>
                     </div>
@@ -1010,7 +1148,7 @@ function PageSettings(props) {
             <Card
               header='Delete Page'
               headerTheme='red'
-              className={{ card: 'delete-page' }}
+              className='delete-page'
             >
               <Checkbox
                 label='Confirm to delete this page'
@@ -1042,13 +1180,11 @@ PageSettings.propTypes = {
   getPageValueHandler: PropTypes.func.isRequired,
   getResetter: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
-  hide: PropTypes.array,
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   pageId: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
-  site: PropTypes.bool,
   token: PropTypes.string,
 }
 

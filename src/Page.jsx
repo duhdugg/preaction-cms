@@ -4,7 +4,7 @@ import React from 'react'
 import loadable from '@loadable/component'
 import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
-import PageBlock from './PageBlock.jsx'
+import PageBlockParent from './PageBlockParent.jsx'
 import { Modal, Nav, Spinner } from '@preaction/bootstrap-clips'
 import {
   MdCreate,
@@ -302,7 +302,13 @@ class Page extends React.Component {
               pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
                   if (
-                    ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].includes(key)
+                    [
+                      'smWidth',
+                      'mdWidth',
+                      'lgWidth',
+                      'xsWidth',
+                      'xxlWidth',
+                    ].includes(key)
                   ) {
                     // minimum value for width attribute is here
                     // to allow the correct visual spacing on the sliders
@@ -359,7 +365,15 @@ class Page extends React.Component {
         (state) => {
           this.state.page.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
-              if (['smWidth', 'mdWidth', 'lgWidth', 'xsWidth'].includes(key)) {
+              if (
+                [
+                  'smWidth',
+                  'mdWidth',
+                  'lgWidth',
+                  'xsWidth',
+                  'xxlWidth',
+                ].includes(key)
+              ) {
                 // minimum value for width attribute is here
                 // to allow the correct visual spacing on the sliders
                 if (value < 1) {
@@ -433,8 +447,8 @@ class Page extends React.Component {
             this.props.headerControl(value)
           } else if (key === 'showFooter') {
             this.props.footerControl(value)
-          } else if (key === 'showJumbo') {
-            this.props.jumboControl(value)
+          } else if (key === 'showHero') {
+            this.props.heroControl(value)
           }
           return state
         },
@@ -751,8 +765,8 @@ class Page extends React.Component {
                 if (this.props.setActivePathname) {
                   this.props.setActivePathname(this.props.path)
                 }
-                // set the title if page is not header, footer, nor jumbo
-                if (path.match(/\/(header|footer|jumbo)\/$/g) === null) {
+                // set the title if page is not header, footer, nor hero
+                if (path.match(/\/(header|footer|hero)\/$/g) === null) {
                   let title = ''
                   if (this.topLevelPageKey === 'home') {
                     title = this.settings.siteTitle
@@ -789,14 +803,14 @@ class Page extends React.Component {
   }
 
   loadSettings() {
-    // control showing header/footer/jumbo in parent App.jsx component
-    if (!['header', 'footer', 'jumbo'].includes(this.state.page.key)) {
+    // control showing header/footer/hero in parent App.jsx component
+    if (!['header', 'footer', 'hero'].includes(this.state.page.key)) {
       let showHeader = this.settings.showHeader !== false
       let showFooter = this.settings.showFooter !== false
-      let showJumbo = this.settings.showJumbo !== false
+      let showHero = this.settings.showHero !== false
       this.props.headerControl(showHeader)
       this.props.footerControl(showFooter)
-      this.props.jumboControl(showJumbo)
+      this.props.heroControl(showHero)
     }
   }
 
@@ -829,12 +843,12 @@ class Page extends React.Component {
     return (
       <div className='page' ref={this.ref}>
         {this.state.page ? (
-          <div className='row'>
+          <div className='row pageblocks'>
             {this.state.page.pageblocks
               ? this.getBlocks(this.state.page.pageblocks).map(
                   (block, index) => {
                     return (
-                      <PageBlock
+                      <PageBlockParent
                         addContent={this.addContent.bind(this)}
                         appRoot={this.props.appRoot}
                         block={block}
@@ -868,52 +882,63 @@ class Page extends React.Component {
             ) : (
               ''
             )}
-            {this.props.editable && this.state.showSettings ? (
-              <div className='page-settings-modal-container'>
-                <Modal
-                  title='Page Settings'
-                  closeHandler={this.toggleSettings.bind(this)}
-                  headerTheme='secondary'
-                  bodyTheme='white'
-                  footerTheme='dark'
-                  footer={
-                    <button
-                      type='button'
-                      className='btn btn-secondary'
-                      onClick={this.toggleSettings.bind(this)}
-                    >
-                      Close
-                    </button>
-                  }
+          </div>
+        ) : (
+          ''
+        )}
+        {this.state.page ? (
+          <div className='page-settings-modal-container'>
+            <Modal
+              title='Page Settings'
+              show={this.props.editable && this.state.showSettings}
+              setShow={(value) => {
+                this.setState((state) => {
+                  state.showSettings = value
+                  return state
+                })
+              }}
+              size='lg'
+              headerTheme='secondary'
+              bodyTheme='white'
+              footerTheme='dark'
+              footer={
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={this.toggleSettings.bind(this)}
                 >
-                  <PageSettings
-                    appRoot={this.props.appRoot}
-                    admin={this.props.editable}
-                    navigate={(path) => {
-                      this.setState({ showSettings: false }, () => {
-                        this.props.navigate(path)
-                      })
-                    }}
-                    pageId={this.state.page.id}
-                    page={this.state.page}
-                    path={this.props.path}
-                    settings={this.settings}
-                    token={this.props.token}
-                    deletePage={this.deletePage.bind(this)}
-                    getPageValueHandler={this.getPageValueHandler.bind(this)}
-                    getResetter={this.getPageSettingsResetter.bind(this)}
-                    getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                      this
-                    )}
-                    getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                      this
-                    )}
-                  />
-                </Modal>
-              </div>
-            ) : (
-              ''
-            )}
+                  Close
+                </button>
+              }
+            >
+              {this.props.editable && this.state.showSettings ? (
+                <PageSettings
+                  appRoot={this.props.appRoot}
+                  admin={this.props.editable}
+                  navigate={(path) => {
+                    this.setState({ showSettings: false }, () => {
+                      this.props.navigate(path)
+                    })
+                  }}
+                  pageId={this.state.page.id}
+                  page={this.state.page}
+                  path={this.props.path}
+                  settings={this.settings}
+                  token={this.props.token}
+                  deletePage={this.deletePage.bind(this)}
+                  getPageValueHandler={this.getPageValueHandler.bind(this)}
+                  getResetter={this.getPageSettingsResetter.bind(this)}
+                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
+                    this
+                  )}
+                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
+                    this
+                  )}
+                />
+              ) : (
+                ''
+              )}
+            </Modal>
           </div>
         ) : (
           ''
@@ -967,7 +992,7 @@ Page.propTypes = {
   fallbackSettings: PropTypes.object,
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
-  jumboControl: PropTypes.func,
+  heroControl: PropTypes.func,
   init404: PropTypes.bool,
   initError: PropTypes.string,
   initPage: PropTypes.object,

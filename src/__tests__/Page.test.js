@@ -23,7 +23,7 @@ const mockPage1 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -31,7 +31,7 @@ const mockPage1 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -121,6 +121,7 @@ const mockPage2 = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -139,6 +140,7 @@ const mockPage2 = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -157,6 +159,7 @@ const mockPage2 = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -172,7 +175,7 @@ const mockPage2 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -180,7 +183,7 @@ const mockPage2 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -270,6 +273,7 @@ const mockPage3 = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: '12',
         mdWidth: 12,
         smWidth: 12,
@@ -289,6 +293,7 @@ const mockPage3 = {
             headerLevel: 0,
             linkUrl: '',
             src: '/uploads/0a14f83599ddabac762593a6ca1e410a4281a6a50acd3182cae46fa005bd0df1.png',
+            xxlWidth: 12,
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -309,6 +314,7 @@ const mockPage3 = {
             headerLevel: 0,
             linkUrl: '',
             src: '/uploads/6976a933427176ede8ffd276b29a0527d68ab553aaaa9b8e7d05a43cfaad6bd9.png',
+            xxlWidth: 12,
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -329,6 +335,7 @@ const mockPage3 = {
             headerLevel: 0,
             linkUrl: '',
             src: '/uploads/6dec3e94a22c3f67c6bfb867114a11310cbef2398b00b86e1b5842648e1a2afb.png',
+            xxlWidth: 12,
             lgWidth: '4',
             mdWidth: '4',
             smWidth: '4',
@@ -345,7 +352,7 @@ const mockPage3 = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -353,7 +360,7 @@ const mockPage3 = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -445,6 +452,7 @@ const server = setupServer(
         settings: {
           header: '',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -478,6 +486,7 @@ const server = setupServer(
         settings: {
           header: '',
           headerLevel: 0,
+          xxlWidth: 12,
           lgWidth: 12,
           mdWidth: 12,
           smWidth: 12,
@@ -498,6 +507,7 @@ const server = setupServer(
     return res(
       ctx.json({
         id: -1,
+        contentType: 'wysiwyg',
         settings: {},
       })
     )
@@ -544,7 +554,7 @@ function getResult(overrideProps = {}) {
     fallbackSettings: {},
     footerControl: () => {},
     headerControl: () => {},
-    jumboControl: () => {},
+    heroControl: () => {},
     navigate: () => {},
     onError: () => {},
     onNotFound: () => {},
@@ -949,7 +959,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   let x = false
   let headerControlCalled = false
   let footerControlCalled = false
-  let jumboControlCalled = false
+  let heroControlCalled = false
   const { result } = getResult({
     path: '/foo-1/abc/789/',
     emitSave: () => {
@@ -961,8 +971,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     footerControl: () => {
       footerControlCalled = true
     },
-    jumboControl: () => {
-      jumboControlCalled = true
+    heroControl: () => {
+      heroControlCalled = true
     },
   })
   expect(result.container.firstChild).toHaveClass('page')
@@ -995,8 +1005,8 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   expect(headerControlCalled).toBe(true)
   result.container.firstChild.getPageSettingsValueHandler('showFooter')(true)
   expect(footerControlCalled).toBe(true)
-  result.container.firstChild.getPageSettingsValueHandler('showJumbo')(true)
-  expect(jumboControlCalled).toBe(true)
+  result.container.firstChild.getPageSettingsValueHandler('showHero')(true)
+  expect(heroControlCalled).toBe(true)
 })
 
 test('onNotFound', async () => {

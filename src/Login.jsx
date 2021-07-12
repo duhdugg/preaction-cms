@@ -51,6 +51,7 @@ function Login(props) {
     <Form onSubmit={loginSubmit} noValidate>
       <Input
         label='Username'
+        labelFloat
         autoComplete='username'
         required
         valueHandler={usernameValueHandler}
@@ -59,6 +60,7 @@ function Login(props) {
         type='password'
         autoComplete='current-password'
         label='Password'
+        labelFloat
         required
         valueHandler={setPassword}
       />

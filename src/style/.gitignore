@@ -1,4 +1,5 @@
 *
 !.gitignore
-!index.template.js
+!base.js
+!custom.template.js
 !cms.scss

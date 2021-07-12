@@ -16,6 +16,7 @@ function NewPageForm(props) {
       <Input
         type='text'
         label='Page Title'
+        labelFloat
         value={props.newPage.title}
         valueHandler={props.getValueHandler('title')}
         required
@@ -23,6 +24,7 @@ function NewPageForm(props) {
       <Input
         type='text'
         label='URL Path'
+        labelFloat
         value={props.newPage.key}
         valueHandler={props.getValueHandler('key')}
         required
@@ -31,6 +33,7 @@ function NewPageForm(props) {
         <Input
           type='text'
           label='Full Path'
+          labelFloat
           value={`${props.activePathname.replace(/^\/home\//, '/')}${
             props.newPage.key
           }/`}

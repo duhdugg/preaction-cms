@@ -24,6 +24,7 @@ const mockHomeHeader = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -40,6 +41,7 @@ const mockHomeHeader = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -72,6 +74,7 @@ const mockHomeFooter = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -88,6 +91,7 @@ const mockHomeFooter = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -102,9 +106,9 @@ const mockHomeFooter = {
     },
   ],
 }
-const mockHomeJumbo = {
+const mockHomeHero = {
   id: 6,
-  key: 'jumbo',
+  key: 'hero',
   title: null,
   pageType: 'content',
   userCreated: false,
@@ -120,6 +124,7 @@ const mockHomeJumbo = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -136,12 +141,13 @@ const mockHomeJumbo = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
             xsWidth: 12,
           },
-          wysiwyg: '<p>bar-jumbo</p>',
+          wysiwyg: '<p>bar-hero</p>',
           createdAt: '2020-09-07T21:49:05.838Z',
           updatedAt: '2020-09-07T21:49:15.347Z',
           pageblockId: 2,
@@ -168,6 +174,7 @@ const mockHomePage = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -184,6 +191,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -201,6 +209,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -219,6 +228,7 @@ const mockHomePage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -236,7 +246,7 @@ const mockHomePage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -244,7 +254,7 @@ const mockHomePage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -324,7 +334,7 @@ const mockHomePage = {
 const mockSettings = {
   footerPath: '/home/footer/',
   headerPath: '/home/header/',
-  jumboPath: '/home/jumbo/',
+  heroPath: '/home/hero/',
   init: true,
   isNavParent: false,
   navAlignment: 'left',
@@ -334,7 +344,7 @@ const mockSettings = {
   navType: 'basic',
   showFooter: true,
   showHeader: true,
-  showJumbo: true,
+  showHero: true,
   siteTitle: 'Preaction CMS',
 }
 const mockSession = {
@@ -364,6 +374,7 @@ const mockTestPage = {
       settings: {
         header: '',
         headerLevel: 0,
+        xxlWidth: 12,
         lgWidth: 12,
         mdWidth: 12,
         smWidth: 12,
@@ -380,6 +391,7 @@ const mockTestPage = {
           settings: {
             header: '',
             headerLevel: 0,
+            xxlWidth: 12,
             lgWidth: 12,
             mdWidth: 12,
             smWidth: 12,
@@ -396,7 +408,7 @@ const mockTestPage = {
   fallbackSettings: {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'fixed-top',
@@ -404,7 +416,7 @@ const mockTestPage = {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
   },
@@ -522,8 +534,8 @@ const server = setupServer(
   rest.get('/api/page/by-key/home/footer/', (req, res, ctx) => {
     return res(ctx.json(mockHomeFooter))
   }),
-  rest.get('/api/page/by-key/home/jumbo/', (req, res, ctx) => {
-    return res(ctx.json(mockHomeJumbo))
+  rest.get('/api/page/by-key/home/hero/', (req, res, ctx) => {
+    return res(ctx.json(mockHomeHero))
   }),
   rest.get('/api/page/by-key/home/', (req, res, ctx) => {
     return res(ctx.json(mockHomePage))
@@ -599,7 +611,7 @@ test('server-side rendering', () => {
   const mockPage = Object.assign({}, mockHomePage, {
     header: mockHomeHeader,
     footer: mockHomeFooter,
-    jumbo: mockHomeJumbo,
+    hero: mockHomeHero,
   })
   const result = render(
     <App initPath='/' initPage={mockPage} initSettings={mockSettings} />
@@ -656,10 +668,10 @@ test('login', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -670,10 +682,10 @@ test('logout', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -689,10 +701,10 @@ test('create new page', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -702,7 +714,7 @@ test('create new page', async () => {
   window.preaction.setState({ newPage: { key: 'foobar', title: 'FooBar' } })
   window.preaction.submitNewPage()
   await waitFor(() =>
-    expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(2)
+    expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(1)
   )
 })
 
@@ -712,10 +724,10 @@ test('edit site settings', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -752,10 +764,10 @@ test('delete page', async () => {
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
-    expect(result.getByLabelText('Username')).toBeInTheDocument()
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username'), 'admin')
-  userEvent.type(result.getByLabelText('Password'), 'admin')
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
@@ -785,7 +797,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload()
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -793,7 +805,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'add-page' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -801,7 +813,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'delete-page' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
@@ -809,7 +821,7 @@ test('globalThis.preaction.reload', async () => {
 
   window.preaction.reload({ action: 'update-settings' })
   expect(
-    result.container.querySelector('.spinner-container')
+    result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()

@@ -15,6 +15,7 @@ function PageBlockContentSettings(props) {
             <Input
               type='text'
               label='Header'
+              labelFloat
               value={props.content.settings.header}
               valueHandler={props.getContentSettingsValueHandler('header')}
             />
@@ -49,22 +50,36 @@ function PageBlockContentSettings(props) {
           ''
         )}
         {props.content.settings.header ? (
-          <div className='header-theme-field'>
-            <Select
-              label='Header Theme'
-              value={props.content.settings.headerTheme || 'dark'}
-              valueHandler={props.getContentSettingsValueHandler('headerTheme')}
-            >
-              <option>danger</option>
-              <option>dark</option>
-              <option>info</option>
-              <option>light</option>
-              <option>primary</option>
-              <option>secondary</option>
-              <option>success</option>
-              <option>warning</option>
-              <option>white</option>
-            </Select>
+          <div>
+            <div className='header-theme-field'>
+              <Select
+                label='Header Theme'
+                labelFloat
+                value={props.content.settings.headerTheme || 'dark'}
+                valueHandler={props.getContentSettingsValueHandler(
+                  'headerTheme'
+                )}
+              >
+                <option>danger</option>
+                <option>dark</option>
+                <option>info</option>
+                <option>light</option>
+                <option>primary</option>
+                <option>secondary</option>
+                <option>success</option>
+                <option>warning</option>
+                <option>white</option>
+              </Select>
+            </div>
+            <div className='header-gradient-field'>
+              <Checkbox
+                label='Header Gradient'
+                checked={props.content.settings.headerGradient || false}
+                valueHandler={props.getContentSettingsValueHandler(
+                  'headerGradient'
+                )}
+              />
+            </div>
           </div>
         ) : (
           ''
@@ -74,6 +89,7 @@ function PageBlockContentSettings(props) {
             <div className='body-theme-field'>
               <Select
                 label='Body Theme'
+                labelFloat
                 value={props.content.settings.bodyTheme || 'transparent'}
                 valueHandler={props.getContentSettingsValueHandler('bodyTheme')}
               >
@@ -89,9 +105,19 @@ function PageBlockContentSettings(props) {
                 <option>white</option>
               </Select>
             </div>
+            <div className='body-gradient-field'>
+              <Checkbox
+                label='Body Gradient'
+                checked={props.content.settings.bodyGradient || false}
+                valueHandler={props.getContentSettingsValueHandler(
+                  'bodyGradient'
+                )}
+              />
+            </div>
             <div className='border-theme-field'>
               <Select
                 label='Border Theme'
+                labelFloat
                 value={props.content.settings.borderTheme || 'dark'}
                 valueHandler={props.getContentSettingsValueHandler(
                   'borderTheme'
@@ -125,6 +151,17 @@ function PageBlockContentSettings(props) {
         ) : (
           ''
         )}
+        <div className='width-field large-monitor-width-field'>
+          <Input
+            label={`Large Monitor Width: ${props.content.settings.xxlWidth} / 12`}
+            type='range'
+            min='0'
+            max='12'
+            step='1'
+            value={props.content.settings.xxlWidth}
+            valueHandler={props.getContentSettingsValueHandler('xxlWidth')}
+          />
+        </div>
         <div className='width-field desktop-width-field'>
           <Input
             label={`Desktop Width: ${props.content.settings.lgWidth} / 12`}
@@ -174,6 +211,7 @@ function PageBlockContentSettings(props) {
             <div className='img-src-field'>
               <Input
                 label='Image Source'
+                labelFloat
                 value={props.content.settings.src}
                 valueHandler={props.getContentSettingsValueHandler('src')}
               />
@@ -181,6 +219,7 @@ function PageBlockContentSettings(props) {
             <div className='alt-text-field'>
               <Input
                 label='Alt Text'
+                labelFloat
                 value={props.content.settings.altText}
                 valueHandler={props.getContentSettingsValueHandler('altText')}
               />
@@ -188,6 +227,7 @@ function PageBlockContentSettings(props) {
             <div className='link-url-field'>
               <Input
                 label='Link URL'
+                labelFloat
                 type='url'
                 value={props.content.settings.linkUrl}
                 valueHandler={props.getContentSettingsValueHandler('linkUrl')}
@@ -205,6 +245,7 @@ function PageBlockContentSettings(props) {
                 min='0.0625'
                 step='0.0625'
                 label='Spacer Height'
+                labelFloat
                 value={props.content.settings.spacerHeight}
                 valueHandler={props.getContentSettingsValueHandler(
                   'spacerHeight'
@@ -215,6 +256,17 @@ function PageBlockContentSettings(props) {
         ) : (
           ''
         )}
+        <div className='custom-class-name-field'>
+          <Input
+            label='Custom Style Class Name'
+            labelFloat
+            value={props.content.settings.customClassName}
+            valueHandler={(value) => {
+              value = value.toLowerCase().replace(/[^a-z-]/g, '')
+              props.getContentSettingsValueHandler('customClassName')(value)
+            }}
+          />
+        </div>
       </Form>
     </div>
   )

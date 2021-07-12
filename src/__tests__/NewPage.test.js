@@ -43,12 +43,12 @@ test('NewPage fields alter state', () => {
   const key = 'test'
   for (let c = 0; c < title.length; c++) {
     const char = title[c]
-    userEvent.type(result.getByLabelText('Page Title'), char)
+    userEvent.type(result.getByLabelText('Page Title *'), char)
     rerender()
   }
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path'), char)
+    userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.newPage.title).toBe('Test')
@@ -61,12 +61,12 @@ test('NewPage form submits', () => {
   const key = 'test'
   for (let c = 0; c < title.length; c++) {
     const char = title[c]
-    userEvent.type(result.getByLabelText('Page Title'), char)
+    userEvent.type(result.getByLabelText('Page Title *'), char)
     rerender()
   }
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path'), char)
+    userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.submitted).toBe(false)
@@ -79,7 +79,7 @@ test('NewPage form does not submit when invalid', () => {
   const key = 'test'
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path'), char)
+    userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.submitted).toBe(false)

@@ -2,16 +2,16 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Page from './Page.jsx'
 
-class Jumbo extends React.Component {
+class Hero extends React.Component {
   constructor(props) {
     super(props)
     this.page = React.createRef()
   }
 
   get cleanPath() {
-    let path = '/home/jumbo/'
-    if (this.props.settings.jumboPath.match(/\/jumbo\/$/) !== null) {
-      path = this.props.settings.jumboPath
+    let path = '/home/hero/'
+    if (this.props.settings.heroPath.match(/\/hero\/$/) !== null) {
+      path = this.props.settings.heroPath
     }
     return path
   }
@@ -24,7 +24,7 @@ class Jumbo extends React.Component {
     return (
       <div>
         {this.props.editable ? (
-          <div className='font-weight-bold'>Jumbotron: {this.cleanPath}</div>
+          <div className='font-weight-bold'>Hero: {this.cleanPath}</div>
         ) : (
           ''
         )}
@@ -44,7 +44,7 @@ class Jumbo extends React.Component {
   }
 }
 
-Jumbo.propTypes = {
+Hero.propTypes = {
   appRoot: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   emitSave: PropTypes.func.isRequired,
@@ -54,4 +54,4 @@ Jumbo.propTypes = {
   token: PropTypes.string,
 }
 
-export default Jumbo
+export default Hero

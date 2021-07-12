@@ -4,7 +4,12 @@ import loadable from '@loadable/component'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
-import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
+import {
+  joinClassNames,
+  Card,
+  Modal,
+  Spinner,
+} from '@preaction/bootstrap-clips'
 import { MdImage, MdLink, MdFileUpload, MdSpaceBar } from 'react-icons/md'
 import {
   MdArrowUpward,
@@ -15,6 +20,7 @@ import {
 } from 'react-icons/md'
 import { PageBlockExtension } from './PageBlockExtension.jsx'
 import { blockExtensions } from './ext'
+import getLinkClassName from './lib/getLinkClassName.js'
 const PageBlockCarousel = loadable(() => import('./PageBlockCarousel.jsx'), {
   fallback: <Spinner size='3.25' />,
 })
@@ -22,7 +28,7 @@ const PageBlockSettings = loadable(() => import('./settingsModules.js'), {
   fallback: <Spinner size='3.25' />,
   resolveComponent: (module) => module.PageBlockSettings,
 })
-function PageBlock(props) {
+function PageBlockParent(props) {
   const [showSettings, setShowSettings] = React.useState(false)
   const imgUploadForm = React.useRef()
   const photosInput = React.useRef()
@@ -65,32 +71,30 @@ function PageBlock(props) {
   }
 
   const header = getHeader()
-  const borderColor = {
-    danger: 'var(--danger)',
-    dark: 'var(--dark)',
-    info: 'var(--info)',
-    light: 'var(--light)',
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    success: 'var(--success)',
-    transparent: 'transparent',
-    warning: 'var(--warning)',
-    white: 'var(--white)',
-  }[props.block.settings.borderTheme || 'dark']
-  const border =
-    props.block.blockType !== 'spacer'
-      ? `1px solid ${
-          header || props.block.settings.pad ? borderColor : 'rgba(0,0,0,0)'
-        }`
-      : 0
+  const padded = !!header || props.block.settings.pad
+  const customClassName = (props.block.settings.customClassName || '')
+    .toLowerCase()
+    .replace(/[^a-z-]/g, '')
 
   return (
     <Card
-      className={{
-        card: `page-block block-type-${props.block.blockType}`,
-      }}
+      className={joinClassNames(
+        'page-block',
+        `block-type-${props.block.blockType.replace(/\s/g, '')}`,
+        `block-id-${props.block.id}`,
+        padded ? '' : 'nopad-body',
+        padded
+          ? `card-border-${(props.block.settings.borderTheme || 'dark').replace(
+              /\s/g,
+              ''
+            )}`
+          : 'card-border-transparent',
+        getLinkClassName(padded ? props.block.settings.bodyTheme : ''),
+        customClassName ? `custom-${customClassName}` : ''
+      )}
       column
       width={{
+        xxl: props.block.settings.xxlWidth / 12,
         lg: props.block.settings.lgWidth / 12,
         md: props.block.settings.mdWidth / 12,
         sm: props.block.settings.smWidth / 12,
@@ -98,22 +102,13 @@ function PageBlock(props) {
       }}
       header={header}
       headerTheme={props.block.settings.headerTheme || 'dark'}
+      headerGradient={props.block.settings.headerGradient}
       theme={
-        props.block.settings.header || props.block.settings.pad
-          ? props.block.settings.bodyTheme || 'transparent'
-          : undefined
+        padded ? props.block.settings.bodyTheme || 'transparent' : 'transparent'
       }
+      gradient={padded ? props.block.settings.bodyGradient : false}
       footerTheme={props.block.settings.headerTheme || 'dark'}
-      style={{
-        body: {
-          padding: header || props.block.settings.pad ? '1em' : 0,
-          border: 0,
-        },
-        card: {
-          border,
-          marginBottom: props.block.blockType === 'spacer' ? 0 : undefined,
-        },
-      }}
+      footerGradient={props.block.settings.headerGradient}
       footer={
         props.editable ? (
           <div className='btn-group d-block'>
@@ -252,6 +247,7 @@ function PageBlock(props) {
                 appRoot={props.appRoot}
                 block={props.block}
                 width={{
+                  xxl: content.settings.xxlWidth / 12,
                   lg: content.settings.lgWidth / 12,
                   md: content.settings.mdWidth / 12,
                   sm: content.settings.smWidth / 12,
@@ -322,27 +318,29 @@ function PageBlock(props) {
       ) : (
         ''
       )}
-      {props.editable && showSettings ? (
-        <Modal
-          title={`Block Type "${props.block.blockType}${
-            props.block.blockType === 'ext'
-              ? `/${props.block.settings.extKey}`
-              : ''
-          }" Settings`}
-          closeHandler={toggleSettings}
-          headerTheme='info'
-          bodyTheme='white'
-          footerTheme='dark'
-          footer={
-            <button
-              type='button'
-              className='btn btn-secondary'
-              onClick={toggleSettings}
-            >
-              Close
-            </button>
-          }
-        >
+      <Modal
+        title={`Block Type "${props.block.blockType}${
+          props.block.blockType === 'ext'
+            ? `/${props.block.settings.extKey}`
+            : ''
+        }" Settings`}
+        show={props.editable && showSettings}
+        setShow={setShowSettings}
+        closeHandler={toggleSettings}
+        headerTheme='info'
+        bodyTheme='white'
+        footerTheme='dark'
+        footer={
+          <button
+            type='button'
+            className='btn btn-secondary'
+            onClick={toggleSettings}
+          >
+            Close
+          </button>
+        }
+      >
+        {props.editable && showSettings ? (
           <PageBlockSettings
             block={props.block}
             contentControl={props.contentControl}
@@ -352,10 +350,10 @@ function PageBlock(props) {
               props.getPageBlockSettingsValueHandler
             }
           />
-        </Modal>
-      ) : (
-        ''
-      )}
+        ) : (
+          ''
+        )}
+      </Modal>
       {props.editable &&
       ['carousel', 'content'].includes(props.block.blockType) ? (
         <div>
@@ -413,7 +411,7 @@ function PageBlock(props) {
   )
 }
 
-PageBlock.propTypes = {
+PageBlockParent.propTypes = {
   addContent: PropTypes.func.isRequired,
   appRoot: PropTypes.string.isRequired,
   block: PropTypes.object.isRequired,
@@ -432,4 +430,4 @@ PageBlock.propTypes = {
   token: PropTypes.string,
 }
 
-export default PageBlock
+export default PageBlockParent

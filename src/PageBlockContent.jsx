@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import loadable from '@loadable/component'
-import { Card, Modal, Spinner } from '@preaction/bootstrap-clips'
+import {
+  joinClassNames,
+  Card,
+  Modal,
+  Spinner,
+} from '@preaction/bootstrap-clips'
 import PageBlockImage from './PageBlockImage.jsx'
 import PageBlockWysiwyg from './PageBlockWysiwyg.jsx'
 import {
@@ -12,6 +17,7 @@ import {
   MdSettings,
 } from 'react-icons/md'
 import { FaHtml5 } from 'react-icons/fa'
+import getLinkClassName from './lib/getLinkClassName.js'
 
 const PageBlockContentSettings = loadable(
   () => import('./settingsModules.js'),
@@ -62,50 +68,39 @@ function PageBlockContent(props) {
   }
 
   const header = getHeader()
-  const borderColor = {
-    danger: 'var(--danger)',
-    dark: 'var(--dark)',
-    info: 'var(--info)',
-    light: 'var(--light)',
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    success: 'var(--success)',
-    transparent: 'transparent',
-    warning: 'var(--warning)',
-    white: 'var(--white)',
-  }[props.content.settings.borderTheme || 'dark']
-  const border =
-    props.content.contentType !== 'spacer'
-      ? `1px solid ${
-          header || props.content.settings.pad ? borderColor : 'rgba(0,0,0,0)'
-        }`
-      : 0
+  const padded = !!header || props.content.settings.pad
+  const customClassName = (props.content.settings.customClassName || '')
+    .toLowerCase()
+    .replace(/[^a-z-]/g, '')
 
   return (
     <Card
-      className={{
-        card: 'page-block-content',
-      }}
-      noMargin
+      className={joinClassNames(
+        'page-block-content',
+        `content-type-${props.content.contentType.replace(/\s/g, '')}`,
+        `content-id-${props.content.id}`,
+        padded ? '' : 'nopad-body',
+        padded
+          ? `card-border-${(
+              props.content.settings.borderTheme || 'dark'
+            ).replace(/\s/g, '')}`
+          : 'card-border-transparent',
+        props.content.contentType === 'spacer' ? 'mb-0' : '',
+        getLinkClassName(props.content.settings.bodyTheme),
+        customClassName ? `custom-${customClassName}` : ''
+      )}
       column
       header={header}
       headerTheme={props.content.settings.headerTheme || 'dark'}
+      headerGradient={props.content.settings.headerGradient}
       theme={
-        props.content.settings.header || props.content.settings.pad
+        padded
           ? props.content.settings.bodyTheme || 'transparent'
-          : undefined
+          : 'transparent'
       }
+      gradient={padded ? props.content.settings.bodyGradient : false}
       footerTheme={props.content.settings.headerTheme || 'dark'}
-      style={{
-        body: {
-          padding: header || props.content.settings.pad ? '1em' : 0,
-          border: 0,
-        },
-        card: {
-          border,
-          marginBottom: props.content.contentType === 'spacer' ? 0 : undefined,
-        },
-      }}
+      footerGradient={props.content.settings.headerGradient}
       footer={
         props.editable ? (
           <div className='btn-group d-block'>
@@ -212,33 +207,35 @@ function PageBlockContent(props) {
       ) : (
         ''
       )}
-      {showSettings ? (
-        <Modal
-          title={`Content Type "${props.content.contentType}" Settings`}
-          closeHandler={toggleSettings}
-          headerTheme='warning'
-          bodyTheme='white'
-          footerTheme='dark'
-          footer={
-            <button
-              type='button'
-              className='btn btn-secondary'
-              onClick={toggleSettings}
-            >
-              Close
-            </button>
-          }
-        >
+      <Modal
+        title={`Content Type "${props.content.contentType}" Settings`}
+        show={showSettings}
+        setShow={setShowSettings}
+        size='lg'
+        headerTheme='warning'
+        bodyTheme='white'
+        footerTheme='dark'
+        footer={
+          <button
+            type='button'
+            className='btn btn-secondary'
+            onClick={toggleSettings}
+          >
+            Close
+          </button>
+        }
+      >
+        {showSettings ? (
           <PageBlockContentSettings
             content={props.content}
             getContentSettingsValueHandler={
               props.getContentSettingsValueHandler
             }
           />
-        </Modal>
-      ) : (
-        ''
-      )}
+        ) : (
+          ''
+        )}
+      </Modal>
     </Card>
   )
 }

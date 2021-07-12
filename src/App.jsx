@@ -1,3 +1,4 @@
+import './style/base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
@@ -14,24 +15,27 @@ import {
   Redirect,
 } from 'react-router-dom'
 import {
+  getGradientClassName,
+  getThemeClassName,
+  joinClassNames,
   Boilerplate,
   Modal,
   NavBar,
   Nav,
   Spinner,
-  getClassesForTheme,
 } from '@preaction/bootstrap-clips'
 import { MdCreate, MdPerson, MdSettings } from 'react-icons/md'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
 import Footer from './Footer.jsx'
 import Header from './Header.jsx'
-import Jumbo from './Jumbo.jsx'
+import Hero from './Hero.jsx'
 import Login from './Login.jsx'
 import NotFound from './NotFound.jsx'
 import Page from './Page.jsx'
 
 import absoluteUrl from './lib/absoluteUrl.js'
+import getLinkClassName from './lib/getLinkClassName.js'
 import getSaneKey from './lib/getSaneKey.js'
 import { menuExtensions } from './ext'
 import env from './lib/env.js'
@@ -48,10 +52,9 @@ const SiteSettings = loadable(() => import('./settingsModules.js'), {
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
-// import css
-if (!ssr) {
-  require('./style')
-}
+// import styling
+import('./style/cms.scss')
+import('./style/custom.js')
 
 const globalThis = globalthis()
 
@@ -60,7 +63,12 @@ function setGlobalRelativeLinkHandler(relativeLinkHandler) {
   if (typeof document !== 'undefined') {
     document.addEventListener('click', (event) => {
       const element = event.target
-      if (element.tagName === 'A') {
+      const classList = new Array(...element.classList)
+      if (
+        element.tagName === 'A' &&
+        !classList.includes('nav-link') &&
+        !classList.includes('dropdown-item')
+      ) {
         const href = element.attributes.href.value
         if (
           href &&
@@ -123,7 +131,7 @@ class App extends React.Component {
       show: {
         header: true,
         footer: true,
-        jumbo: false,
+        hero: false,
         newPage: false, // for rendering the new page modal
         settings: false, // for rendering the settings modal
       },
@@ -131,7 +139,7 @@ class App extends React.Component {
       siteSettings: {
         footerPath: '/home/footer/',
         headerPath: '/home/header/',
-        jumboPath: '/home/jumbo/',
+        heroPath: '/home/hero/',
         siteTitle: '',
         navbarTheme: 'dark',
         navPosition: 'fixed-top',
@@ -144,7 +152,7 @@ class App extends React.Component {
     this.activePage = React.createRef()
     this.header = React.createRef()
     this.footer = React.createRef()
-    this.jumbo = React.createRef()
+    this.hero = React.createRef()
 
     setGlobalRelativeLinkHandler((href) => {
       if (!this.state.editable) {
@@ -311,6 +319,7 @@ class App extends React.Component {
               className: `nav-page-${page.key}-subpage-${pg.key}`,
               href: `/${pg.path}/`,
               component: NavLink,
+              // active: this.state.activePathname.indexOf(`/${pg.path}/`) === 0,
               order: Number(pg.settings.navOrdering || 0),
               onClick: (e) => {
                 if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
@@ -348,6 +357,9 @@ class App extends React.Component {
           className: `nav-page-${page.key}`,
           href: `/${page.path}/`,
           component: NavLink,
+          // active:
+          //   this.state.activePathname === `/${page.path}/` ||
+          //   this.state.activePathname.indexOf(`/${page.path}/`) === 0,
           order: Number(page.settings.navOrdering || 0),
           onClick: (e) => {
             if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
@@ -542,7 +554,7 @@ class App extends React.Component {
     }
   }
 
-  // so page components can control showing the header, footer, and jumbo
+  // so page components can control showing the header, footer, and hero
   getShowPropertyValueHandler(key) {
     return (value) => {
       this.setState((state) => {
@@ -742,7 +754,7 @@ class App extends React.Component {
         this.reloadRef('activePage')
         this.reloadRef('header')
         this.reloadRef('footer')
-        this.reloadRef('jumbo')
+        this.reloadRef('hero')
         break
       case 'add-page':
         this.reloadRef('activePage')
@@ -774,11 +786,11 @@ class App extends React.Component {
         ) {
           this.reloadRef('footer')
         } else if (
-          this.jumbo.current &&
-          this.jumbo.current.page.current.state.page &&
-          data.pageId === this.jumbo.current.page.current.state.page.id
+          this.hero.current &&
+          this.hero.current.page.current.state.page &&
+          data.pageId === this.hero.current.page.current.state.page.id
         ) {
-          this.reloadRef('jumbo')
+          this.reloadRef('hero')
         }
         break
     }
@@ -844,30 +856,57 @@ class App extends React.Component {
       'below-header': 'nav-position-below-header',
     }[this.settings.navPosition]
     const navActiveSubmenuThemeClassName = {
+      blue: 'nav-active-submenu-theme-blue',
+      cyan: 'nav-active-submenu-theme-cyan',
       danger: 'nav-active-submenu-theme-danger',
       dark: 'nav-active-submenu-theme-dark',
+      gray: 'nav-active-submenu-theme-gray',
+      'gray-dark': 'nav-active-submenu-theme-gray-dark',
+      green: 'nav-active-submenu-theme-green',
+      indigo: 'nav-active-submenu-theme-indigo',
       info: 'nav-active-submenu-theme-info',
+      orange: 'nav-active-submenu-theme-orange',
+      pink: 'nav-active-submenu-theme-pink',
+      purple: 'nav-active-submenu-theme-purple',
       primary: 'nav-active-submenu-theme-primary',
+      red: 'nav-active-submenu-theme-red',
       secondary: 'nav-active-submenu-theme-secondary',
       success: 'nav-active-submenu-theme-success',
+      teal: 'nav-active-submenu-theme-teal',
       warning: 'nav-active-submenu-theme-warning',
+      yellow: 'nav-active-submenu-theme-yellow',
     }[this.settings.navActiveSubmenuTheme]
     const navActiveTabThemeClassName = {
+      blue: 'nav-active-tab-theme-blue',
+      cyan: 'nav-active-tab-theme-cyan',
       danger: 'nav-active-tab-theme-danger',
       dark: 'nav-active-tab-theme-dark',
+      gray: 'nav-active-tab-theme-gray',
+      'gray-dark': 'nav-active-tab-theme-gray-dark',
+      indigo: 'nav-active-tab-theme-indigo',
       info: 'nav-active-tab-theme-info',
+      orange: 'nav-active-tab-theme-orange',
       light: 'nav-active-tab-theme-light',
+      pink: 'nav-active-tab-theme-pink',
+      purple: 'nav-active-tab-theme-purple',
       primary: 'nav-active-tab-theme-primary',
+      red: 'nav-active-tab-theme-red',
       secondary: 'nav-active-tab-theme-secondary',
       success: 'nav-active-tab-theme-success',
+      teal: 'nav-active-tab-theme-teal',
       warning: 'nav-active-tab-theme-warning',
       white: 'nav-active-tab-theme-white',
+      yellow: 'nav-active-tab-theme-yellow',
     }[this.settings.navActiveTabTheme]
     return (
       <div
-        className={`App ${
-          this.state.editable ? 'editable' : 'non-editable'
-        } ${navPositionClassName} ${navActiveSubmenuThemeClassName} ${navActiveTabThemeClassName}`}
+        className={joinClassNames(
+          'App',
+          this.state.editable ? 'editable' : 'non-editable',
+          navPositionClassName,
+          navActiveSubmenuThemeClassName,
+          navActiveTabThemeClassName
+        )}
       >
         <Router basename={this.root} location={this.state.activePathname}>
           <div>
@@ -881,7 +920,7 @@ class App extends React.Component {
               navBar={
                 this.settings.navPosition === 'fixed-top' ? (
                   <NavBar
-                    noContain={this.settings.maxWidthNav}
+                    fluid={this.settings.maxWidthNav}
                     fixedTo='top'
                     theme={this.settings.navbarTheme}
                     brand={{
@@ -905,7 +944,7 @@ class App extends React.Component {
                 ) : undefined
               }
               header={
-                <div>
+                <div className={getLinkClassName(this.settings.headerTheme)}>
                   {this.settings.navPosition === 'above-header' ? (
                     <Nav
                       menu={this.menu}
@@ -945,165 +984,192 @@ class App extends React.Component {
                   ) : undefined}
                 </div>
               }
-              jumbotron={
-                this.settings.showJumbo ? (
-                  <Jumbo
+              hero={
+                this.settings.showHero ? (
+                  <div
+                    className={getLinkClassName(
+                      this.settings.heroTheme || this.settings.headerTheme
+                    )}
+                  >
+                    <Hero
+                      appRoot={this.root}
+                      editable={this.state.editable}
+                      emitSave={this.emitSave.bind(this)}
+                      navigate={this.navigate.bind(this)}
+                      settings={this.settings}
+                      ref={this.hero}
+                      show={this.settings.showHero}
+                      token={this.state.token}
+                      initPage={
+                        this.props.initPage
+                          ? this.props.initPage.hero
+                          : undefined
+                      }
+                    />
+                  </div>
+                ) : (
+                  ''
+                )
+              }
+              heroPosition={this.settings.heroPosition}
+              heroTheme={this.settings.heroTheme || undefined}
+              heroGradient={this.settings.heroGradient || false}
+              headerTheme={this.settings.headerTheme || undefined}
+              headerGradient={this.settings.headerGradient || false}
+              mainTheme={this.settings.mainTheme || undefined}
+              mainGradient={this.settings.mainGradient || false}
+              footerTheme={this.settings.footerTheme || undefined}
+              footerGradient={this.settings.footerGradient || false}
+              footer={
+                <div className={getLinkClassName(this.settings.footerTheme)}>
+                  <Footer
                     appRoot={this.root}
                     editable={this.state.editable}
                     emitSave={this.emitSave.bind(this)}
                     navigate={this.navigate.bind(this)}
                     settings={this.settings}
-                    ref={this.jumbo}
-                    show={this.settings.showJumbo}
+                    ref={this.footer}
+                    show={this.settings.showFooter}
                     token={this.state.token}
                     initPage={
                       this.props.initPage
-                        ? this.props.initPage.jumbo
+                        ? this.props.initPage.footer
                         : undefined
                     }
                   />
-                ) : (
-                  ''
-                )
+                </div>
               }
-              jumbotronPosition={this.settings.jumboPosition}
-              jumbotronTheme={this.settings.jumboTheme || undefined}
-              headerTheme={this.settings.headerTheme || undefined}
-              mainTheme={this.settings.mainTheme || undefined}
-              footerTheme={this.settings.footerTheme || undefined}
-              footer={
-                <Footer
-                  appRoot={this.root}
-                  editable={this.state.editable}
-                  emitSave={this.emitSave.bind(this)}
-                  navigate={this.navigate.bind(this)}
-                  settings={this.settings}
-                  ref={this.footer}
-                  show={this.settings.showFooter}
-                  token={this.state.token}
-                  initPage={
-                    this.props.initPage ? this.props.initPage.footer : undefined
-                  }
-                />
-              }
-              noContain={{
+              fluid={{
                 footerContainer: this.settings.maxWidthFooterContainer,
                 headerContainer: this.settings.maxWidthHeaderContainer,
-                jumbotron: true,
-                jumbotronContainer: this.settings.maxWidthJumboContainer,
+                heroContainer: this.settings.maxWidthHeroContainer,
                 mainContainer: this.settings.maxWidthMainContainer,
               }}
             >
-              {this.state.editable ? <hr /> : ''}
-              {this.state.editable ? (
-                <div className='font-weight-bold'>
-                  Main: {this.state.activePathname}
-                </div>
-              ) : (
-                ''
-              )}
-              <Switch>
-                <Route exact path='/'>
-                  <Page
-                    appRoot={this.root}
-                    editable={this.state.editable}
-                    emitSave={this.emitSave.bind(this)}
-                    fallbackSettings={this.fallbackSettings}
-                    path='/home/'
-                    ref={this.activePage}
-                    headerControl={this.getShowPropertyValueHandler('header')}
-                    footerControl={this.getShowPropertyValueHandler('footer')}
-                    jumboControl={this.getShowPropertyValueHandler('jumbo')}
-                    navigate={this.navigate.bind(this)}
-                    setActivePathname={this.setActivePathname.bind(this)}
-                    setActivePage={this.setActivePage.bind(this)}
-                    token={this.state.token}
-                    initPage={this.props.initPage}
-                  />
-                </Route>
-                <Route exact path='/login'>
-                  <div className='login'>
-                    <Login
-                      appRoot={this.root}
-                      loadSession={this.loadSession.bind(this)}
-                      navigate={this.navigate.bind(this)}
-                      settings={this.state.siteSettings}
-                      setToken={this.setToken.bind(this)}
-                      token={this.state.token}
-                    />
+              <div
+                className={joinClassNames(
+                  'main-body',
+                  getLinkClassName(this.settings.mainTheme || '')
+                )}
+              >
+                {this.state.editable ? <hr /> : ''}
+                {this.state.editable ? (
+                  <div className='font-weight-bold'>
+                    Main: {this.state.activePathname}
                   </div>
-                </Route>
-                <Route
-                  render={({ location }) => {
-                    const root = new RegExp(`^${this.root}`)
-                    const pathname = location.pathname.replace(root, '')
-                    const splitPath = pathname
-                      .replace(/(^\/|\/$)/g, '')
-                      .split('/')
-                    const key = splitPath[splitPath.length - 1]
-                    switch (key) {
-                      case 'home':
-                      case 'header':
-                      case 'footer':
-                      case 'jumbo':
-                        return <NotFound />
-                      default:
-                        return (
-                          <Page
-                            appRoot={this.root}
-                            editable={this.state.editable}
-                            path={pathname}
-                            deletePage={this.deletePage.bind(this)}
-                            emitSave={this.emitSave.bind(this)}
-                            ref={this.activePage}
-                            headerControl={this.getShowPropertyValueHandler(
-                              'header'
-                            )}
-                            footerControl={this.getShowPropertyValueHandler(
-                              'footer'
-                            )}
-                            jumboControl={this.getShowPropertyValueHandler(
-                              'jumbo'
-                            )}
-                            navigate={this.navigate.bind(this)}
-                            onError={this.handlePageError.bind(this)}
-                            onNotFound={this.handleNotFound.bind(this)}
-                            setActivePathname={this.setActivePathname.bind(
-                              this
-                            )}
-                            setActivePage={this.setActivePage.bind(this)}
-                            token={this.state.token}
-                            initPage={this.props.initPage}
-                            init404={this.props.init404}
-                            initError={this.props.initError}
-                          />
-                        )
-                    }
-                  }}
-                />
-              </Switch>
-              {this.state.editable ? <hr /> : ''}
+                ) : (
+                  ''
+                )}
+                <Switch>
+                  <Route exact path='/'>
+                    <Page
+                      appRoot={this.root}
+                      editable={this.state.editable}
+                      emitSave={this.emitSave.bind(this)}
+                      fallbackSettings={this.fallbackSettings}
+                      path='/home/'
+                      ref={this.activePage}
+                      headerControl={this.getShowPropertyValueHandler('header')}
+                      footerControl={this.getShowPropertyValueHandler('footer')}
+                      heroControl={this.getShowPropertyValueHandler('hero')}
+                      navigate={this.navigate.bind(this)}
+                      setActivePathname={this.setActivePathname.bind(this)}
+                      setActivePage={this.setActivePage.bind(this)}
+                      token={this.state.token}
+                      initPage={this.props.initPage}
+                    />
+                  </Route>
+                  <Route exact path='/login'>
+                    <div className='login'>
+                      <Login
+                        appRoot={this.root}
+                        loadSession={this.loadSession.bind(this)}
+                        navigate={this.navigate.bind(this)}
+                        settings={this.state.siteSettings}
+                        setToken={this.setToken.bind(this)}
+                        token={this.state.token}
+                      />
+                    </div>
+                  </Route>
+                  <Route
+                    render={({ location }) => {
+                      const root = new RegExp(`^${this.root}`)
+                      const pathname = location.pathname.replace(root, '')
+                      const splitPath = pathname
+                        .replace(/(^\/|\/$)/g, '')
+                        .split('/')
+                      const key = splitPath[splitPath.length - 1]
+                      switch (key) {
+                        case 'home':
+                        case 'header':
+                        case 'footer':
+                        case 'hero':
+                          return <NotFound />
+                        default:
+                          return (
+                            <Page
+                              appRoot={this.root}
+                              editable={this.state.editable}
+                              path={pathname}
+                              deletePage={this.deletePage.bind(this)}
+                              emitSave={this.emitSave.bind(this)}
+                              ref={this.activePage}
+                              headerControl={this.getShowPropertyValueHandler(
+                                'header'
+                              )}
+                              footerControl={this.getShowPropertyValueHandler(
+                                'footer'
+                              )}
+                              heroControl={this.getShowPropertyValueHandler(
+                                'hero'
+                              )}
+                              navigate={this.navigate.bind(this)}
+                              onError={this.handlePageError.bind(this)}
+                              onNotFound={this.handleNotFound.bind(this)}
+                              setActivePathname={this.setActivePathname.bind(
+                                this
+                              )}
+                              setActivePage={this.setActivePage.bind(this)}
+                              token={this.state.token}
+                              initPage={this.props.initPage}
+                              init404={this.props.init404}
+                              initError={this.props.initError}
+                            />
+                          )
+                      }
+                    }}
+                  />
+                </Switch>
+                {this.state.editable ? <hr /> : ''}
+              </div>
             </Boilerplate>
           </div>
         </Router>
-        {this.state.editable && this.state.show.settings ? (
-          <div className='site-settings-modal-container'>
-            <Modal
-              title='Site Settings'
-              closeHandler={this.toggleSettings.bind(this)}
-              headerTheme='primary'
-              bodyTheme='white'
-              footerTheme='dark'
-              footer={
-                <button
-                  type='button'
-                  className='btn btn-secondary'
-                  onClick={this.toggleSettings.bind(this)}
-                >
-                  Close
-                </button>
-              }
-            >
+        <div className='site-settings-modal-container'>
+          <Modal
+            title='Site Settings'
+            show={this.state.editable && this.state.show.settings}
+            setShow={(value) => {
+              this.setState((state) => {
+                state.show.settings = value
+                return state
+              })
+            }}
+            size='lg'
+            headerTheme='primary'
+            bodyTheme='white'
+            footerTheme='dark'
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={this.toggleSettings.bind(this)}
+              >
+                Close
+              </button>
+            }
+          >
+            {this.state.editable && this.state.show.settings ? (
               <SiteSettings
                 appRoot={this.root}
                 admin={this.state.admin}
@@ -1112,58 +1178,61 @@ class App extends React.Component {
                 getSettingsValueHandler={this.getSettingsValueHandler.bind(
                   this
                 )}
+                show={this.state.show.settings}
                 token={this.state.token}
               />
-            </Modal>
-          </div>
-        ) : (
-          ''
-        )}
-        {this.state.editable && this.state.show.newPage ? (
-          <div className='new-page-modal-container'>
-            <Modal
-              title='New Page'
-              headerTheme='success'
-              bodyTheme='white'
-              footerTheme='dark'
-              hideCloseButton={true}
-              footer={
-                <div>
-                  <button
-                    type='button'
-                    className='btn btn-success'
-                    onClick={() => {
-                      const btn = document.querySelector(
-                        '.new-page-modal-container form .btn.d-none'
-                      )
-                      btn.click()
-                    }}
-                  >
-                    Save
-                  </button>{' '}
-                  <button
-                    type='button'
-                    className='btn btn-secondary'
-                    onClick={() => {
-                      this.toggleNewPage()
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              }
-            >
+            ) : (
+              ''
+            )}
+          </Modal>
+        </div>
+        <div className='new-page-modal-container'>
+          <Modal
+            title='New Page'
+            show={this.state.editable && this.state.show.newPage}
+            setShow={() => {}}
+            headerTheme='success'
+            bodyTheme='white'
+            footerTheme='dark'
+            hideCloseButton={true}
+            footer={
+              <div>
+                <button
+                  type='button'
+                  className='btn btn-success'
+                  onClick={() => {
+                    const btn = document.querySelector(
+                      '.new-page-modal-container form .btn.d-none'
+                    )
+                    btn.click()
+                  }}
+                >
+                  Save
+                </button>{' '}
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={() => {
+                    this.toggleNewPage()
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            }
+          >
+            {this.state.editable && this.state.show.newPage ? (
               <NewPage
                 activePathname={this.state.activePathname}
                 getValueHandler={this.getNewPageValueHandler.bind(this)}
                 newPage={this.state.newPage}
                 submit={this.submitNewPage.bind(this)}
               />
-            </Modal>
-          </div>
-        ) : (
-          ''
-        )}
+            ) : (
+              ''
+            )}
+          </Modal>
+        </div>
       </div>
     )
   }
@@ -1224,7 +1293,14 @@ class App extends React.Component {
       )
     }
     if (this.settings.bodyTheme) {
-      bodyClasses.push(...getClassesForTheme(this.settings.bodyTheme))
+      bodyClasses.push(getThemeClassName(this.settings.bodyTheme))
+      const linkClass = getLinkClassName(this.settings.bodyTheme)
+      if (linkClass) {
+        bodyClasses.push(linkClass)
+      }
+    }
+    if (this.settings.bodyGradient) {
+      bodyClasses.push(getGradientClassName(true))
     }
     document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set

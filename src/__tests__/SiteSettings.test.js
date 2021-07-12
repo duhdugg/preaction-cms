@@ -65,7 +65,7 @@ function getResults() {
   const mockSettings = {
     footerPath: '/home/footer/',
     headerPath: '/home/header/',
-    jumboPath: '/home/jumbo/',
+    heroPath: '/home/hero/',
     navAlignment: 'left',
     navCollapsible: true,
     navPosition: 'above-header',
@@ -73,7 +73,7 @@ function getResults() {
     navType: 'basic',
     showFooter: true,
     showHeader: true,
-    showJumbo: true,
+    showHero: true,
     siteTitle: 'Preaction CMS',
     init: true,
     includeInNav: true,
@@ -86,6 +86,7 @@ function getResults() {
       emitForceReload={mockEmitForceReload}
       getSettingsValueHandler={mockGetSettingsValueHandler}
       settings={mockSettings}
+      show
       token='foobar'
     />
   )
