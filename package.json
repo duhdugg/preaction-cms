@@ -1,6 +1,6 @@
 {
   "name": "@preaction/cms",
-  "description": "Preaction CMS is a barebones, extendable Content Management System built on top of simple JavaScript libraries.",
+  "description": "Preaction CMS is a barebones, extensible Content Management System built on top of simple JavaScript libraries.",
   "version": "5.0.0-alpha.1",
   "proxy": "http://localhost:8999",
   "dependencies": {

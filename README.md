@@ -2,7 +2,7 @@
 
 <img src='icon.svg' width='150' height='150' />
 
-Preaction CMS is a barebones, extendable Content Management System built on top of simple JavaScript libraries. It is intended to be friendly to users, administrators, and developers.
+Preaction CMS is a barebones, extensible Content Management System built on top of simple JavaScript libraries. It is intended to be friendly to users, administrators, and developers.
 
 ### Documentation
 
