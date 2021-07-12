@@ -86,6 +86,7 @@ function getResults() {
       emitForceReload={mockEmitForceReload}
       getSettingsValueHandler={mockGetSettingsValueHandler}
       settings={mockSettings}
+      show
       token='foobar'
     />
   )
