@@ -34,16 +34,18 @@ db.sync().then(async () => {
       if (page.key === 'jumbo') {
         page.key = 'hero'
       }
-      page.settings = Object.assign({}, page.settings, {
-        // rename jumbo settings to hero settings
-        heroPath: page.settings.jumboPath
-          ? page.settings.jumboPath.replace('/jumbo', '/hero')
-          : undefined,
-        heroPosition: page.settings.jumboPosition,
-        heroTheme: page.settings.jumboTheme,
-        maxWidthHeroContainer: page.settings.maxWidthJumboContainer,
-        showHero: page.settings.showJumbo,
-      })
+      if (page.userCreated) {
+        page.settings = Object.assign({}, page.settings, {
+          // rename jumbo settings to hero settings
+          heroPath: page.settings.jumboPath
+            ? page.settings.jumboPath.replace('/jumbo', '/hero')
+            : undefined,
+          heroPosition: page.settings.jumboPosition,
+          heroTheme: page.settings.jumboTheme,
+          maxWidthHeroContainer: page.settings.maxWidthJumboContainer,
+          showHero: page.settings.showJumbo,
+        })
+      }
       // remove jumbo settings
       delete page.settings.jumboPath
       delete page.settings.jumboPosition
