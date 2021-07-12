@@ -1180,13 +1180,11 @@ PageSettings.propTypes = {
   getPageValueHandler: PropTypes.func.isRequired,
   getResetter: PropTypes.func.isRequired,
   getSettingsValueHandler: PropTypes.func.isRequired,
-  hide: PropTypes.array,
   navigate: PropTypes.func.isRequired,
   page: PropTypes.object.isRequired,
   pageId: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
-  site: PropTypes.bool,
   token: PropTypes.string,
 }
 
