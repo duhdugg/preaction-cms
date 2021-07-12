@@ -69,17 +69,6 @@ app.use(pages.middleware)
 
 // <== ROUTES ==>
 
-// the favicon is hard-coded to use /icon path
-// and the server needs to redirect to the uploaded url in settings
-app.route('/icon').get(async (req, res) => {
-  const setting = await db.model.Settings.findOne({ where: { key: 'icon' } })
-  if (!setting) {
-    res.status(404).send('')
-    return
-  }
-  res.redirect(setting.value)
-})
-
 if (env.sitemapHostname || env.nodeEnv === 'test') {
   // sitemap needs to traverse all pages in database
   app.route('/sitemap.xml').get(async (req, res) => {
