@@ -60,25 +60,35 @@ const globalThis = globalthis()
 
 // this is needed so relative links in WYSIWYG content will navigate correctly
 function setGlobalRelativeLinkHandler(relativeLinkHandler) {
+  const findAnchor = (element) => {
+    if (element.tagName === 'A') {
+      return element
+    } else if (element.parentElement) {
+      return findAnchor(element.parentElement)
+    } else {
+      return null
+    }
+  }
   if (typeof document !== 'undefined') {
     document.addEventListener('click', (event) => {
-      const element = event.target
-      const classList = new Array(...element.classList)
-      if (
-        element.tagName === 'A' &&
-        !classList.includes('nav-link') &&
-        !classList.includes('dropdown-item')
-      ) {
-        const href = element.attributes.href.value
+      const anchor = findAnchor(event.target)
+      if (anchor !== null) {
+        const classList = new Array(...anchor.classList)
         if (
-          href &&
-          !absoluteUrl(href) &&
-          !event.shiftKey &&
-          !event.ctrlKey &&
-          !event.altKey
+          !classList.includes('nav-link') &&
+          !classList.includes('dropdown-item')
         ) {
-          event.preventDefault()
-          relativeLinkHandler(element.attributes.href.value)
+          const href = anchor.attributes.href.value
+          if (
+            href &&
+            !absoluteUrl(href) &&
+            !event.shiftKey &&
+            !event.ctrlKey &&
+            !event.altKey
+          ) {
+            event.preventDefault()
+            relativeLinkHandler(anchor.attributes.href.value)
+          }
         }
       }
     })
