@@ -40,6 +40,10 @@ import getSaneKey from './lib/getSaneKey.js'
 import { menuExtensions } from './ext'
 import env from './lib/env.js'
 
+// import styling
+import './style/cms.scss'
+import './style/custom.js'
+
 const NewPage = loadable(() => import('./settingsModules.js'), {
   fallback: <Spinner size='3.25' />,
   resolveComponent: (module) => module.NewPage,
@@ -51,10 +55,6 @@ const SiteSettings = loadable(() => import('./settingsModules.js'), {
 
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
-
-// import styling
-import('./style/cms.scss')
-import('./style/custom.js')
 
 const globalThis = globalthis()
 
