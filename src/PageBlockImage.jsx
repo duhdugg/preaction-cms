@@ -10,14 +10,7 @@ function ImgContainer(props) {
       target={absoluteUrl(props.linkUrl) ? '_blank' : 'self'}
       onClick={(e) => {
         let href = props.linkUrl
-        let absolute = absoluteUrl(href)
-        if (
-          props.navigate &&
-          !absolute &&
-          !e.shiftKey &&
-          !e.ctrlKey &&
-          !e.altKey
-        ) {
+        if (props.navigate && !e.shiftKey && !e.ctrlKey && !e.altKey) {
           e.preventDefault()
           props.navigate(href)
         }

@@ -58,8 +58,8 @@ const test = env.NODE_ENV === 'test'
 
 const globalThis = globalthis()
 
-// this is needed so relative links in WYSIWYG content will navigate correctly
-function setGlobalRelativeLinkHandler(relativeLinkHandler) {
+// this is needed so links in WYSIWYG content will go through navigate() correctly
+function setGlobalLinkHandler(linkHandler) {
   const findAnchor = (element) => {
     if (element.tagName === 'A') {
       return element
@@ -79,15 +79,9 @@ function setGlobalRelativeLinkHandler(relativeLinkHandler) {
           !classList.includes('dropdown-item')
         ) {
           const href = anchor.attributes.href.value
-          if (
-            href &&
-            !absoluteUrl(href) &&
-            !event.shiftKey &&
-            !event.ctrlKey &&
-            !event.altKey
-          ) {
+          if (href && !event.shiftKey && !event.ctrlKey && !event.altKey) {
             event.preventDefault()
-            relativeLinkHandler(anchor.attributes.href.value)
+            linkHandler(href)
           }
         }
       }
@@ -164,7 +158,7 @@ class App extends React.Component {
     this.footer = React.createRef()
     this.hero = React.createRef()
 
-    setGlobalRelativeLinkHandler((href) => {
+    setGlobalLinkHandler((href) => {
       if (!this.state.editable) {
         this.navigate(href)
       }
@@ -681,7 +675,19 @@ class App extends React.Component {
     })
   }
 
-  navigate(path) {
+  navigate(href) {
+    if (absoluteUrl(href)) {
+      this.navigateAbsolute(href)
+    } else {
+      this.navigateRelative(href)
+    }
+  }
+
+  navigateAbsolute(url) {
+    window.open(url, '_blank', 'noopener noreferrer')
+  }
+
+  navigateRelative(path) {
     if (path.match(/\/$/) === null) {
       path = path + '/'
     }
