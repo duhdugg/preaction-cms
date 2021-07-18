@@ -251,7 +251,7 @@ PageBlockContent.propTypes = {
   getContentSettingsValueHandler: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   last: PropTypes.bool,
-  navigate: PropTypes.func,
+  navigate: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   token: PropTypes.string,
   width: PropTypes.any,

@@ -48,7 +48,7 @@ function PageBlockImage(props) {
 
 PageBlockImage.propTypes = {
   content: PropTypes.object.isRequired,
-  navigate: PropTypes.func,
+  navigate: PropTypes.func.isRequired,
 }
 
 export default PageBlockImage
