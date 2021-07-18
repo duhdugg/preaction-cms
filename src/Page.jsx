@@ -14,7 +14,6 @@ import {
   MdViewCarousel,
 } from 'react-icons/md'
 import { FaHtml5, FaSitemap } from 'react-icons/fa'
-import globalthis from 'globalthis'
 import { blockExtensions } from './ext'
 import env from './lib/env.js'
 
@@ -23,7 +22,6 @@ const PageSettings = loadable(() => import('./settingsModules.js'), {
   resolveComponent: (module) => module.PageSettings,
 })
 
-const globalThis = globalthis()
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 

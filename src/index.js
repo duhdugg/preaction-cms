@@ -2,10 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.jsx'
 import * as serviceWorker from './serviceWorker'
-import globalthis from 'globalthis'
 
 const initialize = () => {
-  const globalThis = globalthis()
   // Redirect with trailing slash if it's not there.
   // As this should be handled by express primarily,
   // it's here for hot reloading mode.

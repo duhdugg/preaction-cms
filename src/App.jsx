@@ -2,7 +2,6 @@ import './style/base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
-import globalthis from 'globalthis'
 import loadable from '@loadable/component'
 import {
   BrowserRouter,
@@ -55,8 +54,6 @@ const SiteSettings = loadable(() => import('./settingsModules.js'), {
 
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
-
-const globalThis = globalthis()
 
 // this is needed so links in WYSIWYG content will go through navigate() correctly
 function setGlobalLinkHandler(linkHandler) {

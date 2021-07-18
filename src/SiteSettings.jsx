@@ -4,9 +4,6 @@ import axios from 'axios'
 import { Card } from '@preaction/bootstrap-clips'
 import { Input, Checkbox, Select } from '@preaction/inputs'
 import { MdCreate, MdDelete, MdSave } from 'react-icons/md'
-import globalthis from 'globalthis'
-
-const globalThis = globalthis()
 
 function SiteSettings(props) {
   const [backups, setBackups] = React.useState([])

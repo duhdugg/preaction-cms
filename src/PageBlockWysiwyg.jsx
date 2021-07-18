@@ -5,9 +5,7 @@ import { Spinner } from '@preaction/bootstrap-clips'
 import { Textarea, Wysiwyg } from '@preaction/inputs'
 import env from './lib/env.js'
 import wysiwygToolbar from './lib/wysiwygToolbar.js'
-import globalthis from 'globalthis'
 
-const globalThis = globalthis()
 const test = env.NODE_ENV === 'test'
 
 class PageBlockWysiwyg extends React.Component {

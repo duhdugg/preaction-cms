@@ -2,9 +2,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import axios from 'axios'
 import { Form, Input } from '@preaction/inputs'
-import globalthis from 'globalthis'
-
-const globalThis = globalthis()
 
 function Login(props) {
   const [username, setUsername] = React.useState('')
