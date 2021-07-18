@@ -405,6 +405,34 @@ function PageSettings(props) {
                       ''
                     )}
                   </div>
+                  <div className='row'>
+                    <div className='col-sm-6 absolute-nav-behavior-field'>
+                      <Select
+                        label='Absolute URL Behavior'
+                        labelFloat
+                        value={props.settings.absoluteNavBehavior}
+                        valueHandler={props.getSettingsValueHandler(
+                          'absoluteNavBehavior'
+                        )}
+                        readOnly={props.getPageSettingIsUndefined(
+                          'absoluteNavBehavior'
+                        )}
+                        onClick={(e) => {
+                          overrideSetting('absoluteNavBehavior')
+                        }}
+                      >
+                        <option value='same-window'>Open in Same Window</option>
+                        <option value='new-window'>Open in New Window</option>
+                      </Select>
+                      <ResetButton
+                        getPageSettingIsUndefined={
+                          props.getPageSettingIsUndefined
+                        }
+                        resetSetting={resetSetting}
+                        settingsKey='absoluteNavBehavior'
+                      />
+                    </div>
+                  </div>
                 </Card>
                 <Card
                   header='Header/Footer/Hero'

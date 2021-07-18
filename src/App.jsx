@@ -684,7 +684,11 @@ class App extends React.Component {
   }
 
   navigateAbsolute(url) {
-    window.open(url, '_blank', 'noopener noreferrer')
+    if (this.settings.absoluteNavBehavior === 'new-window') {
+      window.open(url, '_blank', 'noopener noreferrer')
+    } else {
+      window.location.href = url
+    }
   }
 
   navigateRelative(path) {
