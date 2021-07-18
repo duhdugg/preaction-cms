@@ -681,10 +681,26 @@ class App extends React.Component {
   }
 
   navigateAbsolute(url) {
-    if (this.settings.absoluteNavBehavior === 'new-window') {
-      window.open(url, '_blank', 'noopener noreferrer')
+    const launch = () => {
+      if (this.settings.absoluteNavBehavior === 'new-window') {
+        window.open(url, '_blank', 'noreferrer noopener')
+      } else {
+        window.location = url
+      }
+    }
+    if (new URL(url).origin === globalThis.location.origin) {
+      launch()
     } else {
-      window.location.href = url
+      if (globalThis.gtag && globalThis.gtagId) {
+        globalThis.gtag('event', 'click', {
+          event_category: 'outbound',
+          event_label: url,
+          transport_type: 'beacon',
+          event_callback: launch,
+        })
+      } else {
+        launch()
+      }
     }
   }
 
