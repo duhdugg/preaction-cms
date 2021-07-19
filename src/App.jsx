@@ -691,7 +691,11 @@ class App extends React.Component {
     if (new URL(url).origin === globalThis.location.origin) {
       launch()
     } else {
-      if (globalThis.gtag && globalThis.gtagId) {
+      if (
+        globalThis.gtag &&
+        globalThis.gtagId &&
+        globalThis.GoogleAnalyticsObject
+      ) {
         globalThis.gtag('event', 'click', {
           event_category: 'outbound',
           event_label: url,
