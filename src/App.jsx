@@ -694,7 +694,7 @@ class App extends React.Component {
       if (
         globalThis.gtag &&
         globalThis.gtagId &&
-        globalThis.GoogleAnalyticsObject
+        globalThis.google_tag_manager
       ) {
         globalThis.gtag('event', 'click', {
           event_category: 'outbound',
