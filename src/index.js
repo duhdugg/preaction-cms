@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App.jsx'
-import { loadableReady } from '@loadable/component'
 import * as serviceWorker from './serviceWorker'
 
 const initialize = () => {
@@ -51,7 +50,3 @@ const initialize = () => {
   serviceWorker.unregister()
 }
 initialize()
-
-loadableReady(() => {
-  initialize()
-})
