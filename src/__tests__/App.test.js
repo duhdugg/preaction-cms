@@ -498,6 +498,143 @@ const mockTestPage = {
     path: 'test',
   },
 }
+const mockFooPage = {
+  id: 4,
+  key: 'foo-1',
+  title: 'Foo 1',
+  pageType: 'content',
+  userCreated: true,
+  settings: { includeInNav: true },
+  parentId: null,
+  createdAt: '2020-09-10T14:57:49.264Z',
+  updatedAt: '2020-09-10T14:57:49.264Z',
+  pageblocks: [
+    {
+      id: 20,
+      blockType: 'content',
+      ordering: 0,
+      settings: {
+        header: '',
+        headerLevel: 0,
+        xxlWidth: 12,
+        lgWidth: 12,
+        mdWidth: 12,
+        smWidth: 12,
+        xsWidth: 12,
+      },
+      createdAt: '2020-09-10T14:58:06.036Z',
+      updatedAt: '2020-09-10T14:58:06.036Z',
+      pageId: 22,
+      pageblockcontents: [
+        {
+          id: 32,
+          contentType: 'wysiwyg',
+          ordering: 0,
+          settings: {
+            header: '',
+            headerLevel: 0,
+            xxlWidth: 12,
+            lgWidth: 12,
+            mdWidth: 12,
+            smWidth: 12,
+            xsWidth: 12,
+          },
+          wysiwyg: '<h1>Foo Page</h1>',
+          createdAt: '2020-09-10T14:58:06.086Z',
+          updatedAt: '2020-09-10T14:58:14.174Z',
+          pageblockId: 20,
+        },
+      ],
+    },
+  ],
+  fallbackSettings: {
+    footerPath: '/home/footer/',
+    headerPath: '/home/header/',
+    heroPath: '/home/hero/',
+    navAlignment: 'left',
+    navCollapsible: true,
+    navPosition: 'fixed-top',
+    navSpacing: 'normal',
+    navType: 'basic',
+    showFooter: true,
+    showHeader: true,
+    showHero: true,
+    siteTitle: 'Preaction CMS',
+    init: true,
+  },
+  siteMap: {
+    key: 'home',
+    path: '',
+    children: [
+      {
+        id: 4,
+        key: 'foo-1',
+        title: 'Foo 1',
+        pageType: 'content',
+        userCreated: true,
+        settings: { includeInNav: true },
+        parentId: null,
+        createdAt: '2020-09-08T14:39:05.800Z',
+        updatedAt: '2020-09-08T14:39:05.800Z',
+        children: [
+          {
+            id: 7,
+            key: 'abc',
+            title: 'ABC',
+            pageType: 'content',
+            userCreated: true,
+            settings: { includeInNav: true, site: false, navOrdering: '' },
+            parentId: 4,
+            createdAt: '2020-09-08T14:39:13.303Z',
+            updatedAt: '2020-09-10T14:18:01.633Z',
+            children: [],
+            path: 'foo-1/abc',
+          },
+          {
+            id: 10,
+            key: 'def',
+            title: 'DEF',
+            pageType: 'content',
+            userCreated: true,
+            settings: { includeInNav: true },
+            parentId: 4,
+            createdAt: '2020-09-08T14:39:17.229Z',
+            updatedAt: '2020-09-08T14:39:17.229Z',
+            children: [],
+            path: 'foo-1/def',
+          },
+        ],
+        path: 'foo-1',
+      },
+      {
+        id: 22,
+        key: 'test',
+        title: 'Test',
+        pageType: 'content',
+        userCreated: true,
+        settings: { includeInNav: true },
+        parentId: null,
+        createdAt: '2020-09-10T14:57:49.264Z',
+        updatedAt: '2020-09-10T14:57:49.264Z',
+        children: [],
+        path: 'test',
+      },
+    ],
+  },
+  tree: {
+    id: 4,
+    key: 'foo-1',
+    title: 'Foo 1',
+    pageType: 'content',
+    userCreated: true,
+    settings: { includeInNav: true },
+    parentId: null,
+    createdAt: '2020-09-10T14:57:49.264Z',
+    updatedAt: '2020-09-10T14:57:49.264Z',
+    children: [],
+    path: 'foo-1',
+  },
+}
 const mockNewPage = {
   id: 25,
   pageType: 'content',
@@ -543,6 +680,9 @@ const server = setupServer(
   }),
   rest.get('/api/page/by-key/test/', (req, res, ctx) => {
     return res(ctx.json(mockTestPage))
+  }),
+  rest.get('/api/page/by-key/foo-1/', (req, res, ctx) => {
+    return res(ctx.json(mockFooPage))
   }),
   rest.get('/api/page/by-key/notfound/', (req, res, ctx) => {
     return res(ctx.status(404), ctx.json({ error: 'not found' }))
@@ -590,6 +730,13 @@ const server = setupServer(
   rest.post('/api/settings', (req, res, ctx) => {
     Object.assign(mockSettings, req.body)
     return res(ctx.json(mockSettings))
+  }),
+  rest.put('/api/page/4', (req, res, ctx) => {
+    Object.assign(mockFooPage, req.body)
+    return res(ctx.json(mockFooPage))
+  }),
+  rest.get('/api/page/4/sitemap', (req, res, ctx) => {
+    return res(ctx.json(mockFooPage.siteMap))
   }),
   rest.delete('/api/page/22', (req, res, ctx) => {
     return res(ctx.json(true))
@@ -726,9 +873,16 @@ test('create new page', async () => {
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-new-page')).toBeInTheDocument()
-  // because the new page modal is behind @loadable/component
-  window.preaction.setState({ newPage: { key: 'foobar', title: 'FooBar' } })
-  window.preaction.submitNewPage()
+  userEvent.click(result.container.querySelector('.nav-new-page a'))
+  await waitFor(() =>
+    expect(result.getByLabelText('Page Title *')).toBeInTheDocument()
+  )
+  await waitFor(() =>
+    expect(result.getByLabelText('URL Path *')).toBeInTheDocument()
+  )
+  userEvent.type(result.getByLabelText('Page Title *'), 'FooBar')
+  expect(result.getByLabelText('URL Path *')).toHaveValue('foobar')
+  userEvent.click(result.getByText('Save'))
   await waitFor(() =>
     expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(1)
   )
@@ -756,8 +910,13 @@ test('edit site settings', async () => {
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings a')).toBeInTheDocument()
-  // because the settings modal is behind @loadable/component
-  window.preaction.getSettingsValueHandler('navPosition')('above-header')
+  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await waitFor(() =>
+    expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
+  )
+  userEvent.selectOptions(result.getByLabelText('Nav Position'), [
+    'above-header',
+  ])
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -771,7 +930,55 @@ test('edit site settings', async () => {
         (call) =>
           call.method === 'POST' && call.url.match(new RegExp('/api/settings'))
       )
-    )
+    ).toBe(true)
+  )
+})
+
+test('edit page settings', async () => {
+  jest.setTimeout(10000)
+  const result = render(<App initPath='/login/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
+  await waitFor(() =>
+    expect(result.getByLabelText('Username *')).toBeInTheDocument()
+  )
+  userEvent.type(result.getByLabelText('Username *'), 'admin')
+  userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await waitFor(
+    () =>
+      new Promise((resolve, reject) => {
+        setTimeout(resolve, 1200)
+      }),
+    { timeout: 1250 }
+  )
+  userEvent.click(result.getByText('Log In'))
+  await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
+  expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
+  userEvent.click(result.getByText('Foo 1'))
+  await waitFor(() => expect(result.getByText('Foo Page')).toBeInTheDocument())
+  userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
+  expect(result.container.querySelector('.nav-settings a')).toBeInTheDocument()
+  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await waitFor(() =>
+    expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
+  )
+  userEvent.selectOptions(result.getByLabelText('Nav Position'), [
+    'below-header',
+  ])
+  await waitFor(
+    () =>
+      new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000)
+      }),
+    { timeout: 1050 }
+  )
+  await waitFor(() =>
+    expect(
+      serverCalls.some(
+        (call) =>
+          call.method === 'PUT' && call.url.match(new RegExp('/api/page/4'))
+      )
+    ).toBe(true)
   )
 })
 
@@ -791,8 +998,14 @@ test('delete page', async () => {
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings')).toBeInTheDocument()
-  // because the settings modal is behind @loadable/component
-  window.preaction.deletePage(window.preaction.getState().activePage)
+  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await waitFor(() =>
+    expect(
+      result.getByLabelText('Confirm to delete this page')
+    ).toBeInTheDocument()
+  )
+  userEvent.click(result.getByLabelText('Confirm to delete this page'))
+  userEvent.click(result.container.querySelector('.delete-page .btn-danger'))
   await waitFor(() =>
     expect(
       serverCalls.some(

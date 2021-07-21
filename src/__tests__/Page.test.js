@@ -742,12 +742,13 @@ test('getContentSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  // because the settings modal is behind @loadable/component
-  result.container.firstChild.getContentSettingsValueHandler(
-    19,
-    28,
-    'altText'
-  )('tux3!')
+  userEvent.click(
+    result.container.querySelector('.content-id-28 .btn.content-settings')
+  )
+  await waitFor(() =>
+    expect(result.getByLabelText('Custom Style Class Name')).toBeInTheDocument()
+  )
+  userEvent.type(result.getByLabelText('Custom Style Class Name'), 'foobar')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -770,11 +771,13 @@ test('getPageBlockSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  // because the settings modal is behind @loadable/component
-  result.container.firstChild.getPageBlockSettingsValueHandler(
-    16,
-    'iframe'
-  )('about:blank')
+  userEvent.click(
+    result.container.querySelector('.block-id-16 .btn.block-settings')
+  )
+  await waitFor(() =>
+    expect(result.getByLabelText('Custom Style Class Name')).toBeInTheDocument()
+  )
+  userEvent.type(result.getByLabelText('Custom Style Class Name'), 'foobar')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -943,7 +946,6 @@ test('getPageValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  // because the settings modal is behind @loadable/component
   result.container.firstChild.getPageValueHandler('title')('789!')
   await waitFor(
     () =>
@@ -980,7 +982,6 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
   expect(x).toBe(false)
-  // because the settings modal is behind @loadable/component
   result.container.firstChild.getPageSettingsValueHandler('navPosition')(
     'below-header'
   )
