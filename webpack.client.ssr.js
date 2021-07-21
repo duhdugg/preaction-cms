@@ -1,5 +1,6 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 module.exports = {
   entry: './src/ssr.index.js',
@@ -11,6 +12,7 @@ module.exports = {
     filename: 'client.cjs.js',
     libraryTarget: 'commonjs2',
   },
+  plugins: [new LoadablePlugin()],
   module: {
     rules: [
       {

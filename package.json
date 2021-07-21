@@ -4,6 +4,7 @@
   "version": "5.0.0-alpha.3",
   "proxy": "http://localhost:8999",
   "dependencies": {
+    "@loadable/server": "^5.15.0",
     "@preaction/validation": "^2.0.5",
     "bcryptjs": "^2.4.3",
     "connect-session-sequelize": "^7.1.1",
@@ -26,7 +27,9 @@
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",
     "@babel/preset-react": "^7.14.5",
+    "@loadable/babel-plugin": "^5.13.2",
     "@loadable/component": "^5.14.1",
+    "@loadable/webpack-plugin": "^5.15.0",
     "@popperjs/core": "^2.9.2",
     "@preaction/bootstrap-clips": "^5.0.0-alpha.10",
     "@preaction/inputs": "^5.0.0-alpha.4",
@@ -89,6 +92,11 @@
     "upgrade-db": "NODE_ENV=upgrade-db node scripts/upgrade-db.js",
     "package": "bash scripts/package.sh",
     "query-content": "node scripts/query-content.js"
+  },
+  "babel": {
+    "plugins": [
+      "@loadable/babel-plugin"
+    ]
   },
   "eslintConfig": {
     "extends": [
