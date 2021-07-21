@@ -216,7 +216,7 @@ const mockHomePage = {
             xsWidth: 12,
           },
           wysiwyg:
-            '<p><a href="/test/" rel="noopener noreferrer" target="_blank">Go to Test Page</a></p>',
+            '<p><a href="/test/" rel="noopener noreferrer" target="_blank">Go to Test Page</a></p><p><a href="http://localhost/test/" target="_blank" rel="noopener noreferrer">Launch test page in new window</a></p>',
           createdAt: '2020-09-10T14:57:20.289Z',
           updatedAt: '2020-09-10T14:58:38.590Z',
           pageblockId: 8,
@@ -332,6 +332,7 @@ const mockHomePage = {
   },
 }
 const mockSettings = {
+  absoluteNavBehavior: 'new-window',
   footerPath: '/home/footer/',
   headerPath: '/home/header/',
   heroPath: '/home/hero/',
@@ -625,6 +626,21 @@ test('relative links are handled by navigate function', async () => {
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   userEvent.click(result.getByText('Go to Test Page'))
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
+})
+
+test('absolute links are handled by navigate function', async () => {
+  const result = render(<App initPath='/' />)
+  expect(result.container.firstChild).toHaveClass('App')
+  await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
+  userEvent.click(result.getByText('Launch test page in new window'))
+  await waitFor(
+    () =>
+      new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000)
+      }),
+    { timeout: 1050 }
+  )
+  expect(result.getByText('Home Page')).toBeInTheDocument()
 })
 
 test('404 renders NotFound', async () => {
