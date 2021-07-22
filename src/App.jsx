@@ -700,7 +700,11 @@ class App extends React.Component {
           event_category: 'outbound',
           event_label: url,
           transport_type: 'beacon',
-          event_callback: launch,
+          event_callback: (id) => {
+            if (id === globalThis.gtagId) {
+              launch()
+            }
+          },
         })
       } else {
         launch()
