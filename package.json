@@ -111,6 +111,11 @@
       "globalThis": false
     }
   },
+  "prettier": {
+    "jsxSingleQuote": true,
+    "semi": false,
+    "singleQuote": true
+  },
   "browserslist": {
     "development": [
       "last 1 chrome version",
