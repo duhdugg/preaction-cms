@@ -227,7 +227,7 @@
     color: var(--bs-dark);
   }
 }
-@mixin link-color-fixes {
+@mixin link-color-rules {
   .pxn-theme-blue-links {
     @include blue-links;
     .pxn-theme-light-links {
@@ -256,7 +256,7 @@
     }
   }
 }
-@include link-color-fixes;
+@include link-color-rules;
 
 @mixin border-colors {
   .card-border-danger > .card {
