@@ -1324,7 +1324,7 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const bodyClasses = []
+    const bodyClasses = ['pxn-cms-body']
     // set path class on body to allow path-specific styling
     if (this.state.activePathname === '/login/') {
       bodyClasses.push('path-login-')
