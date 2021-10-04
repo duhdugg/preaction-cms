@@ -889,7 +889,6 @@ test('create new page', async () => {
 })
 
 test('edit site settings', async () => {
-  jest.setTimeout(10000)
   const result = render(<App initPath='/login/' />)
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
@@ -935,7 +934,6 @@ test('edit site settings', async () => {
 })
 
 test('edit page settings', async () => {
-  jest.setTimeout(10000)
   const result = render(<App initPath='/login/' />)
   expect(result.container.firstChild).toHaveClass('App')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()

@@ -1,3 +1,6 @@
+// for setTimeout
+jest.setTimeout(10000)
+
 // for react-slick in PageBlockCarousel
 window.matchMedia =
   window.matchMedia ||
