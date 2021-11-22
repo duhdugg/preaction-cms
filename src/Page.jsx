@@ -759,7 +759,7 @@ function Page(props) {
 
   // on mount
   React.useEffect(() => {
-    if (!page) {
+    if (!page && !status) {
       helpers.loadPage(props.path)
     }
     if (test && ref.current) {
