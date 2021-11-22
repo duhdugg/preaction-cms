@@ -8,130 +8,97 @@ import wysiwygToolbar from './lib/wysiwygToolbar.js'
 
 const test = env.NODE_ENV === 'test'
 
-class PageBlockWysiwyg extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      wysiwyg: this.props.content.wysiwyg || '',
-      savingWysiwyg: false,
+function PageBlockWysiwyg(props) {
+  const theme = props.editable ? props.theme : 'bubble'
+  const [wysiwygValue, setWysiwygValue] = React.useState(
+    props.content.wysiwyg || ''
+  )
+  const [savingState, setSavingState] = React.useState(false)
+  const [timer, setTimer] = React.useState(null)
+  const handleWysiwyg = (value) => {
+    const dirtyEnough = (pval, nval) => {
+      // quill will make some iconsequential formatting adjustments to html,
+      // which causes the PUT request to fire unnecessarily.
+      // workaround this by assuming some replacements made and comparing length
+      pval = pval.replace(/<br \/>/g, '<br>')
+      return pval.length !== nval.length
     }
-    this.wysiwyg = React.createRef()
-    this.wysiwygUpdateTimer = null
-  }
-
-  dirtyEnough(pval, nval) {
-    // quill will make some iconsequential formatting adjustments to html,
-    // which causes the PUT request to fire unnecessarily.
-    // workaround this by assuming some replacements made and comparing length
-    pval = pval.replace(/<br \/>/g, '<br>')
-    return pval.length !== nval.length
-  }
-
-  handleWysiwyg(value) {
-    if (this.dirtyEnough(this.state.wysiwyg, value)) {
-      this.setState(
-        (state) => {
-          state.wysiwyg = value
-          if (this.props.editable) {
-            state.savingWysiwyg = true
-          }
-          return state
-        },
-        () => {
-          clearTimeout(this.wysiwygUpdateTimer)
-          this.wysiwygUpdateTimer = globalThis.setTimeout(() => {
-            if (this.props.editable) {
-              axios
-                .put(
-                  `${this.props.appRoot}/api/page/blocks/content/${this.props.content.id}?token=${this.props.token}`,
-                  {
-                    wysiwyg: this.state.wysiwyg,
-                  }
-                )
-                .then(() => {
-                  this.setState((state) => {
-                    state.savingWysiwyg = false
-                    return state
-                  })
-                  this.props.emitSave({
-                    action: 'update-content',
-                    contentId: this.props.content.id,
-                    blockId: this.props.block.id,
-                    pageId: this.props.block.pageId,
-                  })
+    if (dirtyEnough(wysiwygValue, value)) {
+      setWysiwygValue(value)
+      if (props.editable) {
+        setSavingState(true)
+      }
+      globalThis.clearTimeout(timer)
+      setTimer(
+        globalThis.setTimeout(() => {
+          if (props.editable) {
+            axios
+              .put(
+                `${props.appRoot}/api/page/blocks/content/${props.content.id}?token=${props.token}`,
+                {
+                  wysiwyg: value,
+                }
+              )
+              .then(() => {
+                setSavingState(false)
+                props.emitSave({
+                  action: 'update-content',
+                  contentId: props.content.id,
+                  blockId: props.block.id,
+                  pageId: props.block.pageId,
                 })
-            }
-          }, 1000)
-        }
+              })
+          }
+        }, 1000)
       )
     }
   }
-
-  get theme() {
-    return this.props.editable ? this.props.theme : 'bubble'
-  }
-
-  render() {
-    return (
-      <div className='page-block-content-type-wysiwyg'>
-        {this.props.editable && this.props.sourceMode ? (
-          <Textarea
-            value={this.state.wysiwyg}
-            valueHandler={this.handleWysiwyg.bind(this)}
-            readOnly={!this.props.editable}
-          />
-        ) : (
-          <Wysiwyg
-            // allowDangerousFallback as the value was sanitized by server,
-            // but the error message is preferred if component fails when editing
-            allowDangerousFallback={!this.props.editable || test}
-            fallbackMode={!this.props.editable || test}
-            loadableFallback={<Spinner />}
-            theme={this.theme}
-            toolbar={wysiwygToolbar}
-            value={this.state.wysiwyg}
-            valueHandler={this.handleWysiwyg.bind(this)}
-            readOnly={!this.props.editable}
-            ref={this.wysiwyg}
-          />
-        )}
-        {this.state.savingWysiwyg ? (
+  return (
+    <div className='page-block-content-type-wysiwyg'>
+      {props.editable && props.sourceMode ? (
+        <Textarea
+          value={wysiwygValue}
+          valueHandler={handleWysiwyg}
+          readOnly={!props.editable}
+        />
+      ) : (
+        <Wysiwyg
+          // allowDangerousFallback as the value was sanitized by server,
+          // but the error message is preferred if component fails when editing
+          allowDangerousFallback={!props.editable || test}
+          fallbackMode={!props.editable || test}
+          loadableFallback={<Spinner />}
+          theme={theme}
+          toolbar={wysiwygToolbar}
+          value={wysiwygValue}
+          valueHandler={handleWysiwyg}
+          readOnly={!props.editable}
+        />
+      )}
+      {savingState ? (
+        <div
+          style={{
+            position: 'relative',
+          }}
+        >
           <div
             style={{
-              position: 'relative',
+              fontSize: '0.8em',
+              fontStyle: 'italic',
+              position: 'absolute',
+              top: '-1.25em',
+              width: '100%',
+              textAlign: 'right',
             }}
           >
-            <div
-              style={{
-                fontSize: '0.8em',
-                fontStyle: 'italic',
-                position: 'absolute',
-                top: '-1.25em',
-                width: '100%',
-                textAlign: 'right',
-              }}
-            >
-              saving...
-            </div>
+            saving...
           </div>
-        ) : (
-          ''
-        )}
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    this.setState({ wysiwyg: this.props.content.wysiwyg })
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.content.wysiwyg !== prevProps.content.wysiwyg) {
-      if (!this.props.editable) {
-        this.setState({ wysiwyg: this.props.content.wysiwyg })
-      }
-    }
-  }
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
+  )
 }
 
 PageBlockWysiwyg.propTypes = {
