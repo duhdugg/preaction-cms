@@ -150,10 +150,7 @@ class App extends React.Component {
     }
     this.settingsUpdateTimer = null // used to set a delay on settings updates
     this.socket = null // for socket.io-enabled features
-    this.activePage = React.createRef()
-    this.header = React.createRef()
-    this.footer = React.createRef()
-    this.hero = React.createRef()
+    this.ref = React.createRef()
 
     setGlobalLinkHandler((href) => {
       if (!this.state.editable) {
@@ -193,7 +190,7 @@ class App extends React.Component {
         .then(() => {
           this.emitSave({ action: 'add-page' })
           if (this.state.activePage) {
-            this.activePage.current.reload()
+            this.ref.current.querySelector('main .page').reload()
           }
         })
     }
@@ -761,8 +758,8 @@ class App extends React.Component {
         state.show.settings = !state.show.settings
         return state
       })
-    } else if (this.activePage && this.activePage.current) {
-      this.activePage.current.toggleSettings()
+    } else if (this.ref && this.ref.current) {
+      this.ref.current.querySelector('main .page').toggleSettings()
     }
   }
 
@@ -808,29 +805,29 @@ class App extends React.Component {
         this.reloadRef('activePage')
         break
       default:
-        if (
-          this.activePage.current &&
-          this.activePage.current.state.page &&
-          data.pageId === this.activePage.current.state.page.id
-        ) {
+        const activePage =
+          this.ref && this.ref.current
+            ? this.ref.current.querySelector('main .page').getPage()
+            : null
+        const headerPage =
+          this.ref && this.ref.current
+            ? this.ref.current.querySelector('header .page').getPage()
+            : null
+        const footerPage =
+          this.ref && this.ref.current
+            ? this.ref.current.querySelector('footer .page').getPage()
+            : null
+        const heroPage =
+          this.ref && this.ref.current
+            ? this.ref.current.querySelector('.pxn-hero .page').getPage()
+            : null
+        if (activePage && data.pageId === activePage.id) {
           this.reloadRef('activePage')
-        } else if (
-          this.header.current &&
-          this.header.current.page.current.state.page &&
-          data.pageId === this.header.current.page.current.state.page.id
-        ) {
+        } else if (headerPage && data.pageId === headerPage.id) {
           this.reloadRef('header')
-        } else if (
-          this.footer.current &&
-          this.footer.current.page.current.state.page &&
-          data.pageId === this.footer.current.page.current.state.page.id
-        ) {
+        } else if (footerPage && data.pageId === footerPage.id) {
           this.reloadRef('footer')
-        } else if (
-          this.hero.current &&
-          this.hero.current.page.current.state.page &&
-          data.pageId === this.hero.current.page.current.state.page.id
-        ) {
+        } else if (heroPage && data.pageId === heroPage.id) {
           this.reloadRef('hero')
         }
         break
@@ -838,8 +835,14 @@ class App extends React.Component {
   }
 
   reloadRef(key) {
-    if (this[key].current) {
-      this[key].current.reload()
+    const pages = {
+      activePage: this.ref.current.querySelector('main .page'),
+      header: this.ref.current.querySelector('header .page'),
+      footer: this.ref.current.querySelector('footer .page'),
+      hero: this.ref.current.querySelector('.pxn-hero .page'),
+    }
+    if (pages[key]) {
+      pages[key].reload()
     }
   }
 
@@ -948,6 +951,7 @@ class App extends React.Component {
           navActiveSubmenuThemeClassName,
           navActiveTabThemeClassName
         )}
+        ref={this.ref}
       >
         <Router basename={this.root} location={this.state.activePathname}>
           <div>
@@ -1006,7 +1010,6 @@ class App extends React.Component {
                     settings={this.settings}
                     show={this.settings.showHeader}
                     token={this.state.token}
-                    ref={this.header}
                     initPage={
                       this.props.initPage
                         ? this.props.initPage.header
@@ -1038,7 +1041,6 @@ class App extends React.Component {
                       emitSave={this.emitSave.bind(this)}
                       navigate={this.navigate.bind(this)}
                       settings={this.settings}
-                      ref={this.hero}
                       show={this.settings.showHero}
                       token={this.state.token}
                       initPage={
@@ -1069,7 +1071,6 @@ class App extends React.Component {
                     emitSave={this.emitSave.bind(this)}
                     navigate={this.navigate.bind(this)}
                     settings={this.settings}
-                    ref={this.footer}
                     show={this.settings.showFooter}
                     token={this.state.token}
                     initPage={
@@ -1109,7 +1110,6 @@ class App extends React.Component {
                       emitSave={this.emitSave.bind(this)}
                       fallbackSettings={this.fallbackSettings}
                       path='/home/'
-                      ref={this.activePage}
                       headerControl={this.getShowPropertyValueHandler('header')}
                       footerControl={this.getShowPropertyValueHandler('footer')}
                       heroControl={this.getShowPropertyValueHandler('hero')}
@@ -1154,7 +1154,6 @@ class App extends React.Component {
                               path={pathname}
                               deletePage={this.deletePage.bind(this)}
                               emitSave={this.emitSave.bind(this)}
-                              ref={this.activePage}
                               headerControl={this.getShowPropertyValueHandler(
                                 'header'
                               )}

@@ -217,6 +217,7 @@ function Page(props) {
         }
         return initialStatus
       },
+      getPage: () => page,
       getSplitPath: () => {
         const path = []
         props.path.split('/').forEach((dir) => {
@@ -741,6 +742,7 @@ function Page(props) {
       },
       onNotFound: () =>
         props.onNotFound ? props.onNotFound(props.path) : null,
+      reload: () => helpers.loadPage(props.path),
       toggleSettings: () => setShowSettings(!showSettings),
     }),
     [page, props, showSettings, updateTimer]
@@ -762,7 +764,7 @@ function Page(props) {
     if (!page && !status) {
       helpers.loadPage(props.path)
     }
-    if (test && ref.current) {
+    if (ref.current) {
       Object.assign(ref.current, helpers)
     }
   })
