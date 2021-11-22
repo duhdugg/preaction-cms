@@ -25,277 +25,245 @@ const PageSettings = loadable(() => import('./settingsModules.js'), {
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
-class Page extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      errorMessage: undefined,
-      page: this.props.initPage
-        ? JSON.parse(JSON.stringify(this.props.initPage))
-        : null,
-      showSettings: false,
-      status: undefined,
-    }
-    if (this.props.initError) {
-      this.state.status = 'error'
-      this.state.errorMessage = this.props.initError
-      if (!ssr) {
-        this.onError(this.props.initError)
-      }
-    } else if (this.props.init404) {
-      this.state.status = 'notFound'
-      if (!ssr) {
-        this.onNotFound()
-      }
-    }
-    this.updateTimer = null
-    // ref needed for testing
-    if (test) {
-      this.ref = React.createRef()
-    }
-  }
+const copyObj = (ob) => JSON.parse(JSON.stringify(ob))
 
-  addContent(block, contentType, settings = {}) {
-    axios
-      .post(
-        `${this.props.appRoot}/api/page/blocks/${block.id}/content?token=${this.props.token}`,
-        {
-          contentType,
-          settings,
-        }
-      )
-      .then((response) => {
-        this.setState((state) => {
-          state.page.pageblocks.forEach((pageblock) => {
-            if (block.id === pageblock.id) {
-              if (!block.pageblockcontents) {
-                block.pageblockcontents = []
-              }
-              block.pageblockcontents.push(response.data)
+function Page(props) {
+  const [page, setPage] = React.useState(
+    props.initPage ? copyObj(props.initPage) : null
+  )
+  const [showSettings, setShowSettings] = React.useState(false)
+  const [updateTimer, setUpdateTimer] = React.useState(null)
+
+  const helpers = React.useMemo(
+    () => ({
+      addContent: (block, contentType, settings = {}) => {
+        axios
+          .post(
+            `${props.appRoot}/api/page/blocks/${block.id}/content?token=${props.token}`,
+            {
+              contentType,
+              settings,
             }
+          )
+          .then((response) => {
+            const pageCopy = copyObj(page)
+            pageCopy.pageblocks.forEach((pageblock) => {
+              if (block.id === pageblock.id) {
+                if (!block.pageblockcontents) {
+                  block.pageblockcontents = []
+                }
+                block.pageblockcontents.push(response.data)
+              }
+            })
+            setPage(pageCopy)
+            props.emitSave({
+              action: 'add-content',
+              blockId: block.id,
+              pageId: block.pageId,
+            })
           })
-          return state
-        })
-        this.props.emitSave({
-          action: 'add-content',
-          blockId: block.id,
-          pageId: block.pageId,
-        })
-      })
-  }
-
-  addPageBlock(block) {
-    axios
-      .post(
-        `${this.props.appRoot}/api/page/${this.state.page.id}/blocks?token=${this.props.token}`,
-        block
-      )
-      .then((response) => {
-        this.setState((state) => {
-          if (!state.page.pageblocks) {
-            state.page.pageblocks = []
+      },
+      addPageBlock: (block) => {
+        axios
+          .post(
+            `${props.appRoot}/api/page/${page.id}/blocks?token=${props.token}`,
+            block
+          )
+          .then((response) => {
+            const pageCopy = copyObj(page)
+            if (!pageCopy.pageblocks) {
+              pageCopy.pageblocks = []
+            }
+            pageCopy.pageblocks.push(response.data)
+            setPage(pageCopy)
+            props.emitSave({
+              action: 'add-pageblock',
+              pageId: pageCopy.id,
+            })
+          })
+      },
+      blockControl: (blockId, action) => {
+        const pageCopy = copyObj(page)
+        // actions: previous, next, delete, refresh
+        let blocks = helpers.getBlocks(pageCopy.pageblocks)
+        let block
+        let index = 0
+        while (index < blocks.length) {
+          block = blocks[index]
+          if (block.id === blockId) {
+            break
           }
-          state.page.pageblocks.push(response.data)
-          return state
-        })
-        this.props.emitSave({
-          action: 'add-pageblock',
-          pageId: this.state.page.id,
-        })
-      })
-  }
-
-  blockControl(blockId, action) {
-    // actions: previous, next, delete, refresh
-    this.setState((state) => {
-      let blocks = this.getBlocks(state.page.pageblocks)
-      let block
-      let index = 0
-      while (index < blocks.length) {
-        block = blocks[index]
-        if (block.id === blockId) {
-          break
+          index++
         }
-        index++
-      }
-      if (action === 'previous') {
-        block.ordering--
-        let prevBlock = blocks[index - 1]
-        prevBlock.ordering++
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/${block.id}?token=${this.props.token}`,
-            block
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-pageblock',
-              blockId: block.id,
-              pageId: block.pageId,
-            })
-          })
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/${prevBlock.id}?token=${this.props.token}`,
-            prevBlock
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-pageblock',
-              blockId: prevBlock.id,
-              pageId: prevBlock.pageId,
-            })
-          })
-        blocks[index] = block
-        blocks[index - 1] = prevBlock
-      } else if (action === 'next') {
-        block.ordering++
-        let nextBlock = blocks[index + 1]
-        nextBlock.ordering--
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/${block.id}?token=${this.props.token}`,
-            block
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-pageblock',
-              blockId: block.id,
-              pageId: block.pageId,
-            })
-          })
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/${nextBlock.id}?token=${this.props.token}`,
-            nextBlock
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-pageblock',
-              blockId: nextBlock.id,
-              pageId: nextBlock.pageId,
-            })
-          })
-        blocks[index] = block
-        blocks[index + 1] = nextBlock
-      } else if (action === 'delete') {
-        if (test || globalThis.confirm('Delete this block?')) {
+        if (action === 'previous') {
+          block.ordering--
+          let prevBlock = blocks[index - 1]
+          prevBlock.ordering++
           axios
-            .delete(
-              `${this.props.appRoot}/api/page/blocks/${blockId}?token=${this.props.token}`
+            .put(
+              `${props.appRoot}/api/page/blocks/${block.id}?token=${props.token}`,
+              block
             )
             .then(() => {
-              this.props.emitSave({
-                action: 'delete-pageblock',
-                blockId: blockId,
-                pageId: state.page.id,
+              props.emitSave({
+                action: 'update-pageblock',
+                blockId: block.id,
+                pageId: block.pageId,
               })
             })
-          let ordering = block.ordering
-          blocks.splice(index, 1)
-          blocks.forEach((blk) => {
-            if (blk.ordering > ordering) {
-              blk.ordering--
-            }
-          })
-          state.page.pageblocks = blocks
-        }
-      } else if (action === 'refresh') {
-        axios
-          .get(`${this.props.appRoot}/api/page/blocks/${blockId}`)
-          .then((response) => {
-            this.setState((state) => {
-              for (let x = 0; x < state.page.pageblocks.length; x++) {
-                let block = state.page.pageblocks[x]
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/${prevBlock.id}?token=${props.token}`,
+              prevBlock
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-pageblock',
+                blockId: prevBlock.id,
+                pageId: prevBlock.pageId,
+              })
+            })
+          blocks[index] = block
+          blocks[index - 1] = prevBlock
+        } else if (action === 'next') {
+          block.ordering++
+          let nextBlock = blocks[index + 1]
+          nextBlock.ordering--
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/${block.id}?token=${props.token}`,
+              block
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-pageblock',
+                blockId: block.id,
+                pageId: block.pageId,
+              })
+            })
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/${nextBlock.id}?token=${props.token}`,
+              nextBlock
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-pageblock',
+                blockId: nextBlock.id,
+                pageId: nextBlock.pageId,
+              })
+            })
+          blocks[index] = block
+          blocks[index + 1] = nextBlock
+        } else if (action === 'delete') {
+          if (test || globalThis.confirm('Delete this block?')) {
+            axios
+              .delete(
+                `${props.appRoot}/api/page/blocks/${blockId}?token=${props.token}`
+              )
+              .then(() => {
+                props.emitSave({
+                  action: 'delete-pageblock',
+                  blockId: blockId,
+                  pageId: pageCopy.id,
+                })
+              })
+            let ordering = block.ordering
+            blocks.splice(index, 1)
+            blocks.forEach((blk) => {
+              if (blk.ordering > ordering) {
+                blk.ordering--
+              }
+            })
+            pageCopy.pageblocks = blocks
+          }
+        } else if (action === 'refresh') {
+          axios
+            .get(`${props.appRoot}/api/page/blocks/${blockId}`)
+            .then((response) => {
+              const pageCopy = copyObj(page)
+              for (let x = 0; x < pageCopy.pageblocks.length; x++) {
+                let block = pageCopy.pageblocks[x]
                 if (block.id === blockId) {
-                  state.page.pageblocks[x] = response.data
+                  pageCopy.pageblocks[x] = response.data
                   break
                 }
               }
-              return state
+              setPage(pageCopy)
             })
-          })
-      }
-      return state
-    })
-  }
-
-  deletePage() {
-    if (this.props.deletePage) {
-      if (
-        test ||
-        globalThis.confirm(
-          `Are you sure you wish to delete the page, "${this.state.page.title}"?`
-        )
-      ) {
-        this.setState(
-          (state) => {
-            state.showSettings = false
-            return state
-          },
-          () => {
-            this.props.deletePage(this.state.page)
+        }
+        setPage(pageCopy)
+      },
+      deletePage: () => {
+        if (props.deletePage) {
+          if (
+            test ||
+            globalThis.confirm(
+              `Are you sure you wish to delete the page, "${page.title}"?`
+            )
+          ) {
+            setShowSettings(false)
+            props.deletePage(page)
           }
-        )
-      }
-    }
-  }
-
-  get splitPath() {
-    let path = []
-    this.props.path.split('/').forEach((dir) => {
-      if (dir) {
-        path.push(dir)
-      }
-    })
-    return path
-  }
-
-  get settings() {
-    let s = Object.assign({}, this.state.page.fallbackSettings)
-    if (this.props.fallbackSettings) {
-      Object.assign(s, this.props.fallbackSettings)
-    }
-    Object.assign(s, this.state.page.settings)
-    if (this.state.page.settings.navOrdering === undefined) {
-      s.navOrdering = undefined
-    }
-    return s
-  }
-
-  get topLevelPageKey() {
-    return this.splitPath[0]
-  }
-
-  getBlocks(blocks) {
-    return blocks.concat().sort((a, b) => {
-      let retval = 0
-      if (a.ordering < b.ordering) {
-        retval = -1
-      } else if (a.ordering > b.ordering) {
-        retval = 1
-      }
-      return retval
-    })
-  }
-
-  getContents(contents) {
-    return contents.concat().sort((a, b) => {
-      let retval = 0
-      if (a.ordering < b.ordering) {
-        retval = -1
-      } else if (a.ordering > b.ordering) {
-        retval = 1
-      }
-      return retval
-    })
-  }
-
-  getContentSettingsValueHandler(pageblockId, contentId, key) {
-    return (value) => {
-      this.setState(
-        (state) => {
-          this.state.page.pageblocks.forEach((pageblock) => {
+        }
+      },
+      getInitialError: () => props.initError || undefined,
+      getInitialStatus: () => {
+        let initialStatus = undefined
+        if (props.initError) {
+          initialStatus = 'error'
+        } else if (props.init404) {
+          initialStatus = 'notFound'
+        }
+        return initialStatus
+      },
+      getSplitPath: () => {
+        const path = []
+        props.path.split('/').forEach((dir) => {
+          if (dir) {
+            path.push(dir)
+          }
+        })
+        return path
+      },
+      getSettings: () => {
+        const s = Object.assign({}, page ? page.fallbackSettings : {})
+        if (props.fallbackSettings) {
+          Object.assign(s, props.fallbackSettings)
+        }
+        Object.assign(s, page ? page.settings : {})
+        if (page && page.settings.navOrdering === undefined) {
+          s.navOrdering = undefined
+        }
+        return s
+      },
+      getTopLevelPageKey: () => helpers.getSplitPath()[0],
+      getBlocks: (blocks) => {
+        return blocks.concat().sort((a, b) => {
+          let retval = 0
+          if (a.ordering < b.ordering) {
+            retval = -1
+          } else if (a.ordering > b.ordering) {
+            retval = 1
+          }
+          return retval
+        })
+      },
+      getContents: (contents) => {
+        return contents.concat().sort((a, b) => {
+          let retval = 0
+          if (a.ordering < b.ordering) {
+            retval = -1
+          } else if (a.ordering > b.ordering) {
+            retval = 1
+          }
+          return retval
+        })
+      },
+      getContentSettingsValueHandler: (pageblockId, contentId, key) => {
+        return (value) => {
+          const pageCopy = copyObj(page)
+          pageCopy.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
               pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
@@ -319,667 +287,595 @@ class Page extends React.Component {
               })
             }
           })
-          return state
-        },
-        () => {
-          this.state.page.pageblocks.forEach((pageblock) => {
+          setPage(pageCopy)
+          pageCopy.pageblocks.forEach((pageblock) => {
             if (pageblock.id === pageblockId) {
               pageblock.pageblockcontents.forEach((content) => {
                 if (content.id === contentId) {
-                  clearTimeout(this.updateTimer)
-                  this.updateTimer = setTimeout(() => {
-                    let contentObj = JSON.parse(JSON.stringify(content))
-                    delete contentObj.wysiwyg
-                    axios
-                      .put(
-                        `${this.props.appRoot}/api/page/blocks/content/${contentId}?token=${this.props.token}`,
-                        contentObj
-                      )
-                      .then(() => {
-                        this.props.emitSave({
-                          action: 'update-content',
-                          contentId: contentId,
-                          blockId: pageblock.id,
-                          pageId: this.state.page.id,
+                  clearTimeout(updateTimer)
+                  setUpdateTimer(
+                    setTimeout(() => {
+                      let contentObj = JSON.parse(JSON.stringify(content))
+                      delete contentObj.wysiwyg
+                      axios
+                        .put(
+                          `${props.appRoot}/api/page/blocks/content/${contentId}?token=${props.token}`,
+                          contentObj
+                        )
+                        .then(() => {
+                          props.emitSave({
+                            action: 'update-content',
+                            contentId: contentId,
+                            blockId: pageblock.id,
+                            pageId: pageCopy.id,
+                          })
                         })
-                      })
-                  }, 1000)
+                    }, 1000)
+                  )
                 }
               })
             }
           })
         }
-      )
-    }
-  }
-
-  getPageSettingIsUndefined(key) {
-    return this.state.page.settings[key] === undefined
-  }
-
-  getPageBlockSettingsValueHandler(pageblockId, key) {
-    return (value) => {
-      this.setState(
-        (state) => {
-          this.state.page.pageblocks.forEach((pageblock) => {
-            if (pageblock.id === pageblockId) {
-              if (
-                [
-                  'smWidth',
-                  'mdWidth',
-                  'lgWidth',
-                  'xsWidth',
-                  'xxlWidth',
-                ].includes(key)
-              ) {
-                // minimum value for width attribute is here
-                // to allow the correct visual spacing on the sliders
-                if (value < 1) {
-                  value = 1
-                }
+      },
+      getPageSettingIsUndefined: (key) => page.settings[key] === undefined,
+      getPageBlockSettingsValueHandler: (pageblockId, key) => (value) => {
+        const pageCopy = copyObj(page)
+        pageCopy.pageblocks.forEach((pageblock) => {
+          if (pageblock.id === pageblockId) {
+            if (
+              ['smWidth', 'mdWidth', 'lgWidth', 'xsWidth', 'xxlWidth'].includes(
+                key
+              )
+            ) {
+              // minimum value for width attribute is here
+              // to allow the correct visual spacing on the sliders
+              if (value < 1) {
+                value = 1
               }
-              pageblock.settings[key] = value
             }
-          })
-          return state
-        },
-        () => {
-          this.state.page.pageblocks.forEach((pageblock) => {
-            if (pageblock.id === pageblockId) {
-              clearTimeout(this.updateTimer)
-              this.updateTimer = setTimeout(() => {
+            pageblock.settings[key] = value
+          }
+        })
+        setPage(pageCopy)
+        pageCopy.pageblocks.forEach((pageblock) => {
+          if (pageblock.id === pageblockId) {
+            clearTimeout(updateTimer)
+            setUpdateTimer(
+              setTimeout(() => {
                 axios
                   .put(
-                    `${this.props.appRoot}/api/page/blocks/${pageblockId}?token=${this.props.token}`,
+                    `${props.appRoot}/api/page/blocks/${pageblockId}?token=${props.token}`,
                     pageblock
                   )
                   .then(() => {
-                    this.props.emitSave({
+                    props.emitSave({
                       action: 'update-pageblock',
                       blockId: pageblockId,
-                      pageId: this.state.page.id,
+                      pageId: pageCopy.id,
                     })
                   })
               }, 1000)
-            }
-          })
-        }
-      )
-    }
-  }
-
-  getPageSettingsResetter(key) {
-    return () => {
-      this.setState(
-        (state) => {
-          delete state.page.settings[key]
-          return state
-        },
-        () => {
-          clearTimeout(this.updateTimer)
-          this.updateTimer = setTimeout(() => {
-            axios
-              .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
-                this.state.page
-              )
-              .then(() => {
-                this.loadSettings()
-                this.props.emitSave({
-                  action: 'update-pageSettings',
-                  pageId: this.state.page.id,
-                })
-              })
-          }, 1000)
-        }
-      )
-    }
-  }
-
-  getPageSettingsValueHandler(key) {
-    return (value) => {
-      this.setState(
-        (state) => {
-          state.page.settings[key] = value
-          if (key === 'showHeader') {
-            this.props.headerControl(value)
-          } else if (key === 'showFooter') {
-            this.props.footerControl(value)
-          } else if (key === 'showHero') {
-            this.props.heroControl(value)
+            )
           }
-          return state
-        },
-        () => {
-          if (this.props.setActivePage) {
-            this.props.setActivePage(this.state.page)
-          }
-          clearTimeout(this.updateTimer)
-          this.updateTimer = setTimeout(() => {
-            axios
-              .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
-                this.state.page
-              )
-              .then(() => {
-                this.props.emitSave({
-                  action: 'update-page',
-                  pageId: this.state.page.id,
-                })
-              })
-          }, 1000)
-        }
-      )
-    }
-  }
-
-  // used for page settings modal
-  getPageValueHandler(key) {
-    return (value) => {
-      this.setState(
-        (state) => {
-          state.page[key] = value
-          return state
-        },
-        () => {
-          if (this.props.setActivePage) {
-            this.props.setActivePage(this.state.page)
-          }
-          clearTimeout(this.updateTimer)
-          this.updateTimer = setTimeout(() => {
-            axios
-              .put(
-                `${this.props.appRoot}/api/page/${this.state.page.id}?token=${this.props.token}`,
-                this.state.page
-              )
-              .then(() => {
-                this.props.emitSave({
-                  action: 'update-page',
-                  pageId: this.state.page.id,
-                })
-              })
-          }, 1000)
-        }
-      )
-    }
-  }
-
-  get pageControlsMenu() {
-    const extensionBlockMenuItems = []
-    for (let extKey of Object.keys(blockExtensions)) {
-      const Extension = blockExtensions[extKey]
-      extensionBlockMenuItems.push({
-        className: `add-extension-block-${extKey}`,
-        name: (
-          <span>
-            <MdSettingsInputComponent /> {Extension.label}
-          </span>
-        ),
-        onClick: (e) => {
-          e.preventDefault()
-          this.addPageBlock({
-            blockType: 'ext',
-            settings: {
-              extKey,
-              propsData: Extension.defaultProps || {},
-            },
-          })
-        },
-      })
-    }
-    const menu = [
-      {
-        className: 'add-block-dropdown',
-        name: (
-          <span>
-            <MdCreate /> add block
-          </span>
-        ),
-        icon: 'arrow-dropdown',
-        subMenu: [
-          {
-            className: 'add-carousel-block',
-            name: (
-              <span>
-                <MdViewCarousel /> Carousel
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock({ blockType: 'carousel' })
-            },
-          },
-          {
-            className: 'add-content-block',
-            name: (
-              <span>
-                <FaHtml5 /> Content
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock({ blockType: 'content' })
-            },
-          },
-          {
-            className: 'add-iframe-block',
-            name: (
-              <span>
-                <MdFilterFrames /> iframe
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock({ blockType: 'iframe' })
-            },
-          },
-          {
-            className: `add-nav-block ${
-              this.state.page.userCreated ? 'd-block' : 'd-none'
-            }`,
-            name: (
-              <span>
-                <FaSitemap /> Navigation
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock({ blockType: 'nav' })
-            },
-          },
-          {
-            className: 'add-spacer-block',
-            name: (
-              <span>
-                <MdSpaceBar /> Spacer
-              </span>
-            ),
-            onClick: (e) => {
-              e.preventDefault()
-              this.addPageBlock({ blockType: 'spacer' })
-            },
-          },
-          ...extensionBlockMenuItems,
-        ],
-        onClick: (e) => {
-          e.preventDefault()
-        },
+        })
       },
-    ]
-    return menu
-  }
-
-  contentControl(pageBlock, index, action) {
-    // actions: previous, next, delete
-    this.setState((state) => {
-      let contents = this.getContents(pageBlock.pageblockcontents)
-      let content = contents[index]
-      if (action === 'previous') {
-        content.ordering--
-        let prevContent = contents[index - 1]
-        prevContent.ordering++
-        delete content.wysiwyg
-        delete prevContent.wysiwyg
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
-            content
+      getPageSettingsResetter: (key) => () => {
+        const pageCopy = copyObj(page)
+        delete pageCopy.settings[key]
+        setPage(pageCopy)
+        clearTimeout(updateTimer)
+        setUpdateTimer(
+          setTimeout(() => {
+            axios
+              .put(
+                `${props.appRoot}/api/page/${pageCopy.id}?token=${props.token}`,
+                pageCopy
+              )
+              .then(() => {
+                helpers.loadSettings()
+                props.emitSave({
+                  action: 'update-pageSettings',
+                  pageId: pageCopy.id,
+                })
+              })
+          }, 1000)
+        )
+      },
+      getPageSettingsValueHandler: (key) => {
+        return (value) => {
+          const pageCopy = copyObj(page)
+          pageCopy.settings[key] = value
+          if (key === 'showHeader') {
+            props.headerControl(value)
+          } else if (key === 'showFooter') {
+            props.footerControl(value)
+          } else if (key === 'showHero') {
+            props.heroControl(value)
+          }
+          setPage(pageCopy)
+          if (props.setActivePage) {
+            props.setActivePage(pageCopy)
+          }
+          clearTimeout(updateTimer)
+          setUpdateTimer(
+            setTimeout(() => {
+              axios
+                .put(
+                  `${props.appRoot}/api/page/${pageCopy.id}?token=${props.token}`,
+                  pageCopy
+                )
+                .then(() => {
+                  props.emitSave({
+                    action: 'update-page',
+                    pageId: pageCopy.id,
+                  })
+                })
+            }, 1000)
           )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-content',
-              contentId: content.id,
-              blockId: pageBlock.id,
-              pageId: pageBlock.pageId,
-            })
+        }
+      },
+      getPageValueHandler: (key) => (value) => {
+        const pageCopy = copyObj(page)
+        pageCopy[key] = value
+        setPage(pageCopy)
+        if (props.setActivePage) {
+          props.setActivePage(pageCopy)
+        }
+        clearTimeout(updateTimer)
+        setUpdateTimer(
+          setTimeout(() => {
+            axios
+              .put(
+                `${props.appRoot}/api/page/${pageCopy.id}?token=${props.token}`,
+                pageCopy
+              )
+              .then(() => {
+                props.emitSave({
+                  action: 'update-page',
+                  pageId: pageCopy.id,
+                })
+              })
+          }, 1000)
+        )
+      },
+      getPageControlsMenu: () => {
+        const extensionBlockMenuItems = []
+        for (let extKey of Object.keys(blockExtensions)) {
+          const Extension = blockExtensions[extKey]
+          extensionBlockMenuItems.push({
+            className: `add-extension-block-${extKey}`,
+            name: (
+              <span>
+                <MdSettingsInputComponent /> {Extension.label}
+              </span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              helpers.addPageBlock({
+                blockType: 'ext',
+                settings: {
+                  extKey,
+                  propsData: Extension.defaultProps || {},
+                },
+              })
+            },
           })
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/content/${prevContent.id}?token=${this.props.token}`,
-            prevContent
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-content',
-              contentId: prevContent.id,
-              blockId: prevContent.pageblockId,
-              pageId: state.page.id,
-            })
-          })
-        contents[index] = content
-        contents[index - 1] = prevContent
-      } else if (action === 'next') {
-        content.ordering++
-        let nextContent = contents[index + 1]
-        nextContent.ordering--
-        delete content.wysiwyg
-        delete nextContent.wysiwyg
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`,
-            content
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-content',
-              contentId: content.id,
-              blockId: content.pageblockId,
-              pageId: state.page.id,
-            })
-          })
-        axios
-          .put(
-            `${this.props.appRoot}/api/page/blocks/content/${nextContent.id}?token=${this.props.token}`,
-            nextContent
-          )
-          .then(() => {
-            this.props.emitSave({
-              action: 'update-content',
-              contentId: nextContent.id,
-              blockId: nextContent.pageblockId,
-              pageId: state.page.id,
-            })
-          })
-        contents[index] = content
-        contents[index + 1] = nextContent
-      } else if (action === 'delete') {
-        if (test || globalThis.confirm('Delete this content?')) {
+        }
+        const menu = [
+          {
+            className: 'add-block-dropdown',
+            name: (
+              <span>
+                <MdCreate /> add block
+              </span>
+            ),
+            icon: 'arrow-dropdown',
+            subMenu: [
+              {
+                className: 'add-carousel-block',
+                name: (
+                  <span>
+                    <MdViewCarousel /> Carousel
+                  </span>
+                ),
+                onClick: (e) => {
+                  e.preventDefault()
+                  helpers.addPageBlock({ blockType: 'carousel' })
+                },
+              },
+              {
+                className: 'add-content-block',
+                name: (
+                  <span>
+                    <FaHtml5 /> Content
+                  </span>
+                ),
+                onClick: (e) => {
+                  e.preventDefault()
+                  helpers.addPageBlock({ blockType: 'content' })
+                },
+              },
+              {
+                className: 'add-iframe-block',
+                name: (
+                  <span>
+                    <MdFilterFrames /> iframe
+                  </span>
+                ),
+                onClick: (e) => {
+                  e.preventDefault()
+                  helpers.addPageBlock({ blockType: 'iframe' })
+                },
+              },
+              {
+                className: `add-nav-block ${
+                  page.userCreated ? 'd-block' : 'd-none'
+                }`,
+                name: (
+                  <span>
+                    <FaSitemap /> Navigation
+                  </span>
+                ),
+                onClick: (e) => {
+                  e.preventDefault()
+                  helpers.addPageBlock({ blockType: 'nav' })
+                },
+              },
+              {
+                className: 'add-spacer-block',
+                name: (
+                  <span>
+                    <MdSpaceBar /> Spacer
+                  </span>
+                ),
+                onClick: (e) => {
+                  e.preventDefault()
+                  helpers.addPageBlock({ blockType: 'spacer' })
+                },
+              },
+              ...extensionBlockMenuItems,
+            ],
+            onClick: (e) => {
+              e.preventDefault()
+            },
+          },
+        ]
+        return menu
+      },
+      contentControl: (pageBlock, index, action) => {
+        // actions: previous, next, delete
+        let contents = helpers.getContents(pageBlock.pageblockcontents)
+        let content = contents[index]
+        if (action === 'previous') {
+          content.ordering--
+          let prevContent = contents[index - 1]
+          prevContent.ordering++
+          delete content.wysiwyg
+          delete prevContent.wysiwyg
           axios
-            .delete(
-              `${this.props.appRoot}/api/page/blocks/content/${content.id}?token=${this.props.token}`
+            .put(
+              `${props.appRoot}/api/page/blocks/content/${content.id}?token=${props.token}`,
+              content
             )
             .then(() => {
-              this.props.emitSave({
-                action: 'delete-content',
+              props.emitSave({
+                action: 'update-content',
                 contentId: content.id,
-                blockId: content.pageBlockId,
-                pageId: state.page.id,
+                blockId: pageBlock.id,
+                pageId: pageBlock.pageId,
               })
             })
-          let x = pageBlock.pageblockcontents.indexOf(content)
-          let ordering = content.ordering
-          pageBlock.pageblockcontents.splice(x, 1)
-          contents.forEach((content) => {
-            if (content.ordering > ordering) {
-              content.ordering--
-            }
-          })
-        }
-      }
-      state.page.pageblocks.forEach((pb) => {
-        if (pb.id === pageBlock.id) {
-          for (let x = 0; x < pb.pageblockcontents.length; x++) {
-            if (pb.pageblockcontents[x].id === content.id) {
-              pb.pageblockcontents[x] = content
-              break
-            }
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/content/${prevContent.id}?token=${props.token}`,
+              prevContent
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-content',
+                contentId: prevContent.id,
+                blockId: prevContent.pageblockId,
+                pageId: page.id,
+              })
+            })
+          contents[index] = content
+          contents[index - 1] = prevContent
+        } else if (action === 'next') {
+          content.ordering++
+          let nextContent = contents[index + 1]
+          nextContent.ordering--
+          delete content.wysiwyg
+          delete nextContent.wysiwyg
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/content/${content.id}?token=${props.token}`,
+              content
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-content',
+                contentId: content.id,
+                blockId: content.pageblockId,
+                pageId: page.id,
+              })
+            })
+          axios
+            .put(
+              `${props.appRoot}/api/page/blocks/content/${nextContent.id}?token=${props.token}`,
+              nextContent
+            )
+            .then(() => {
+              props.emitSave({
+                action: 'update-content',
+                contentId: nextContent.id,
+                blockId: nextContent.pageblockId,
+                pageId: page.id,
+              })
+            })
+          contents[index] = content
+          contents[index + 1] = nextContent
+        } else if (action === 'delete') {
+          if (test || globalThis.confirm('Delete this content?')) {
+            axios
+              .delete(
+                `${props.appRoot}/api/page/blocks/content/${content.id}?token=${props.token}`
+              )
+              .then(() => {
+                props.emitSave({
+                  action: 'delete-content',
+                  contentId: content.id,
+                  blockId: content.pageBlockId,
+                  pageId: page.id,
+                })
+              })
+            let x = pageBlock.pageblockcontents.indexOf(content)
+            let ordering = content.ordering
+            pageBlock.pageblockcontents.splice(x, 1)
+            contents.forEach((content) => {
+              if (content.ordering > ordering) {
+                content.ordering--
+              }
+            })
           }
         }
-      })
-      return state
-    })
-  }
-
-  loadPage(path) {
-    // remove leading slash
-    path = path.replace(/^\//, '')
-    // clear the state
-    this.setState(
-      (state) => {
-        state.status = 'loading'
-        state.page = null
-        return state
-      },
-      () => {
-        // use pathOnRequest variable to prevent loading incorrect content
-        // pathonRequest will be compared to the current props path
-        // after axios.get resolves
-        let pathOnRequest = this.props.path
-        // get the page data by path
-        axios
-          .get(`${this.props.appRoot}/api/page/by-key/${path}`)
-          .then((response) => {
-            // if pathOnRequest does not match current props path,
-            // don't do anything, as the application has navigated
-            // to a different path
-            if (pathOnRequest !== this.props.path) {
-              return
+        page.pageblocks.forEach((pb) => {
+          if (pb.id === pageBlock.id) {
+            for (let x = 0; x < pb.pageblockcontents.length; x++) {
+              if (pb.pageblockcontents[x].id === content.id) {
+                pb.pageblockcontents[x] = content
+                break
+              }
             }
-            // set the page state
-            let page = response.data
-            this.setState(
-              (state) => {
-                state.status = 'ok'
-                state.page = page
-                return state
-              },
-              () => {
+          }
+        })
+        setPage(copyObj(page))
+      },
+      loadPage: (path) => {
+        // remove leading slash
+        path = path.replace(/^\//, '')
+        // clear the state
+        setStatus('loading')
+        setPage(null)
+        setTimeout(() => {
+          // use pathOnRequest variable to prevent loading incorrect content
+          // pathonRequest will be compared to the current props path
+          // after axios.get resolves
+          let pathOnRequest = props.path
+          // get the page data by path
+          axios
+            .get(`${props.appRoot}/api/page/by-key/${path}`)
+            .then((response) => {
+              // if pathOnRequest does not match current props path,
+              // don't do anything, as the application has navigated
+              // to a different path
+              if (pathOnRequest !== props.path) {
+                return
+              }
+              // set the page state
+              const pg = response.data
+              setStatus('ok')
+              setPage(pg)
+              setTimeout(() => {
                 // load settings
-                this.loadSettings()
+                helpers.loadSettings()
                 // communicate to parent component
-                if (this.props.setActivePage) {
-                  this.props.setActivePage(this.state.page)
+                if (props.setActivePage) {
+                  props.setActivePage(pg)
                 }
-                if (this.props.setActivePathname) {
-                  this.props.setActivePathname(this.props.path)
+                if (props.setActivePathname) {
+                  props.setActivePathname(props.path)
                 }
                 // set the title if page is not header, footer, nor hero
                 if (path.match(/\/(header|footer|hero)\/$/g) === null) {
+                  const settings = helpers.getSettings()
                   let title = ''
-                  if (this.topLevelPageKey === 'home') {
-                    title = this.settings.siteTitle
+                  if (helpers.getTopLevelPageKey === 'home') {
+                    title = settings.siteTitle
                   } else {
-                    title = `${response.data.title} | ${this.settings.siteTitle}`
+                    title = `${response.data.title} | ${settings.siteTitle}`
                   }
                   document.title = title
                 }
+              }, 0)
+            })
+            .catch((e) => {
+              if (!test) {
+                console.error(e)
               }
-            )
-          })
-          .catch((e) => {
-            if (!test) {
-              console.error(e)
-            }
-            if (e.response && e.response.status === 404) {
-              // set notFound state on 404
-              this.setState((state) => {
-                state.status = 'notFound'
-                return state
-              })
-              // communicate to parent component
-              this.onNotFound()
-            } else {
-              let errorMessage
-              try {
-                errorMessage = e.response.data.error
-              } catch (e) {}
-              this.onError(errorMessage)
-            }
-          })
-      }
-    )
-  }
+              if (e.response && e.response.status === 404) {
+                // set notFound state on 404
+                setStatus('notFound')
+                // communicate to parent component
+                helpers.onNotFound()
+              } else {
+                let errorMessage
+                try {
+                  errorMessage = e.response.data.error
+                } catch (e) {}
+                helpers.onError(errorMessage)
+              }
+            })
+        }, 0)
+      },
+      loadSettings: () => {
+        // control showing header/footer/hero in parent App.jsx component
+        if (!page) {
+          return
+        }
+        const settings = helpers.getSettings()
+        if (!['header', 'footer', 'hero'].includes(page.key)) {
+          props.headerControl(settings.showHeader !== false)
+          props.footerControl(settings.showFooter !== false)
+          props.heroControl(settings.showHero !== false)
+        }
+      },
+      onError: (errorMessage) => {
+        setErrorMessage(errorMessage)
+        setStatus('error')
+        setTimeout(() => {
+          if (props.onError) {
+            props.onError()
+          }
+        }, 0)
+      },
+      onNotFound: () =>
+        props.onNotFound ? props.onNotFound(props.path) : null,
+      toggleSettings: () => setShowSettings(!showSettings),
+    }),
+    [page, props, showSettings, updateTimer]
+  )
 
-  loadSettings() {
-    // control showing header/footer/hero in parent App.jsx component
-    if (!['header', 'footer', 'hero'].includes(this.state.page.key)) {
-      let showHeader = this.settings.showHeader !== false
-      let showFooter = this.settings.showFooter !== false
-      let showHero = this.settings.showHero !== false
-      this.props.headerControl(showHeader)
-      this.props.footerControl(showFooter)
-      this.props.heroControl(showHero)
+  const [status, setStatus] = React.useState(helpers.getInitialStatus())
+  const [errorMessage, setErrorMessage] = React.useState(
+    helpers.getInitialError()
+  )
+
+  if (props.init404) {
+    if (!ssr) {
+      helpers.onNotFound()
     }
   }
 
-  onError(errorMessage) {
-    this.setState({ errorMessage, status: 'error' }, () => {
-      if (this.props.onError) {
-        this.props.onError()
-      }
-    })
-  }
-
-  onNotFound() {
-    if (this.props.onNotFound) {
-      this.props.onNotFound(this.props.path)
+  // on mount
+  React.useEffect(() => {
+    if (!page) {
+      helpers.loadPage(props.path)
     }
-  }
+    if (test && ref.current) {
+      Object.assign(ref.current, helpers)
+    }
+  })
 
-  reload() {
-    this.loadPage(this.props.path)
-  }
+  // call helpers.loadPage when props.path changes
+  const [prevPath, setPrevPath] = React.useState(props.path)
+  React.useEffect(() => {
+    if (prevPath !== props.path) {
+      helpers.loadPage(props.path)
+      setPrevPath(props.path)
+    }
+  }, [props.path, prevPath, setPrevPath, helpers])
 
-  toggleSettings() {
-    this.setState((state) => {
-      state.showSettings = !state.showSettings
-      return state
-    })
-  }
-
-  render() {
-    return (
-      <div className='page' ref={this.ref}>
-        {this.state.page ? (
-          <div className='row pageblocks'>
-            {this.state.page.pageblocks
-              ? this.getBlocks(this.state.page.pageblocks).map(
-                  (block, index) => {
-                    return (
-                      <PageBlockParent
-                        addContent={this.addContent.bind(this)}
-                        appRoot={this.props.appRoot}
-                        block={block}
-                        blockControl={this.blockControl.bind(this)}
-                        contentControl={this.contentControl.bind(this)}
-                        editable={this.props.editable}
-                        emitSave={this.props.emitSave}
-                        first={index === 0}
-                        getContents={this.getContents.bind(this)}
-                        getContentSettingsValueHandler={this.getContentSettingsValueHandler.bind(
-                          this
-                        )}
-                        getPageBlockSettingsValueHandler={this.getPageBlockSettingsValueHandler.bind(
-                          this
-                        )}
-                        key={block.id}
-                        last={index === this.state.page.pageblocks.length - 1}
-                        navigate={this.props.navigate}
-                        page={this.state.page}
-                        settings={this.settings}
-                        token={this.props.token}
-                      />
-                    )
-                  }
+  const ref = React.useRef() // needed for testing
+  const settings = helpers.getSettings()
+  return (
+    <div className='page' ref={ref}>
+      {page ? (
+        <div className='row pageblocks'>
+          {page.pageblocks
+            ? helpers.getBlocks(page.pageblocks).map((block, index) => {
+                return (
+                  <PageBlockParent
+                    addContent={helpers.addContent}
+                    appRoot={props.appRoot}
+                    block={block}
+                    blockControl={helpers.blockControl}
+                    contentControl={helpers.contentControl}
+                    editable={props.editable}
+                    emitSave={props.emitSave}
+                    first={index === 0}
+                    getContents={helpers.getContents}
+                    getContentSettingsValueHandler={
+                      helpers.getContentSettingsValueHandler
+                    }
+                    getPageBlockSettingsValueHandler={
+                      helpers.getPageBlockSettingsValueHandler
+                    }
+                    key={block.id}
+                    last={index === page.pageblocks.length - 1}
+                    navigate={props.navigate}
+                    page={page}
+                    settings={helpers.getSettings()}
+                    token={props.token}
+                  />
                 )
-              : ''}
-            {this.props.editable ? (
-              <div className='page-controls col-12'>
-                <Nav type='tabs' menu={this.pageControlsMenu} />
-              </div>
+              })
+            : ''}
+          {props.editable ? (
+            <div className='page-controls col-12'>
+              <Nav type='tabs' menu={helpers.getPageControlsMenu()} />
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
+      ) : (
+        ''
+      )}
+      {page ? (
+        <div className='page-settings-modal-container'>
+          <Modal
+            title='Page Settings'
+            show={props.editable && showSettings}
+            setShow={setShowSettings}
+            size='lg'
+            headerTheme='secondary'
+            bodyTheme='white'
+            footerTheme='dark'
+            footer={
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={helpers.toggleSettings}
+              >
+                Close
+              </button>
+            }
+          >
+            {props.editable && showSettings ? (
+              <PageSettings
+                appRoot={props.appRoot}
+                admin={props.editable}
+                navigate={(path) => {
+                  setShowSettings(false)
+                  setTimeout(() => {
+                    props.navigate(path)
+                  }, 0)
+                }}
+                pageId={page.id}
+                page={page}
+                path={props.path}
+                settings={settings}
+                token={props.token}
+                deletePage={helpers.deletePage}
+                getPageValueHandler={helpers.getPageValueHandler}
+                getResetter={helpers.getPageSettingsResetter}
+                getSettingsValueHandler={helpers.getPageSettingsValueHandler}
+                getPageSettingIsUndefined={helpers.getPageSettingIsUndefined}
+              />
             ) : (
               ''
             )}
-          </div>
-        ) : (
-          ''
-        )}
-        {this.state.page ? (
-          <div className='page-settings-modal-container'>
-            <Modal
-              title='Page Settings'
-              show={this.props.editable && this.state.showSettings}
-              setShow={(value) => {
-                this.setState((state) => {
-                  state.showSettings = value
-                  return state
-                })
-              }}
-              size='lg'
-              headerTheme='secondary'
-              bodyTheme='white'
-              footerTheme='dark'
-              footer={
-                <button
-                  type='button'
-                  className='btn btn-secondary'
-                  onClick={this.toggleSettings.bind(this)}
-                >
-                  Close
-                </button>
-              }
-            >
-              {this.props.editable && this.state.showSettings ? (
-                <PageSettings
-                  appRoot={this.props.appRoot}
-                  admin={this.props.editable}
-                  navigate={(path) => {
-                    this.setState({ showSettings: false }, () => {
-                      this.props.navigate(path)
-                    })
-                  }}
-                  pageId={this.state.page.id}
-                  page={this.state.page}
-                  path={this.props.path}
-                  settings={this.settings}
-                  token={this.props.token}
-                  deletePage={this.deletePage.bind(this)}
-                  getPageValueHandler={this.getPageValueHandler.bind(this)}
-                  getResetter={this.getPageSettingsResetter.bind(this)}
-                  getSettingsValueHandler={this.getPageSettingsValueHandler.bind(
-                    this
-                  )}
-                  getPageSettingIsUndefined={this.getPageSettingIsUndefined.bind(
-                    this
-                  )}
-                />
-              ) : (
-                ''
-              )}
-            </Modal>
-          </div>
-        ) : (
-          ''
-        )}
-        {this.state.status === 'loading' ? <Spinner size='3.25' /> : ''}
-        {this.state.status === 'error' ? (
-          <ErrorMessage errorMessage={this.state.errorMessage} />
-        ) : (
-          ''
-        )}
-        {this.state.status === 'notFound' ? <NotFound /> : ''}
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    if (!this.state.page) {
-      this.loadPage(this.props.path)
-    }
-    if (test) {
-      Object.assign(this.ref.current, {
-        getContentSettingsValueHandler:
-          this.getContentSettingsValueHandler.bind(this),
-        getPageBlockSettingsValueHandler:
-          this.getPageBlockSettingsValueHandler.bind(this),
-        getPageSettingsResetter: this.getPageSettingsResetter.bind(this),
-        getPageSettingsValueHandler:
-          this.getPageSettingsValueHandler.bind(this),
-        getPageValueHandler: this.getPageValueHandler.bind(this),
-        blockControl: this.blockControl.bind(this),
-        deletePage: this.deletePage.bind(this),
-        toggleSettings: this.toggleSettings.bind(this),
-      })
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    let retval = true
-    if (nextProps.path !== this.props.path) {
-      this.loadPage(nextProps.path)
-    }
-    return retval
-  }
+          </Modal>
+        </div>
+      ) : (
+        ''
+      )}
+      {status === 'loading' ? <Spinner size='3.25' /> : ''}
+      {status === 'error' ? <ErrorMessage errorMessage={errorMessage} /> : ''}
+      {status === 'notFound' ? <NotFound /> : ''}
+    </div>
+  )
 }
 
 Page.propTypes = {
@@ -991,9 +887,9 @@ Page.propTypes = {
   footerControl: PropTypes.func,
   headerControl: PropTypes.func,
   heroControl: PropTypes.func,
-  init404: PropTypes.bool,
-  initError: PropTypes.string,
-  initPage: PropTypes.object,
+  init404: PropTypes.bool, // for SSR
+  initError: PropTypes.string, // for SSR
+  initPage: PropTypes.object, // for SSR
   navigate: PropTypes.func.isRequired,
   onError: PropTypes.func,
   onNotFound: PropTypes.func,
