@@ -2,52 +2,39 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Page from './Page.jsx'
 
-class Footer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.page = React.createRef()
-  }
-
-  get cleanPath() {
+function Footer(props) {
+  const getCleanPath = () => {
     let path = '/home/footer/'
-    if (this.props.settings.footerPath.match(/\/footer\/$/) !== null) {
-      path = this.props.settings.footerPath
+    if (props.settings.footerPath.match(/\/footer\/$/) !== null) {
+      path = props.settings.footerPath
     }
     return path
   }
-
-  reload() {
-    this.page.current.reload()
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.show === false ? (
-          ''
-        ) : (
-          <div>
-            {this.props.editable ? (
-              <div className='font-weight-bold'>Footer: {this.cleanPath}</div>
-            ) : (
-              ''
-            )}
-            <Page
-              appRoot={this.props.appRoot}
-              editable={this.props.editable}
-              emitSave={this.props.emitSave}
-              fallbackSettings={this.props.settings}
-              navigate={this.props.navigate}
-              path={this.cleanPath}
-              token={this.props.token}
-              ref={this.page}
-              initPage={this.props.initPage}
-            />
-          </div>
-        )}
-      </div>
-    )
-  }
+  return (
+    <div>
+      {props.show === false ? (
+        ''
+      ) : (
+        <div>
+          {props.editable ? (
+            <div className='font-weight-bold'>Footer: {getCleanPath()}</div>
+          ) : (
+            ''
+          )}
+          <Page
+            appRoot={props.appRoot}
+            editable={props.editable}
+            emitSave={props.emitSave}
+            fallbackSettings={props.settings}
+            navigate={props.navigate}
+            path={getCleanPath()}
+            token={props.token}
+            initPage={props.initPage}
+          />
+        </div>
+      )}
+    </div>
+  )
 }
 
 Footer.propTypes = {
