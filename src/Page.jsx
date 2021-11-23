@@ -374,7 +374,7 @@ function Page(props) {
                 pageCopy
               )
               .then(() => {
-                helpers.loadSettings()
+                setWatchAction('loadSettings')
                 props.emitSave({
                   action: 'update-pageSettings',
                   pageId: pageCopy.id,
@@ -658,66 +658,64 @@ function Page(props) {
         // clear the state
         setStatus('loading')
         setPage(null)
-        setTimeout(() => {
-          // use pathOnRequest variable to prevent loading incorrect content
-          // pathonRequest will be compared to the current props path
-          // after axios.get resolves
-          let pathOnRequest = props.path
-          // get the page data by path
-          axios
-            .get(`${props.appRoot}/api/page/by-key/${path}`)
-            .then((response) => {
-              // if pathOnRequest does not match current props path,
-              // don't do anything, as the application has navigated
-              // to a different path
-              if (pathOnRequest !== props.path) {
-                return
-              }
-              // set the page state
-              const pg = response.data
-              setStatus('ok')
-              setPage(pg)
-              setTimeout(() => {
-                // load settings
-                helpers.loadSettings()
-                // communicate to parent component
-                if (props.setActivePage) {
-                  props.setActivePage(pg)
-                }
-                if (props.setActivePathname) {
-                  props.setActivePathname(props.path)
-                }
-                // set the title if page is not header, footer, nor hero
-                if (path.match(/\/(header|footer|hero)\/$/g) === null) {
-                  const settings = helpers.getSettings()
-                  let title = ''
-                  if (helpers.getTopLevelPageKey === 'home') {
-                    title = settings.siteTitle
-                  } else {
-                    title = `${response.data.title} | ${settings.siteTitle}`
-                  }
-                  document.title = title
-                }
-              }, 0)
-            })
-            .catch((e) => {
-              if (!test) {
-                console.error(e)
-              }
-              if (e.response && e.response.status === 404) {
-                // set notFound state on 404
-                setStatus('notFound')
-                // communicate to parent component
-                helpers.onNotFound()
+        // use pathOnRequest variable to prevent loading incorrect content
+        // pathonRequest will be compared to the current props path
+        // after axios.get resolves
+        let pathOnRequest = props.path
+        // get the page data by path
+        axios
+          .get(`${props.appRoot}/api/page/by-key/${path}`)
+          .then((response) => {
+            // if pathOnRequest does not match current props path,
+            // don't do anything, as the application has navigated
+            // to a different path
+            if (pathOnRequest !== props.path) {
+              return
+            }
+            // set the page state
+            const pg = response.data
+            setStatus('ok')
+            setPage(pg)
+            // load settings
+            if (!['header', 'footer', 'hero'].includes(pg.key)) {
+              setWatchAction('loadSettings')
+            }
+            // communicate to parent component
+            if (props.setActivePage) {
+              props.setActivePage(pg)
+            }
+            if (props.setActivePathname) {
+              props.setActivePathname(props.path)
+            }
+            // set the title if page is not header, footer, nor hero
+            if (path.match(/\/(header|footer|hero)\/$/g) === null) {
+              const settings = helpers.getSettings()
+              let title = ''
+              if (helpers.getTopLevelPageKey() === 'home') {
+                title = settings.siteTitle
               } else {
-                let errorMessage
-                try {
-                  errorMessage = e.response.data.error
-                } catch (e) {}
-                helpers.onError(errorMessage)
+                title = `${response.data.title} | ${settings.siteTitle}`
               }
-            })
-        }, 0)
+              document.title = title
+            }
+          })
+          .catch((e) => {
+            if (!test) {
+              console.error(e)
+            }
+            if (e.response && e.response.status === 404) {
+              // set notFound state on 404
+              setStatus('notFound')
+              // communicate to parent component
+              helpers.onNotFound()
+            } else {
+              let errorMessage
+              try {
+                errorMessage = e.response.data.error
+              } catch (e) {}
+              helpers.onError(errorMessage)
+            }
+          })
       },
       loadSettings: () => {
         // control showing header/footer/hero in parent App.jsx component
@@ -734,11 +732,9 @@ function Page(props) {
       onError: (errorMessage) => {
         setErrorMessage(errorMessage)
         setStatus('error')
-        setTimeout(() => {
-          if (props.onError) {
-            props.onError()
-          }
-        }, 0)
+        if (props.onError) {
+          props.onError()
+        }
       },
       onNotFound: () =>
         props.onNotFound ? props.onNotFound(props.path) : null,
@@ -777,6 +773,16 @@ function Page(props) {
       setPrevPath(props.path)
     }
   }, [props.path, prevPath, setPrevPath, helpers])
+
+  const [watchAction, setWatchAction] = React.useState(null)
+  React.useEffect(() => {
+    if (watchAction) {
+      if (watchAction === 'loadSettings') {
+        helpers.loadSettings()
+      }
+      setWatchAction(null)
+    }
+  }, [watchAction, setWatchAction, helpers, props.path])
 
   const ref = React.useRef() // needed for testing
   const settings = helpers.getSettings()
@@ -850,9 +856,7 @@ function Page(props) {
                 admin={props.editable}
                 navigate={(path) => {
                   setShowSettings(false)
-                  setTimeout(() => {
-                    props.navigate(path)
-                  }, 0)
+                  props.navigate(path)
                 }}
                 pageId={page.id}
                 page={page}
