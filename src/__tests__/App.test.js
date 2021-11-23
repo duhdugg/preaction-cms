@@ -952,6 +952,7 @@ test('edit page settings', async () => {
   userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
+  await waitFor(() => expect(result.getByText('Foo 1')).toBeInTheDocument())
   userEvent.click(result.getByText('Foo 1'))
   await waitFor(() => expect(result.getByText('Foo Page')).toBeInTheDocument())
   userEvent.click(result.container.querySelector('.nav-toggle-edit a'))

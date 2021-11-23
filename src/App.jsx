@@ -55,6 +55,8 @@ const SiteSettings = loadable(() => import('./settingsModules.js'), {
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
 
+const copyObj = (obj) => JSON.parse(JSON.stringify(obj))
+
 // this is needed so links in WYSIWYG content will go through navigate() correctly
 function setGlobalLinkHandler(linkHandler) {
   const findAnchor = (element) => {
@@ -86,26 +88,22 @@ function setGlobalLinkHandler(linkHandler) {
   }
 }
 
-class Router extends React.Component {
-  render() {
-    return ssr ? (
-      <StaticRouter
-        basename={this.props.basename}
-        location={this.props.location}
-        context={{}}
-      >
-        {this.props.children}
-      </StaticRouter>
-    ) : test ? (
-      <MemoryRouter initialEntries={[this.props.location]}>
-        {this.props.children}
-      </MemoryRouter>
-    ) : (
-      <BrowserRouter basename={this.props.basename}>
-        {this.props.children}
-      </BrowserRouter>
-    )
-  }
+function Router(props) {
+  return ssr ? (
+    <StaticRouter
+      basename={props.basename}
+      location={props.location}
+      context={{}}
+    >
+      {props.children}
+    </StaticRouter>
+  ) : test ? (
+    <MemoryRouter initialEntries={[props.location]}>
+      {props.children}
+    </MemoryRouter>
+  ) : (
+    <BrowserRouter basename={props.basename}>{props.children}</BrowserRouter>
+  )
 }
 Router.propTypes = {
   location: PropTypes.string,
@@ -113,222 +111,295 @@ Router.propTypes = {
   children: PropTypes.node,
 }
 
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      activePage: null,
-      activePathname: '',
-      admin: false, // is user logged in as admin?
-      authenticated: false, // is user logged in at all?
-      editable: false,
-      fallbackSettings: {},
-      navigate: null, // used by react-router Redirect component during render
-      newPage: {
-        key: '',
-        title: '',
-      },
-      redirect: null, // used by react-router Redirect component during render
-      show: {
-        header: true,
-        footer: true,
-        hero: false,
-        newPage: false, // for rendering the new page modal
-        settings: false, // for rendering the settings modal
-      },
-      siteMap: {}, // for generating the navigation menu
-      siteSettings: {
-        footerPath: '/home/footer/',
-        headerPath: '/home/header/',
-        heroPath: '/home/hero/',
-        siteTitle: '',
-        navbarTheme: 'dark',
-        navPosition: 'fixed-top',
-      },
-      token: '',
-      windowId: `${+new Date()}:${Math.random()}`,
-    }
-    this.settingsUpdateTimer = null // used to set a delay on settings updates
-    this.socket = null // for socket.io-enabled features
-    this.ref = React.createRef()
-
-    setGlobalLinkHandler((href) => {
-      if (!this.state.editable) {
-        this.navigate(href)
-      }
-    })
-
-    if (this.props.initPath) {
-      this.state.activePathname = this.props.initPath
-    }
-    if (this.props.initSettings) {
-      this.state.siteSettings = JSON.parse(
-        JSON.stringify(this.props.initSettings)
-      )
-    }
-    if (this.props.initPage) {
-      this.state.activePage = JSON.parse(JSON.stringify(this.props.initPage))
-      this.state.siteMap = JSON.parse(
-        JSON.stringify(this.props.initPage.siteMap || {})
-      )
-      this.state.fallbackSettings = JSON.parse(
-        JSON.stringify(this.props.initPage.fallbackSettings || {})
-      )
-    }
-  }
-
-  // calls the server to add a page to the database
-  addPage(page) {
-    if (page.key) {
-      axios
-        .post(`${this.root}/api/page?token=${this.state.token}`, page)
-        .then((response) => {
-          if (response.data) {
-            this.loadSiteMap()
-          }
-        })
-        .then(() => {
-          this.emitSave({ action: 'add-page' })
-          if (this.state.activePage) {
-            this.ref.current.querySelector('main .page').reload()
-          }
-        })
-    }
-  }
-
-  // hydrates values of a new page object before calling addPage
-  createPage(newPage) {
-    let key = newPage.key
-    if (!key.replace(/-/gi, '')) {
-      return
-    }
-    let pageType = 'content'
-    let parentId = null
-    if (this.state.activePage) {
-      if (this.state.activePage.key !== 'home') {
-        parentId = this.state.activePage.id
-      }
-    }
-    let page = {
-      key,
-      title: newPage.title,
-      pageType,
-      parentId,
-    }
-    this.addPage(page)
-  }
-
-  deletePage(page) {
-    if (this.editable) {
-      axios
-        .delete(`${this.root}/api/page/${page.id}?token=${this.state.token}`)
-        .then((response) => {
-          if (response.status === 200) {
-            this.setState(
-              (state) => {
-                state.activePage = null
-              },
-              () => {
-                this.redirect('..')
-                this.emitSave({ action: 'delete-page', pageId: page.id })
+function App(props) {
+  const [activePage, setActivePage] = React.useState(
+    props.initPage ? copyObj(props.initPage) : null
+  )
+  const [activePathname, setActivePathname] = React.useState(
+    props.initPath || ''
+  )
+  const [admin, setAdmin] = React.useState(false)
+  const [authenticated, setAuthenticated] = React.useState(false)
+  const [editable, setEditable] = React.useState(false)
+  const [fallbackSettings, setFallbackSettings] = React.useState(
+    props.initPage && props.initPage.fallbackSettings
+      ? copyObj(props.initPage.fallbackSettings)
+      : {}
+  )
+  const [navigate, setNavigate] = React.useState(null)
+  const [newPage, setNewPage] = React.useState({ key: '', title: '' })
+  const [redirect, setRedirect] = React.useState(null)
+  const [show, setShow] = React.useState({
+    header: true,
+    footer: true,
+    hero: false,
+    newPage: false,
+    settings: false,
+  })
+  const [siteMap, setSiteMap] = React.useState(
+    props.initPage && props.initPage.siteMap
+      ? copyObj(props.initPage.siteMap)
+      : {}
+  )
+  const [siteSettings, setSiteSettings] = React.useState(
+    props.initSettings
+      ? copyObj(props.initSettings)
+      : {
+          footerPath: '/home/footer/',
+          headerPath: '/home/header/',
+          heroPath: '/home/hero/',
+          siteTitle: '',
+          navbarTheme: 'dark',
+          navPosition: 'fixed-top',
+        }
+  )
+  const [token, setToken] = React.useState('')
+  const [windowId] = React.useState(`${+new Date()}:${Math.random()}`)
+  const [settingsUpdateTimer, setSettingsUpdateTimer] = React.useState(null)
+  const [socket, setSocket] = React.useState(null)
+  const helpers = React.useMemo(
+    () => ({
+      addPage: (page) => {
+        if (page.key) {
+          axios
+            .post(`${helpers.getRoot()}/api/page?token=${token}`, page)
+            .then((response) => {
+              helpers.emitSave({ action: 'add-page' })
+              if (activePage) {
+                ref.current.querySelector('main .page').reload()
               }
-            )
+            })
+        }
+      },
+      createPage: (newPage) => {
+        let key = newPage.key
+        if (!key.replace(/-/gi, '')) {
+          return
+        }
+        let pageType = 'content'
+        let parentId = null
+        if (activePage) {
+          if (activePage.key !== 'home') {
+            parentId = activePage.id
           }
-        })
-    }
-  }
-
-  get editable() {
-    return this.state.authenticated && this.state.admin && this.state.editable
-  }
-
-  // tell the server to reload all listening clients
-  emitForceReload(callback = () => {}) {
-    if (this.props.socketMode) {
-      this.socket.emit('force-reload', () => {
-        callback()
-      })
-    } else {
-      callback()
-    }
-  }
-
-  // tell the server that an edit was made
-  emitSave(data = {}, callback = () => {}) {
-    if (this.props.socketMode) {
-      this.socket.emit(
-        'save',
-        Object.assign({}, data, { windowId: this.state.windowId }),
-        () => {
-          this.loadSiteMap()
+        }
+        let page = {
+          key,
+          title: newPage.title,
+          pageType,
+          parentId,
+        }
+        helpers.addPage(page)
+      },
+      deletePage: (page) => {
+        if (helpers.getEditable()) {
+          axios
+            .delete(`${helpers.getRoot()}/api/page/${page.id}?token=${token}`)
+            .then((response) => {
+              if (response.status === 200) {
+                setActivePage(null)
+                const a = { action: 'delete-page', pageId: page.id }
+                setWatchAction(a)
+              }
+            })
+        }
+      },
+      emitForceReload: (callback = () => {}) => {
+        if (props.socketMode) {
+          socket.emit('force-reload', () => {
+            callback()
+          })
+        } else {
           callback()
         }
-      )
-    } else {
-      this.loadSiteMap()
-      callback()
-    }
-  }
-
-  // these are settings which the application falls back on
-  // when a page doesn't have an override for it
-  get fallbackSettings() {
-    let s = Object.assign({}, this.state.siteSettings)
-    if (
-      this.state.fallbackSettings &&
-      !['/', '/home/'].includes(this.state.activePathname)
-    ) {
-      Object.assign(s, this.state.fallbackSettings)
-    }
-    return s
-  }
-
-  // for navigation
-  get menu() {
-    let menu = []
-    if (this.settings.navPosition !== 'fixed-top') {
-      menu.push({
-        name: 'Home',
-        className: 'nav-page-home',
-        href: `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`,
-        component: Link,
-        order: -100,
-        active:
-          this.state.activePathname === '/' ||
-          this.state.activePathname === '/home/' ||
-          this.state.activePathname === `/${this.siteMap.path}/`,
-        onClick: (e) => {
-          if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
-            e.preventDefault()
-            this.navigate(
-              `/${this.siteMap.path}${this.siteMap.key === 'home' ? '' : '/'}`
-            )
-          }
-        },
-      })
-    }
-    this.siteMap.children.forEach((page) => {
-      if (page.settings.includeInNav) {
-        let subMenu = []
-        page.children.forEach((pg) => {
-          if (pg.settings.includeInNav) {
-            subMenu.push({
-              name: pg.title,
-              className: `nav-page-${page.key}-subpage-${pg.key}`,
-              href: `/${pg.path}/`,
+      },
+      emitSave: (data = {}, callback = () => {}) => {
+        if (props.socketMode) {
+          socket.emit('save', Object.assign({}, data, { windowId }), () => {
+            helpers.loadSiteMap()
+            callback()
+          })
+        } else {
+          helpers.loadSiteMap()
+          callback()
+        }
+      },
+      getEditable: () => authenticated && admin && editable,
+      getFallbackSettings: () => {
+        let s = Object.assign({}, siteSettings)
+        if (fallbackSettings && !['/', '/home/'].includes(activePathname)) {
+          Object.assign(s, fallbackSettings)
+        }
+        return s
+      },
+      getMenu: () => {
+        let menu = []
+        const settings = helpers.getSettings()
+        const sm = helpers.getSiteMap()
+        const root = helpers.getRoot()
+        if (settings.navPosition !== 'fixed-top') {
+          menu.push({
+            name: 'Home',
+            className: 'nav-page-home',
+            href: `/${sm.path}${sm.key === 'home' ? '' : '/'}`,
+            component: Link,
+            order: -100,
+            active:
+              activePathname === '/' ||
+              activePathname === '/home/' ||
+              activePathname === `/${sm.path}/`,
+            onClick: (e) => {
+              if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                e.preventDefault()
+                helpers.navigate(`/${sm.path}${sm.key === 'home' ? '' : '/'}`)
+              }
+            },
+          })
+        }
+        sm.children.forEach((page) => {
+          if (page.settings.includeInNav) {
+            let subMenu = []
+            page.children.forEach((pg) => {
+              if (pg.settings.includeInNav) {
+                subMenu.push({
+                  name: pg.title,
+                  className: `nav-page-${page.key}-subpage-${pg.key}`,
+                  href: `/${pg.path}/`,
+                  component: NavLink,
+                  // active: activePathname.indexOf(`/${pg.path}/`) === 0,
+                  order: Number(pg.settings.navOrdering || 0),
+                  onClick: (e) => {
+                    if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                      e.preventDefault()
+                      helpers.navigate(`/${pg.path}/`)
+                    }
+                  },
+                })
+              }
+            })
+            subMenu.sort((a, b) => {
+              let retval = 0
+              if (a.name < b.name) {
+                retval = -1
+              } else if (a.name > b.name) {
+                retval = 1
+              }
+              let aOrder = a.order
+              let bOrder = b.order
+              if (aOrder === undefined) {
+                aOrder = 0
+              }
+              if (bOrder === undefined) {
+                bOrder = 0
+              }
+              if (aOrder < bOrder) {
+                retval = -1
+              } else if (aOrder > bOrder) {
+                retval = 1
+              }
+              return retval
+            })
+            menu.push({
+              name: page.title,
+              className: `nav-page-${page.key}`,
+              href: `/${page.path}/`,
               component: NavLink,
-              // active: this.state.activePathname.indexOf(`/${pg.path}/`) === 0,
-              order: Number(pg.settings.navOrdering || 0),
+              // active:
+              //   activePathname === `/${page.path}/` ||
+              //   activePathname.indexOf(`/${page.path}/`) === 0,
+              order: Number(page.settings.navOrdering || 0),
               onClick: (e) => {
                 if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
                   e.preventDefault()
-                  this.navigate(`/${pg.path}/`)
+                  helpers.navigate(`/${page.path}/`)
                 }
               },
+              subMenu: subMenu.length ? subMenu : null,
             })
           }
         })
-        subMenu.sort((a, b) => {
+        if (admin) {
+          let adminSubmenu = []
+          adminSubmenu.push({
+            name: 'Logout',
+            className: 'nav-logout',
+            onClick: (e) => {
+              e.preventDefault()
+              helpers.logout()
+            },
+          })
+
+          menu.push({
+            className: 'nav-toggle-edit',
+            name: (
+              <span>{editable ? <FaToggleOn /> : <FaToggleOff />} Edit</span>
+            ),
+            onClick: (e) => {
+              e.preventDefault()
+              helpers.toggleEditMode()
+            },
+            toggleParent: false,
+            order: 100,
+          })
+
+          if (editable) {
+            menu.push({
+              className: 'nav-new-page',
+              name: (
+                <span>
+                  <MdCreate /> New Page
+                </span>
+              ),
+              onClick: (e) => {
+                e.preventDefault()
+                helpers.toggleNewPage()
+              },
+              order: 200,
+            })
+            menu.push({
+              className: 'nav-settings',
+              name: (
+                <span>
+                  <MdSettings /> Settings
+                </span>
+              ),
+              onClick: (e) => {
+                e.preventDefault()
+                helpers.toggleSettings()
+              },
+              order: 300,
+            })
+          }
+
+          menu.push({
+            className: 'nav-user',
+            name: (
+              <span>
+                <MdPerson /> User
+              </span>
+            ),
+            subMenu: adminSubmenu,
+            order: 400,
+          })
+        }
+
+        for (let key of Object.keys(menuExtensions)) {
+          menu.push(
+            Object.assign(
+              { className: `nav-extension-${key}` },
+              menuExtensions[key]({
+                appRoot: root,
+                editable,
+                navigate: helpers.navigate,
+                page: activePage,
+                settings,
+                token,
+              })
+            )
+          )
+        }
+
+        menu.sort((a, b) => {
           let retval = 0
           if (a.name < b.name) {
             retval = -1
@@ -350,1007 +421,782 @@ class App extends React.Component {
           }
           return retval
         })
-        menu.push({
-          name: page.title,
-          className: `nav-page-${page.key}`,
-          href: `/${page.path}/`,
-          component: NavLink,
-          // active:
-          //   this.state.activePathname === `/${page.path}/` ||
-          //   this.state.activePathname.indexOf(`/${page.path}/`) === 0,
-          order: Number(page.settings.navOrdering || 0),
-          onClick: (e) => {
-            if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
-              e.preventDefault()
-              this.navigate(`/${page.path}/`)
-            }
-          },
-          subMenu: subMenu.length ? subMenu : null,
-        })
-      }
-    })
-    if (this.state.admin) {
-      let adminSubmenu = []
-      adminSubmenu.push({
-        name: 'Logout',
-        className: 'nav-logout',
-        onClick: (e) => {
-          e.preventDefault()
-          this.logout()
-        },
-      })
-
-      menu.push({
-        className: 'nav-toggle-edit',
-        name: (
-          <span>
-            {this.state.editable ? <FaToggleOn /> : <FaToggleOff />} Edit
-          </span>
-        ),
-        onClick: (e) => {
-          e.preventDefault()
-          this.toggleEditMode()
-        },
-        toggleParent: false,
-        order: 100,
-      })
-
-      if (this.state.editable) {
-        menu.push({
-          className: 'nav-new-page',
-          name: (
-            <span>
-              <MdCreate /> New Page
-            </span>
-          ),
-          onClick: (e) => {
-            e.preventDefault()
-            this.toggleNewPage()
-          },
-          order: 200,
-        })
-        menu.push({
-          className: 'nav-settings',
-          name: (
-            <span>
-              <MdSettings /> Settings
-            </span>
-          ),
-          onClick: (e) => {
-            e.preventDefault()
-            this.toggleSettings()
-          },
-          order: 300,
-        })
-      }
-
-      menu.push({
-        className: 'nav-user',
-        name: (
-          <span>
-            <MdPerson /> User
-          </span>
-        ),
-        subMenu: adminSubmenu,
-        order: 400,
-      })
-    }
-
-    for (let key of Object.keys(menuExtensions)) {
-      menu.push(
-        Object.assign(
-          { className: `nav-extension-${key}` },
-          menuExtensions[key]({
-            appRoot: this.root,
-            editable: this.state.editable,
-            navigate: this.navigate.bind(this),
-            page: this.state.activePage,
-            settings: this.settings,
-            token: this.state.token,
-          })
-        )
-      )
-    }
-
-    menu.sort((a, b) => {
-      let retval = 0
-      if (a.name < b.name) {
-        retval = -1
-      } else if (a.name > b.name) {
-        retval = 1
-      }
-      let aOrder = a.order
-      let bOrder = b.order
-      if (aOrder === undefined) {
-        aOrder = 0
-      }
-      if (bOrder === undefined) {
-        bOrder = 0
-      }
-      if (aOrder < bOrder) {
-        retval = -1
-      } else if (aOrder > bOrder) {
-        retval = 1
-      }
-      return retval
-    })
-    return menu
-  }
-
-  // this is used to set a subpath configuration for reverse proxies
-  get root() {
-    return this.props.root || ''
-  }
-
-  // page overrides, mapped to fallback settings
-  get settings() {
-    let s = Object.assign({}, this.fallbackSettings)
-    if (
-      this.state.activePage &&
-      this.state.activePathname !== '/home' &&
-      this.state.activePathname !== '/'
-    ) {
-      Object.assign(s, this.state.activePage.settings)
-    }
-    return s
-  }
-
-  // used when generating the navigation menu
-  get siteMap() {
-    let sm = {
-      key: 'home',
-      path: '',
-      children: [],
-    }
-    Object.assign(sm, this.state.siteMap)
-    return sm
-  }
-
-  // for new page modal
-  getNewPageValueHandler(key) {
-    return (value) => {
-      this.setState((state) => {
-        state.newPage[key] = value
+        return menu
+      },
+      getNewPageValueHandler: (key) => (value) => {
+        const np = copyObj(newPage)
+        np[key] = value
         if (key === 'title') {
-          state.newPage.key = getSaneKey(value)
+          np.key = getSaneKey(value)
         }
-        return state
-      })
-    }
-  }
-
-  // for site settings modal
-  getSettingsValueHandler(key) {
-    return (value) => {
-      if (key === 'siteTitle') {
-        let splitTitle = document.title.split(' | ')
-        if (splitTitle.length < 2) {
-          document.title = value
-        } else {
-          document.title = `${splitTitle[0]} | ${value}`
+        setNewPage(np)
+      },
+      getRoot: () => props.root || '',
+      getSettings: () => {
+        let s = Object.assign({}, helpers.getFallbackSettings())
+        if (
+          activePage &&
+          activePathname !== '/home' &&
+          activePathname !== '/'
+        ) {
+          Object.assign(s, activePage.settings)
         }
-      }
-      this.setState(
-        (state) => {
-          state.siteSettings[key] = value
-          return state
-        },
-        () => {
-          clearTimeout(this.settingsUpdateTimer)
-          this.settingsUpdateTimer = setTimeout(() => {
-            axios
-              .post(
-                `${this.root}/api/settings?token=${this.state.token}`,
-                this.state.siteSettings
-              )
-              .then(() => {
-                this.emitSave({ action: 'update-settings' })
-              })
-          }, 1000)
-        }
-      )
-    }
-  }
-
-  // so page components can control showing the header, footer, and hero
-  getShowPropertyValueHandler(key) {
-    return (value) => {
-      this.setState((state) => {
-        state.show[key] = value
-        return state
-      })
-    }
-  }
-
-  // handler for page api request errors
-  handlePageError() {
-    this.setState((state) => {
-      state.activePage = null
-      return state
-    })
-  }
-
-  // handler for 404s
-  handleNotFound(path) {
-    this.setState((state) => {
-      state.activePage = null
-      return state
-    })
-    this.loadSiteMap(path)
-    this.loadSettings(path)
-  }
-
-  loadSession() {
-    return new Promise((resolve, reject) => {
-      let conditionallyResolve = () => {
-        if (this.state.authenticated && this.state.token) {
-          resolve()
-        }
-      }
-      axios.get(`${this.root}/api/session`).then((response) => {
-        if (response.data && response.data.authenticated) {
-          this.setState((state) => {
-            state.authenticated = true
-            if (response.data.admin) {
-              state.admin = true
+        return s
+      },
+      getShowPropertyValueHandler: (key) => (value) => {
+        const sh = copyObj(show)
+        sh[key] = value
+        setShow(sh)
+      },
+      getSettingsValueHandler: (key) => {
+        return (value) => {
+          if (key === 'siteTitle') {
+            let splitTitle = document.title.split(' | ')
+            if (splitTitle.length < 2) {
+              document.title = value
+            } else {
+              document.title = `${splitTitle[0]} | ${value}`
             }
-            return state
-          }, conditionallyResolve)
-        }
-        if (response.data && response.data.token) {
-          this.setState((state) => {
-            state.token = response.data.token
-            return state
-          }, conditionallyResolve)
-        }
-      })
-    })
-  }
-
-  loadSettings(path = '') {
-    axios.get(`${this.root}/api/settings`).then((response) => {
-      if (response.data) {
-        this.setState((state) => {
-          state.siteSettings = response.data
-          return state
-        })
-      }
-    })
-    // for 404s
-    if (path) {
-      axios
-        .get(`${this.root}/api/page/settings/by-key${path}`)
-        .then((response) => {
-          if (response.data) {
-            this.setFallbackSettings(response.data)
           }
-        })
-    }
-  }
-
-  loadSiteMap(path = '') {
-    return new Promise((resolve, reject) => {
-      if (this.state.activePage && this.state.activePage.id) {
-        axios
-          .get(`${this.root}/api/page/${this.state.activePage.id}/sitemap`)
-          .then((response) => {
-            this.setState(
-              (state) => {
-                state.siteMap = response.data
-                return state
-              },
-              () => {
-                resolve(this.state.siteMap)
-              }
-            )
-          })
-      } else if (path) {
-        // for 404s
-        axios
-          .get(`${this.root}/api/page/sitemap/by-key${path}`)
-          .then((response) => {
-            this.setState((state) => {
-              state.siteMap = response.data
-              return state
-            })
-          })
-      }
-    })
-  }
-
-  logout() {
-    axios.get(`${this.root}/api/logout?token=${this.state.token}`).then(() => {
-      this.setState((state) => {
-        state.admin = false
-        state.authenticated = false
-        state.editable = false
-        return state
-      })
-    })
-  }
-
-  navigate(href) {
-    if (absoluteUrl(href)) {
-      this.navigateAbsolute(href)
-    } else {
-      this.navigateRelative(href)
-    }
-  }
-
-  navigateAbsolute(url) {
-    const launch = () => {
-      if (this.settings.absoluteNavBehavior === 'new-window') {
-        window.open(url, '_blank', 'noreferrer noopener')
-      } else {
-        window.location = url
-      }
-    }
-    if (new URL(url).origin === globalThis.location.origin) {
-      launch()
-    } else {
-      if (
-        globalThis.gtag &&
-        globalThis.gtagId &&
-        globalThis.google_tag_manager
-      ) {
-        globalThis.gtag('event', 'click', {
-          event_category: 'outbound',
-          event_label: url,
-          transport_type: 'beacon',
-          event_callback: (id) => {
-            if (id === globalThis.gtagId) {
-              launch()
-            }
-          },
-        })
-      } else {
-        launch()
-      }
-    }
-  }
-
-  navigateRelative(path) {
-    if (path.match(/\/$/) === null) {
-      path = path + '/'
-    }
-    const regex = new RegExp(`^${this.root}`)
-    if (path.match(regex)) {
-      path = path.replace(regex, '')
-    }
-    if (path !== this.state.activePathname) {
-      this.setState(
-        (state) => {
-          state.navigate = path
-          state.activePathname = path
-          return state
-        },
-        () => {
-          this.setState(
-            (state) => {
-              state.navigate = false
-              return state
-            },
-            () => {
-              // track navigation to login
-              if (path === '/login/') {
-                this.trackPageView()
-              }
-            }
+          const ssCopy = copyObj(siteSettings)
+          ssCopy[key] = value
+          setSiteSettings(ssCopy)
+          clearTimeout(settingsUpdateTimer)
+          setSettingsUpdateTimer(
+            setTimeout(() => {
+              axios
+                .post(
+                  `${helpers.getRoot()}/api/settings?token=${token}`,
+                  ssCopy
+                )
+                .then(() => {
+                  helpers.emitSave({ action: 'update-settings' })
+                })
+            }, 1000)
           )
         }
-      )
-    }
-  }
-
-  toggleEditMode() {
-    this.setState((state) => {
-      state.editable = !state.editable
-      return state
-    })
-  }
-
-  toggleSettings() {
-    if (
-      this.state.activePathname === '/home/' ||
-      this.state.activePathname === '/'
-    ) {
-      this.setState((state) => {
-        state.show.settings = !state.show.settings
-        return state
-      })
-    } else if (this.ref && this.ref.current) {
-      this.ref.current.querySelector('main .page').toggleSettings()
-    }
-  }
-
-  toggleNewPage() {
-    this.setState((state) => {
-      state.show.newPage = !state.show.newPage
-      return state
-    })
-  }
-
-  redirect(path) {
-    this.setState(
-      (state) => {
-        state.redirect = path
-        return state
       },
-      () => {
-        this.setState((state) => {
-          state.redirect = false
-          return state
+      getSiteMap: () => {
+        let sm = {
+          key: 'home',
+          path: '',
+          children: [],
+        }
+        Object.assign(sm, siteMap)
+        return sm
+      },
+      handlePageError: () => setActivePage(null),
+      handleNotFound: (path) => {
+        setActivePage(null)
+        helpers.loadSiteMap(path)
+        helpers.loadSettings(path)
+      },
+      loadSession: () => {
+        let a, t
+        return new Promise((resolve, reject) => {
+          let conditionallyResolve = () => {
+            if (a && t) {
+              resolve()
+            }
+          }
+          axios.get(`${helpers.getRoot()}/api/session`).then((response) => {
+            if (response.data && response.data.authenticated) {
+              setAuthenticated(true)
+              if (response.data.admin) {
+                setAdmin(true)
+                a = true
+              }
+              conditionallyResolve()
+            }
+            if (response.data && response.data.token) {
+              t = response.data.token
+              setToken(response.data.token)
+              conditionallyResolve()
+            }
+          })
         })
-      }
-    )
-  }
-
-  reload(data = { action: 'all' }) {
-    switch (data.action) {
-      case 'all':
-        this.loadSettings()
-        this.reloadRef('activePage')
-        this.reloadRef('header')
-        this.reloadRef('footer')
-        this.reloadRef('hero')
-        break
-      case 'add-page':
-        this.reloadRef('activePage')
-        break
-      case 'delete-page':
-        this.reloadRef('activePage')
-        break
-      case 'update-settings':
-        this.loadSettings()
-        this.reloadRef('activePage')
-        break
-      default:
-        const activePage =
-          this.ref && this.ref.current
-            ? this.ref.current.querySelector('main .page').getPage()
-            : null
-        const headerPage =
-          this.ref && this.ref.current
-            ? this.ref.current.querySelector('header .page').getPage()
-            : null
-        const footerPage =
-          this.ref && this.ref.current
-            ? this.ref.current.querySelector('footer .page').getPage()
-            : null
-        const heroPage =
-          this.ref && this.ref.current
-            ? this.ref.current.querySelector('.pxn-hero .page').getPage()
-            : null
-        if (activePage && data.pageId === activePage.id) {
-          this.reloadRef('activePage')
-        } else if (headerPage && data.pageId === headerPage.id) {
-          this.reloadRef('header')
-        } else if (footerPage && data.pageId === footerPage.id) {
-          this.reloadRef('footer')
-        } else if (heroPage && data.pageId === heroPage.id) {
-          this.reloadRef('hero')
+      },
+      loadSettings: (path = '') => {
+        const root = helpers.getRoot()
+        axios.get(`${root}/api/settings`).then((response) => {
+          if (response.data) {
+            setSiteSettings(response.data)
+          }
+        })
+        // for 404s
+        if (path) {
+          axios
+            .get(`${root}/api/page/settings/by-key${path}`)
+            .then((response) => {
+              if (response.data) {
+                setFallbackSettings(response.data)
+              }
+            })
         }
-        break
-    }
-  }
-
-  reloadRef(key) {
-    const pages = {
-      activePage: this.ref.current.querySelector('main .page'),
-      header: this.ref.current.querySelector('header .page'),
-      footer: this.ref.current.querySelector('footer .page'),
-      hero: this.ref.current.querySelector('.pxn-hero .page'),
-    }
-    if (pages[key]) {
-      pages[key].reload()
-    }
-  }
-
-  setActivePage(page) {
-    this.setState((state) => {
-      state.activePage = page
-      state.siteMap = JSON.parse(JSON.stringify(page.siteMap || {}))
-      state.fallbackSettings = JSON.parse(
-        JSON.stringify(page.fallbackSettings || {})
-      )
-      return state
-    })
-  }
-
-  setActivePathname(pathname) {
-    this.setState((state) => {
-      state.activePathname = pathname
-      return state
-    })
-  }
-
-  setFallbackSettings(settings) {
-    this.setState((state) => {
-      state.fallbackSettings = settings
-      return state
-    })
-  }
-
-  setToken(token) {
-    this.setState({ token })
-  }
-
-  submitNewPage() {
-    this.createPage(this.state.newPage)
-    this.toggleNewPage()
-    this.setState((state) => {
-      state.newPage.title = ''
-      state.newPage.key = ''
-      return state
-    })
-  }
-
-  trackPageView() {
-    if (globalThis.gtag && globalThis.gtagId) {
-      globalThis.gtag('config', globalThis.gtagId, {
-        page_path: globalThis.location.pathname,
-      })
-    }
-  }
-
-  render() {
-    const navPositionClassName = {
-      'fixed-top': 'nav-position-fixed-top',
-      'above-header': 'nav-position-above-header',
-      'below-header': 'nav-position-below-header',
-    }[this.settings.navPosition]
-    const navActiveSubmenuThemeClassName = {
-      blue: 'nav-active-submenu-theme-blue',
-      cyan: 'nav-active-submenu-theme-cyan',
-      danger: 'nav-active-submenu-theme-danger',
-      dark: 'nav-active-submenu-theme-dark',
-      gray: 'nav-active-submenu-theme-gray',
-      'gray-dark': 'nav-active-submenu-theme-gray-dark',
-      green: 'nav-active-submenu-theme-green',
-      indigo: 'nav-active-submenu-theme-indigo',
-      info: 'nav-active-submenu-theme-info',
-      orange: 'nav-active-submenu-theme-orange',
-      pink: 'nav-active-submenu-theme-pink',
-      purple: 'nav-active-submenu-theme-purple',
-      primary: 'nav-active-submenu-theme-primary',
-      red: 'nav-active-submenu-theme-red',
-      secondary: 'nav-active-submenu-theme-secondary',
-      success: 'nav-active-submenu-theme-success',
-      teal: 'nav-active-submenu-theme-teal',
-      warning: 'nav-active-submenu-theme-warning',
-      yellow: 'nav-active-submenu-theme-yellow',
-    }[this.settings.navActiveSubmenuTheme]
-    const navActiveTabThemeClassName = {
-      blue: 'nav-active-tab-theme-blue',
-      cyan: 'nav-active-tab-theme-cyan',
-      danger: 'nav-active-tab-theme-danger',
-      dark: 'nav-active-tab-theme-dark',
-      gray: 'nav-active-tab-theme-gray',
-      'gray-dark': 'nav-active-tab-theme-gray-dark',
-      indigo: 'nav-active-tab-theme-indigo',
-      info: 'nav-active-tab-theme-info',
-      orange: 'nav-active-tab-theme-orange',
-      light: 'nav-active-tab-theme-light',
-      pink: 'nav-active-tab-theme-pink',
-      purple: 'nav-active-tab-theme-purple',
-      primary: 'nav-active-tab-theme-primary',
-      red: 'nav-active-tab-theme-red',
-      secondary: 'nav-active-tab-theme-secondary',
-      success: 'nav-active-tab-theme-success',
-      teal: 'nav-active-tab-theme-teal',
-      warning: 'nav-active-tab-theme-warning',
-      white: 'nav-active-tab-theme-white',
-      yellow: 'nav-active-tab-theme-yellow',
-    }[this.settings.navActiveTabTheme]
-    return (
-      <div
-        className={joinClassNames(
-          'App',
-          this.state.editable ? 'editable' : 'non-editable',
-          navPositionClassName,
-          navActiveSubmenuThemeClassName,
-          navActiveTabThemeClassName
-        )}
-        ref={this.ref}
-      >
-        <Router basename={this.root} location={this.state.activePathname}>
-          <div>
-            {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
-            {this.state.navigate ? (
-              <Redirect to={this.state.navigate} push />
-            ) : (
-              ''
-            )}
-            <Boilerplate
-              navBar={
-                this.settings.navPosition === 'fixed-top' ? (
-                  <NavBar
-                    fluid={this.settings.maxWidthNav}
-                    fixedTo='top'
-                    theme={this.settings.navbarTheme}
-                    brand={{
-                      name: this.settings.siteTitle,
-                      href: `/${this.siteMap.path}${
-                        this.siteMap.key === 'home' ? '' : '/'
-                      }`,
-                      onClick: (e) => {
-                        if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
-                          e.preventDefault()
-                          this.navigate(
-                            `/${this.siteMap.path}${
-                              this.siteMap.key === 'home' ? '' : '/'
-                            }`
-                          )
-                        }
-                      },
-                    }}
-                    menu={this.menu}
-                  />
-                ) : undefined
-              }
-              header={
-                <div className={getLinkClassName(this.settings.headerTheme)}>
-                  {this.settings.navPosition === 'above-header' ? (
-                    <Nav
-                      menu={this.menu}
-                      type={this.settings.navType}
-                      align={this.settings.navAlignment}
-                      justify={this.settings.navSpacing === 'justify'}
-                      fill={this.settings.navSpacing === 'fill'}
-                      collapsible={this.settings.navCollapsible}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  <Header
-                    appRoot={this.root}
-                    editable={this.state.editable}
-                    emitSave={this.emitSave.bind(this)}
-                    navigate={this.navigate.bind(this)}
-                    settings={this.settings}
-                    show={this.settings.showHeader}
-                    token={this.state.token}
-                    initPage={
-                      this.props.initPage
-                        ? this.props.initPage.header
-                        : undefined
-                    }
-                  />
-                  {this.settings.navPosition === 'below-header' ? (
-                    <Nav
-                      menu={this.menu}
-                      type={this.settings.navType}
-                      align={this.settings.navAlignment}
-                      justify={this.settings.navSpacing === 'justify'}
-                      fill={this.settings.navSpacing === 'fill'}
-                      collapsible={this.settings.navCollapsible}
-                    />
-                  ) : undefined}
-                </div>
-              }
-              hero={
-                this.settings.showHero ? (
-                  <div
-                    className={getLinkClassName(
-                      this.settings.heroTheme || this.settings.headerTheme
-                    )}
-                  >
-                    <Hero
-                      appRoot={this.root}
-                      editable={this.state.editable}
-                      emitSave={this.emitSave.bind(this)}
-                      navigate={this.navigate.bind(this)}
-                      settings={this.settings}
-                      show={this.settings.showHero}
-                      token={this.state.token}
-                      initPage={
-                        this.props.initPage
-                          ? this.props.initPage.hero
-                          : undefined
-                      }
-                    />
-                  </div>
-                ) : (
-                  ''
-                )
-              }
-              heroPosition={this.settings.heroPosition}
-              heroTheme={this.settings.heroTheme || undefined}
-              heroGradient={this.settings.heroGradient || false}
-              headerTheme={this.settings.headerTheme || undefined}
-              headerGradient={this.settings.headerGradient || false}
-              mainTheme={this.settings.mainTheme || undefined}
-              mainGradient={this.settings.mainGradient || false}
-              footerTheme={this.settings.footerTheme || undefined}
-              footerGradient={this.settings.footerGradient || false}
-              footer={
-                <div className={getLinkClassName(this.settings.footerTheme)}>
-                  <Footer
-                    appRoot={this.root}
-                    editable={this.state.editable}
-                    emitSave={this.emitSave.bind(this)}
-                    navigate={this.navigate.bind(this)}
-                    settings={this.settings}
-                    show={this.settings.showFooter}
-                    token={this.state.token}
-                    initPage={
-                      this.props.initPage
-                        ? this.props.initPage.footer
-                        : undefined
-                    }
-                  />
-                </div>
-              }
-              fluid={{
-                footerContainer: this.settings.maxWidthFooterContainer,
-                headerContainer: this.settings.maxWidthHeaderContainer,
-                heroContainer: this.settings.maxWidthHeroContainer,
-                mainContainer: this.settings.maxWidthMainContainer,
-              }}
-            >
-              <div
-                className={joinClassNames(
-                  'main-body',
-                  getLinkClassName(this.settings.mainTheme || '')
-                )}
-              >
-                {this.state.editable ? <hr /> : ''}
-                {this.state.editable ? (
-                  <div className='font-weight-bold'>
-                    Main: {this.state.activePathname}
-                  </div>
-                ) : (
-                  ''
-                )}
-                <Switch>
-                  <Route exact path='/'>
-                    <Page
-                      appRoot={this.root}
-                      editable={this.state.editable}
-                      emitSave={this.emitSave.bind(this)}
-                      fallbackSettings={this.fallbackSettings}
-                      path='/home/'
-                      headerControl={this.getShowPropertyValueHandler('header')}
-                      footerControl={this.getShowPropertyValueHandler('footer')}
-                      heroControl={this.getShowPropertyValueHandler('hero')}
-                      navigate={this.navigate.bind(this)}
-                      setActivePathname={this.setActivePathname.bind(this)}
-                      setActivePage={this.setActivePage.bind(this)}
-                      token={this.state.token}
-                      initPage={this.props.initPage}
-                    />
-                  </Route>
-                  <Route exact path='/login'>
-                    <div className='login'>
-                      <Login
-                        appRoot={this.root}
-                        loadSession={this.loadSession.bind(this)}
-                        navigate={this.navigate.bind(this)}
-                        settings={this.state.siteSettings}
-                        setToken={this.setToken.bind(this)}
-                        token={this.state.token}
-                      />
-                    </div>
-                  </Route>
-                  <Route
-                    render={({ location }) => {
-                      const root = new RegExp(`^${this.root}`)
-                      const pathname = location.pathname.replace(root, '')
-                      const splitPath = pathname
-                        .replace(/(^\/|\/$)/g, '')
-                        .split('/')
-                      const key = splitPath[splitPath.length - 1]
-                      switch (key) {
-                        case 'home':
-                        case 'header':
-                        case 'footer':
-                        case 'hero':
-                          return <NotFound />
-                        default:
-                          return (
-                            <Page
-                              appRoot={this.root}
-                              editable={this.state.editable}
-                              path={pathname}
-                              deletePage={this.deletePage.bind(this)}
-                              emitSave={this.emitSave.bind(this)}
-                              headerControl={this.getShowPropertyValueHandler(
-                                'header'
-                              )}
-                              footerControl={this.getShowPropertyValueHandler(
-                                'footer'
-                              )}
-                              heroControl={this.getShowPropertyValueHandler(
-                                'hero'
-                              )}
-                              navigate={this.navigate.bind(this)}
-                              onError={this.handlePageError.bind(this)}
-                              onNotFound={this.handleNotFound.bind(this)}
-                              setActivePathname={this.setActivePathname.bind(
-                                this
-                              )}
-                              setActivePage={this.setActivePage.bind(this)}
-                              token={this.state.token}
-                              initPage={this.props.initPage}
-                              init404={this.props.init404}
-                              initError={this.props.initError}
-                            />
-                          )
-                      }
-                    }}
-                  />
-                </Switch>
-                {this.state.editable ? <hr /> : ''}
-              </div>
-            </Boilerplate>
-          </div>
-        </Router>
-        <div className='site-settings-modal-container'>
-          <Modal
-            title='Site Settings'
-            show={this.state.editable && this.state.show.settings}
-            setShow={(value) => {
-              this.setState((state) => {
-                state.show.settings = value
-                return state
+      },
+      loadSiteMap: (path = '') => {
+        const root = helpers.getRoot()
+        return new Promise((resolve, reject) => {
+          if (activePage && activePage.id) {
+            axios
+              .get(`${helpers.getRoot()}/api/page/${activePage.id}/sitemap`)
+              .then((response) => {
+                setSiteMap(response.data)
+                resolve(response.data)
               })
-            }}
-            size='lg'
-            headerTheme='primary'
-            bodyTheme='white'
-            footerTheme='dark'
-            footer={
-              <button
-                type='button'
-                className='btn btn-secondary'
-                onClick={this.toggleSettings.bind(this)}
-              >
-                Close
-              </button>
+          } else if (path) {
+            // for 404s
+            axios
+              .get(`${root}/api/page/sitemap/by-key${path}`)
+              .then((response) => {
+                setSiteMap(response.data)
+              })
+          }
+        })
+      },
+      logout: () => {
+        axios.get(`${helpers.getRoot()}/api/logout?token=${token}`).then(() => {
+          setAdmin(false)
+          setAuthenticated(false)
+          setEditable(false)
+        })
+      },
+      navigate: (href) => {
+        if (absoluteUrl(href)) {
+          helpers.navigateAbsolute(href)
+        } else {
+          helpers.navigateRelative(href)
+        }
+      },
+      navigateAbsolute: (url) => {
+        const launch = () => {
+          if (helpers.getSettings().absoluteNavBehavior === 'new-window') {
+            window.open(url, '_blank', 'noreferrer noopener')
+          } else {
+            window.location = url
+          }
+        }
+        if (new URL(url).origin === globalThis.location.origin) {
+          launch()
+        } else {
+          if (
+            globalThis.gtag &&
+            globalThis.gtagId &&
+            globalThis.google_tag_manager
+          ) {
+            globalThis.gtag('event', 'click', {
+              event_category: 'outbound',
+              event_label: url,
+              transport_type: 'beacon',
+              event_callback: (id) => {
+                if (id === globalThis.gtagId) {
+                  launch()
+                }
+              },
+            })
+          } else {
+            launch()
+          }
+        }
+      },
+      navigateRelative: (path) => {
+        if (path.match(/\/$/) === null) {
+          path = path + '/'
+        }
+        const regex = new RegExp(`^${helpers.getRoot()}`)
+        if (path.match(regex)) {
+          path = path.replace(regex, '')
+        }
+        if (path !== activePathname) {
+          setNavigate(path)
+          setActivePathname(path)
+          // track navigation to login
+          if (path === '/login/') {
+            helpers.trackPageView()
+          }
+          // give the Navigate component a cycle to render before clearing
+          setTimeout(() => setNavigate(null), 0)
+        }
+      },
+      redirect: (path) => {
+        return new Promise((resolve, reject) => {
+          setRedirect(path)
+          // give the Redirect component a cycle to render before clearing
+          setTimeout(() => setRedirect(false), 0)
+          setTimeout(() => resolve, 0)
+        })
+      },
+      reload: (data = { action: 'all' }) => {
+        switch (data.action) {
+          case 'all':
+            helpers.loadSettings()
+            helpers.reloadRef('activePage')
+            helpers.reloadRef('header')
+            helpers.reloadRef('footer')
+            helpers.reloadRef('hero')
+            break
+          case 'add-page':
+            helpers.reloadRef('activePage')
+            break
+          case 'delete-page':
+            helpers.reloadRef('activePage')
+            break
+          case 'update-settings':
+            helpers.loadSettings()
+            helpers.reloadRef('activePage')
+            break
+          default:
+            const activePage =
+              ref && ref.current
+                ? ref.current.querySelector('main .page').getPage()
+                : null
+            const headerPage =
+              ref && ref.current
+                ? ref.current.querySelector('header .page').getPage()
+                : null
+            const footerPage =
+              ref && ref.current
+                ? ref.current.querySelector('footer .page').getPage()
+                : null
+            const heroPage =
+              ref && ref.current
+                ? ref.current.querySelector('.pxn-hero .page').getPage()
+                : null
+            if (activePage && data.pageId === activePage.id) {
+              helpers.reloadRef('activePage')
+            } else if (headerPage && data.pageId === headerPage.id) {
+              helpers.reloadRef('header')
+            } else if (footerPage && data.pageId === footerPage.id) {
+              helpers.reloadRef('footer')
+            } else if (heroPage && data.pageId === heroPage.id) {
+              helpers.reloadRef('hero')
             }
-          >
-            {this.state.editable && this.state.show.settings ? (
-              <SiteSettings
-                appRoot={this.root}
-                admin={this.state.admin}
-                emitForceReload={this.emitForceReload.bind(this)}
-                settings={this.state.siteSettings}
-                getSettingsValueHandler={this.getSettingsValueHandler.bind(
-                  this
-                )}
-                show={this.state.show.settings}
-                token={this.state.token}
-              />
-            ) : (
-              ''
-            )}
-          </Modal>
-        </div>
-        <div className='new-page-modal-container'>
-          <Modal
-            title='New Page'
-            show={this.state.editable && this.state.show.newPage}
-            setShow={() => {}}
-            headerTheme='success'
-            bodyTheme='white'
-            footerTheme='dark'
-            hideCloseButton={true}
-            footer={
-              <div>
-                <button
-                  type='button'
-                  className='btn btn-success'
-                  onClick={() => {
-                    const btn = document.querySelector(
-                      '.new-page-modal-container form .btn.d-none'
-                    )
-                    btn.click()
-                  }}
-                >
-                  Save
-                </button>{' '}
-                <button
-                  type='button'
-                  className='btn btn-secondary'
-                  onClick={() => {
-                    this.toggleNewPage()
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            }
-          >
-            {this.state.editable && this.state.show.newPage ? (
-              <NewPage
-                activePathname={this.state.activePathname}
-                getValueHandler={this.getNewPageValueHandler.bind(this)}
-                newPage={this.state.newPage}
-                submit={this.submitNewPage.bind(this)}
-              />
-            ) : (
-              ''
-            )}
-          </Modal>
-        </div>
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    // get everything loaded
-    if (!this.props.initSettings) {
-      this.loadSettings()
-    }
-    this.loadSession()
-    this.setActivePathname(this.props.initPath)
-    // set up socket.io-enabled features
-    if (this.props.socketMode && globalThis.io) {
-      this.socket = globalThis.io({ path: `${this.root}/socket.io` })
-      this.socket.on('load', (data) => {
-        if (this.state.windowId !== data.windowId) {
-          this.reload(data)
+            break
+        }
+      },
+      reloadRef: (key) => {
+        const pages = {
+          activePage: ref.current.querySelector('main .page'),
+          header: ref.current.querySelector('header .page'),
+          footer: ref.current.querySelector('footer .page'),
+          hero: ref.current.querySelector('.pxn-hero .page'),
+        }
+        if (pages[key]) {
+          pages[key].reload()
+        }
+      },
+      setActivePage: (page) => {
+        setActivePage(page)
+        setSiteMap(copyObj(page.siteMap || {}))
+        setFallbackSettings(copyObj(page.fallbackSettings || {}))
+      },
+      submitNewPage: () => {
+        helpers.createPage(newPage)
+        helpers.toggleNewPage()
+        setNewPage({
+          title: '',
+          key: '',
+        })
+      },
+      toggleEditMode: () => {
+        setEditable(!editable)
+      },
+      toggleNewPage: () => {
+        const sh = copyObj(show)
+        sh.newPage = !sh.newPage
+        setShow(sh)
+      },
+      toggleSettings: () => {
+        if (activePathname === '/home/' || activePathname === '/') {
+          const sh = copyObj(show)
+          sh.settings = !sh.settings
+          setShow(sh)
+        } else if (ref && ref.current) {
+          ref.current.querySelector('main .page').toggleSettings()
+        }
+      },
+      trackPageView: () => {
+        if (globalThis.gtag && globalThis.gtagId) {
+          globalThis.gtag('config', globalThis.gtagId, {
+            page_path: globalThis.location.pathname,
+          })
+        }
+      },
+    }),
+    [
+      activePage,
+      activePathname,
+      admin,
+      authenticated,
+      editable,
+      fallbackSettings,
+      newPage,
+      props.root,
+      props.socketMode,
+      setEditable,
+      settingsUpdateTimer,
+      show,
+      siteMap,
+      siteSettings,
+      socket,
+      token,
+      windowId,
+    ]
+  )
+  // first render
+  const [firstRender, setFirstRender] = React.useState(true)
+  React.useEffect(() => {
+    if (firstRender) {
+      setGlobalLinkHandler((href) => {
+        if (!editable) {
+          helpers.navigate(href)
         }
       })
-      this.socket.on('reload-app', () => {
-        globalThis.location.reload()
-      })
-    }
-    // handle state changes on back/forward browser buttons
-    if (typeof globalThis.onpopstate !== 'undefined') {
-      globalThis.onpopstate = (event) => {
-        this.setActivePathname(globalThis.location.pathname)
+      // get everything loaded
+      if (!props.initSettings) {
+        helpers.loadSettings()
       }
+      helpers.loadSession()
+      setActivePathname(props.initPath)
+      // set up socket.io-enabled features
+      if (props.socketMode && globalThis.io) {
+        const socket = globalThis.io({ path: `${helpers.getRoot()}/socket.io` })
+        socket.on('load', (data) => {
+          if (windowId !== data.windowId) {
+            helpers.reload(data)
+          }
+        })
+        socket.on('reload-app', () => {
+          globalThis.location.reload()
+        })
+        setSocket(socket)
+      }
+      // handle state changes on back/forward browser buttons
+      if (typeof globalThis.onpopstate !== 'undefined') {
+        globalThis.onpopstate = (event) => {
+          setActivePathname(globalThis.location.pathname)
+        }
+      }
+      globalThis.preaction = Object.assign({}, helpers)
+      setFirstRender(false)
     }
-    globalThis.preaction = {
-      navigate: this.navigate.bind(this),
-      redirect: this.redirect.bind(this),
-      reload: this.reload.bind(this),
-      toggleEditMode: this.toggleEditMode.bind(this),
-      toggleNewPage: this.toggleNewPage.bind(this),
-      toggleSettings: this.toggleSettings.bind(this),
-    }
-    if (test) {
-      // provide interface for testing functionality which cannot be reached due to @loadable/component
-      Object.assign(globalThis.preaction, {
-        deletePage: this.deletePage.bind(this),
-        getSettingsValueHandler: this.getSettingsValueHandler.bind(this),
-        getState: () => this.state,
-        setState: this.setState.bind(this),
-        submitNewPage: this.submitNewPage.bind(this),
-      })
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  }, [
+    setFirstRender,
+    editable,
+    firstRender,
+    helpers,
+    props.initPath,
+    props.initSettings,
+    props.socketMode,
+    windowId,
+  ])
+  // updates
+  const [prevActivePage, setPrevActivePage] = React.useState(activePage)
+  React.useEffect(() => {
+    const settings = helpers.getSettings()
     const bodyClasses = ['pxn-cms-body']
     // set path class on body to allow path-specific styling
-    if (this.state.activePathname === '/login/') {
+    if (activePathname === '/login/') {
       bodyClasses.push('path-login-')
-    } else if (this.state.activePage) {
+    } else if (activePage) {
       bodyClasses.push(
-        `path-${getSaneKey(this.state.activePage.tree.path || 'undefined')}-`
+        `path-${getSaneKey(activePage.tree.path || 'undefined')}-`
       )
     }
-    if (this.settings.bodyTheme) {
-      bodyClasses.push(getThemeClassName(this.settings.bodyTheme))
-      const linkClass = getLinkClassName(this.settings.bodyTheme)
+    if (settings.bodyTheme) {
+      bodyClasses.push(getThemeClassName(settings.bodyTheme))
+      const linkClass = getLinkClassName(settings.bodyTheme)
       if (linkClass) {
         bodyClasses.push(linkClass)
       }
     }
-    if (this.settings.bodyGradient) {
+    if (settings.bodyGradient) {
       bodyClasses.push(getGradientClassName(true))
     }
     document.body.className = bodyClasses.join(' ')
     // track page view if new activePage is set
     if (
-      this.state.activePage &&
-      this.state.activePage !== prevState.activePage
+      activePage &&
+      (!prevActivePage || activePage.id !== prevActivePage.id)
     ) {
-      this.trackPageView()
+      setPrevActivePage(activePage)
+      helpers.trackPageView()
     }
-  }
+  }, [helpers, activePathname, setPrevActivePage, prevActivePage, activePage])
+
+  const [watchAction, setWatchAction] = React.useState(null)
+  React.useEffect(() => {
+    if (watchAction) {
+      if (watchAction.action === 'delete-page' && watchAction.pageId) {
+        helpers.redirect('..').then(() => {
+          helpers.emitSave(watchAction)
+        })
+      }
+      setWatchAction(null)
+    }
+  }, [watchAction, setWatchAction, helpers])
+
+  const settings = helpers.getSettings()
+  const sm = helpers.getSiteMap()
+  const navPositionClassName = {
+    'fixed-top': 'nav-position-fixed-top',
+    'above-header': 'nav-position-above-header',
+    'below-header': 'nav-position-below-header',
+  }[settings.navPosition]
+  const navActiveSubmenuThemeClassName = {
+    blue: 'nav-active-submenu-theme-blue',
+    cyan: 'nav-active-submenu-theme-cyan',
+    danger: 'nav-active-submenu-theme-danger',
+    dark: 'nav-active-submenu-theme-dark',
+    gray: 'nav-active-submenu-theme-gray',
+    'gray-dark': 'nav-active-submenu-theme-gray-dark',
+    green: 'nav-active-submenu-theme-green',
+    indigo: 'nav-active-submenu-theme-indigo',
+    info: 'nav-active-submenu-theme-info',
+    orange: 'nav-active-submenu-theme-orange',
+    pink: 'nav-active-submenu-theme-pink',
+    purple: 'nav-active-submenu-theme-purple',
+    primary: 'nav-active-submenu-theme-primary',
+    red: 'nav-active-submenu-theme-red',
+    secondary: 'nav-active-submenu-theme-secondary',
+    success: 'nav-active-submenu-theme-success',
+    teal: 'nav-active-submenu-theme-teal',
+    warning: 'nav-active-submenu-theme-warning',
+    yellow: 'nav-active-submenu-theme-yellow',
+  }[settings.navActiveSubmenuTheme]
+  const navActiveTabThemeClassName = {
+    blue: 'nav-active-tab-theme-blue',
+    cyan: 'nav-active-tab-theme-cyan',
+    danger: 'nav-active-tab-theme-danger',
+    dark: 'nav-active-tab-theme-dark',
+    gray: 'nav-active-tab-theme-gray',
+    'gray-dark': 'nav-active-tab-theme-gray-dark',
+    indigo: 'nav-active-tab-theme-indigo',
+    info: 'nav-active-tab-theme-info',
+    orange: 'nav-active-tab-theme-orange',
+    light: 'nav-active-tab-theme-light',
+    pink: 'nav-active-tab-theme-pink',
+    purple: 'nav-active-tab-theme-purple',
+    primary: 'nav-active-tab-theme-primary',
+    red: 'nav-active-tab-theme-red',
+    secondary: 'nav-active-tab-theme-secondary',
+    success: 'nav-active-tab-theme-success',
+    teal: 'nav-active-tab-theme-teal',
+    warning: 'nav-active-tab-theme-warning',
+    white: 'nav-active-tab-theme-white',
+    yellow: 'nav-active-tab-theme-yellow',
+  }[settings.navActiveTabTheme]
+  const ref = React.useRef()
+  return (
+    <div
+      className={joinClassNames(
+        'App',
+        editable ? 'editable' : 'non-editable',
+        navPositionClassName,
+        navActiveSubmenuThemeClassName,
+        navActiveTabThemeClassName
+      )}
+      ref={ref}
+    >
+      <Router basename={helpers.getRoot()} location={activePathname}>
+        <div>
+          {redirect ? <Redirect to={redirect} /> : ''}
+          {navigate ? <Redirect to={navigate} push /> : ''}
+          <Boilerplate
+            navBar={
+              settings.navPosition === 'fixed-top' ? (
+                <NavBar
+                  fluid={settings.maxWidthNav}
+                  fixedTo='top'
+                  theme={settings.navbarTheme}
+                  brand={{
+                    name: settings.siteTitle,
+                    href: `/${sm.path}${sm.key === 'home' ? '' : '/'}`,
+                    onClick: (e) => {
+                      if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                        e.preventDefault()
+                        helpers.navigate(
+                          `/${sm.path}${sm.key === 'home' ? '' : '/'}`
+                        )
+                      }
+                    },
+                  }}
+                  menu={helpers.getMenu()}
+                />
+              ) : undefined
+            }
+            header={
+              <div className={getLinkClassName(settings.headerTheme)}>
+                {settings.navPosition === 'above-header' ? (
+                  <Nav
+                    menu={helpers.getMenu()}
+                    type={settings.navType}
+                    align={settings.navAlignment}
+                    justify={settings.navSpacing === 'justify'}
+                    fill={settings.navSpacing === 'fill'}
+                    collapsible={settings.navCollapsible}
+                  />
+                ) : (
+                  ''
+                )}
+                <Header
+                  appRoot={helpers.getRoot()}
+                  editable={editable}
+                  emitSave={helpers.emitSave}
+                  navigate={helpers.navigate}
+                  settings={settings}
+                  show={settings.showHeader}
+                  token={token}
+                  initPage={props.initPage ? props.initPage.header : undefined}
+                />
+                {settings.navPosition === 'below-header' ? (
+                  <Nav
+                    menu={helpers.getMenu()}
+                    type={settings.navType}
+                    align={settings.navAlignment}
+                    justify={settings.navSpacing === 'justify'}
+                    fill={settings.navSpacing === 'fill'}
+                    collapsible={settings.navCollapsible}
+                  />
+                ) : undefined}
+              </div>
+            }
+            hero={
+              settings.showHero ? (
+                <div
+                  className={getLinkClassName(
+                    settings.heroTheme || settings.headerTheme
+                  )}
+                >
+                  <Hero
+                    appRoot={helpers.getRoot()}
+                    editable={editable}
+                    emitSave={helpers.emitSave}
+                    navigate={helpers.navigate}
+                    settings={settings}
+                    show={settings.showHero}
+                    token={token}
+                    initPage={props.initPage ? props.initPage.hero : undefined}
+                  />
+                </div>
+              ) : (
+                ''
+              )
+            }
+            heroPosition={settings.heroPosition}
+            heroTheme={settings.heroTheme || undefined}
+            heroGradient={settings.heroGradient || false}
+            headerTheme={settings.headerTheme || undefined}
+            headerGradient={settings.headerGradient || false}
+            mainTheme={settings.mainTheme || undefined}
+            mainGradient={settings.mainGradient || false}
+            footerTheme={settings.footerTheme || undefined}
+            footerGradient={settings.footerGradient || false}
+            footer={
+              <div className={getLinkClassName(settings.footerTheme)}>
+                <Footer
+                  appRoot={helpers.getRoot()}
+                  editable={editable}
+                  emitSave={helpers.emitSave}
+                  navigate={helpers.navigate}
+                  settings={settings}
+                  show={settings.showFooter}
+                  token={token}
+                  initPage={props.initPage ? props.initPage.footer : undefined}
+                />
+              </div>
+            }
+            fluid={{
+              footerContainer: settings.maxWidthFooterContainer,
+              headerContainer: settings.maxWidthHeaderContainer,
+              heroContainer: settings.maxWidthHeroContainer,
+              mainContainer: settings.maxWidthMainContainer,
+            }}
+          >
+            <div
+              className={joinClassNames(
+                'main-body',
+                getLinkClassName(settings.mainTheme || '')
+              )}
+            >
+              {editable ? <hr /> : ''}
+              {editable ? (
+                <div className='font-weight-bold'>Main: {activePathname}</div>
+              ) : (
+                ''
+              )}
+              <Switch>
+                <Route exact path='/'>
+                  <Page
+                    appRoot={helpers.getRoot()}
+                    editable={editable}
+                    emitSave={helpers.emitSave}
+                    fallbackSettings={helpers.getFallbackSettings()}
+                    path='/home/'
+                    headerControl={helpers.getShowPropertyValueHandler(
+                      'header'
+                    )}
+                    footerControl={helpers.getShowPropertyValueHandler(
+                      'footer'
+                    )}
+                    heroControl={helpers.getShowPropertyValueHandler('hero')}
+                    navigate={helpers.navigate}
+                    setActivePathname={setActivePathname}
+                    setActivePage={helpers.setActivePage}
+                    token={token}
+                    initPage={props.initPage}
+                  />
+                </Route>
+                <Route exact path='/login'>
+                  <div className='login'>
+                    <Login
+                      appRoot={helpers.getRoot()}
+                      loadSession={helpers.loadSession}
+                      navigate={helpers.navigate}
+                      settings={siteSettings}
+                      setToken={setToken}
+                      token={token}
+                    />
+                  </div>
+                </Route>
+                <Route
+                  render={({ location }) => {
+                    const root = new RegExp(`^${helpers.getRoot()}`)
+                    const pathname = location.pathname.replace(root, '')
+                    const splitPath = pathname
+                      .replace(/(^\/|\/$)/g, '')
+                      .split('/')
+                    const key = splitPath[splitPath.length - 1]
+                    switch (key) {
+                      case 'home':
+                      case 'header':
+                      case 'footer':
+                      case 'hero':
+                        return <NotFound />
+                      default:
+                        return (
+                          <Page
+                            appRoot={helpers.getRoot()}
+                            editable={editable}
+                            path={pathname}
+                            deletePage={helpers.deletePage}
+                            emitSave={helpers.emitSave}
+                            headerControl={helpers.getShowPropertyValueHandler(
+                              'header'
+                            )}
+                            footerControl={helpers.getShowPropertyValueHandler(
+                              'footer'
+                            )}
+                            heroControl={helpers.getShowPropertyValueHandler(
+                              'hero'
+                            )}
+                            navigate={helpers.navigate}
+                            onError={helpers.handlePageError}
+                            onNotFound={helpers.handleNotFound}
+                            setActivePathname={setActivePathname}
+                            setActivePage={helpers.setActivePage}
+                            token={token}
+                            initPage={props.initPage}
+                            init404={props.init404}
+                            initError={props.initError}
+                          />
+                        )
+                    }
+                  }}
+                />
+              </Switch>
+              {editable ? <hr /> : ''}
+            </div>
+          </Boilerplate>
+        </div>
+      </Router>
+      <div className='site-settings-modal-container'>
+        <Modal
+          title='Site Settings'
+          show={editable && show.settings}
+          setShow={(value) => {
+            const sh = copyObj(show)
+            sh.settings = value
+            setShow(sh)
+          }}
+          size='lg'
+          headerTheme='primary'
+          bodyTheme='white'
+          footerTheme='dark'
+          footer={
+            <button
+              type='button'
+              className='btn btn-secondary'
+              onClick={helpers.toggleSettings}
+            >
+              Close
+            </button>
+          }
+        >
+          {editable && show.settings ? (
+            <SiteSettings
+              appRoot={helpers.getRoot()}
+              admin={admin}
+              emitForceReload={helpers.emitForceReload}
+              settings={siteSettings}
+              getSettingsValueHandler={helpers.getSettingsValueHandler}
+              show={show.settings}
+              token={token}
+            />
+          ) : (
+            ''
+          )}
+        </Modal>
+      </div>
+      <div className='new-page-modal-container'>
+        <Modal
+          title='New Page'
+          show={editable && show.newPage}
+          setShow={() => {}}
+          headerTheme='success'
+          bodyTheme='white'
+          footerTheme='dark'
+          hideCloseButton={true}
+          footer={
+            <div>
+              <button
+                type='button'
+                className='btn btn-success'
+                onClick={() => {
+                  const btn = document.querySelector(
+                    '.new-page-modal-container form .btn.d-none'
+                  )
+                  btn.click()
+                }}
+              >
+                Save
+              </button>{' '}
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={() => {
+                  helpers.toggleNewPage()
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          }
+        >
+          {editable && show.newPage ? (
+            <NewPage
+              activePathname={activePathname}
+              getValueHandler={helpers.getNewPageValueHandler}
+              newPage={newPage}
+              submit={helpers.submitNewPage}
+            />
+          ) : (
+            ''
+          )}
+        </Modal>
+      </div>
+    </div>
+  )
 }
 
 App.propTypes = {
