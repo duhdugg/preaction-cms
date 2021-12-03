@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter } from 'react-router-dom/server.js'
 import Page from '../Page.jsx'
 
 jest.setTimeout(30000)

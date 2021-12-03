@@ -2,7 +2,7 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter } from 'react-router-dom/server.js'
 import PageBlockNav from '../PageBlockNav.jsx'
 
 test('PageBlockNav basic', async () => {

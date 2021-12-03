@@ -751,7 +751,7 @@ window.confirm = jest.fn(() => true)
 
 test('renders without crashing', async () => {
   const result = render(<App initPath='/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
 })
 
@@ -769,15 +769,18 @@ test('server-side rendering', () => {
 
 test('relative links are handled by navigate function', async () => {
   const result = render(<App initPath='/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
+  await waitFor(() =>
+    expect(result.getByText('Go to Test Page')).toBeInTheDocument()
+  )
   userEvent.click(result.getByText('Go to Test Page'))
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
 })
 
 test('absolute links are handled by navigate function', async () => {
   const result = render(<App initPath='/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   userEvent.click(result.getByText('Launch test page in new window'))
   await waitFor(
@@ -792,7 +795,7 @@ test('absolute links are handled by navigate function', async () => {
 
 test('404 renders NotFound', async () => {
   const result = render(<App initPath='/notfound/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() =>
     expect(result.container.querySelector('.not-found')).toBeInTheDocument()
   )
@@ -810,7 +813,7 @@ test('404 renders NotFound', async () => {
 
 test('/home renders NotFound', async () => {
   const result = render(<App initPath='/home/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() =>
     expect(result.container.querySelector('.not-found')).toBeInTheDocument()
   )
@@ -818,7 +821,7 @@ test('/home renders NotFound', async () => {
 
 test('5xx renders ErrorMessage', async () => {
   const result = render(<App initPath='/failbar/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() =>
     expect(
       result.container.querySelector('.page-error-message')
@@ -828,7 +831,7 @@ test('5xx renders ErrorMessage', async () => {
 
 test('login', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -842,7 +845,7 @@ test('login', async () => {
 
 test('logout', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -861,7 +864,7 @@ test('logout', async () => {
 
 test('create new page', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -890,7 +893,7 @@ test('create new page', async () => {
 
 test('edit site settings', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -935,7 +938,7 @@ test('edit site settings', async () => {
 
 test('edit page settings', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -983,7 +986,7 @@ test('edit page settings', async () => {
 
 test('delete page', async () => {
   const result = render(<App initPath='/login/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
@@ -1018,7 +1021,7 @@ test('delete page', async () => {
 
 test('globalThis.preaction.reload', async () => {
   const result = render(<App initPath='/' />)
-  expect(result.container.firstChild).toHaveClass('App')
+  expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() =>
     expect(result.container.querySelector('.page')).toBeInTheDocument()
   )
