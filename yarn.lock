@@ -2409,10 +2409,10 @@
   dependencies:
     prop-types "^15.7.2"
 
-"@preaction/inputs@^5.0.0-alpha.7":
-  version "5.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-5.0.0-alpha.7.tgz#1db3834b36502fc4109ccc23773be750afd5d773"
-  integrity sha512-7jvTszfO2pwqpTphaK+wxPeGvd5ur6v5st7KFYOGQGLLOoembkL4v/HfxsBuCeUZvyqp5t+bWto9rFKQVTWUlw==
+"@preaction/inputs@^5.0.0-alpha.8":
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/@preaction/inputs/-/inputs-5.0.0-alpha.8.tgz#66dbc570ca1095d6bb865dc4bdd9a920938669b9"
+  integrity sha512-0NxugkfYEp8DgRA8NL3uyC9KxVFcXXsPBUOuth636lVoMhRwF++HCeRx51ldwUQBWBp+tW32mSxoDIGZ6hH/7w==
   dependencies:
     "@loadable/component" "^5.14.1"
     promise-timeout "^1.3.0"
