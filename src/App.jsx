@@ -209,6 +209,9 @@ function App(props) {
     socketMode,
   } = props
 
+  // OTHER HOOKS
+  const location = useLocation()
+
   // STATE
 
   const [activePage, setActivePage] = React.useState(
@@ -461,6 +464,9 @@ function App(props) {
       if (path.match(regex)) {
         path = path.replace(regex, '')
       }
+      if (path[0] !== '/') {
+        path = location.pathname + path
+      }
       if (path !== activePathname) {
         routerNavigate(path)
         setActivePathname(path)
@@ -468,11 +474,16 @@ function App(props) {
         if (path === '/login/') {
           trackPageView()
         }
-        // give the Navigate component a cycle to render before clearing
-        // setTimeout(() => setNavigatePath(null), 0)
       }
     },
-    [activePathname, getRoot, routerNavigate, setActivePathname, trackPageView]
+    [
+      activePathname,
+      getRoot,
+      routerNavigate,
+      setActivePathname,
+      trackPageView,
+      location,
+    ]
   )
 
   const navigate = React.useCallback(
@@ -820,8 +831,6 @@ function App(props) {
     (path) => {
       return new Promise((resolve, reject) => {
         routerNavigate(path, { replace: true })
-        // give the Navigate component a cycle to render before clearing
-        // setTimeout(() => setRedirectPath(false), 0)
         setTimeout(() => resolve, 0)
       })
     },
