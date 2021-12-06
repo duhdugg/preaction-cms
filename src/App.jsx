@@ -870,22 +870,19 @@ function App(props) {
           reloadRef('activePage')
           break
         default:
-          const activePage =
-            ref && ref.current
-              ? ref.current.querySelector('main .page').getPage()
-              : null
-          const headerPage =
-            ref && ref.current
-              ? ref.current.querySelector('header .page').getPage()
-              : null
-          const footerPage =
-            ref && ref.current
-              ? ref.current.querySelector('footer .page').getPage()
-              : null
-          const heroPage =
-            ref && ref.current
-              ? ref.current.querySelector('.pxn-hero .page').getPage()
-              : null
+          const getPage = (selector) => {
+            if (ref && ref.current) {
+              const el = ref.current.querySelector(selector)
+              const page = el && el.getPage ? el.getPage() : null
+              return page
+            } else {
+              return null
+            }
+          }
+          const activePage = getPage('main .page')
+          const headerPage = getPage('header .page')
+          const footerPage = getPage('footer .page')
+          const heroPage = getPage('.pxn-hero page')
           if (activePage && data.pageId === activePage.id) {
             reloadRef('activePage')
           } else if (headerPage && data.pageId === headerPage.id) {
