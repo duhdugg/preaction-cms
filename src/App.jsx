@@ -90,9 +90,17 @@ function setGlobalLinkHandler(linkHandler) {
 }
 
 function AppContainer(props) {
-  const [activePathname, setActivePathname] = React.useState(
+  const [activePathname, setActivePathnameState] = React.useState(
     props.initPath || ''
   )
+  // IMPORTANT
+  // clearing the initPage after first render prevents it from being used unnecessarily
+  // on navigation between root path and other pages
+  const [initPage, setInitPage] = React.useState(props.initPage || null)
+  const setActivePathname = (path) => {
+    setActivePathnameState(path)
+    setInitPage(null)
+  }
   return (
     <div className={joinClassNames('AppContainer')}>
       <Router basename={props.root || ''} location={activePathname}>
@@ -100,7 +108,7 @@ function AppContainer(props) {
           activePathname={activePathname}
           init404={props.init404}
           initError={props.initError}
-          initPage={props.initPage}
+          initPage={initPage}
           initPath={props.initPath}
           initSettings={props.initSettings}
           root={props.root}
