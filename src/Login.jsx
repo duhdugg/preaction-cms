@@ -4,21 +4,23 @@ import axios from 'axios'
 import { Form, Input } from '@preaction/inputs'
 
 function Login(props) {
+  // PROPS DESTRUCTURING
+  const { appRoot, setToken } = props
+  // STATE
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const firstRender = React.useRef(true)
-
+  // CALLBACKS
   const loadToken = React.useCallback(() => {
-    axios.get(`${props.appRoot}/api/token`).then((response) => {
-      props.setToken(response.data)
+    axios.get(`${appRoot}/api/token`).then((response) => {
+      setToken(response.data)
     })
-  }, [props])
-
+  }, [appRoot, setToken])
+  // HANDLERS
   const loginSubmit = (event) => {
     event.preventDefault()
     if (event.target.checkValidity()) {
       axios
-        .post(`${props.appRoot}/api/login?token=${props.token}`, {
+        .post(`${appRoot}/api/login?token=${props.token}`, {
           username,
           password,
         })
@@ -31,19 +33,17 @@ function Login(props) {
         })
     }
   }
-
   const usernameValueHandler = (value) => {
     setUsername(value.toLowerCase())
   }
-
+  // SIDE EFFECTS
   React.useEffect(() => {
     document.title = `Login | ${props.settings.siteTitle}`
-    if (firstRender.current) {
-      firstRender.current = false
-      loadToken()
-    }
-  }, [firstRender, props, loadToken])
-
+  }, [props.settings])
+  React.useEffect(() => {
+    loadToken()
+  }, [loadToken])
+  // RENDER
   return (
     <Form onSubmit={loginSubmit} noValidate>
       <Input

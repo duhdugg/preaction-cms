@@ -394,7 +394,7 @@ function Page(props) {
           axios
             .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
             .then(() => {
-              setWatchAction('loadSettings')
+              setWatchAction('applyControls')
               emitSave({
                 action: 'update-pageSettings',
                 pageId: pageCopy.id,
@@ -742,7 +742,7 @@ function Page(props) {
           setPage(pg)
           // load settings
           if (!['header', 'footer', 'hero'].includes(pg.key)) {
-            setWatchAction('loadSettings')
+            setWatchAction('applyControls')
           }
           // communicate to parent component
           if (setActivePage) {
@@ -793,7 +793,7 @@ function Page(props) {
     ]
   )
 
-  const loadSettings = React.useCallback(() => {
+  const applyControls = React.useCallback(() => {
     // control showing header/footer/hero in parent App.jsx component
     if (!page) {
       return
@@ -828,7 +828,7 @@ function Page(props) {
   const [status, setStatus] = React.useState(getInitialStatus())
   const [errorMessage, setErrorMessage] = React.useState(getInitialError())
 
-  if (props.init404) {
+  if (init404) {
     if (!ssr) {
       callOnNotFound()
     }
@@ -865,12 +865,12 @@ function Page(props) {
   const [watchAction, setWatchAction] = React.useState(null)
   React.useEffect(() => {
     if (watchAction) {
-      if (watchAction === 'loadSettings') {
-        loadSettings()
+      if (watchAction === 'applyControls') {
+        applyControls()
       }
       setWatchAction(null)
     }
-  }, [watchAction, setWatchAction, loadSettings, props.path])
+  }, [watchAction, setWatchAction, applyControls, props.path])
 
   const ref = React.useRef() // needed for testing
   const settings = getSettings()
@@ -883,12 +883,12 @@ function Page(props) {
                 return (
                   <PageBlockParent
                     addContent={addContent}
-                    appRoot={props.appRoot}
+                    appRoot={appRoot}
                     block={block}
                     blockControl={blockControl}
                     contentControl={contentControl}
                     editable={props.editable}
-                    emitSave={props.emitSave}
+                    emitSave={emitSave}
                     first={index === 0}
                     getContents={getContents}
                     getContentSettingsValueHandler={
@@ -902,7 +902,7 @@ function Page(props) {
                     navigate={props.navigate}
                     page={page}
                     settings={getSettings()}
-                    token={props.token}
+                    token={token}
                   />
                 )
               })
@@ -940,7 +940,7 @@ function Page(props) {
           >
             {props.editable && showSettings ? (
               <PageSettings
-                appRoot={props.appRoot}
+                appRoot={appRoot}
                 admin={props.editable}
                 navigate={(path) => {
                   setShowSettings(false)
@@ -950,7 +950,7 @@ function Page(props) {
                 page={page}
                 path={props.path}
                 settings={settings}
-                token={props.token}
+                token={token}
                 deletePage={confirmDeletePage}
                 getPageValueHandler={getPageValueHandler}
                 getResetter={getPageSettingsResetter}
