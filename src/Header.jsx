@@ -3,13 +3,10 @@ import React from 'react'
 import Page from './Page.jsx'
 
 function Header(props) {
-  const getCleanPath = () => {
-    let path = '/home/header/'
-    if (props.settings.headerPath.match(/\/header\/$/) !== null) {
-      path = props.settings.headerPath
-    }
-    return path
-  }
+  const path =
+    props.settings.headerPath.match(/\/header\/$/) !== null
+      ? props.settings.headerPath
+      : '/home/header/'
   return (
     <div>
       {props.show === false ? (
@@ -17,7 +14,7 @@ function Header(props) {
       ) : (
         <div>
           {props.editable ? (
-            <div className='font-weight-bold'>Header: {getCleanPath()}</div>
+            <div className='font-weight-bold'>Header: {path}</div>
           ) : (
             ''
           )}
@@ -27,7 +24,7 @@ function Header(props) {
             emitSave={props.emitSave}
             fallbackSettings={props.settings}
             navigate={props.navigate}
-            path={getCleanPath()}
+            path={path}
             token={props.token}
             initPage={props.initPage}
           />

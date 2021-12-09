@@ -23,13 +23,17 @@ PageBlockExtension.propTypes = {
 }
 
 function PageBlockExtensionSettings(props) {
-  const getPropsDataValueHandler = (key) => {
-    return (value) => {
-      const propsData = JSON.parse(JSON.stringify(props.propsData))
-      propsData[key] = value
-      props.getPageBlockSettingsValueHandler('propsData')(propsData)
-    }
-  }
+  const { getPageBlockSettingsValueHandler } = props
+  const getPropsDataValueHandler = React.useCallback(
+    (key) => {
+      return (value) => {
+        const propsData = JSON.parse(JSON.stringify(props.propsData))
+        propsData[key] = value
+        getPageBlockSettingsValueHandler('propsData')(propsData)
+      }
+    },
+    [props.propsData, getPageBlockSettingsValueHandler]
+  )
 
   let Settings = <div />
   const extBlockIndex = props.extBlockIndex || {}

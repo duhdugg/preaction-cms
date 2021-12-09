@@ -58,52 +58,21 @@ const test = env.NODE_ENV === 'test'
 
 const copyObj = (obj) => JSON.parse(JSON.stringify(obj))
 
-// this is needed so links in WYSIWYG content will go through navigate() correctly
-function setGlobalLinkHandler(linkHandler) {
-  const findAnchor = (element) => {
-    if (element.tagName === 'A') {
-      return element
-    } else if (element.parentElement) {
-      return findAnchor(element.parentElement)
-    } else {
-      return null
-    }
-  }
-  if (typeof document !== 'undefined') {
-    document.addEventListener('click', (event) => {
-      const anchor = findAnchor(event.target)
-      if (anchor !== null) {
-        const classList = new Array(...anchor.classList)
-        if (
-          !classList.includes('nav-link') &&
-          !classList.includes('dropdown-item')
-        ) {
-          const href = anchor.attributes.href.value
-          if (href && !event.shiftKey && !event.ctrlKey && !event.altKey) {
-            event.preventDefault()
-            linkHandler(href)
-          }
-        }
-      }
-    })
-  }
-}
-
 function AppContainer(props) {
   const [activePathname, setActivePathnameState] = React.useState(
     props.initPath || ''
   )
   // IMPORTANT
   // clearing the initPage after first render prevents it from being used unnecessarily
-  // on navigation between root path and other pages
+  // on navigation between appRoot path and other pages
   const [initPage, setInitPage] = React.useState(props.initPage || null)
-  const setActivePathname = (path) => {
+  const setActivePathname = React.useCallback((path) => {
     setActivePathnameState(path)
     setInitPage(null)
-  }
+  }, [])
   return (
     <div className={joinClassNames('AppContainer')}>
-      <Router basename={props.root || ''} location={activePathname}>
+      <Router basename={props.appRoot || ''} location={activePathname}>
         <App
           activePathname={activePathname}
           init404={props.init404}
@@ -111,7 +80,7 @@ function AppContainer(props) {
           initPage={initPage}
           initPath={props.initPath}
           initSettings={props.initSettings}
-          root={props.root}
+          appRoot={props.appRoot}
           setActivePathname={setActivePathname}
           socketMode={props.socketMode}
         />
@@ -121,12 +90,12 @@ function AppContainer(props) {
 }
 
 AppContainer.propTypes = {
+  appRoot: PropTypes.string,
   init404: PropTypes.bool,
   initError: PropTypes.string,
   initPage: PropTypes.object,
   initPath: PropTypes.string.isRequired,
   initSettings: PropTypes.object,
-  root: PropTypes.string,
   socketMode: PropTypes.bool,
 }
 
@@ -155,8 +124,8 @@ Router.propTypes = {
 
 function PageRoute(props) {
   const location = useLocation()
-  const root = new RegExp(`^${props.getRoot()}`)
-  const pathname = location.pathname.replace(root, '')
+  const appRoot = new RegExp(`^${props.appRoot}`)
+  const pathname = location.pathname.replace(appRoot, '')
   const splitPath = pathname.replace(/(^\/|\/$)/g, '').split('/')
   const pageKey = splitPath[splitPath.length - 1]
   switch (pageKey) {
@@ -168,7 +137,7 @@ function PageRoute(props) {
     default:
       return (
         <Page
-          appRoot={props.getRoot()}
+          appRoot={props.appRoot}
           deletePage={props.deletePage}
           editable={props.editable}
           emitSave={props.emitSave}
@@ -191,10 +160,10 @@ function PageRoute(props) {
 }
 
 PageRoute.propTypes = {
+  appRoot: PropTypes.string,
   deletePage: PropTypes.func,
   editable: PropTypes.bool,
   emitSave: PropTypes.func,
-  getRoot: PropTypes.func,
   getShowPropertyValueHandler: PropTypes.func,
   handleNotFound: PropTypes.func,
   handlePageError: PropTypes.func,
@@ -209,13 +178,7 @@ PageRoute.propTypes = {
 
 function App(props) {
   // PROP DESTRUCTURING
-  const {
-    activePathname,
-    initPath,
-    initSettings,
-    setActivePathname,
-    socketMode,
-  } = props
+  const { setActivePathname } = props
 
   // OTHER HOOKS
   const location = useLocation()
@@ -268,14 +231,13 @@ function App(props) {
 
   // CALLBACKS
 
-  const getRoot = React.useCallback(() => props.root || '', [props.root])
+  const appRoot = props.appRoot || ''
   const loadSiteMap = React.useCallback(
     (path = '') => {
-      const root = getRoot()
       return new Promise((resolve, reject) => {
         if (activePage && activePage.id) {
           axios
-            .get(`${getRoot()}/api/page/${activePage.id}/sitemap`)
+            .get(`${appRoot}/api/page/${activePage.id}/sitemap`)
             .then((response) => {
               setSiteMap(response.data)
               resolve(response.data)
@@ -283,14 +245,14 @@ function App(props) {
         } else if (path) {
           // for 404s
           axios
-            .get(`${root}/api/page/sitemap/by-key${path}`)
+            .get(`${appRoot}/api/page/sitemap/by-key${path}`)
             .then((response) => {
               setSiteMap(response.data)
             })
         }
       })
     },
-    [activePage, getRoot]
+    [activePage, appRoot]
   )
   const emitSave = React.useCallback(
     (data = {}, callback = () => {}) => {
@@ -311,7 +273,7 @@ function App(props) {
     (page) => {
       if (page.key) {
         axios
-          .post(`${getRoot()}/api/page?token=${token}`, page)
+          .post(`${appRoot}/api/page?token=${token}`, page)
           .then((response) => {
             emitSave({ action: 'add-page' })
             if (activePage) {
@@ -320,7 +282,7 @@ function App(props) {
           })
       }
     },
-    [activePage, getRoot, emitSave, token]
+    [activePage, appRoot, emitSave, token]
   )
 
   const createPage = React.useCallback(
@@ -356,7 +318,7 @@ function App(props) {
     (page) => {
       if (getEditable()) {
         axios
-          .delete(`${getRoot()}/api/page/${page.id}?token=${token}`)
+          .delete(`${appRoot}/api/page/${page.id}?token=${token}`)
           .then((response) => {
             if (response.status === 200) {
               setActivePage(null)
@@ -366,7 +328,7 @@ function App(props) {
           })
       }
     },
-    [getEditable, getRoot, token]
+    [getEditable, appRoot, token]
   )
 
   const emitForceReload = React.useCallback(
@@ -421,12 +383,12 @@ function App(props) {
   }, [])
 
   const logout = React.useCallback(() => {
-    axios.get(`${getRoot()}/api/logout?token=${token}`).then(() => {
+    axios.get(`${appRoot}/api/logout?token=${token}`).then(() => {
       setAdmin(false)
       setAuthenticated(false)
       setEditable(false)
     })
-  }, [getRoot, token])
+  }, [appRoot, token])
 
   const navigateAbsolute = React.useCallback(
     (url) => {
@@ -468,14 +430,14 @@ function App(props) {
       if (path.match(/\/$/) === null) {
         path = path + '/'
       }
-      const regex = new RegExp(`^${getRoot()}`)
+      const regex = new RegExp(`^${appRoot}`)
       if (path.match(regex)) {
         path = path.replace(regex, '')
       }
       if (path[0] !== '/') {
         path = location.pathname + path
       }
-      if (path !== activePathname) {
+      if (path !== props.activePathname) {
         routerNavigate(path)
         setActivePathname(path)
         // track navigation to login
@@ -485,8 +447,8 @@ function App(props) {
       }
     },
     [
-      activePathname,
-      getRoot,
+      props.activePathname,
+      appRoot,
       routerNavigate,
       setActivePathname,
       trackPageView,
@@ -529,7 +491,6 @@ function App(props) {
     let menu = []
     const settings = getSettings()
     const sm = getSiteMap()
-    const root = getRoot()
     if (settings.navPosition !== 'fixed-top') {
       menu.push({
         name: 'Home',
@@ -679,7 +640,7 @@ function App(props) {
         Object.assign(
           { className: `nav-extension-${key}` },
           menuExtensions[key]({
-            appRoot: root,
+            appRoot: appRoot,
             editable,
             navigate,
             page: activePage,
@@ -718,11 +679,11 @@ function App(props) {
     props.activePathname,
     admin,
     editable,
-    getRoot,
     getSettings,
     getSiteMap,
     logout,
     navigate,
+    appRoot,
     toggleEditMode,
     toggleNewPage,
     toggleSettings,
@@ -737,7 +698,7 @@ function App(props) {
           resolve()
         }
       }
-      axios.get(`${getRoot()}/api/session`).then((response) => {
+      axios.get(`${appRoot}/api/session`).then((response) => {
         if (response.data && response.data.authenticated) {
           setAuthenticated(true)
           if (response.data.admin) {
@@ -753,12 +714,11 @@ function App(props) {
         }
       })
     })
-  }, [getRoot])
+  }, [appRoot])
 
   const loadSettings = React.useCallback(
     (path = '') => {
-      const root = getRoot()
-      axios.get(`${root}/api/settings`).then((response) => {
+      axios.get(`${appRoot}/api/settings`).then((response) => {
         if (response.data) {
           setSiteSettings(response.data)
         }
@@ -766,7 +726,7 @@ function App(props) {
       // for 404s
       if (path) {
         axios
-          .get(`${root}/api/page/settings/by-key${path}`)
+          .get(`${appRoot}/api/page/settings/by-key${path}`)
           .then((response) => {
             if (response.data) {
               setFallbackSettings(response.data)
@@ -774,7 +734,7 @@ function App(props) {
           })
       }
     },
-    [getRoot]
+    [appRoot]
   )
 
   const getNewPageValueHandler = React.useCallback(
@@ -815,7 +775,7 @@ function App(props) {
         setSettingsUpdateTimer(
           setTimeout(() => {
             axios
-              .post(`${getRoot()}/api/settings?token=${token}`, ssCopy)
+              .post(`${appRoot}/api/settings?token=${token}`, ssCopy)
               .then(() => {
                 emitSave({ action: 'update-settings' })
               })
@@ -823,7 +783,7 @@ function App(props) {
         )
       }
     },
-    [getRoot, emitSave, settingsUpdateTimer, siteSettings, token]
+    [appRoot, emitSave, settingsUpdateTimer, siteSettings, token]
   )
 
   const handleNotFound = React.useCallback(
@@ -924,58 +884,72 @@ function App(props) {
   const handlePageError = React.useCallback(() => setActivePage(null), [])
 
   // first render
-  const [firstRender, setFirstRender] = React.useState(true)
   React.useEffect(() => {
-    if (firstRender) {
-      setGlobalLinkHandler((href) => {
-        if (!editable) {
-          globalThis.preaction.navigate(href)
-        }
-      })
-      // get everything loaded
-      if (!initSettings) {
-        loadSettings()
+    if (!props.initSettings) {
+      loadSettings()
+    }
+    loadSession()
+    setActivePathname(props.initPath)
+    if (typeof globalThis.onpopstate !== 'undefined') {
+      globalThis.onpopstate = (event) => {
+        setActivePathname(globalThis.location.pathname)
       }
-      loadSession()
-      setActivePathname(initPath)
-      // set up socket.io-enabled features
-      if (socketMode && globalThis.io) {
-        const socket = globalThis.io({ path: `${getRoot()}/socket.io` })
-        socket.on('load', (data) => {
-          if (windowId !== data.windowId) {
-            reload(data)
-          }
-        })
-        socket.on('reload-app', () => {
-          globalThis.location.reload()
-        })
-        setSocket(socket)
-      }
-      // handle state changes on back/forward browser buttons
-      if (typeof globalThis.onpopstate !== 'undefined') {
-        globalThis.onpopstate = (event) => {
-          setActivePathname(globalThis.location.pathname)
-        }
-      }
-      setFirstRender(false)
     }
   }, [
-    editable,
-    firstRender,
-    getRoot,
-    getSettings,
-    loadSession,
+    props.initSettings,
     loadSettings,
-    navigate,
-    initPath,
-    initSettings,
+    loadSession,
+    props.initPath,
     setActivePathname,
-    socketMode,
-    redirect,
-    reload,
-    setFirstRender,
-    windowId,
   ])
+  // setup link handler for WYSIWYG content links
+  React.useEffect(() => {
+    const findAnchor = (element) => {
+      if (element.tagName === 'A') {
+        return element
+      } else if (element.parentElement) {
+        return findAnchor(element.parentElement)
+      } else {
+        return null
+      }
+    }
+    const linkHandler = (event) => {
+      const anchor = findAnchor(event.target)
+      if (anchor !== null) {
+        const classList = new Array(...anchor.classList)
+        if (
+          !classList.includes('nav-link') &&
+          !classList.includes('dropdown-item')
+        ) {
+          const href = anchor.attributes.href.value
+          if (href && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+            event.preventDefault()
+            if (!editable) {
+              navigate(href)
+            }
+          }
+        }
+      }
+    }
+    document.addEventListener('click', linkHandler)
+    return () => {
+      document.removeEventListener('click', linkHandler)
+    }
+  }, [editable, navigate])
+  React.useEffect(() => {
+    if (props.socketMode && globalThis.io) {
+      const socket = globalThis.io({ path: `${appRoot}/socket.io` })
+      socket.on('load', (data) => {
+        if (windowId !== data.windowId) {
+          reload(data)
+        }
+      })
+      socket.on('reload-app', () => {
+        globalThis.location.reload()
+      })
+      setSocket(socket)
+    }
+  }, [appRoot, reload, props.socketMode, windowId])
   // UPDATES
   React.useEffect(() => {
     globalThis.preaction = {
@@ -1140,7 +1114,7 @@ function App(props) {
               ''
             )}
             <Header
-              appRoot={getRoot()}
+              appRoot={appRoot}
               editable={editable}
               emitSave={emitSave}
               navigate={navigate}
@@ -1169,12 +1143,11 @@ function App(props) {
               )}
             >
               <Hero
-                appRoot={getRoot()}
+                appRoot={appRoot}
                 editable={editable}
                 emitSave={emitSave}
                 navigate={navigate}
                 settings={settings}
-                show={settings.showHero}
                 token={token}
                 initPage={props.initPage ? props.initPage.hero : undefined}
               />
@@ -1195,7 +1168,7 @@ function App(props) {
         footer={
           <div className={getLinkClassName(settings.footerTheme)}>
             <Footer
-              appRoot={getRoot()}
+              appRoot={appRoot}
               editable={editable}
               emitSave={emitSave}
               navigate={navigate}
@@ -1231,7 +1204,7 @@ function App(props) {
               path='/'
               element={
                 <Page
-                  appRoot={getRoot()}
+                  appRoot={appRoot}
                   editable={editable}
                   emitSave={emitSave}
                   fallbackSettings={getFallbackSettings()}
@@ -1253,7 +1226,7 @@ function App(props) {
               element={
                 <div className='login'>
                   <Login
-                    appRoot={getRoot()}
+                    appRoot={appRoot}
                     loadSession={loadSession}
                     navigate={navigate}
                     settings={siteSettings}
@@ -1270,7 +1243,7 @@ function App(props) {
                   deletePage={deletePage}
                   editable={editable}
                   emitSave={emitSave}
-                  getRoot={getRoot}
+                  appRoot={appRoot}
                   getShowPropertyValueHandler={getShowPropertyValueHandler}
                   handleNotFound={handleNotFound}
                   handlePageError={handlePageError}
@@ -1313,7 +1286,7 @@ function App(props) {
         >
           {editable && show.settings ? (
             <SiteSettings
-              appRoot={getRoot()}
+              appRoot={appRoot}
               admin={admin}
               emitForceReload={emitForceReload}
               settings={siteSettings}
@@ -1379,12 +1352,12 @@ function App(props) {
 
 App.propTypes = {
   activePathname: PropTypes.string,
+  appRoot: PropTypes.string,
   init404: PropTypes.bool,
   initError: PropTypes.string,
   initPage: PropTypes.object,
   initPath: PropTypes.string.isRequired,
   initSettings: PropTypes.object,
-  root: PropTypes.string,
   setActivePathname: PropTypes.func.isRequired,
   socketMode: PropTypes.bool,
 }

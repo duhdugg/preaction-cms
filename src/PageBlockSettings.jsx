@@ -6,9 +6,13 @@ import { blockExtensions } from './ext'
 import PageBlockCarouselSettings from './PageBlockCarouselSettings.jsx'
 
 function PageBlockSettings(props) {
-  const getPageBlockSettingsValueHandler = (key) => {
-    return props.getPageBlockSettingsValueHandler(props.block.id, key)
-  }
+  const { getPageBlockSettingsValueHandler } = props
+  const gpbsvh = React.useCallback(
+    (key) => {
+      return getPageBlockSettingsValueHandler(props.block.id, key)
+    },
+    [getPageBlockSettingsValueHandler, props.block]
+  )
 
   return (
     <div className='block-settings'>
@@ -24,7 +28,7 @@ function PageBlockSettings(props) {
               label='Header'
               labelFloat
               value={props.block.settings.header}
-              valueHandler={getPageBlockSettingsValueHandler('header')}
+              valueHandler={gpbsvh('header')}
             />
           </div>
         ) : (
@@ -38,7 +42,7 @@ function PageBlockSettings(props) {
               min='0'
               max='6'
               value={props.block.settings.headerLevel}
-              valueHandler={getPageBlockSettingsValueHandler('headerLevel')}
+              valueHandler={gpbsvh('headerLevel')}
             />
           </div>
         ) : (
@@ -49,7 +53,7 @@ function PageBlockSettings(props) {
             <Checkbox
               label='Pad'
               checked={props.block.settings.pad}
-              valueHandler={getPageBlockSettingsValueHandler('pad')}
+              valueHandler={gpbsvh('pad')}
             />
           </div>
         ) : (
@@ -62,7 +66,7 @@ function PageBlockSettings(props) {
                 label='Header Theme'
                 labelFloat
                 value={props.block.settings.headerTheme || 'dark'}
-                valueHandler={getPageBlockSettingsValueHandler('headerTheme')}
+                valueHandler={gpbsvh('headerTheme')}
               >
                 <option>danger</option>
                 <option>dark</option>
@@ -79,9 +83,7 @@ function PageBlockSettings(props) {
               <Checkbox
                 label='Header Gradient'
                 checked={props.block.settings.headerGradient || false}
-                valueHandler={getPageBlockSettingsValueHandler(
-                  'headerGradient'
-                )}
+                valueHandler={gpbsvh('headerGradient')}
               />
             </div>
           </div>
@@ -95,7 +97,7 @@ function PageBlockSettings(props) {
                 label='Body Theme'
                 labelFloat
                 value={props.block.settings.bodyTheme || 'transparent'}
-                valueHandler={getPageBlockSettingsValueHandler('bodyTheme')}
+                valueHandler={gpbsvh('bodyTheme')}
               >
                 <option>danger</option>
                 <option>dark</option>
@@ -113,7 +115,7 @@ function PageBlockSettings(props) {
               <Checkbox
                 label='Body Gradient'
                 checked={props.block.settings.bodyGradient || false}
-                valueHandler={getPageBlockSettingsValueHandler('bodyGradient')}
+                valueHandler={gpbsvh('bodyGradient')}
               />
             </div>
             <div className='border-theme-field'>
@@ -121,7 +123,7 @@ function PageBlockSettings(props) {
                 label='Border Theme'
                 labelFloat
                 value={props.block.settings.borderTheme || 'dark'}
-                valueHandler={getPageBlockSettingsValueHandler('borderTheme')}
+                valueHandler={gpbsvh('borderTheme')}
               >
                 <option>danger</option>
                 <option>dark</option>
@@ -159,7 +161,7 @@ function PageBlockSettings(props) {
             max='12'
             step='1'
             value={props.block.settings.xxlWidth}
-            valueHandler={getPageBlockSettingsValueHandler('xxlWidth')}
+            valueHandler={gpbsvh('xxlWidth')}
           />
         </div>
         <div className='width-field desktop-width-field'>
@@ -170,7 +172,7 @@ function PageBlockSettings(props) {
             max='12'
             step='1'
             value={props.block.settings.lgWidth}
-            valueHandler={getPageBlockSettingsValueHandler('lgWidth')}
+            valueHandler={gpbsvh('lgWidth')}
           />
         </div>
         <div className='width-field tablet-width-field'>
@@ -181,7 +183,7 @@ function PageBlockSettings(props) {
             max='12'
             step='1'
             value={props.block.settings.mdWidth}
-            valueHandler={getPageBlockSettingsValueHandler('mdWidth')}
+            valueHandler={gpbsvh('mdWidth')}
           />
         </div>
         <div className='width-field landscape-phone-width-field'>
@@ -192,7 +194,7 @@ function PageBlockSettings(props) {
             max='12'
             step='1'
             value={props.block.settings.smWidth}
-            valueHandler={getPageBlockSettingsValueHandler('smWidth')}
+            valueHandler={gpbsvh('smWidth')}
           />
         </div>
         <div className='width-field portrait-phone-width-field'>
@@ -203,7 +205,7 @@ function PageBlockSettings(props) {
             max='12'
             step='1'
             value={props.block.settings.xsWidth}
-            valueHandler={getPageBlockSettingsValueHandler('xsWidth')}
+            valueHandler={gpbsvh('xsWidth')}
           />
         </div>
         {props.block.blockType === 'carousel' ? (
@@ -214,7 +216,7 @@ function PageBlockSettings(props) {
             getContentSettingsValueHandler={
               props.getContentSettingsValueHandler
             }
-            getPageBlockSettingsValueHandler={getPageBlockSettingsValueHandler}
+            getPageBlockSettingsValueHandler={gpbsvh}
           />
         ) : (
           ''
@@ -226,7 +228,7 @@ function PageBlockSettings(props) {
                 label='Alignment'
                 labelFloat
                 value={props.block.settings.navAlignment}
-                valueHandler={getPageBlockSettingsValueHandler('navAlignment')}
+                valueHandler={gpbsvh('navAlignment')}
               >
                 <option>left</option>
                 <option>center</option>
@@ -239,16 +241,14 @@ function PageBlockSettings(props) {
                 label='Collabsible'
                 labelFloat
                 checked={props.block.settings.navCollapsible}
-                valueHandler={getPageBlockSettingsValueHandler(
-                  'navCollapsible'
-                )}
+                valueHandler={gpbsvh('navCollapsible')}
               />
             </div>
             <div className='enable-submenus-field'>
               <Checkbox
                 label='Enable Submenus'
                 checked={props.block.settings.subMenu}
-                valueHandler={getPageBlockSettingsValueHandler('subMenu')}
+                valueHandler={gpbsvh('subMenu')}
               />
             </div>
           </div>
@@ -266,7 +266,7 @@ function PageBlockSettings(props) {
                 min='0.0625'
                 step='0.0625'
                 value={props.block.settings.height || '32'}
-                valueHandler={getPageBlockSettingsValueHandler('height')}
+                valueHandler={gpbsvh('height')}
               />
             </div>
             <div className='iframe-src-field'>
@@ -274,7 +274,7 @@ function PageBlockSettings(props) {
                 label='URL'
                 labelFloat
                 value={props.block.settings.iframeSrc}
-                valueHandler={getPageBlockSettingsValueHandler('iframeSrc')}
+                valueHandler={gpbsvh('iframeSrc')}
               />
             </div>
           </div>
@@ -288,9 +288,7 @@ function PageBlockSettings(props) {
             <PageBlockExtension.Settings
               extBlockIndex={blockExtensions}
               extKey={props.block.settings.extKey}
-              getPageBlockSettingsValueHandler={
-                getPageBlockSettingsValueHandler
-              }
+              getPageBlockSettingsValueHandler={gpbsvh}
               propsData={props.block.settings.propsData}
             />
           </div>
@@ -307,7 +305,7 @@ function PageBlockSettings(props) {
                 label='Spacer Height'
                 labelFloat
                 value={props.block.settings.spacerHeight}
-                valueHandler={getPageBlockSettingsValueHandler('spacerHeight')}
+                valueHandler={gpbsvh('spacerHeight')}
               />
             </div>
           </div>
@@ -321,7 +319,7 @@ function PageBlockSettings(props) {
             value={props.block.settings.customClassName}
             valueHandler={(value) => {
               value = value.toLowerCase().replace(/[^a-z-]/g, '')
-              getPageBlockSettingsValueHandler('customClassName')(value)
+              gpbsvh('customClassName')(value)
             }}
           />
         </div>

@@ -2,28 +2,28 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 function PageBlockIframe(props) {
+  // STATE
   const [height, setHeight] = React.useState(0)
+  // REFS
   const iframeResizeInterval = React.useRef(null)
   const iframe = React.useRef()
-  const firstRender = React.useRef(true)
+  // SIDE EFFECTS
   React.useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      iframeResizeInterval.current = setInterval(() => {
-        let h = `${props.block.settings.height || 32}em`
-        try {
-          h = iframe.current.contentWindow.document.body.clientHeight + 'px'
-        } catch {}
-        if (h !== height) {
-          setHeight(h)
-        }
-      }, 250)
-    }
+    iframeResizeInterval.current = setInterval(() => {
+      let h = `${props.block.settings.height || 32}em`
+      try {
+        h = iframe.current.contentWindow.document.body.clientHeight + 'px'
+      } catch {}
+      if (h !== height) {
+        setHeight(h)
+      }
+    }, 250)
     return () => {
       clearInterval(iframeResizeInterval)
       iframeResizeInterval.current = null
     }
-  }, [iframeResizeInterval, iframe, height, firstRender, props])
+  }, [height, props.block.settings.height])
+  // RENDER
   return (
     <iframe
       src={props.block.settings.iframeSrc}

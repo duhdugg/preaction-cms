@@ -3,13 +3,10 @@ import React from 'react'
 import Page from './Page.jsx'
 
 function Footer(props) {
-  const getCleanPath = () => {
-    let path = '/home/footer/'
-    if (props.settings.footerPath.match(/\/footer\/$/) !== null) {
-      path = props.settings.footerPath
-    }
-    return path
-  }
+  const path =
+    props.settings.footerPath.match(/\/footer\/$/) !== null
+      ? props.settings.footerPath
+      : '/home/footer/'
   return (
     <div>
       {props.show === false ? (
@@ -17,7 +14,7 @@ function Footer(props) {
       ) : (
         <div>
           {props.editable ? (
-            <div className='font-weight-bold'>Footer: {getCleanPath()}</div>
+            <div className='font-weight-bold'>Footer: {path}</div>
           ) : (
             ''
           )}
@@ -27,7 +24,7 @@ function Footer(props) {
             emitSave={props.emitSave}
             fallbackSettings={props.settings}
             navigate={props.navigate}
-            path={getCleanPath()}
+            path={path}
             token={props.token}
             initPage={props.initPage}
           />

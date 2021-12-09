@@ -55,17 +55,17 @@ function PageBlockContent(props) {
     return el
   }
 
-  const toggleSettings = () => {
+  const toggleSettings = React.useCallback(() => {
     setShowSettings(!showSettings)
-  }
+  }, [showSettings])
 
-  const toggleSourceMode = () => {
+  const toggleSourceMode = React.useCallback(() => {
     setSourceMode(!sourceMode)
-  }
+  }, [sourceMode])
 
-  const toggleTheme = () => {
+  const toggleTheme = React.useCallback(() => {
     setTheme(theme === 'bubble' ? 'snow' : 'bubble')
-  }
+  }, [theme])
 
   const header = getHeader()
   const padded = !!header || props.content.settings.pad

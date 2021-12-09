@@ -4,46 +4,48 @@ import axios from 'axios'
 import { Form, Input } from '@preaction/inputs'
 
 function Login(props) {
+  // PROPS DESTRUCTURING
+  const { appRoot, setToken, token, loadSession, navigate } = props
+  // STATE
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const firstRender = React.useRef(true)
-
+  // CALLBACKS
   const loadToken = React.useCallback(() => {
-    axios.get(`${props.appRoot}/api/token`).then((response) => {
-      props.setToken(response.data)
+    axios.get(`${appRoot}/api/token`).then((response) => {
+      setToken(response.data)
     })
-  }, [props])
-
-  const loginSubmit = (event) => {
-    event.preventDefault()
-    if (event.target.checkValidity()) {
-      axios
-        .post(`${props.appRoot}/api/login?token=${props.token}`, {
-          username,
-          password,
-        })
-        .then((response) => {
-          props.loadSession()
-          props.navigate('/')
-        })
-        .catch((e) => {
-          globalThis.alert('incorrect login')
-        })
-    }
-  }
-
-  const usernameValueHandler = (value) => {
+  }, [appRoot, setToken])
+  const loginSubmit = React.useCallback(
+    (event) => {
+      event.preventDefault()
+      if (event.target.checkValidity()) {
+        axios
+          .post(`${appRoot}/api/login?token=${token}`, {
+            username,
+            password,
+          })
+          .then((response) => {
+            loadSession()
+            navigate('/')
+          })
+          .catch((e) => {
+            globalThis.alert('incorrect login')
+          })
+      }
+    },
+    [appRoot, username, password, token, loadSession, navigate]
+  )
+  const usernameValueHandler = React.useCallback((value) => {
     setUsername(value.toLowerCase())
-  }
-
+  }, [])
+  // SIDE EFFECTS
   React.useEffect(() => {
     document.title = `Login | ${props.settings.siteTitle}`
-    if (firstRender.current) {
-      firstRender.current = false
-      loadToken()
-    }
-  }, [firstRender, props, loadToken])
-
+  }, [props.settings])
+  React.useEffect(() => {
+    loadToken()
+  }, [loadToken])
+  // RENDER
   return (
     <Form onSubmit={loginSubmit} noValidate>
       <Input
