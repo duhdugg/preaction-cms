@@ -14,7 +14,6 @@ function PageBlockWysiwyg(props) {
     props.content.wysiwyg || ''
   )
   const [savingState, setSavingState] = React.useState(false)
-  const [timer, setTimer] = React.useState(null)
   const { emitSave } = props
   const handleWysiwyg = React.useCallback(
     (value) => {
@@ -30,33 +29,30 @@ function PageBlockWysiwyg(props) {
         if (props.editable) {
           setSavingState(true)
         }
-        globalThis.clearTimeout(timer)
-        setTimer(
-          globalThis.setTimeout(() => {
-            if (props.editable) {
-              axios
-                .put(
-                  `${props.appRoot}/api/page/blocks/content/${props.content.id}?token=${props.token}`,
-                  {
-                    wysiwyg: value,
-                  }
-                )
-                .then(() => {
-                  setSavingState(false)
-                  emitSave({
-                    action: 'update-content',
-                    contentId: props.content.id,
-                    blockId: props.block.id,
-                    pageId: props.block.pageId,
-                  })
+        globalThis.clearTimeout(timer.current)
+        timer.current = globalThis.setTimeout(() => {
+          if (props.editable) {
+            axios
+              .put(
+                `${props.appRoot}/api/page/blocks/content/${props.content.id}?token=${props.token}`,
+                {
+                  wysiwyg: value,
+                }
+              )
+              .then(() => {
+                setSavingState(false)
+                emitSave({
+                  action: 'update-content',
+                  contentId: props.content.id,
+                  blockId: props.block.id,
+                  pageId: props.block.pageId,
                 })
-            }
-          }, 1000)
-        )
+              })
+          }
+        }, 1000)
       }
     },
     [
-      timer,
       props.appRoot,
       props.editable,
       props.token,
@@ -66,6 +62,7 @@ function PageBlockWysiwyg(props) {
       props.content,
     ]
   )
+  const timer = React.useRef()
   return (
     <div className='page-block-content-type-wysiwyg'>
       {props.editable && props.sourceMode ? (

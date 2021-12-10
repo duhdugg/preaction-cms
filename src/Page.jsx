@@ -49,7 +49,6 @@ function Page(props) {
     props.initPage ? copyObj(props.initPage) : null
   )
   const [showSettings, setShowSettings] = React.useState(false)
-  const [updateTimer, setUpdateTimer] = React.useState(null)
   const [prevPath, setPrevPath] = React.useState(props.path)
   const [watchAction, setWatchAction] = React.useState(null)
 
@@ -311,33 +310,31 @@ function Page(props) {
           if (pageblock.id === pageblockId) {
             pageblock.pageblockcontents.forEach((content) => {
               if (content.id === contentId) {
-                clearTimeout(updateTimer)
-                setUpdateTimer(
-                  setTimeout(() => {
-                    let contentObj = JSON.parse(JSON.stringify(content))
-                    delete contentObj.wysiwyg
-                    axios
-                      .put(
-                        `${appRoot}/api/page/blocks/content/${contentId}?token=${token}`,
-                        contentObj
-                      )
-                      .then(() => {
-                        emitSave({
-                          action: 'update-content',
-                          contentId: contentId,
-                          blockId: pageblock.id,
-                          pageId: pageCopy.id,
-                        })
+                clearTimeout(updateTimer.current)
+                updateTimer.current = setTimeout(() => {
+                  let contentObj = JSON.parse(JSON.stringify(content))
+                  delete contentObj.wysiwyg
+                  axios
+                    .put(
+                      `${appRoot}/api/page/blocks/content/${contentId}?token=${token}`,
+                      contentObj
+                    )
+                    .then(() => {
+                      emitSave({
+                        action: 'update-content',
+                        contentId: contentId,
+                        blockId: pageblock.id,
+                        pageId: pageCopy.id,
                       })
-                  }, 1000)
-                )
+                    })
+                }, 1000)
               }
             })
           }
         })
       }
     },
-    [appRoot, emitSave, page, token, updateTimer]
+    [appRoot, emitSave, page, token]
   )
 
   const getPageBlockSettingsValueHandler = React.useCallback(
@@ -362,27 +359,25 @@ function Page(props) {
       setPage(pageCopy)
       pageCopy.pageblocks.forEach((pageblock) => {
         if (pageblock.id === pageblockId) {
-          clearTimeout(updateTimer)
-          setUpdateTimer(
-            setTimeout(() => {
-              axios
-                .put(
-                  `${appRoot}/api/page/blocks/${pageblockId}?token=${token}`,
-                  pageblock
-                )
-                .then(() => {
-                  emitSave({
-                    action: 'update-pageblock',
-                    blockId: pageblockId,
-                    pageId: pageCopy.id,
-                  })
+          clearTimeout(updateTimer.current)
+          updateTimer.current = setTimeout(() => {
+            axios
+              .put(
+                `${appRoot}/api/page/blocks/${pageblockId}?token=${token}`,
+                pageblock
+              )
+              .then(() => {
+                emitSave({
+                  action: 'update-pageblock',
+                  blockId: pageblockId,
+                  pageId: pageCopy.id,
                 })
-            }, 1000)
-          )
+              })
+          }, 1000)
         }
       })
     },
-    [appRoot, emitSave, page, token, updateTimer]
+    [appRoot, emitSave, page, token]
   )
 
   const getPageSettingsResetter = React.useCallback(
@@ -390,22 +385,20 @@ function Page(props) {
       const pageCopy = copyObj(page)
       delete pageCopy.settings[key]
       setPage(pageCopy)
-      clearTimeout(updateTimer)
-      setUpdateTimer(
-        setTimeout(() => {
-          axios
-            .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
-            .then(() => {
-              setWatchAction('applyControls')
-              emitSave({
-                action: 'update-pageSettings',
-                pageId: pageCopy.id,
-              })
+      clearTimeout(updateTimer.current)
+      updateTimer.current = setTimeout(() => {
+        axios
+          .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
+          .then(() => {
+            setWatchAction('applyControls')
+            emitSave({
+              action: 'update-pageSettings',
+              pageId: pageCopy.id,
             })
-        }, 1000)
-      )
+          })
+      }, 1000)
     },
-    [appRoot, emitSave, page, token, updateTimer]
+    [appRoot, emitSave, page, token]
   )
 
   const getPageSettingsValueHandler = React.useCallback(
@@ -424,22 +417,17 @@ function Page(props) {
         if (setActivePage) {
           setActivePage(pageCopy)
         }
-        clearTimeout(updateTimer)
-        setUpdateTimer(
-          setTimeout(() => {
-            axios
-              .put(
-                `${appRoot}/api/page/${pageCopy.id}?token=${token}`,
-                pageCopy
-              )
-              .then(() => {
-                emitSave({
-                  action: 'update-page',
-                  pageId: pageCopy.id,
-                })
+        clearTimeout(updateTimer.current)
+        updateTimer.current = setTimeout(() => {
+          axios
+            .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
+            .then(() => {
+              emitSave({
+                action: 'update-page',
+                pageId: pageCopy.id,
               })
-          }, 1000)
-        )
+            })
+        }, 1000)
       }
     },
     [
@@ -451,7 +439,6 @@ function Page(props) {
       page,
       setActivePage,
       token,
-      updateTimer,
     ]
   )
 
@@ -463,21 +450,19 @@ function Page(props) {
       if (setActivePage) {
         setActivePage(pageCopy)
       }
-      clearTimeout(updateTimer)
-      setUpdateTimer(
-        setTimeout(() => {
-          axios
-            .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
-            .then(() => {
-              emitSave({
-                action: 'update-page',
-                pageId: pageCopy.id,
-              })
+      clearTimeout(updateTimer.current)
+      updateTimer.current = setTimeout(() => {
+        axios
+          .put(`${appRoot}/api/page/${pageCopy.id}?token=${token}`, pageCopy)
+          .then(() => {
+            emitSave({
+              action: 'update-page',
+              pageId: pageCopy.id,
             })
-        }, 1000)
-      )
+          })
+      }, 1000)
     },
-    [appRoot, emitSave, setActivePage, page, token, updateTimer]
+    [appRoot, emitSave, setActivePage, page, token]
   )
 
   const getPageControlsMenu = React.useCallback(() => {
@@ -873,8 +858,9 @@ function Page(props) {
     }
   }, [watchAction, setWatchAction, applyControls, props.path])
 
-  // REF
+  // REFS
   const ref = React.useRef()
+  const updateTimer = React.useRef()
   // VARIABLES
   const settings = getSettings()
   // RENDER

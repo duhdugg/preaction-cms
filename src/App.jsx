@@ -223,7 +223,6 @@ function App(props) {
   )
   const [token, setToken] = React.useState('')
   const [windowId] = React.useState(`${+new Date()}:${Math.random()}`)
-  const [settingsUpdateTimer, setSettingsUpdateTimer] = React.useState(null)
   const [socket, setSocket] = React.useState(null)
 
   // OTHER HOOKS
@@ -771,19 +770,17 @@ function App(props) {
         const ssCopy = copyObj(siteSettings)
         ssCopy[key] = value
         setSiteSettings(ssCopy)
-        clearTimeout(settingsUpdateTimer)
-        setSettingsUpdateTimer(
-          setTimeout(() => {
-            axios
-              .post(`${appRoot}/api/settings?token=${token}`, ssCopy)
-              .then(() => {
-                emitSave({ action: 'update-settings' })
-              })
-          }, 1000)
-        )
+        clearTimeout(settingsUpdateTimer.current)
+        settingsUpdateTimer.current = setTimeout(() => {
+          axios
+            .post(`${appRoot}/api/settings?token=${token}`, ssCopy)
+            .then(() => {
+              emitSave({ action: 'update-settings' })
+            })
+        }, 1000)
       }
     },
-    [appRoot, emitSave, settingsUpdateTimer, siteSettings, token]
+    [appRoot, emitSave, siteSettings, token]
   )
 
   const handleNotFound = React.useCallback(
@@ -1065,8 +1062,9 @@ function App(props) {
     yellow: 'nav-active-tab-theme-yellow',
   }[settings.navActiveTabTheme]
 
-  // REF
+  // REFS
   const ref = React.useRef()
+  const settingsUpdateTimer = React.useRef()
   return (
     <div
       className={joinClassNames(
