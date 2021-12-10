@@ -15,6 +15,7 @@ const initialize = () => {
   }
 
   let settings = {
+    appRoot: '',
     initPage:
       globalThis.initPage !== '$INIT_PAGE' ? globalThis.initPage : undefined,
     initPath: '/',
@@ -22,19 +23,18 @@ const initialize = () => {
       globalThis.initSettings !== '$INIT_SETTINGS'
         ? globalThis.initSettings
         : undefined,
-    root: '',
     socketMode: false,
   }
 
   if (globalThis.appRoot !== '$ROOT') {
-    settings.root = globalThis.appRoot
+    settings.appRoot = globalThis.appRoot
   }
   if (globalThis.socketMode !== '$SOCKET_MODE') {
     settings.socketMode = globalThis.socketMode === true
   }
   if (globalThis.location) {
     settings.initPath = globalThis.location.pathname.replace(
-      new RegExp(`^${settings.root}`),
+      new RegExp(`^${settings.appRoot}`),
       ''
     )
   } else {
