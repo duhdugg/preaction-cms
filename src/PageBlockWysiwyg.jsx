@@ -15,44 +15,57 @@ function PageBlockWysiwyg(props) {
   )
   const [savingState, setSavingState] = React.useState(false)
   const [timer, setTimer] = React.useState(null)
-  const handleWysiwyg = (value) => {
-    const dirtyEnough = (pval, nval) => {
-      // quill will make some iconsequential formatting adjustments to html,
-      // which causes the PUT request to fire unnecessarily.
-      // workaround this by assuming some replacements made and comparing length
-      pval = pval.replace(/<br \/>/g, '<br>')
-      return pval.length !== nval.length
-    }
-    if (dirtyEnough(wysiwygValue, value)) {
-      setWysiwygValue(value)
-      if (props.editable) {
-        setSavingState(true)
+  const { emitSave } = props
+  const handleWysiwyg = React.useCallback(
+    (value) => {
+      const dirtyEnough = (pval, nval) => {
+        // quill will make some iconsequential formatting adjustments to html,
+        // which causes the PUT request to fire unnecessarily.
+        // workaround this by assuming some replacements made and comparing length
+        pval = pval.replace(/<br \/>/g, '<br>')
+        return pval.length !== nval.length
       }
-      globalThis.clearTimeout(timer)
-      setTimer(
-        globalThis.setTimeout(() => {
-          if (props.editable) {
-            axios
-              .put(
-                `${props.appRoot}/api/page/blocks/content/${props.content.id}?token=${props.token}`,
-                {
-                  wysiwyg: value,
-                }
-              )
-              .then(() => {
-                setSavingState(false)
-                props.emitSave({
-                  action: 'update-content',
-                  contentId: props.content.id,
-                  blockId: props.block.id,
-                  pageId: props.block.pageId,
+      if (dirtyEnough(wysiwygValue, value)) {
+        setWysiwygValue(value)
+        if (props.editable) {
+          setSavingState(true)
+        }
+        globalThis.clearTimeout(timer)
+        setTimer(
+          globalThis.setTimeout(() => {
+            if (props.editable) {
+              axios
+                .put(
+                  `${props.appRoot}/api/page/blocks/content/${props.content.id}?token=${props.token}`,
+                  {
+                    wysiwyg: value,
+                  }
+                )
+                .then(() => {
+                  setSavingState(false)
+                  emitSave({
+                    action: 'update-content',
+                    contentId: props.content.id,
+                    blockId: props.block.id,
+                    pageId: props.block.pageId,
+                  })
                 })
-              })
-          }
-        }, 1000)
-      )
-    }
-  }
+            }
+          }, 1000)
+        )
+      }
+    },
+    [
+      timer,
+      props.appRoot,
+      props.editable,
+      props.token,
+      wysiwygValue,
+      emitSave,
+      props.block,
+      props.content,
+    ]
+  )
   return (
     <div className='page-block-content-type-wysiwyg'>
       {props.editable && props.sourceMode ? (

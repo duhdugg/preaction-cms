@@ -3,17 +3,14 @@ import React from 'react'
 import Page from './Page.jsx'
 
 function Hero(props) {
-  const getCleanPath = () => {
-    let path = '/home/hero/'
-    if (props.settings.heroPath.match(/\/hero\/$/) !== null) {
-      path = props.settings.heroPath
-    }
-    return path
-  }
+  const path =
+    props.settings.heroPath.match(/\/hero\/$/) !== null
+      ? props.settings.heroPath
+      : '/home/hero/'
   return (
     <div>
       {props.editable ? (
-        <div className='font-weight-bold'>Hero: {getCleanPath()}</div>
+        <div className='font-weight-bold'>Hero: {path}</div>
       ) : (
         ''
       )}
@@ -23,7 +20,7 @@ function Hero(props) {
         emitSave={props.emitSave}
         fallbackSettings={props.settings}
         navigate={props.navigate}
-        path={getCleanPath()}
+        path={path}
         token={props.token}
         initPage={props.initPage}
       />

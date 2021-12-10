@@ -57,18 +57,22 @@ function PageBlockParent(props) {
     return el
   }
 
-  const getContentSettingsValueHandler = (contentId) => {
-    return (key) =>
-      props.getContentSettingsValueHandler(props.block.id, contentId, key)
-  }
+  const { getContentSettingsValueHandler } = props
+  const gcsvh = React.useCallback(
+    (contentId) => {
+      return (key) =>
+        getContentSettingsValueHandler(props.block.id, contentId, key)
+    },
+    [getContentSettingsValueHandler, props.block]
+  )
 
   const refreshBlock = () => {
     props.blockControl(props.block.id, 'refresh')
   }
 
-  const toggleSettings = () => {
+  const toggleSettings = React.useCallback(() => {
     setShowSettings(!showSettings)
-  }
+  }, [showSettings])
 
   const header = getHeader()
   const padded = !!header || props.block.settings.pad
@@ -258,9 +262,7 @@ function PageBlockParent(props) {
                 first={key === 0}
                 last={key === props.block.pageblockcontents.length - 1}
                 index={key}
-                getContentSettingsValueHandler={getContentSettingsValueHandler(
-                  content.id
-                )}
+                getContentSettingsValueHandler={gcsvh(content.id)}
                 editable={props.editable}
                 emitSave={props.emitSave}
                 navigate={props.navigate}

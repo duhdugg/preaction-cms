@@ -50,6 +50,8 @@ function Page(props) {
   )
   const [showSettings, setShowSettings] = React.useState(false)
   const [updateTimer, setUpdateTimer] = React.useState(null)
+  const [prevPath, setPrevPath] = React.useState(props.path)
+  const [watchAction, setWatchAction] = React.useState(null)
 
   // CALLBACKS
   const addContent = React.useCallback(
@@ -825,6 +827,7 @@ function Page(props) {
     [showSettings]
   )
 
+  // STATE INITIALIZED WITH CALLBACKS
   const [status, setStatus] = React.useState(getInitialStatus())
   const [errorMessage, setErrorMessage] = React.useState(getInitialError())
 
@@ -834,7 +837,7 @@ function Page(props) {
     }
   }
 
-  // on mount
+  // SIDE EFFECTS
   React.useEffect(() => {
     if (!page && !status) {
       loadPage(props.path)
@@ -854,7 +857,6 @@ function Page(props) {
   })
 
   // call loadPage when props.path changes
-  const [prevPath, setPrevPath] = React.useState(props.path)
   React.useEffect(() => {
     if (prevPath !== props.path) {
       loadPage(props.path)
@@ -862,7 +864,6 @@ function Page(props) {
     }
   }, [props.path, prevPath, setPrevPath, loadPage])
 
-  const [watchAction, setWatchAction] = React.useState(null)
   React.useEffect(() => {
     if (watchAction) {
       if (watchAction === 'applyControls') {
@@ -872,8 +873,11 @@ function Page(props) {
     }
   }, [watchAction, setWatchAction, applyControls, props.path])
 
-  const ref = React.useRef() // needed for testing
+  // REF
+  const ref = React.useRef()
+  // VARIABLES
   const settings = getSettings()
+  // RENDER
   return (
     <div className='page' ref={ref}>
       {page ? (
@@ -901,7 +905,7 @@ function Page(props) {
                     last={index === page.pageblocks.length - 1}
                     navigate={props.navigate}
                     page={page}
-                    settings={getSettings()}
+                    settings={settings}
                     token={token}
                   />
                 )

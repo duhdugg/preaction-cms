@@ -37,13 +37,16 @@ function SiteSettings(props) {
     })
   }, [props.appRoot])
 
-  const getRedirectValueHandler = (key) => {
-    return (value) => {
-      const obj = JSON.parse(JSON.stringify(redirect))
-      obj[key] = value
-      setRedirect(obj)
-    }
-  }
+  const getRedirectValueHandler = React.useCallback(
+    (key) => {
+      return (value) => {
+        const obj = JSON.parse(JSON.stringify(redirect))
+        obj[key] = value
+        setRedirect(obj)
+      }
+    },
+    [redirect]
+  )
 
   const restoreBackup = (filename) => {
     axios
@@ -57,7 +60,7 @@ function SiteSettings(props) {
       })
   }
 
-  const saveRedirect = () => {
+  const saveRedirect = React.useCallback(() => {
     if (!redirect.match.trim()) {
       return
     }
@@ -81,7 +84,7 @@ function SiteSettings(props) {
         })
     }
     setRedirect(null)
-  }
+  }, [getRedirects, props.appRoot, props.token, redirect])
 
   const [showPrev, setShowPrev] = React.useState(false)
   React.useEffect(() => {

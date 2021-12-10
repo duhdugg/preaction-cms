@@ -1148,7 +1148,6 @@ function App(props) {
                 emitSave={emitSave}
                 navigate={navigate}
                 settings={settings}
-                show={settings.showHero}
                 token={token}
                 initPage={props.initPage ? props.initPage.hero : undefined}
               />
