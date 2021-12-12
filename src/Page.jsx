@@ -243,16 +243,6 @@ function Page(props) {
     return initialStatus
   }, [init404, initError])
 
-  const getSplitPath = React.useCallback(() => {
-    const path = []
-    props.path.split('/').forEach((dir) => {
-      if (dir) {
-        path.push(dir)
-      }
-    })
-    return path
-  }, [props.path])
-
   const getSettings = React.useCallback(() => {
     const s = Object.assign({}, page ? page.fallbackSettings : {})
     if (props.fallbackSettings) {
@@ -697,11 +687,6 @@ function Page(props) {
     [onNotFound, props.path]
   )
 
-  const getTopLevelPageKey = React.useCallback(
-    () => getSplitPath()[0],
-    [getSplitPath]
-  )
-
   const loadPage = React.useCallback(
     (path) => {
       // remove leading slash
@@ -738,17 +723,6 @@ function Page(props) {
           if (setActivePathname) {
             setActivePathname(props.path)
           }
-          // set the title if page is not header, footer, nor hero
-          if (path.match(/\/(header|footer|hero)\/$/g) === null) {
-            const settings = getSettings()
-            let title = ''
-            if (getTopLevelPageKey() === 'home') {
-              title = settings.siteTitle
-            } else {
-              title = `${response.data.title} | ${settings.siteTitle}`
-            }
-            document.title = title
-          }
         })
         .catch((e) => {
           if (!test) {
@@ -770,12 +744,10 @@ function Page(props) {
     },
     [
       props.path,
-      getSettings,
       setActivePage,
       appRoot,
       callOnError,
       callOnNotFound,
-      getTopLevelPageKey,
       setActivePathname,
     ]
   )
@@ -857,6 +829,20 @@ function Page(props) {
       setWatchAction(null)
     }
   }, [watchAction, setWatchAction, applyControls, props.path])
+
+  // set the title if page is not header, footer, nor hero
+  React.useEffect(() => {
+    if (page && !['header', 'footer', 'hero'].includes(page.key)) {
+      const settings = getSettings()
+      let title = ''
+      if (page.key === 'home') {
+        title = settings.siteTitle
+      } else {
+        title = `${page.title} | ${settings.siteTitle}`
+      }
+      document.title = title
+    }
+  }, [page, getSettings])
 
   // REFS
   const ref = React.useRef()
