@@ -67,6 +67,9 @@ function AppContainer(props) {
   // on navigation between appRoot path and other pages
   const [initPage, setInitPage] = React.useState(props.initPage || null)
   const setActivePathname = React.useCallback((path) => {
+    if (path === '/home/') {
+      path = '/'
+    }
     setActivePathnameState(path)
     setInitPage(null)
   }, [])
@@ -915,6 +918,7 @@ function App(props) {
       if (anchor !== null) {
         const classList = new Array(...anchor.classList)
         if (
+          !classList.includes('navbar-brand') &&
           !classList.includes('nav-link') &&
           !classList.includes('dropdown-item')
         ) {
