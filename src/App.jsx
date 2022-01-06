@@ -73,9 +73,11 @@ function AppContainer(props) {
     setActivePathnameState(path)
     setInitPage(null)
   }, [])
+  const basename = props.appRoot || ''
+  const location = basename + activePathname
   return (
     <div className={joinClassNames('AppContainer')}>
-      <Router basename={props.appRoot || ''} location={activePathname}>
+      <Router basename={basename} location={location}>
         <App
           activePathname={activePathname}
           init404={props.init404}
