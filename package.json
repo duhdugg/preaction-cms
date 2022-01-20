@@ -75,7 +75,7 @@
     "build-ssr": "yarn webpack --config webpack.client.ssr.js",
     "build-meta": "yarn webpack --config webpack.meta.ssr.js",
     "makeover": "prettier --write ./*.js src/*.j* src/ext/index.template.js src/lib/* lib/*.js lib/__tests__/*.js __tests__/* src/__tests__/*.js scripts/*.js && yarn test",
-    "test-client": "react-scripts test --watchAll=false --maxWorkers 2",
+    "test-client": "react-scripts test --watchAll=false --maxWorkers 2 --testPathIgnorePatterns 'src/ext'",
     "test-client-coverage": "yarn test-client --verbose --coverage --coveragePathIgnorePatterns 'ssr\\.index\\.js' --coveragePathIgnorePatterns 'serviceWorker\\.js' --coveragePathIgnorePatterns 'src/style/' --coveragePathIgnorePatterns 'src/ext/' --coveragePathIgnorePatterns 'src/lib/env\\.js' --coveragePathIgnorePatterns 'src/lib/wysiwygToolbar\\.js' --coverageDirectory 'coverage/src'",
     "test-client-inspect": "react-scripts --inspect test --runInBand --no-cache --watchAll=false",
     "test-client-inspect-brk": "react-scripts --inspect-brk test --runInBand --no-cache --watchAll=false",
