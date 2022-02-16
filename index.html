@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>@preaction/cms 5.0.0-alpha.9 | Documentation</title>
+  <title>@preaction/cms 5.0.0-alpha.10 | Documentation</title>
   <meta name='description' content='Preaction CMS is a barebones, extensible Content Management System built on top of simple JavaScript libraries.'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>@preaction/cms</h3>
-          <div class='mb1'><code>5.0.0-alpha.9</code></div>
+          <div class='mb1'><code>5.0.0-alpha.10</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -468,9 +468,10 @@
 <h4>Example</h4>
 <p>Let's say you've decided to use the "Social Badge" extension from the link above in your Preaction CMS instance. You've cloned the repo, installed its dependencies, and compiled the extension using the build script from the package. You should have a <code>preactioncms-blockext-socialbadge.esm.js</code> file. This is the file you need to import into your <code>src/ext/index.js</code> file, which should now look like this:</p>
 <pre class='hljs'><span class="hljs-keyword">import</span> SocialBadge <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./preactioncms-blockext-socialbadge.esm.js&#x27;</span>
+<span class="hljs-keyword">const</span> allowedReferrers = []
 <span class="hljs-keyword">const</span> blockExtensions = { SocialBadge }
 <span class="hljs-keyword">const</span> menuExtensions = {}
-<span class="hljs-keyword">export</span> { blockExtensions, menuExtensions }</pre>
+<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
 <p>After your <code>src/ext/index.js</code> file is updated, run <code>yarn build</code>.</p>
 <p>You should be mindful of how each client-side extension impacts the bundle size when running <code>yarn build</code>. You can run <code>yarn analyze</code> to visualize this impact. If you notice that modules from the <code>node_modules</code> directory of the <em>extension</em> are being packaged into your client bundle, try removing that node_modules directory from the extension's project folder after building it, and before running <code>yarn build</code> on Preaction CMS.</p>
 <p>You may also wish to do code-splitting on your block extensions to keep your core bundle to a minimum, where the extension will be loaded as a separate JS file only when a page is rendered which uses it. In this case, you can use the <code>@loadable/component</code> library in <code>src/ext/index.js</code> as follows:</p>
@@ -488,9 +489,10 @@
 <span class="hljs-comment">// otherwise, this information will be blank until the component has loaded</span>
 SocialBadge.extensionType = <span class="hljs-string">&#x27;block&#x27;</span>
 SocialBadge.label = <span class="hljs-string">&#x27;Social Badges&#x27;</span>
+<span class="hljs-keyword">const</span> allowedReferrers = []
 <span class="hljs-keyword">const</span> blockExtensions = { SocialBadge }
 <span class="hljs-keyword">const</span> menuExtensions = {}
-<span class="hljs-keyword">export</span> { blockExtensions, menuExtensions }</pre>
+<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
 <p>Note: the above example also uses React to render a fallback (in this case, the <code>Spinner</code> component from <code>@preaction/bootstrap-clips</code>), although this is not required.</p>
 <h3>Client-Side Menu Extensions</h3>
 <p>You may also add menu extensions to Preaction CMS. A menu extension must meet the following requirements:</p>
@@ -536,9 +538,10 @@ example.extensionType = <span class="hljs-string">&#x27;menu&#x27;</span>
 <p>Note: This is a trivial example, but clicking on this menu item launches a Wikipedia search on the current page title.</p>
 <p>To use this extension, your <code>src/ext/index.js</code> file should look like the following:</p>
 <pre class='hljs'><span class="hljs-keyword">import</span> { example } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./menuext-example.js&#x27;</span>
+<span class="hljs-keyword">const</span> allowedReferrers = []
 <span class="hljs-keyword">const</span> blockExtensions = {}
 <span class="hljs-keyword">const</span> menuExtensions = { example }
-<span class="hljs-keyword">export</span> { blockExtensions, menuExtensions }</pre>
+<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
 <h3>Tracking Changes</h3>
 <p>You may wish to alter or remove the <code>src/.gitignore</code> and/or <code>src/ext/.gitignore</code> files after adding extensions to your local Preaction CMS repo.</p>
 
