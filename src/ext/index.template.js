@@ -1,3 +1,4 @@
+const allowedReferrers = []
 const blockExtensions = {}
 const menuExtensions = {}
-export { blockExtensions, menuExtensions }
+export { allowedReferrers, blockExtensions, menuExtensions }

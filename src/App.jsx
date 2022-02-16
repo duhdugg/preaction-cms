@@ -37,7 +37,7 @@ import Page from './Page.jsx'
 import absoluteUrl from './lib/absoluteUrl.js'
 import getLinkClassName from './lib/getLinkClassName.js'
 import getSaneKey from './lib/getSaneKey.js'
-import { menuExtensions } from './ext'
+import { allowedReferrers, menuExtensions } from './ext'
 import env from './lib/env.js'
 
 // import styling
@@ -398,7 +398,10 @@ function App(props) {
     (url) => {
       const launch = () => {
         if (getSettings().absoluteNavBehavior === 'new-window') {
-          window.open(url, '_blank', 'noreferrer noopener')
+          const windowFeatures = allowedReferrers.includes(new URL(url).origin)
+            ? 'noopener'
+            : 'noreferrer noopener'
+          window.open(url, '_blank', windowFeatures)
         } else {
           window.location = url
         }
