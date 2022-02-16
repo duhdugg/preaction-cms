@@ -10,7 +10,7 @@ Preaction CMS is a barebones, extensible Content Management System built on top 
 
 ### LICENSE
 
-> Copyright (c) 2018-2021 Doug Elkin
+> Copyright (c) 2018-2022 Doug Elkin
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
