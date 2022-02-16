@@ -13,7 +13,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
-import { StaticRouter } from 'react-router-dom/server.js'
+import { StaticRouter } from 'react-router-dom/server'
 import {
   getGradientClassName,
   getThemeClassName,
