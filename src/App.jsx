@@ -907,7 +907,7 @@ function App(props) {
     props.initPath,
     setActivePathname,
   ])
-  // setup link handler for WYSIWYG content links
+  // setup global link handler
   React.useEffect(() => {
     const findAnchor = (element) => {
       if (element.tagName === 'A') {

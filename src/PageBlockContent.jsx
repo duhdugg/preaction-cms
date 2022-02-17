@@ -194,7 +194,7 @@ function PageBlockContent(props) {
         ''
       )}
       {props.content.contentType === 'image' ? (
-        <PageBlockImage content={props.content} navigate={props.navigate} />
+        <PageBlockImage content={props.content} />
       ) : (
         ''
       )}
@@ -251,7 +251,6 @@ PageBlockContent.propTypes = {
   getContentSettingsValueHandler: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   last: PropTypes.bool,
-  navigate: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   token: PropTypes.string,
   width: PropTypes.any,

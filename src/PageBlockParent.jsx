@@ -265,7 +265,6 @@ function PageBlockParent(props) {
                 getContentSettingsValueHandler={gcsvh(content.id)}
                 editable={props.editable}
                 emitSave={props.emitSave}
-                navigate={props.navigate}
                 settings={props.settings}
                 token={props.token}
               />
