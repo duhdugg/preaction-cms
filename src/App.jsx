@@ -1003,7 +1003,6 @@ function App(props) {
     props.activePathname,
     getSettings,
     prevActivePage,
-    setPrevActivePage,
     trackPageView,
   ])
 
@@ -1017,7 +1016,7 @@ function App(props) {
       }
       setWatchAction(null)
     }
-  }, [watchAction, setWatchAction, emitSave, redirect])
+  }, [watchAction, emitSave, redirect])
 
   // VARIABLES
   const settings = getSettings()

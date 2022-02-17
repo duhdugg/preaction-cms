@@ -822,7 +822,7 @@ function Page(props) {
       loadPage(props.path)
       setPrevPath(props.path)
     }
-  }, [props.path, prevPath, setPrevPath, loadPage])
+  }, [props.path, prevPath, loadPage])
 
   React.useEffect(() => {
     if (watchAction) {
@@ -831,7 +831,7 @@ function Page(props) {
       }
       setWatchAction(null)
     }
-  }, [watchAction, setWatchAction, applyControls, props.path])
+  }, [watchAction, applyControls, props.path])
 
   // set the title if page is not header, footer, nor hero
   React.useEffect(() => {

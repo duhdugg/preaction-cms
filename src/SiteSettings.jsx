@@ -93,7 +93,7 @@ function SiteSettings(props) {
       getRedirects()
     }
     setShowPrev(props.show)
-  }, [props, showPrev, setShowPrev, getBackups, getRedirects])
+  }, [props.show, showPrev, getBackups, getRedirects])
 
   return (
     <div className='site-level settings-component'>
