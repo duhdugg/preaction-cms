@@ -64,10 +64,10 @@ function Page(props) {
           const pageCopy = copyObj(page)
           pageCopy.pageblocks.forEach((pageblock) => {
             if (block.id === pageblock.id) {
-              if (!block.pageblockcontents) {
-                block.pageblockcontents = []
+              if (!pageblock.pageblockcontents) {
+                pageblock.pageblockcontents = []
               }
-              block.pageblockcontents.push(response.data)
+              pageblock.pageblockcontents.push(response.data)
             }
           })
           setPage(pageCopy)
