@@ -375,6 +375,9 @@ function Page(props) {
       const pageCopy = copyObj(page)
       delete pageCopy.settings[key]
       setPage(pageCopy)
+      if (setActivePage) {
+        setActivePage(pageCopy)
+      }
       clearTimeout(updateTimer.current)
       updateTimer.current = setTimeout(() => {
         axios
@@ -388,7 +391,7 @@ function Page(props) {
           })
       }, 1000)
     },
-    [appRoot, emitSave, page, token]
+    [appRoot, emitSave, page, setActivePage, token]
   )
 
   const getPageSettingsValueHandler = React.useCallback(
