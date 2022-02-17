@@ -1090,6 +1090,7 @@ function App(props) {
             <NavBar
               fluid={settings.maxWidthNav}
               fixedTo='top'
+              itemKey='className'
               theme={settings.navbarTheme}
               brand={{
                 name: settings.siteTitle,
@@ -1110,6 +1111,7 @@ function App(props) {
             {settings.navPosition === 'above-header' ? (
               <Nav
                 menu={getMenu()}
+                itemKey='className'
                 type={settings.navType}
                 align={settings.navAlignment}
                 justify={settings.navSpacing === 'justify'}
@@ -1132,6 +1134,7 @@ function App(props) {
             {settings.navPosition === 'below-header' ? (
               <Nav
                 menu={getMenu()}
+                itemKey='className'
                 type={settings.navType}
                 align={settings.navAlignment}
                 justify={settings.navSpacing === 'justify'}
