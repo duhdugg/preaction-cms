@@ -681,3 +681,17 @@
   }
 }
 @include active-tab-themes;
+@mixin settings-component-rules {
+  .settings-component {
+    .pxn-card-container {
+      margin-bottom: 1rem;
+    }
+    .pxn-card-container.backups {
+      margin-bottom: 0;
+    }
+    .pxn-card-container.delete-page {
+      margin-bottom: 0;
+    }
+  }
+}
+@include settings-component-rules;
