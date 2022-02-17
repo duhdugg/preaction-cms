@@ -31,7 +31,7 @@
     "@loadable/component": "^5.15.2",
     "@loadable/webpack-plugin": "^5.15.2",
     "@popperjs/core": "^2.11.2",
-    "@preaction/bootstrap-clips": "^5.0.0-alpha.17",
+    "@preaction/bootstrap-clips": "^5.0.0-alpha.19",
     "@preaction/inputs": "^5.0.0-alpha.8",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
