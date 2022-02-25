@@ -27,11 +27,7 @@ test('PageBlockImage basic', async () => {
     pageblockId: 3,
   }
 
-  const mockNavigate = () => {}
-
-  const result = render(
-    <PageBlockImage appRoot='' content={mockContent} navigate={mockNavigate} />
-  )
+  const result = render(<PageBlockImage appRoot='' content={mockContent} />)
   expect(result.getByAltText('test-image')).toBeInTheDocument()
 })
 
@@ -58,15 +54,6 @@ test('PageBlockImage with link', async () => {
     pageblockId: 3,
   }
 
-  let navigatePath
-  const mockNavigate = (path) => {
-    navigatePath = path
-  }
-
-  const result = render(
-    <PageBlockImage appRoot='' content={mockContent} navigate={mockNavigate} />
-  )
+  const result = render(<PageBlockImage appRoot='' content={mockContent} />)
   expect(result.getByAltText('test-image')).toBeInTheDocument()
-  userEvent.click(result.getByAltText('test-image'))
-  await waitFor(() => expect(navigatePath).toBe('/test/'))
 })
