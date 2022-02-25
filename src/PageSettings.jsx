@@ -234,19 +234,29 @@ function PageSettings(props) {
                     />
                   </div>
                   {props.settings.includeInNav ? (
-                    <div className='ordering-field'>
-                      <Input
-                        type='number'
-                        step='1'
-                        label='Ordering'
-                        labelFloat
-                        info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
-                        placeholder='0'
-                        value={props.settings.navOrdering}
-                        valueHandler={props.getSettingsValueHandler(
-                          'navOrdering'
-                        )}
-                      />
+                    <div>
+                      <div className='ordering-field'>
+                        <Input
+                          label='Nav Link Name'
+                          placeholder={props.page.title}
+                          value={props.settings.navLinkName}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navLinkName'
+                          )}
+                        />
+                        <Input
+                          type='number'
+                          step='1'
+                          label='Ordering'
+                          labelFloat
+                          info="Leave this field empty or at 0 to allow this page's nav item to be sorted alphabetically. Otherwise, you may enter a negative number to force it to appear before other items, or a postive number to force it to appear after other items"
+                          placeholder='0'
+                          value={props.settings.navOrdering}
+                          valueHandler={props.getSettingsValueHandler(
+                            'navOrdering'
+                          )}
+                        />
+                      </div>
                     </div>
                   ) : (
                     ''

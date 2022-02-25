@@ -249,6 +249,9 @@ function Page(props) {
       Object.assign(s, props.fallbackSettings)
     }
     Object.assign(s, page ? page.settings : {})
+    if (page && page.settings.navLinkName === undefined) {
+      s.navLinkName = undefined
+    }
     if (page && page.settings.navOrdering === undefined) {
       s.navOrdering = undefined
     }

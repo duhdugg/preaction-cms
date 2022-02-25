@@ -523,7 +523,7 @@ function App(props) {
         page.children.forEach((pg) => {
           if (pg.settings.includeInNav) {
             subMenu.push({
-              name: pg.title,
+              name: pg.settings.navLinkName || pg.title,
               className: `nav-page-${page.key}-subpage-${pg.key}`,
               href: `/${pg.path}/`,
               component: NavLink,
@@ -561,7 +561,7 @@ function App(props) {
           return retval
         })
         menu.push({
-          name: page.title,
+          name: page.settings.navLinkName || page.title,
           className: `nav-page-${page.key}`,
           href: `/${page.path}/`,
           component: NavLink,
