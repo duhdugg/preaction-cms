@@ -1,12 +1,12 @@
 FROM node:lts-alpine
-RUN apk update
-RUN apk upgrade --no-cache
-RUN apk add bash exiftool --no-cache
+RUN apk update \
+  && apk upgrade --no-cache \
+  && apk add bash exiftool --no-cache
 ADD . /home/node/preaction-cms
 WORKDIR /home/node/preaction-cms
-RUN chown -R node:node .
-RUN su node -c 'yarn'
-RUN su node -c 'yarn build'
+RUN chown -R node:node . \
+  && su node -c 'yarn' \
+  && su node -c 'yarn build'
 EXPOSE 8999
 ENV NODE_ENV=production
 USER node
