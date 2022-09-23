@@ -54,8 +54,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js' --html stats.html && xdg-open stats.html",
-    "analyze-gzip": "source-map-explorer 'build/static/js/*.js' --html stats.html --gzip && xdg-open stats.html",
+    "analyze": "NODE_OPTIONS='--no-experimental-fetch' source-map-explorer 'build/static/js/*.js' --html stats.html && xdg-open stats.html",
+    "analyze-gzip": "NODE_OPTIONS='--no-experimental-fetch' source-map-explorer 'build/static/js/*.js' --html stats.html --gzip && xdg-open stats.html",
     "backup-db": "node scripts/backup-db.js",
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
