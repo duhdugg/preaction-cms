@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import * as serviceWorker from './serviceWorker'
 
@@ -41,8 +41,13 @@ const initialize = () => {
     settings.initPath = `/`
   }
 
-  const render = !!module.hot ? ReactDOM.render : ReactDOM.hydrate
-  render(<App {...settings} />, document.getElementById('root'))
+  const root = document.getElementById('root')
+  const app = <App {...settings} />
+  const render = () =>
+    !!module.hot
+      ? ReactDOM.createRoot(root).render(app)
+      : ReactDOM.hydrateRoot(root, app)
+  render()
 
   // If you want your app to work offline and load faster, you can change
   // unregister() to register() below. Note this comes with some pitfalls.
