@@ -48,30 +48,13 @@ test('Login', async () => {
       token={token}
     />
   )
-  const rerender = () =>
-    result.rerender(
-      <Login
-        appRoot=''
-        loadSession={mockLoadSession}
-        settings={mockSettings}
-        setToken={mockSetToken}
-        navigate={mockNavigate}
-        token={token}
-      />
-    )
-  const typeString = (target, str) => {
-    for (let char of str) {
-      userEvent.type(target, char)
-      rerender()
-    }
-  }
   expect(result.getByText('Username')).toBeInTheDocument()
   expect(result.getByText('Password')).toBeInTheDocument()
   expect(result.getByText('Log In')).toBeInTheDocument()
   await waitFor(() => expect(token).toBe('foobar'))
-  typeString(result.getByLabelText('Username *'), 'admin')
-  typeString(result.getByLabelText('Password *'), 'pass')
-  userEvent.click(result.getByText('Log In'))
-  await waitFor(() => expect(loadSessionCalled).toBe(true))
-  await waitFor(() => expect(latestNavigatePath).toBe('/'))
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'pass')
+  await userEvent.click(result.getByText('Log In'))
+  await expect(loadSessionCalled).toBe(true)
+  await expect(latestNavigatePath).toBe('/')
 })

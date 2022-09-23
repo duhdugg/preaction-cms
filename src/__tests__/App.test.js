@@ -774,7 +774,7 @@ test('relative links are handled by navigate function', async () => {
   await waitFor(() =>
     expect(result.getByText('Go to Test Page')).toBeInTheDocument()
   )
-  userEvent.click(result.getByText('Go to Test Page'))
+  await userEvent.click(result.getByText('Go to Test Page'))
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
 })
 
@@ -782,7 +782,7 @@ test('absolute links are handled by navigate function', async () => {
   const result = render(<App initPath='/' />)
   expect(result.container.firstChild).toHaveClass('AppContainer')
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
-  userEvent.click(result.getByText('Launch test page in new window'))
+  await userEvent.click(result.getByText('Launch test page in new window'))
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -836,9 +836,9 @@ test('login', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
 })
@@ -850,13 +850,13 @@ test('logout', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   expect(result.container.querySelector('.nav-logout')).toBeInTheDocument()
-  userEvent.click(result.container.querySelectorAll('.nav-logout')[0])
+  await userEvent.click(result.container.querySelectorAll('.nav-logout')[0])
   await waitFor(() =>
     expect(result.container.querySelector('.nav-user')).not.toBeInTheDocument()
   )
@@ -869,23 +869,23 @@ test('create new page', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
+  await userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-new-page')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-new-page a'))
+  await userEvent.click(result.container.querySelector('.nav-new-page a'))
   await waitFor(() =>
     expect(result.getByLabelText('Page Title *')).toBeInTheDocument()
   )
   await waitFor(() =>
     expect(result.getByLabelText('URL Path *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Page Title *'), 'FooBar')
+  await userEvent.type(result.getByLabelText('Page Title *'), 'FooBar')
   expect(result.getByLabelText('URL Path *')).toHaveValue('foobar')
-  userEvent.click(result.getByText('Save'))
+  await userEvent.click(result.getByText('Save'))
   await waitFor(() =>
     expect(result.container.querySelectorAll('.nav-page-foobar').length).toBe(1)
   )
@@ -898,8 +898,8 @@ test('edit site settings', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -907,16 +907,16 @@ test('edit site settings', async () => {
       }),
     { timeout: 1250 }
   )
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
+  await userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings a')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await userEvent.click(result.container.querySelector('.nav-settings a'))
   await waitFor(() =>
     expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
   )
-  userEvent.selectOptions(result.getByLabelText('Nav Position'), [
+  await userEvent.selectOptions(result.getByLabelText('Nav Position'), [
     'above-header',
   ])
   await waitFor(
@@ -943,8 +943,8 @@ test('edit page settings', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -952,19 +952,19 @@ test('edit page settings', async () => {
       }),
     { timeout: 1250 }
   )
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
   await waitFor(() => expect(result.getByText('Foo 1')).toBeInTheDocument())
-  userEvent.click(result.getByText('Foo 1'))
+  await userEvent.click(result.getByText('Foo 1'))
   await waitFor(() => expect(result.getByText('Foo Page')).toBeInTheDocument())
-  userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
+  await userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings a')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await userEvent.click(result.container.querySelector('.nav-settings a'))
   await waitFor(() =>
     expect(result.getByLabelText('Nav Position')).toBeInTheDocument()
   )
-  userEvent.selectOptions(result.getByLabelText('Nav Position'), [
+  await userEvent.selectOptions(result.getByLabelText('Nav Position'), [
     'below-header',
   ])
   await waitFor(
@@ -991,23 +991,25 @@ test('delete page', async () => {
   await waitFor(() =>
     expect(result.getByLabelText('Username *')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Username *'), 'admin')
-  userEvent.type(result.getByLabelText('Password *'), 'admin')
-  userEvent.click(result.getByText('Log In'))
+  await userEvent.type(result.getByLabelText('Username *'), 'admin')
+  await userEvent.type(result.getByLabelText('Password *'), 'admin')
+  await userEvent.click(result.getByText('Log In'))
   await waitFor(() => expect(result.getByText('Home Page')).toBeInTheDocument())
   expect(result.container.querySelector('.nav-user')).toBeInTheDocument()
-  userEvent.click(result.getByText('Go to Test Page'))
+  await userEvent.click(result.getByText('Go to Test Page'))
   await waitFor(() => expect(result.getByText('Test Page')).toBeInTheDocument())
-  userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
+  await userEvent.click(result.container.querySelector('.nav-toggle-edit a'))
   expect(result.container.querySelector('.nav-settings')).toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.nav-settings a'))
+  await userEvent.click(result.container.querySelector('.nav-settings a'))
   await waitFor(() =>
     expect(
       result.getByLabelText('Confirm to delete this page')
     ).toBeInTheDocument()
   )
-  userEvent.click(result.getByLabelText('Confirm to delete this page'))
-  userEvent.click(result.container.querySelector('.delete-page .btn-danger'))
+  await userEvent.click(result.getByLabelText('Confirm to delete this page'))
+  await userEvent.click(
+    result.container.querySelector('.delete-page .btn-danger')
+  )
   await waitFor(() =>
     expect(
       serverCalls.some(
@@ -1035,6 +1037,7 @@ test('globalThis.preaction.reload', async () => {
   )
 
   window.preaction.reload({ action: 'add-page' })
+  result.rerender(<App initPath='/' />)
   expect(
     result.container.querySelector('.pxn-spinner-container')
   ).toBeInTheDocument()

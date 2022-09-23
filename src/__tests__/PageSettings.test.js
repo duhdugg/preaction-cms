@@ -345,274 +345,297 @@ test('PageSettings renders without crashing', () => {
   expect(result.getByText('Page-Level Settings')).toBeInTheDocument()
 })
 
-test('Override Site Name', () => {
+test('Override Site Name', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Site Name')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Site Name'))
+  await userEvent.click(result.getByLabelText('Site Name'))
   rerender()
   expect(result.getByLabelText('Site Name')).not.toHaveAttribute('readOnly')
-  userEvent.type(result.getByLabelText('Site Name'), '!')
+  await userEvent.type(result.getByLabelText('Site Name'), '!')
   expect(mockPage.settings.siteTitle).toBe('Preaction CMS!')
-  userEvent.click(result.getByText('Reset'))
+  await userEvent.click(result.getByText('Reset'))
   expect(mockPage.settings.siteTitle).toBe(undefined)
 })
 
-test('Override Show Header', () => {
+test('Override Show Header', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Show Header'))
+  await userEvent.click(result.getByText('Show Header'))
   expect(mockPage.settings.showHeader).toBe(false)
 })
 
-test('Override Show Footer', () => {
+test('Override Show Footer', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Show Footer'))
+  await userEvent.click(result.getByText('Show Footer'))
   expect(mockPage.settings.showFooter).toBe(false)
 })
 
-test('Override Show Hero', () => {
+test('Override Show Hero', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Show Hero'))
+  await userEvent.click(result.getByText('Show Hero'))
   expect(mockPage.settings.showHero).toBe(false)
 })
 
-test('Click to confirm delete', () => {
+test('Click to confirm delete', async () => {
   const { result, state } = getResults()
-  userEvent.click(result.container.querySelector('.btn-danger'))
+  await userEvent.click(result.container.querySelector('.btn-danger'))
   expect(state.deletePageCalled).toBe(false)
-  userEvent.click(result.getByLabelText('Confirm to delete this page'))
-  userEvent.click(result.container.querySelector('.btn-danger'))
+  await userEvent.click(result.getByLabelText('Confirm to delete this page'))
+  await userEvent.click(result.container.querySelector('.btn-danger'))
   expect(state.deletePageCalled).toBe(true)
 })
 
-test('Override Header Path', () => {
+test('Override Header Path', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(
     result.container.querySelector('.header-path-field input')
   ).toHaveAttribute('readOnly')
-  userEvent.click(result.container.querySelector('.header-path-field input'))
+  await userEvent.click(
+    result.container.querySelector('.header-path-field input')
+  )
   rerender()
   expect(
     result.container.querySelector('.header-path-field input')
   ).not.toHaveAttribute('readOnly')
   result.container.querySelector('.header-path-field input').value =
     '/foo-1/abc/header'
-  userEvent.type(
+  await userEvent.type(
     result.container.querySelector('.header-path-field input'),
     '/'
   )
   expect(mockPage.settings.headerPath).toBe('/foo-1/abc/header/')
 })
 
-test('Override Footer Path', () => {
+test('Override Footer Path', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(
     result.container.querySelector('.footer-path-field input')
   ).toHaveAttribute('readOnly')
-  userEvent.click(result.container.querySelector('.footer-path-field input'))
+  await userEvent.click(
+    result.container.querySelector('.footer-path-field input')
+  )
   rerender()
   expect(
     result.container.querySelector('.footer-path-field input')
   ).not.toHaveAttribute('readOnly')
   result.container.querySelector('.footer-path-field input').value =
     '/foo-1/abc/footer'
-  userEvent.type(
+  await userEvent.type(
     result.container.querySelector('.footer-path-field input'),
     '/'
   )
   expect(mockPage.settings.footerPath).toBe('/foo-1/abc/footer/')
 })
 
-test('Override Hero Path', () => {
+test('Override Hero Path', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(
     result.container.querySelector('.hero-path-field input')
   ).toHaveAttribute('readOnly')
-  userEvent.click(result.container.querySelector('.hero-path-field input'))
+  await userEvent.click(
+    result.container.querySelector('.hero-path-field input')
+  )
   rerender()
   expect(
     result.container.querySelector('.hero-path-field input')
   ).not.toHaveAttribute('readOnly')
   result.container.querySelector('.hero-path-field input').value =
     '/foo-1/abc/hero'
-  userEvent.type(result.container.querySelector('.hero-path-field input'), '/')
+  await userEvent.type(
+    result.container.querySelector('.hero-path-field input'),
+    '/'
+  )
   expect(mockPage.settings.heroPath).toBe('/foo-1/abc/hero/')
 })
 
-test('Override Hero Position', () => {
+test('Override Hero Position', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Hero Position')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Hero Position'))
+  await userEvent.click(result.getByLabelText('Hero Position'))
   rerender()
   expect(result.getByLabelText('Hero Position')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(
+  await userEvent.selectOptions(
     result.getByLabelText('Hero Position'),
     'below-header'
   )
   expect(mockPage.settings.heroPosition).toBe('below-header')
 })
 
-test('Override Nav Position', () => {
+test('Override Nav Position', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Nav Position')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Nav Position'))
+  await userEvent.click(result.getByLabelText('Nav Position'))
   rerender()
   expect(result.getByLabelText('Nav Position')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Nav Position'), 'below-header')
+  await userEvent.selectOptions(
+    result.getByLabelText('Nav Position'),
+    'below-header'
+  )
   expect(mockPage.settings.navPosition).toBe('below-header')
 })
 
-test('Override Nav Type', () => {
+test('Override Nav Type', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Nav Type')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Nav Type'))
+  await userEvent.click(result.getByLabelText('Nav Type'))
   rerender()
   expect(result.getByLabelText('Nav Type')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Nav Type'), 'pills')
+  await userEvent.selectOptions(result.getByLabelText('Nav Type'), 'pills')
   expect(mockPage.settings.navType).toBe('pills')
 })
 
-test('Override Nav Alignment', () => {
+test('Override Nav Alignment', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Nav Alignment')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Nav Alignment'))
+  await userEvent.click(result.getByLabelText('Nav Alignment'))
   rerender()
   expect(result.getByLabelText('Nav Alignment')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Nav Alignment'), 'center')
+  await userEvent.selectOptions(
+    result.getByLabelText('Nav Alignment'),
+    'center'
+  )
   expect(mockPage.settings.navAlignment).toBe('center')
 })
 
-test('Override Nav Spacing', () => {
+test('Override Nav Spacing', async () => {
   const { result, rerender, mockPage } = getResults()
   expect(result.getByLabelText('Nav Spacing')).toHaveAttribute('readOnly')
-  userEvent.click(result.getByLabelText('Nav Spacing'))
+  await userEvent.click(result.getByLabelText('Nav Spacing'))
   rerender()
   expect(result.getByLabelText('Nav Spacing')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Nav Spacing'), 'fill')
+  await userEvent.selectOptions(result.getByLabelText('Nav Spacing'), 'fill')
   expect(mockPage.settings.navSpacing).toBe('fill')
 })
 
-test('Override Collapse Nav', () => {
+test('Override Collapse Nav', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Collapse nav for smaller screens'))
+  await userEvent.click(
+    result.getByLabelText('Collapse nav for smaller screens')
+  )
   expect(mockPage.settings.navCollapsible).toBe(false)
 })
 
-test('Override NavBar Theme', () => {
+test('Override NavBar Theme', async () => {
   const { rerender, result, mockPage } = getResults({
     navPosition: 'fixed-top',
   })
-  userEvent.click(result.getByLabelText('NavBar Theme'))
+  await userEvent.click(result.getByLabelText('NavBar Theme'))
   rerender()
   expect(result.getByLabelText('NavBar Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('NavBar Theme'), 'danger')
+  await userEvent.selectOptions(result.getByLabelText('NavBar Theme'), 'danger')
   expect(mockPage.settings.navbarTheme).toBe('danger')
 })
 
-test('Override Body Theme', () => {
+test('Override Body Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Body Theme'))
+  await userEvent.click(result.getByLabelText('Body Theme'))
   rerender()
   expect(result.getByLabelText('Body Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Body Theme'), 'dark')
+  await userEvent.selectOptions(result.getByLabelText('Body Theme'), 'dark')
   expect(mockPage.settings.bodyTheme).toBe('dark')
 })
 
-test('Override Main Theme', () => {
+test('Override Main Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Main Theme'))
+  await userEvent.click(result.getByLabelText('Main Theme'))
   rerender()
   expect(result.getByLabelText('Main Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Main Theme'), 'dark')
+  await userEvent.selectOptions(result.getByLabelText('Main Theme'), 'dark')
   expect(mockPage.settings.mainTheme).toBe('dark')
 })
 
-test('Override Active Nav Tab Theme', () => {
+test('Override Active Nav Tab Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Active Nav Tab Theme'))
+  await userEvent.click(result.getByLabelText('Active Nav Tab Theme'))
   rerender()
   expect(result.getByLabelText('Active Nav Tab Theme')).not.toHaveAttribute(
     'readOnly'
   )
-  userEvent.selectOptions(result.getByLabelText('Active Nav Tab Theme'), 'dark')
+  await userEvent.selectOptions(
+    result.getByLabelText('Active Nav Tab Theme'),
+    'dark'
+  )
   expect(mockPage.settings.navActiveTabTheme).toBe('dark')
 })
 
-test('Override Active Submenu Theme', () => {
+test('Override Active Submenu Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Active Submenu Theme'))
+  await userEvent.click(result.getByLabelText('Active Submenu Theme'))
   rerender()
   expect(result.getByLabelText('Active Submenu Theme')).not.toHaveAttribute(
     'readOnly'
   )
-  userEvent.selectOptions(result.getByLabelText('Active Submenu Theme'), 'dark')
+  await userEvent.selectOptions(
+    result.getByLabelText('Active Submenu Theme'),
+    'dark'
+  )
   expect(mockPage.settings.navActiveSubmenuTheme).toBe('dark')
 })
 
-test('Override Header Theme', () => {
+test('Override Header Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Header Theme'))
+  await userEvent.click(result.getByLabelText('Header Theme'))
   rerender()
   expect(result.getByLabelText('Header Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Header Theme'), 'dark')
+  await userEvent.selectOptions(result.getByLabelText('Header Theme'), 'dark')
   expect(mockPage.settings.headerTheme).toBe('dark')
 })
 
-test('Override Hero Theme', () => {
+test('Override Hero Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Hero Theme'))
+  await userEvent.click(result.getByLabelText('Hero Theme'))
   rerender()
   expect(result.getByLabelText('Hero Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Hero Theme'), 'dark')
+  await userEvent.selectOptions(result.getByLabelText('Hero Theme'), 'dark')
   expect(mockPage.settings.heroTheme).toBe('dark')
 })
 
-test('Override Footer Theme', () => {
+test('Override Footer Theme', async () => {
   const { rerender, result, mockPage } = getResults()
-  userEvent.click(result.getByLabelText('Footer Theme'))
+  await userEvent.click(result.getByLabelText('Footer Theme'))
   rerender()
   expect(result.getByLabelText('Footer Theme')).not.toHaveAttribute('readOnly')
-  userEvent.selectOptions(result.getByLabelText('Footer Theme'), 'dark')
+  await userEvent.selectOptions(result.getByLabelText('Footer Theme'), 'dark')
   expect(mockPage.settings.footerTheme).toBe('dark')
 })
 
-test('Override Max Width on Navigation Bar', () => {
+test('Override Max Width on Navigation Bar', async () => {
   const { result, mockPage } = getResults({ navPosition: 'fixed-top' })
-  userEvent.click(result.getByText('Max Width on Navigation Bar'))
+  await userEvent.click(result.getByText('Max Width on Navigation Bar'))
   expect(mockPage.settings.maxWidthNav).toBe(true)
 })
 
-test('Override Max Width on Hero Container', () => {
+test('Override Max Width on Hero Container', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Max Width on Hero Container'))
+  await userEvent.click(result.getByText('Max Width on Hero Container'))
   expect(mockPage.settings.maxWidthHeroContainer).toBe(true)
 })
 
-test('Override Max Width on Header Container', () => {
+test('Override Max Width on Header Container', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Max Width on Header Container'))
+  await userEvent.click(result.getByText('Max Width on Header Container'))
   expect(mockPage.settings.maxWidthHeaderContainer).toBe(true)
 })
 
-test('Override Max Width on Main Container', () => {
+test('Override Max Width on Main Container', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Max Width on Main Container'))
+  await userEvent.click(result.getByText('Max Width on Main Container'))
   expect(mockPage.settings.maxWidthMainContainer).toBe(true)
 })
 
-test('Override Max Width on Footer Container', () => {
+test('Override Max Width on Footer Container', async () => {
   const { result, mockPage } = getResults()
-  userEvent.click(result.getByText('Max Width on Footer Container'))
+  await userEvent.click(result.getByText('Max Width on Footer Container'))
   expect(mockPage.settings.maxWidthFooterContainer).toBe(true)
 })
 
-test('Test navigation', () => {
+test('Test navigation', async () => {
   const { result, state } = getResults()
-  userEvent.click(result.getByText('root page'))
+  await userEvent.click(result.getByText('root page'))
   expect(state.latestNavigatePath).toBe('/')
 
-  userEvent.click(result.getByText('(root page)'))
+  await userEvent.click(result.getByText('(root page)'))
   expect(state.latestNavigatePath).toBe('/')
 
-  userEvent.click(result.getByText('/foo-1/'))
+  await userEvent.click(result.getByText('/foo-1/'))
   expect(state.latestNavigatePath).toBe('/foo-1/')
 })

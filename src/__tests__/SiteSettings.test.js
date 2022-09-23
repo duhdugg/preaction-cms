@@ -90,20 +90,8 @@ function getResults() {
       token='foobar'
     />
   )
-  const rerender = () =>
-    result.rerender(
-      <SiteSettings
-        admin
-        appRoot=''
-        emitForceReload={mockEmitForceReload}
-        getSettingsValueHandler={mockGetSettingsValueHandler}
-        settings={mockSettings}
-        token='foobar'
-      />
-    )
   return {
     result,
-    rerender,
     state,
   }
 }
@@ -121,7 +109,7 @@ test('SiteSettings renders without crashing', async () => {
 })
 
 test('restore backup', async () => {
-  const { result, rerender, state } = getResults()
+  const { result, state } = getResults()
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -129,17 +117,16 @@ test('restore backup', async () => {
       }),
     { timeout: 1050 }
   )
-  userEvent.selectOptions(
+  await userEvent.selectOptions(
     result.getByLabelText('Restore File'),
     '2020-08-21T03:29:20.944Z-bb52d3887ddd51921ff4b4341a32d446a1c90ba471af64ba9738541a7d9c59a5.sqlite'
   )
-  rerender()
-  userEvent.click(result.getByText('Restore'))
-  await waitFor(() => expect(state.forceReloadCalled).toBe(true))
+  await userEvent.click(result.getByText('Restore'))
+  expect(state.forceReloadCalled).toBe(true)
 })
 
 test('edit redirect', async () => {
-  const { result, rerender } = getResults()
+  const { result } = getResults()
   expect(result.getByText('Site Name')).toBeInTheDocument()
   await waitFor(
     () =>
@@ -148,19 +135,19 @@ test('edit redirect', async () => {
       }),
     { timeout: 1050 }
   )
-  userEvent.click(result.container.querySelector('.redirects .btn-light'))
-  rerender()
-  userEvent.type(
+  await userEvent.click(result.container.querySelector('.redirects .btn-light'))
+  await userEvent.type(
     result.container.querySelector('.redirects td:nth-child(3) input'),
     '1'
   )
-  rerender()
-  userEvent.click(result.container.querySelector('.redirects .btn-success'))
-  await waitFor(() => expect(editRedirect.location).toBe('/barish1'))
+  await userEvent.click(
+    result.container.querySelector('.redirects .btn-success')
+  )
+  expect(editRedirect.location).toBe('/barish1')
 })
 
 test('create redirect', async () => {
-  const { result, rerender } = getResults()
+  const { result } = getResults()
   expect(result.getByText('Site Name')).toBeInTheDocument()
   await waitFor(
     () =>
@@ -169,25 +156,22 @@ test('create redirect', async () => {
       }),
     { timeout: 1050 }
   )
-  userEvent.click(result.container.querySelector('.redirects .btn-primary'))
-  rerender()
-  const typeString = (target, str) => {
-    for (let char of str) {
-      userEvent.type(target, char)
-      rerender()
-    }
-  }
-  typeString(
+  await userEvent.click(
+    result.container.querySelector('.redirects .btn-primary')
+  )
+  await userEvent.type(
     result.container.querySelector('.redirects td:nth-child(2) input'),
     '/testing'
   )
-  typeString(
+  await userEvent.type(
     result.container.querySelector('.redirects td:nth-child(3) input'),
     '/123'
   )
-  userEvent.click(result.container.querySelector('.redirects .btn-success'))
-  await waitFor(() => expect(newRedirect.match).toBe('/testing'))
-  await waitFor(() => expect(newRedirect.location).toBe('/123'))
+  await userEvent.click(
+    result.container.querySelector('.redirects .btn-success')
+  )
+  expect(newRedirect.match).toBe('/testing')
+  expect(newRedirect.location).toBe('/123')
 })
 
 test('delete redirect', async () => {
@@ -200,6 +184,8 @@ test('delete redirect', async () => {
       }),
     { timeout: 1050 }
   )
-  userEvent.click(result.container.querySelector('.redirects .btn-danger'))
-  await waitFor(() => expect(deleteRedirect).toBe('1'))
+  await userEvent.click(
+    result.container.querySelector('.redirects .btn-danger')
+  )
+  expect(deleteRedirect).toBe('1')
 })

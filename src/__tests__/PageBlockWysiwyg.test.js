@@ -110,34 +110,36 @@ test('PageBlockWysiwyg basic editable sourceMode', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('textarea')).toBeInTheDocument()
   )
-  userEvent.type(
-    result.container.querySelector('textarea'),
-    '{selectall}{backspace}'
-  )
+  for (let x = 0; x < mockBlock.pageblockcontents[0].wysiwyg.length; x++) {
+    await userEvent.type(
+      result.container.querySelector('textarea'),
+      '{backspace}'
+    )
+  }
   await waitFor(() =>
     expect(result.container.querySelector('textarea').value).toBe('')
   )
-  userEvent.type(result.container.querySelector('textarea'), '<')
+  await userEvent.type(result.container.querySelector('textarea'), '<')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 'p')
+  await userEvent.type(result.container.querySelector('textarea'), 'p')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), '>')
+  await userEvent.type(result.container.querySelector('textarea'), '>')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 't')
+  await userEvent.type(result.container.querySelector('textarea'), 't')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 'e')
+  await userEvent.type(result.container.querySelector('textarea'), 'e')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 's')
+  await userEvent.type(result.container.querySelector('textarea'), 's')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 't')
+  await userEvent.type(result.container.querySelector('textarea'), 't')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), '<')
+  await userEvent.type(result.container.querySelector('textarea'), '<')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), '/')
+  await userEvent.type(result.container.querySelector('textarea'), '/')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), 'p')
+  await userEvent.type(result.container.querySelector('textarea'), 'p')
   rerender()
-  userEvent.type(result.container.querySelector('textarea'), '>')
+  await userEvent.type(result.container.querySelector('textarea'), '>')
   rerender()
   await waitFor(() =>
     expect(result.container.querySelector('textarea').value).toBe('<p>test</p>')

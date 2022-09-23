@@ -593,19 +593,19 @@ test('add page block', async () => {
   expect(
     result.container.querySelector('.block-type-iframe')
   ).not.toBeInTheDocument()
-  userEvent.click(result.container.querySelector('.add-iframe-block'))
+  await userEvent.click(result.container.querySelector('.add-iframe-block'))
   await waitFor(() =>
     expect(
       result.container.querySelector('.block-type-iframe')
     ).toBeInTheDocument()
   )
-  userEvent.click(result.container.querySelector('.add-nav-block'))
+  await userEvent.click(result.container.querySelector('.add-nav-block'))
   await waitFor(() =>
     expect(
       result.container.querySelector('.block-type-nav')
     ).toBeInTheDocument()
   )
-  userEvent.click(result.container.querySelector('.add-content-block'))
+  await userEvent.click(result.container.querySelector('.add-content-block'))
   await waitFor(() =>
     expect(
       result.container.querySelector('.block-type-content')
@@ -626,7 +626,7 @@ test('blockControl:delete', async () => {
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
   expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
-  userEvent.click(result.container.querySelectorAll('.delete-block')[0])
+  await userEvent.click(result.container.querySelectorAll('.delete-block')[0])
   await waitFor(
     () =>
       expect(
@@ -662,7 +662,9 @@ test('blockControl:next', async () => {
   expect(
     result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
-  userEvent.click(result.container.querySelectorAll('.move-block.next')[0])
+  await userEvent.click(
+    result.container.querySelectorAll('.move-block.next')[0]
+  )
   expect(
     result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=2')
@@ -697,7 +699,9 @@ test('blockControl:previous', async () => {
   expect(
     result.container.querySelectorAll('.block-type-iframe iframe')[2].src
   ).toBe('about:blank?test=3')
-  userEvent.click(result.container.querySelectorAll('.move-block.previous')[2])
+  await userEvent.click(
+    result.container.querySelectorAll('.move-block.previous')[2]
+  )
   expect(
     result.container.querySelectorAll('.block-type-iframe iframe')[0].src
   ).toBe('about:blank?test=1')
@@ -711,13 +715,14 @@ test('blockControl:previous', async () => {
 })
 
 test('blockControl:refresh', async () => {
-  const { result } = getResult({
+  const { result, rerender } = getResult({
     path: '/foo-1/abc/456/',
   })
   expect(result.container.firstChild).toHaveClass('page')
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  rerender()
   expect(result.container.querySelectorAll('.block-type-iframe').length).toBe(3)
   expect(
     result.container.querySelectorAll('.block-type-iframe iframe')[2].src
@@ -742,13 +747,16 @@ test('getContentSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  userEvent.click(
+  await userEvent.click(
     result.container.querySelector('.content-id-28 .btn.content-settings')
   )
   await waitFor(() =>
     expect(result.getByLabelText('Custom Style Class Name')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Custom Style Class Name'), 'foobar')
+  await userEvent.type(
+    result.getByLabelText('Custom Style Class Name'),
+    'foobar'
+  )
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -771,13 +779,16 @@ test('getPageBlockSettingsValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  userEvent.click(
+  await userEvent.click(
     result.container.querySelector('.block-id-16 .btn.block-settings')
   )
   await waitFor(() =>
     expect(result.getByLabelText('Custom Style Class Name')).toBeInTheDocument()
   )
-  userEvent.type(result.getByLabelText('Custom Style Class Name'), 'foobar')
+  await userEvent.type(
+    result.getByLabelText('Custom Style Class Name'),
+    'foobar'
+  )
   await waitFor(
     () =>
       new Promise((resolve, reject) => {
@@ -800,7 +811,7 @@ test('addContent', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
-  userEvent.click(result.container.querySelector('.btn.add-wysiwyg'))
+  await userEvent.click(result.container.querySelector('.btn.add-wysiwyg'))
   await waitFor(() => expect(emitSaveCalled).toBe(true))
 })
 
@@ -849,7 +860,7 @@ test('contentControl:delete', async () => {
   expect(result.container.querySelectorAll('.page-block-content').length).toBe(
     3
   )
-  userEvent.click(result.container.querySelectorAll('.delete-content')[0])
+  await userEvent.click(result.container.querySelectorAll('.delete-content')[0])
   await waitFor(() =>
     expect(
       result.container.querySelectorAll('.page-block-content').length
@@ -882,7 +893,9 @@ test('contentControl:next', async () => {
   expect(
     result.container.querySelectorAll('.block-type-content img')[2].alt
   ).toBe('tux3')
-  userEvent.click(result.container.querySelectorAll('.move-content.next')[0])
+  await userEvent.click(
+    result.container.querySelectorAll('.move-content.next')[0]
+  )
   expect(
     result.container.querySelectorAll('.page-block-content img')[0].alt
   ).toBe('tux2')
@@ -919,7 +932,7 @@ test('contentControl:previous', async () => {
   expect(
     result.container.querySelectorAll('.page-block-content img')[2].alt
   ).toBe('tux3')
-  userEvent.click(
+  await userEvent.click(
     result.container.querySelectorAll('.move-content.previous')[2]
   )
   expect(
@@ -936,7 +949,7 @@ test('contentControl:previous', async () => {
 
 test('getPageValueHandler', async () => {
   let emitSaveCalled = false
-  const { result } = getResult({
+  const { result, rerender } = getResult({
     path: '/foo-1/abc/789/',
     emitSave: () => {
       emitSaveCalled = true
@@ -946,6 +959,7 @@ test('getPageValueHandler', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  rerender()
   result.container.firstChild.getPageValueHandler('title')('789!')
   await waitFor(
     () =>
@@ -962,7 +976,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   let headerControlCalled = false
   let footerControlCalled = false
   let heroControlCalled = false
-  const { result } = getResult({
+  const { result, rerender } = getResult({
     path: '/foo-1/abc/789/',
     emitSave: () => {
       x = !x
@@ -981,6 +995,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
   await waitFor(() =>
     expect(result.container.querySelector('.row')).toBeInTheDocument()
   )
+  rerender()
   expect(x).toBe(false)
   result.container.firstChild.getPageSettingsValueHandler('navPosition')(
     'below-header'
@@ -992,6 +1007,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
       }),
     { timeout: 1300 }
   )
+  rerender()
   expect(x).toBe(true)
   result.container.firstChild.getPageSettingsResetter('navPosition')()
   await waitFor(
@@ -1001,6 +1017,7 @@ test('getPageSettingsValueHandler and getPageSettingsResetter', async () => {
       }),
     { timeout: 1300 }
   )
+  rerender()
   expect(x).toBe(false)
   result.container.firstChild.getPageSettingsValueHandler('showHeader')(true)
   expect(headerControlCalled).toBe(true)

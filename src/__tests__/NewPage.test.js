@@ -37,52 +37,52 @@ test('NewPage renders without crashing', () => {
   expect(result.container.firstChild).toBeInTheDocument()
 })
 
-test('NewPage fields alter state', () => {
+test('NewPage fields alter state', async () => {
   const { rerender, result, state } = getResults()
   const title = 'Test'
   const key = 'test'
   for (let c = 0; c < title.length; c++) {
     const char = title[c]
-    userEvent.type(result.getByLabelText('Page Title *'), char)
+    await userEvent.type(result.getByLabelText('Page Title *'), char)
     rerender()
   }
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path *'), char)
+    await userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.newPage.title).toBe('Test')
   expect(state.newPage.key).toBe('test')
 })
 
-test('NewPage form submits', () => {
+test('NewPage form submits', async () => {
   const { rerender, result, state } = getResults()
   const title = 'Test'
   const key = 'test'
   for (let c = 0; c < title.length; c++) {
     const char = title[c]
-    userEvent.type(result.getByLabelText('Page Title *'), char)
+    await userEvent.type(result.getByLabelText('Page Title *'), char)
     rerender()
   }
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path *'), char)
+    await userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.submitted).toBe(false)
-  userEvent.click(result.container.querySelector('button'))
+  await userEvent.click(result.container.querySelector('button'))
   expect(state.submitted).toBe(true)
 })
 
-test('NewPage form does not submit when invalid', () => {
+test('NewPage form does not submit when invalid', async () => {
   const { rerender, result, state } = getResults()
   const key = 'test'
   for (let c = 0; c < key.length; c++) {
     const char = key[c]
-    userEvent.type(result.getByLabelText('URL Path *'), char)
+    await userEvent.type(result.getByLabelText('URL Path *'), char)
     rerender()
   }
   expect(state.submitted).toBe(false)
-  userEvent.click(result.container.querySelector('button'))
+  await userEvent.click(result.container.querySelector('button'))
   expect(state.submitted).toBe(false)
 })
