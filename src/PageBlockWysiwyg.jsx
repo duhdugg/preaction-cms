@@ -77,7 +77,7 @@ function PageBlockWysiwyg(props) {
           // but the error message is preferred if component fails when editing
           allowDangerousFallback={!props.editable || test}
           fallbackMode={!props.editable || test}
-          loadableFallback={<Spinner />}
+          suspenseFallback={<Spinner />}
           theme={theme}
           toolbar={wysiwygToolbar}
           value={wysiwygValue}
