@@ -1,8 +1,7 @@
 import './style/base'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { Suspense } from 'react'
 import axios from 'axios'
-import loadable from '@loadable/component'
 import {
   BrowserRouter,
   MemoryRouter,
@@ -44,14 +43,8 @@ import env from './lib/env.js'
 import './style/cms.scss'
 import './style/custom.js'
 
-const NewPage = loadable(() => import('./settingsModules.js'), {
-  fallback: <Spinner size='3.25' />,
-  resolveComponent: (module) => module.NewPage,
-})
-const SiteSettings = loadable(() => import('./settingsModules.js'), {
-  fallback: <Spinner size='3.25' />,
-  resolveComponent: (module) => module.SiteSettings,
-})
+const NewPage = React.lazy(() => import('./NewPage.jsx'))
+const SiteSettings = React.lazy(() => import('./SiteSettings.jsx'))
 
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
@@ -1294,15 +1287,17 @@ function App(props) {
           }
         >
           {editable && show.settings ? (
-            <SiteSettings
-              appRoot={appRoot}
-              admin={admin}
-              emitForceReload={emitForceReload}
-              settings={siteSettings}
-              getSettingsValueHandler={getSettingsValueHandler}
-              show={show.settings}
-              token={token}
-            />
+            <Suspense fallback={<Spinner size={3.25} />}>
+              <SiteSettings
+                appRoot={appRoot}
+                admin={admin}
+                emitForceReload={emitForceReload}
+                settings={siteSettings}
+                getSettingsValueHandler={getSettingsValueHandler}
+                show={show.settings}
+                token={token}
+              />
+            </Suspense>
           ) : (
             ''
           )}
@@ -1344,12 +1339,14 @@ function App(props) {
           }
         >
           {editable && show.newPage ? (
-            <NewPage
-              activePathname={props.activePathname}
-              getValueHandler={getNewPageValueHandler}
-              newPage={newPage}
-              submit={submitNewPage}
-            />
+            <Suspense fallback={<Spinner size={3.25} />}>
+              <NewPage
+                activePathname={props.activePathname}
+                getValueHandler={getNewPageValueHandler}
+                newPage={newPage}
+                submit={submitNewPage}
+              />
+            </Suspense>
           ) : (
             ''
           )}

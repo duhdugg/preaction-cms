@@ -1,7 +1,6 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import React from 'react'
-import loadable from '@loadable/component'
+import React, { Suspense } from 'react'
 import ErrorMessage from './ErrorMessage.jsx'
 import NotFound from './NotFound.jsx'
 import PageBlockParent from './PageBlockParent.jsx'
@@ -17,10 +16,7 @@ import { FaHtml5, FaSitemap } from 'react-icons/fa'
 import { blockExtensions } from './ext'
 import env from './lib/env.js'
 
-const PageSettings = loadable(() => import('./settingsModules.js'), {
-  fallback: <Spinner size='3.25' />,
-  resolveComponent: (module) => module.PageSettings,
-})
+const PageSettings = React.lazy(() => import('./PageSettings.jsx'))
 
 const ssr = typeof window === 'undefined'
 const test = env.NODE_ENV === 'test'
@@ -921,24 +917,26 @@ function Page(props) {
             }
           >
             {props.editable && showSettings ? (
-              <PageSettings
-                appRoot={appRoot}
-                admin={props.editable}
-                navigate={(path) => {
-                  setShowSettings(false)
-                  props.navigate(path)
-                }}
-                pageId={page.id}
-                page={page}
-                path={props.path}
-                settings={settings}
-                token={token}
-                deletePage={confirmDeletePage}
-                getPageValueHandler={getPageValueHandler}
-                getResetter={getPageSettingsResetter}
-                getSettingsValueHandler={getPageSettingsValueHandler}
-                getPageSettingIsUndefined={getPageSettingIsUndefined}
-              />
+              <Suspense fallback={<Spinner size={3.25} />}>
+                <PageSettings
+                  appRoot={appRoot}
+                  admin={props.editable}
+                  navigate={(path) => {
+                    setShowSettings(false)
+                    props.navigate(path)
+                  }}
+                  pageId={page.id}
+                  page={page}
+                  path={props.path}
+                  settings={settings}
+                  token={token}
+                  deletePage={confirmDeletePage}
+                  getPageValueHandler={getPageValueHandler}
+                  getResetter={getPageSettingsResetter}
+                  getSettingsValueHandler={getPageSettingsValueHandler}
+                  getPageSettingIsUndefined={getPageSettingIsUndefined}
+                />
+              </Suspense>
             ) : (
               ''
             )}

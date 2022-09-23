@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
-import loadable from '@loadable/component'
+import React, { Suspense } from 'react'
 import PageBlockContent from './PageBlockContent.jsx'
 import PageBlockNav from './PageBlockNav.jsx'
 import PageBlockIframe from './PageBlockIframe.jsx'
@@ -21,13 +20,8 @@ import {
 import { PageBlockExtension } from './PageBlockExtension.jsx'
 import { blockExtensions } from './ext'
 import getLinkClassName from './lib/getLinkClassName.js'
-const PageBlockCarousel = loadable(() => import('./PageBlockCarousel.jsx'), {
-  fallback: <Spinner size='3.25' />,
-})
-const PageBlockSettings = loadable(() => import('./settingsModules.js'), {
-  fallback: <Spinner size='3.25' />,
-  resolveComponent: (module) => module.PageBlockSettings,
-})
+const PageBlockCarousel = React.lazy(() => import('./PageBlockCarousel.jsx'))
+const PageBlockSettings = React.lazy(() => import('./PageBlockSettings.jsx'))
 function PageBlockParent(props) {
   const [showSettings, setShowSettings] = React.useState(false)
   const imgUploadForm = React.useRef()
@@ -234,10 +228,12 @@ function PageBlockParent(props) {
       }
     >
       {props.block.blockType === 'carousel' ? (
-        <PageBlockCarousel
-          block={props.block}
-          getContents={props.getContents}
-        />
+        <Suspense fallback={<Spinner size={3.25} />}>
+          <PageBlockCarousel
+            block={props.block}
+            getContents={props.getContents}
+          />
+        </Suspense>
       ) : (
         ''
       )}
@@ -342,15 +338,17 @@ function PageBlockParent(props) {
         }
       >
         {props.editable && showSettings ? (
-          <PageBlockSettings
-            block={props.block}
-            contentControl={props.contentControl}
-            getContents={props.getContents}
-            getContentSettingsValueHandler={gcsvh}
-            getPageBlockSettingsValueHandler={
-              props.getPageBlockSettingsValueHandler
-            }
-          />
+          <Suspense fallback={<Spinner size={3.25} />}>
+            <PageBlockSettings
+              block={props.block}
+              contentControl={props.contentControl}
+              getContents={props.getContents}
+              getContentSettingsValueHandler={gcsvh}
+              getPageBlockSettingsValueHandler={
+                props.getPageBlockSettingsValueHandler
+              }
+            />
+          </Suspense>
         ) : (
           ''
         )}

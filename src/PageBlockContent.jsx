@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
-import loadable from '@loadable/component'
+import React, { Suspense } from 'react'
 import {
   joinClassNames,
   Card,
@@ -19,12 +18,8 @@ import {
 import { FaHtml5 } from 'react-icons/fa'
 import getLinkClassName from './lib/getLinkClassName.js'
 
-const PageBlockContentSettings = loadable(
-  () => import('./settingsModules.js'),
-  {
-    fallback: <Spinner size='3.25' />,
-    resolveComponent: (module) => module.PageBlockContentSettings,
-  }
+const PageBlockContentSettings = React.lazy(() =>
+  import('./PageBlockContentSettings.jsx')
 )
 
 function PageBlockContent(props) {
@@ -226,12 +221,14 @@ function PageBlockContent(props) {
         }
       >
         {showSettings ? (
-          <PageBlockContentSettings
-            content={props.content}
-            getContentSettingsValueHandler={
-              props.getContentSettingsValueHandler
-            }
-          />
+          <Suspense fallback={<Spinner size={3.25} />}>
+            <PageBlockContentSettings
+              content={props.content}
+              getContentSettingsValueHandler={
+                props.getContentSettingsValueHandler
+              }
+            />
+          </Suspense>
         ) : (
           ''
         )}
