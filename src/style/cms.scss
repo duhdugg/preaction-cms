@@ -228,16 +228,18 @@
   }
 }
 @mixin default-navbar-link-colors {
-  a.navbar-brand {
-    color: var(--bs-navbar-brand-color);
-    &:hover {
-      color: var(--bs-navbar-brand-hover-color);
+  nav.navbar {
+    a.navbar-brand {
+      color: var(--bs-navbar-brand-color);
+      &:hover {
+        color: var(--bs-navbar-brand-hover-color);
+      }
     }
-  }
-  a.nav-link {
-    color: var(--bs-nav-link-color);
-    &:hover {
-      color: var(--bs-nav-link-hover-color);
+    a.nav-link {
+      color: var(--bs-nav-link-color);
+      &:hover {
+        color: var(--bs-nav-link-hover-color);
+      }
     }
   }
 }
