@@ -49,13 +49,13 @@
     "react-slick": "^0.29.0",
     "sass": "^1.55.0",
     "sass-loader": "13.0.2",
-    "source-map-explorer": "^2.5.2",
+    "source-map-explorer": "^2.5.3",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "analyze": "NODE_OPTIONS='--no-experimental-fetch' source-map-explorer 'build/static/js/*.js' --html stats.html && xdg-open stats.html",
-    "analyze-gzip": "NODE_OPTIONS='--no-experimental-fetch' source-map-explorer 'build/static/js/*.js' --html stats.html --gzip && xdg-open stats.html",
+    "analyze": "source-map-explorer 'build/static/js/*.js' --html stats.html && xdg-open stats.html",
+    "analyze-gzip": "source-map-explorer 'build/static/js/*.js' --html stats.html --gzip && xdg-open stats.html",
     "backup-db": "node scripts/backup-db.js",
     "cleanup-uploads": "bash scripts/cleanup-uploads.sh",
     "clear-sessions": "node scripts/clear-sessions.js",
