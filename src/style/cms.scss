@@ -172,14 +172,6 @@
         margin-left: 1rem;
         margin-top: 1rem;
       }
-      .dropdown-menu {
-        a {
-          color: var(--bs-dark);
-        }
-        a:active {
-          color: var(--bs-light);
-        }
-      }
     }
   }
 }
@@ -202,51 +194,22 @@
 }
 @mixin blue-links {
   @include carousel-dark-controls;
-  a,
-  a:hover,
-  a:active,
-  a:focus {
-    color: var(--bs-blue);
-  }
+  --bs-link-color: var(--bs-blue);
+  --bs-link-hover-color: var(--bs-blue);
 }
 @mixin light-links {
   @include carousel-light-controls;
-  a,
-  a:hover,
-  a:active,
-  a:focus {
-    color: var(--bs-light);
-  }
+  --bs-link-color: var(--bs-light);
+  --bs-link-hover-color: var(--bs-light);
 }
 @mixin dark-links {
   @include carousel-dark-controls;
-  a,
-  a:hover,
-  a:active,
-  a:focus {
-    color: var(--bs-dark);
-  }
-}
-@mixin default-navbar-link-colors {
-  nav.navbar {
-    a.navbar-brand {
-      color: var(--bs-navbar-brand-color);
-      &:hover {
-        color: var(--bs-navbar-brand-hover-color);
-      }
-    }
-    a.nav-link {
-      color: var(--bs-nav-link-color);
-      &:hover {
-        color: var(--bs-nav-link-hover-color);
-      }
-    }
-  }
+  --bs-link-color: var(--bs-dark);
+  --bs-link-hover-color: var(--bs-dark);
 }
 @mixin link-color-rules {
   .pxn-theme-blue-links {
     @include blue-links;
-    @include default-navbar-link-colors;
     .pxn-theme-light-links {
       @include light-links;
     }
@@ -256,7 +219,6 @@
   }
   .pxn-theme-light-links {
     @include light-links;
-    @include default-navbar-link-colors;
     .pxn-theme-blue-links {
       @include blue-links;
     }
@@ -266,7 +228,6 @@
   }
   .pxn-theme-dark-links {
     @include dark-links;
-    @include default-navbar-link-colors;
     .pxn-theme-blue-links {
       @include blue-links;
     }
@@ -279,293 +240,166 @@
 
 @mixin border-colors {
   .card-border-danger > .card {
-    border: 1px solid var(--bs-danger);
+    --bs-card-border-color: var(--bs-danger);
   }
 
   .card-border-dark > .card {
-    border: 1px solid var(--bs-dark);
+    --bs-card-border-color: var(--bs-dark);
   }
 
   .card-border-info > .card {
-    border: 1px solid var(--bs-info);
+    --bs-card-border-color: var(--bs-info);
   }
 
   .card-border-light > .card {
-    border: 1px solid var(--bs-light);
+    --bs-card-border-color: var(--bs-light);
   }
 
   .card-border-primary > .card {
-    border: 1px solid var(--bs-primary);
+    --bs-card-border-color: var(--bs-primary);
   }
 
   .card-border-secondary > .card {
-    border: 1px solid var(--bs-secondary);
+    --bs-card-border-color: var(--bs-secondary);
   }
 
   .card-border-success > .card {
-    border: 1px solid var(--bs-success);
+    --bs-card-border-color: var(--bs-success);
   }
 
   .card-border-transparent > .card {
-    border: 1px solid var(--bs-transparent);
+    --bs-card-border-color: var(--bs-transparent);
   }
 
   .card-border-warning > .card {
-    border: 1px solid var(--bs-warning);
+    --bs-card-border-color: var(--bs-warning);
   }
 
   .card-border-white > .card {
-    border: 1px solid var(--bs-white);
+    --bs-card-border-color: var(--bs-white);
   }
 }
 @include border-colors;
 
 @mixin active-submenu-themes {
-  // default
-  ul.nav,
-  ul.navbar-nav {
-    .dropdown-menu a.dropdown-item {
-      color: var(--bs-dark);
-    }
-  }
   .nav-active-submenu-theme-blue {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-blue);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-blue);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-cyan {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-cyan);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-cyan);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-submenu-theme-danger {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-danger);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-danger);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-dark {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-dark);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-dark);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-gray {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-gray);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-gray);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-gray-dark {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-gray-dark);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-gray-dark);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-green {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-green);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-green);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-indigo {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-indigo);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-indigo);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-info {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-info);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-info);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-submenu-theme-light {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-light);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-light);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-submenu-theme-orange {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-orange);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-orange);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-pink {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-pink);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-pink);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-primary {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-primary);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-primary);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-purple {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-purple);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-purple);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-red {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-red);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-red);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-secondary {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-secondary);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-secondary);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-success {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-success);
-          color: var(--bs-light);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-success);
+      --bs-dropdown-link-active-color: var(--bs-light);
     }
   }
   .nav-active-submenu-theme-teal {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-teal);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-teal);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-submenu-theme-warning {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-warning);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-warning);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-submenu-theme-yellow {
-    ul.nav,
-    ul.navbar-nav {
-      .dropdown-menu {
-        a.dropdown-item.active,
-        a.dropdown-item:active {
-          background-color: var(--bs-yellow);
-          color: var(--bs-dark);
-        }
-      }
+    .dropdown-menu {
+      --bs-dropdown-link-active-bg: var(--bs-yellow);
+      --bs-dropdown-link-active-color: var(--bs-dark);
     }
   }
 }
@@ -573,129 +407,129 @@
 
 @mixin active-tab-themes {
   .nav-active-tab-theme-blue {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-blue);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-blue);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-cyan {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-cyan);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-cyan);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-danger {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-danger);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-danger);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-dark {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-dark);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-dark);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-gray {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-gray);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-gray);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-gray-dark {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-gray-dark);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-gray-dark);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-green {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-green);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-green);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-indigo {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-indigo);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-indigo);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-info {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-info);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-info);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-light {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-light);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-light);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-orange {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-orange);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-orange);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-pink {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-pink);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-pink);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-primary {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-primary);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-primary);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-purple {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-purple);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-purple);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-red {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-red);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-red);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-secondary {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-secondary);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-secondary);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-success {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-success);
-      color: var(--bs-light);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-success);
+      --bs-nav-tabs-link-active-color: var(--bs-light);
     }
   }
   .nav-active-tab-theme-teal {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-teal);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-teal);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-warning {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-warning);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-warning);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-white {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-white);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-white);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
   .nav-active-tab-theme-yellow {
-    ul.nav.nav-tabs > li.nav-item > a.nav-link.active {
-      background-color: var(--bs-yellow);
-      color: var(--bs-dark);
+    .nav-tabs {
+      --bs-nav-tabs-link-active-bg: var(--bs-yellow);
+      --bs-nav-tabs-link-active-color: var(--bs-dark);
     }
   }
 }
