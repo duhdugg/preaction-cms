@@ -1047,6 +1047,7 @@ function App(props) {
     dark: 'nav-active-tab-theme-dark',
     gray: 'nav-active-tab-theme-gray',
     'gray-dark': 'nav-active-tab-theme-gray-dark',
+    green: 'nav-active-tab-theme-green',
     indigo: 'nav-active-tab-theme-indigo',
     info: 'nav-active-tab-theme-info',
     orange: 'nav-active-tab-theme-orange',
