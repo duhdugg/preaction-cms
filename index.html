@@ -119,16 +119,6 @@
               
                 
                 <li><a
-                  href='#upgrading-to-v5'
-                  class="h5 bold black caps">
-                  Upgrading to v5
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#server-side-api'
                   class="h5 bold black caps toggle-sibling">
                   Server-Side API
@@ -632,28 +622,6 @@ Note that it does not get into all the specifics of Nginx. For that, you would n
 <p>You may wish to run Preaction CMS within a subpath on your server. You should consult <a href="https://github.com/duhdugg/preaction-cms/blob/master/examples/nginx-nonempty-root.conf">examples/nginx-nonempty-root.conf</a> to see how to rewrite the routes needed. The client for Preaction CMS needs to be re-built if you are serving from a subpath, using the following to work with this example:<br>
 <code>PUBLIC_URL=/cms yarn build</code></p>
 <p><a href="https://certbot.eff.org/instructions">Check here for instructions on how to setup HTTPS using Certbot</a>.</p>
-
-  
-</section></div>
-          
-        
-          
-            <div class='keyline-top-not py2'><section class='py2 clearfix'>
-
-  <h2 id='upgrading-to-v5' class='mt0'>
-    Upgrading to v5
-  </h2>
-
-  
-    <p>💥 breaking changes:</p>
-<pre><code>- bootstrap v5 is now required, which may break extensions and custom stylesheets using bootstrap v4
-- @preaction/bootstrap-clips v5 is now required, which may break extensions using v3 of this library
-- @preaction/inputs v5 now required, which may break extensions using v3 of this library
-- document structure changes, which may break custom stylesheets created for Preaction CMS v3
-- src/style/index.js no longer used, see src/style/base.js and src/style/custom.template.js
-- "jumbo" page and related settings renamed to "hero"
-- existing databases built using Preaction CMS v3 will need to execute `yarn upgrade-db`
-</code></pre>
 
   
 </section></div>
