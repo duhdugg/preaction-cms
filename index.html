@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>@preaction/cms 5.0.0-alpha.13 | Documentation</title>
+  <title>@preaction/cms 5.0.0-alpha.15 | Documentation</title>
   <meta name='description' content='Preaction CMS is a barebones, extensible Content Management System built on top of simple JavaScript libraries.'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>@preaction/cms</h3>
-          <div class='mb1'><code>5.0.0-alpha.13</code></div>
+          <div class='mb1'><code>5.0.0-alpha.15</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -391,10 +391,11 @@
   
     <p>After running <code>yarn build</code>, <code>yarn dev-client</code>, or <code>yarn init-client</code> for the first time, a copy of <code>src/style/custom.template.js</code> will be created at <code>src/style/custom.js</code>. You can edit this file to import your own css or scss files.</p>
 <p>By default, the file looks like this:</p>
-<pre class='hljs'><span class="hljs-keyword">const</span> ssr = <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">window</span> === <span class="hljs-string">&#x27;undefined&#x27;</span>
-<span class="hljs-keyword">if</span> (!ssr) {
-  <span class="hljs-comment">// import(&quot;./custom.scss&quot;)</span>
-}</pre>
+<pre><code>const ssr = typeof window === 'undefined'
+if (!ssr) {
+  // import("./custom.scss")
+}
+</code></pre>
 <p>You can use dynamic imports to any css or scss file. To ensure that server-side rendering works, you should only import when the window global is not undefined.</p>
 <p>If you would like to replace the default Bootstrap or Quill themes with your own version, you will need to edit <code>src/style/base.js</code> instead.</p>
 <p>Once your edits have been made, rebuild the client with <code>yarn build</code>.</p>
@@ -403,16 +404,18 @@
 <h3>Example</h3>
 <p>You can use wildcard attribute selectors to apply styles to a path, and all of its subpaths. Let's say you want a grey background for all pages under <code>/foobar/</code>. This may include <code>/foobar/</code>, <code>/foobar/one/</code>, <code>/foobar/one/alpha/</code>, <code>/foobar/two/</code>, etc.</p>
 <p>Your <code>src/style/index.js</code> file may look like this:</p>
-<pre class='hljs'><span class="hljs-keyword">const</span> ssr = <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">window</span> === <span class="hljs-string">&#x27;undefined&#x27;</span>
-<span class="hljs-keyword">if</span> (!ssr) {
-  <span class="hljs-keyword">import</span>(<span class="hljs-string">&#x27;./foobar-pages.scss&#x27;</span>)
-}</pre>
+<pre><code>const ssr = typeof window === 'undefined'
+if (!ssr) {
+  import('./foobar-pages.scss')
+}
+</code></pre>
 <p>In this example, we create a new file at <code>src/style/foobar-pages.scss</code>, which looks like this:</p>
-<pre class='hljs'><span class="hljs-selector-tag">body</span><span class="hljs-selector-attr">[className*=<span class="hljs-string">&#x27;path-foobar-&#x27;</span>]</span> {
-  <span class="hljs-selector-tag">a</span> {
-    <span class="hljs-attribute">font-weight</span>: bold;
+<pre><code>body[className*='path-foobar-'] {
+  a {
+    font-weight: bold;
   }
-}</pre>
+}
+</code></pre>
 <p>In the example above, every page under the <code>/foobar/</code> path will have bold links.</p>
 <h3>Favicon</h3>
 <p>To add a favicon, you should put your icon files at <code>public/icon/icon.svg</code> and <code>public/icon/icon.png</code>. If both are present, the svg will be preferred by browsers which support it. You will need to run <code>yarn build</code> after updating these icon files.</p>
@@ -466,33 +469,59 @@
 <li><a href="https://github.com/duhdugg/preactioncms-blockext-businesslocation">https://github.com/duhdugg/preactioncms-blockext-businesslocation</a></li>
 </ul>
 <h4>Example</h4>
-<p>Let's say you've decided to use the "Social Badge" extension from the link above in your Preaction CMS instance. You've cloned the repo, installed its dependencies, and compiled the extension using the build script from the package. You should have a <code>preactioncms-blockext-socialbadge.esm.js</code> file. This is the file you need to import into your <code>src/ext/index.js</code> file, which should now look like this:</p>
-<pre class='hljs'><span class="hljs-keyword">import</span> SocialBadge <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./preactioncms-blockext-socialbadge.esm.js&#x27;</span>
-<span class="hljs-keyword">const</span> allowedReferrers = []
-<span class="hljs-keyword">const</span> blockExtensions = { SocialBadge }
-<span class="hljs-keyword">const</span> menuExtensions = {}
-<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
+<p>Let's say you've decided to use the "Social Badge" extension from the link above in your Preaction CMS instance. You've cloned the repo, installed its dependencies, and compiled the extension using the build script from the package. You should have a <code>preactioncms-blockext-socialbadge.esm.js</code> file and a <code>preactioncms-blockext-socialbadge-settings.esm.js</code> file. These are the files you need to import into your <code>src/ext/index.js</code> file, which should now look like this:</p>
+<pre><code>import SocialBadge from './preactioncms-blockext-socialbadge.esm.js'
+import SocialBadgeSettings from './preactioncms-blockext-socialbadge-settings.esm.js'
+const allowedReferrers = []
+// Unless the extension is a single module with the Settings component already assigned,
+// the settings component needs to be assigned to the extension component.
+// The decision to separate your component from its settings counterpart makes
+// more sense when you do code-splitting (see next example below).
+SocialBadge.Settings = SocialBadgeSettings
+const blockExtensions = { SocialBadge }
+const menuExtensions = {}
+export { allowedReferrers, blockExtensions, menuExtensions }
+</code></pre>
 <p>After your <code>src/ext/index.js</code> file is updated, run <code>yarn build</code>.</p>
 <p>You should be mindful of how each client-side extension impacts the bundle size when running <code>yarn build</code>. You can run <code>yarn analyze</code> to visualize this impact. If you notice that modules from the <code>node_modules</code> directory of the <em>extension</em> are being packaged into your client bundle, try removing that node_modules directory from the extension's project folder after building it, and before running <code>yarn build</code> on Preaction CMS.</p>
-<p>You may also wish to do code-splitting on your block extensions to keep your core bundle to a minimum, where the extension will be loaded as a separate JS file only when a page is rendered which uses it. In this case, you can use the <code>@loadable/component</code> library in <code>src/ext/index.js</code> as follows:</p>
-<pre class='hljs'><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span>
-<span class="hljs-keyword">import</span> loadable <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@loadable/component&#x27;</span>
-<span class="hljs-keyword">import</span> { Spinner } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@preaction/bootstrap-clips&#x27;</span>
-<span class="hljs-keyword">const</span> SocialBadge = loadable(
-  <span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">&#x27;./preactioncms-blockext-socialbadge.esm.js&#x27;</span>),
-  {
-    <span class="hljs-attr">resolveComponent</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-built_in">module</span></span>) =&gt;</span> <span class="hljs-built_in">module</span>.SocialBadge,
-    <span class="hljs-attr">fallback</span>: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Spinner</span> /&gt;</span></span>,
-  }
+<p>You may also wish to do code-splitting on your block extensions to keep your core bundle to a minimum, where the extension will be loaded as a separate JS file only when a page is rendered which uses it. In this case, you can use the <code>React.lazy</code> API as follows:</p>
+<pre><code>import React, { Suspense } from 'react'
+import { Spinner } from '@preaction/bootstrap-clips'
+const SocialBadge = React.lazy(() =>
+  import('./preactioncms-blockext-socialbadge.esm.js')
 )
-<span class="hljs-comment">// note: this method requires that you also set the extensionType and label attributes here</span>
-<span class="hljs-comment">// otherwise, this information will be blank until the component has loaded</span>
-SocialBadge.extensionType = <span class="hljs-string">&#x27;block&#x27;</span>
-SocialBadge.label = <span class="hljs-string">&#x27;Social Badges&#x27;</span>
-<span class="hljs-keyword">const</span> allowedReferrers = []
-<span class="hljs-keyword">const</span> blockExtensions = { SocialBadge }
-<span class="hljs-keyword">const</span> menuExtensions = {}
-<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
+const SocialBadgeSettings = React.lazy(() =>
+  import('./preactioncms-blockext-socialbadge-settings.esm.js')
+)
+const allowedReferrers = []
+const blockExtensions = {
+  SocialBadge: function (props) {
+    return (
+      &#x3C;Suspense fallback={&#x3C;Spinner size={3.25} />}>
+        &#x3C;SocialBadge {...props} />
+      &#x3C;/Suspense>
+    )
+  },
+}
+const blockExtensionSettings = {
+  SocialBadgeSettings: function (props) {
+    return (
+      &#x3C;Suspense fallback={&#x3C;Spinner size={3.25} />}>
+        &#x3C;SocialBadgeSettings {...props} />
+      &#x3C;/Suspense>
+    )
+  },
+}
+// note: this method requires that you also set the extensionType and label attributes here
+// otherwise, this information will be blank until the component has loaded
+blockExtensions.SocialBadge.extensionType = 'block'
+blockExtensions.SocialBadge.label = 'Social Badges'
+// the Settings component needs to be tied to the extension component
+blockExtensions.SocialBadge.Settings =
+  blockExtensionSettings.SocialBadgeSettings
+const menuExtensions = {}
+export { allowedReferrers, blockExtensions, menuExtensions }
+</code></pre>
 <p>Note: the above example also uses React to render a fallback (in this case, the <code>Spinner</code> component from <code>@preaction/bootstrap-clips</code>), although this is not required.</p>
 <h3>Client-Side Menu Extensions</h3>
 <p>You may also add menu extensions to Preaction CMS. A menu extension must meet the following requirements:</p>
@@ -510,38 +539,40 @@ SocialBadge.label = <span class="hljs-string">&#x27;Social Badges&#x27;</span>
 </ul>
 <h4>Example</h4>
 <p>Create the following menu extension at <code>src/ext/menuext-example.js</code>:</p>
-<pre class='hljs'><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">example</span>(<span class="hljs-params">preaction</span>) </span>{
-  <span class="hljs-keyword">return</span> {
-    <span class="hljs-attr">name</span>:
-      preaction.page &amp;&amp; preaction.page.title
-        ? <span class="hljs-string">`Search Wikipedia: <span class="hljs-subst">${preaction.page.title}</span>`</span>
-        : <span class="hljs-string">&#x27;Wikipedia&#x27;</span>,
-    <span class="hljs-attr">href</span>: <span class="hljs-string">&#x27;https://en.wikipedia.com&#x27;</span>,
-    <span class="hljs-attr">onClick</span>: <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
-      <span class="hljs-keyword">if</span> (preaction.page &amp;&amp; preaction.page.title) {
+<pre><code>function example(preaction) {
+  return {
+    name:
+      preaction.page &#x26;&#x26; preaction.page.title
+        ? `Search Wikipedia: ${preaction.page.title}`
+        : 'Wikipedia',
+    href: 'https://en.wikipedia.com',
+    onClick: (event) => {
+      if (preaction.page &#x26;&#x26; preaction.page.title) {
         event.preventDefault()
-        <span class="hljs-built_in">window</span>.open(
-          <span class="hljs-string">&#x27;https://en.wikipedia.org/w/index.php?search=&#x27;</span> +
-            <span class="hljs-built_in">encodeURIComponent</span>(preaction.page.title),
-          <span class="hljs-string">&#x27;_blank&#x27;</span>,
-          <span class="hljs-string">&#x27;noopener,noreferrer&#x27;</span>
+        window.open(
+          'https://en.wikipedia.org/w/index.php?search=' +
+            encodeURIComponent(preaction.page.title),
+          '_blank',
+          'noopener,noreferrer'
         )
       }
     },
-    <span class="hljs-attr">order</span>: <span class="hljs-number">20</span>,
+    order: 20,
   }
 }
 
-example.extensionType = <span class="hljs-string">&#x27;menu&#x27;</span>
+example.extensionType = 'menu'
 
-<span class="hljs-keyword">export</span> { example }</pre>
+export { example }
+</code></pre>
 <p>Note: This is a trivial example, but clicking on this menu item launches a Wikipedia search on the current page title.</p>
 <p>To use this extension, your <code>src/ext/index.js</code> file should look like the following:</p>
-<pre class='hljs'><span class="hljs-keyword">import</span> { example } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./menuext-example.js&#x27;</span>
-<span class="hljs-keyword">const</span> allowedReferrers = []
-<span class="hljs-keyword">const</span> blockExtensions = {}
-<span class="hljs-keyword">const</span> menuExtensions = { example }
-<span class="hljs-keyword">export</span> { allowedReferrers, blockExtensions, menuExtensions }</pre>
+<pre><code>import { example } from './menuext-example.js'
+const allowedReferrers = []
+const blockExtensions = {}
+const menuExtensions = { example }
+export { allowedReferrers, blockExtensions, menuExtensions }
+</code></pre>
 <h3>Tracking Changes</h3>
 <p>You may wish to alter or remove the <code>src/.gitignore</code> and/or <code>src/ext/.gitignore</code> files after adding extensions to your local Preaction CMS repo.</p>
 
@@ -2771,7 +2802,7 @@ set with <em>lack of</em> environment variable: <code>CMS_CACHE_DISABLE</code></
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_CACHE_DISABLE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_CACHE_DISABLE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -2832,7 +2863,7 @@ defaults to <code>@preaction/cms:session</code></p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_COOKIE_NAME=<span class="hljs-string">&#x27;session&#x27;</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_COOKIE_NAME</span>=<span class="hljs-string">&#x27;session&#x27;</span> npm start</pre>
     
   
 
@@ -2904,7 +2935,7 @@ Set with the <code>CMS_COOKIE_PROXY</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_COOKIE_PROXY=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_COOKIE_PROXY</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -2975,7 +3006,7 @@ Set with CMS_COOKIE_SAMESITE environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_COOKIE_SAMESITE=<span class="hljs-string">&#x27;secure&#x27;</span> CMS_COOKIE_SECURE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_COOKIE_SAMESITE</span>=<span class="hljs-string">&#x27;secure&#x27;</span> <span class="hljs-variable constant_">CMS_COOKIE_SECURE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3037,7 +3068,7 @@ set with <code>CMS_COOKIE_SECRET</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_COOKIE_SECRET=<span class="hljs-string">&quot;$(dd if=/dev/random status=none | strings | sed &#x27;s/[^a-zA-Z0-9]//g&#x27; | tr -d &#x27;\n&#x27; | dd bs=1 count=43 status=none)&quot;</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_COOKIE_SECRET</span>=<span class="hljs-string">&quot;$(dd if=/dev/random status=none | strings | sed &#x27;s/[^a-zA-Z0-9]//g&#x27; | tr -d &#x27;\n&#x27; | dd bs=1 count=43 status=none)&quot;</span> npm start</pre>
     
   
 
@@ -3099,7 +3130,7 @@ set with <code>CMS_COOKIE_SECURE</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_COOKIE_SECURE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_COOKIE_SECURE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3160,7 +3191,7 @@ set with <code>CMS_DB_BACKUP</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_DB_BACKUP=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_DB_BACKUP</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3221,7 +3252,7 @@ set with <code>CMS_DB_LOGGING</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_DB_LOGGING=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_DB_LOGGING</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3276,7 +3307,7 @@ set with <code>CMS_DB_LOGGING</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_GOOGLE_ANALYTICS=<span class="hljs-string">&#x27;UA-FOOBAR-1&#x27;</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_GOOGLE_ANALYTICS</span>=<span class="hljs-string">&#x27;UA-FOOBAR-1&#x27;</span> npm start</pre>
     
   
 
@@ -3339,7 +3370,7 @@ set with <code>CMS_DB_LOGGING</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>NODE_ENV=<span class="hljs-string">&#x27;production&#x27;</span> CMS_COOKIE_SAMESITE=<span class="hljs-string">&#x27;secure&#x27;</span> CMS_COOKIE_SECURE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">NODE_ENV</span>=<span class="hljs-string">&#x27;production&#x27;</span> <span class="hljs-variable constant_">CMS_COOKIE_SAMESITE</span>=<span class="hljs-string">&#x27;secure&#x27;</span> <span class="hljs-variable constant_">CMS_COOKIE_SECURE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3401,7 +3432,7 @@ set with the <code>CMS_PORT</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_PORT=<span class="hljs-number">8080</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_PORT</span>=<span class="hljs-number">8080</span> npm start</pre>
     
   
 
@@ -3464,7 +3495,7 @@ Set with the <code>CMS_READONLY</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_READONLY=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_READONLY</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3526,7 +3557,7 @@ Set with the <code>CMS_DO_NOT_REMOVE_EXIF</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_DO_NOT_REMOVE_EXIF=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_DO_NOT_REMOVE_EXIF</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3589,7 +3620,7 @@ Set with the <code>CMS_ROOT</code> environment variable.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_ROOT=<span class="hljs-string">&#x27;/preaction&#x27;</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_ROOT</span>=<span class="hljs-string">&#x27;/preaction&#x27;</span> npm start</pre>
     
   
 
@@ -3651,7 +3682,7 @@ Set with the <code>CMS_SITEMAP_HOSTNAME</code> environment variable.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_SITEMAP_HOSTNAME=<span class="hljs-string">&#x27;https://example.com&#x27;</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_SITEMAP_HOSTNAME</span>=<span class="hljs-string">&#x27;https://example.com&#x27;</span> npm start</pre>
     
   
 
@@ -3714,7 +3745,7 @@ Set with <code>CMS_SOCKET_MODE</code> environment variable</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_SOCKET_MODE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_SOCKET_MODE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
@@ -3776,7 +3807,7 @@ Disable with the <code>CMS_SSR_DISABLE</code> environment variable.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>CMS_SSR_DISABLE=<span class="hljs-number">1</span> npm start</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-variable constant_">CMS_SSR_DISABLE</span>=<span class="hljs-number">1</span> npm start</pre>
     
   
 
