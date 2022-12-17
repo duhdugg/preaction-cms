@@ -4,6 +4,9 @@
 
 Preaction CMS is a barebones, extensible Content Management System built on top of simple JavaScript libraries. It is intended to be friendly to users, administrators, and developers.
 
+You can find more details about Preaction CMS, including video walkthroughs at:
+[dougelkin.com/blog/preaction-cms](https://dougelkin.com/blog/preaction-cms/)
+
 ### Documentation
 
 - [Preaction CMS Documentation](https://duhdugg.github.io/preaction-cms/)
