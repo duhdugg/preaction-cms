@@ -8,6 +8,12 @@ Preaction CMS is a barebones, extensible Content Management System built on top 
 
 - [Preaction CMS Documentation](https://duhdugg.github.io/preaction-cms/)
 
+Be sure to check out the documentation for the following UI libraries, which make up the
+majority of the Preaction CMS user interface:
+
+- [Preaction Bootstrap Clips](https://github.com/duhdugg/preaction-bootstrap-clips)
+- [Preaction Inputs](https://github.com/duhdugg/preaction-inputs)
+
 ### LICENSE
 
 > Copyright (c) 2018-2022 Doug Elkin
